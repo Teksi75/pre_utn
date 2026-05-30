@@ -48,15 +48,15 @@ Chain strategy: stacked-to-main
 
 ## Phase 3: Error Taxonomy + Catalog (TDD RED → GREEN)
 
-- [ ] 3.1 RED: `error-taxonomy.test.ts` — ≥2 tags/unit, duplicates fail, lookup by ID, filter by unit (spec: math-error-taxonomy §Coverage, §Lookup)
-- [ ] 3.2 GREEN: `src/domain/error-taxonomy/index.ts` — `loadTaxonomy()`, `lookupTag()`, `filterByUnit()`, coverage validation
-- [ ] 3.3 Create `content/matematica/exercises.json` — ~30 exercises (5×6 units), original content only, each with: id, skillId, type, difficulty, prompt, expectedAnswer, commonErrorTags, pedagogicalNote (spec: math-exercise-catalog §Coverage, §Transformed)
-- [ ] 3.4 RED: `catalog.test.ts` — coverage ≥5/unit, query ordering (diff asc → id asc), no-match empty, prereq cycles caught (spec: math-exercise-catalog §Querying)
-- [ ] 3.5 GREEN: `src/domain/catalog/index.ts` — `loadCatalog()`, `queryByUnit()`, `queryBySkill()`, prerequisite cycle detection at load
+- [x] 3.1 RED: `error-taxonomy.test.ts` — ≥2 tags/unit, duplicates fail, lookup by ID, filter by unit (spec: math-error-taxonomy §Coverage, §Lookup)
+- [x] 3.2 GREEN: `src/domain/error-taxonomy/index.ts` — `loadTaxonomy()`, `lookupTag()`, `filterByUnit()`, coverage validation
+- [x] 3.3 Create `content/matematica/exercises.json` — ~30 exercises (5×6 units), original content only, each with: id, skillId, type, difficulty, prompt, expectedAnswer, commonErrorTags, pedagogicalNote (spec: math-exercise-catalog §Coverage, §Transformed)
+- [x] 3.4 RED: `catalog.test.ts` — coverage ≥5/unit, query ordering (diff asc → id asc), no-match empty, prereq cycles caught (spec: math-exercise-catalog §Querying)
+- [x] 3.5 GREEN: `src/domain/catalog/index.ts` — `loadCatalog()`, `queryByUnit()`, `queryBySkill()`, prerequisite cycle detection at load
 
 ## Phase 4: Integration + Cleanup
 
-- [ ] 4.1 Update `src/domain/index.ts` barrel — export all models, evaluator, catalog, error-taxonomy; keep PROJECT_PHASE/SCOPE
-- [ ] 4.2 Run `pnpm run test` — all tests pass; fix failures
-- [ ] 4.3 Run `pnpm run typecheck` — strict mode, zero `any`; fix errors
-- [ ] 4.4 REFACTOR: verify test coverage vs spec scenarios; ensure zero React/Next.js/Supabase imports in `src/domain/`
+- [x] 4.1 Update `src/domain/index.ts` barrel — export all models, evaluator, catalog, error-taxonomy; keep PROJECT_PHASE/SCOPE
+- [x] 4.2 Run `pnpm run test` — all tests pass; fix failures
+- [x] 4.3 Run `pnpm run typecheck` — strict mode, zero `any`; fix errors
+- [x] 4.4 REFACTOR: verify test coverage vs spec scenarios; ensure zero React/Next.js/Supabase imports in `src/domain/`

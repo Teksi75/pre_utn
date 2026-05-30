@@ -1,0 +1,307 @@
+[
+  {
+    "id": "ex.u1.reales_operaciones.1",
+    "skillId": "mat.u1.reales_operaciones",
+    "type": "numerical",
+    "difficulty": 1,
+    "prompt": "Calcula 2 + 3 × 4",
+    "expectedAnswer": "14",
+    "commonErrorTags": ["u1_orden_operaciones"],
+    "pedagogicalNote": "Verifica el orden de operaciones: multiplicaciones antes que sumas."
+  },
+  {
+    "id": "ex.u1.potencias_raices.1",
+    "skillId": "mat.u1.potencias_raices",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Calcula √(9) + 2²",
+    "expectedAnswer": "7",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Combina raíces cuadradas y potencias en una expresión."
+  },
+  {
+    "id": "ex.u1.racionalizacion.1",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "symbolic",
+    "difficulty": 3,
+    "prompt": "Racionaliza 1/(√2 - 1)",
+    "expectedAnswer": "√2 + 1",
+    "commonErrorTags": ["u1_signo_racionalizacion"],
+    "pedagogicalNote": "Aplica el conjugado para eliminar la raíz del denominador."
+  },
+  {
+    "id": "ex.u1.intervalos.1",
+    "skillId": "mat.u1.intervalos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "¿Qué intervalo representa x > 3?",
+    "expectedAnswer": "(3, ∞)",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Interpretación de desigualdades estrictas en notación de intervalos."
+  },
+  {
+    "id": "ex.u1.valor_absoluto.1",
+    "skillId": "mat.u1.valor_absoluto",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Calcula | -5 | + | 3 |",
+    "expectedAnswer": "8",
+    "commonErrorTags": [],
+    "pedagogicalNote": "El valor absoluto de un número es siempre no negativo."
+  },
+
+  {
+    "id": "ex.u2.polinomios_basico.1",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "symbolic",
+    "difficulty": 1,
+    "prompt": "Simplifica 3x + 2x",
+    "expectedAnswer": "5x",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Combina términos semejantes sumando coeficientes."
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.1",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "symbolic",
+    "difficulty": 2,
+    "prompt": "Calcula (2x + 1)(x - 3)",
+    "expectedAnswer": "2x² - 5x - 3",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Aplica distribución (FOIL) y combina términos semejantes."
+  },
+  {
+    "id": "ex.u2.ruffini_resto.1",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "numerical",
+    "difficulty": 3,
+    "prompt": "Usando el teorema del resto, calcula el residuo de (x³ - 2x + 1) al dividir por (x - 2)",
+    "expectedAnswer": "5",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Sustituye x = 2 en el polinomio para obtener el residuo."
+  },
+  {
+    "id": "ex.u2.factorizacion.1",
+    "skillId": "mat.u2.factorizacion",
+    "type": "symbolic",
+    "difficulty": 2,
+    "prompt": "Factoriza x² - 5x + 6",
+    "expectedAnswer": "(x - 2)(x - 3)",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Busca dos números que sumen -5 y multipliquen 6."
+  },
+  {
+    "id": "ex.u2.gauss.1",
+    "skillId": "mat.u2.gauss",
+    "type": "symbolic",
+    "difficulty": 3,
+    "prompt": "Resuelve el sistema: x + y = 5, x - y = 1",
+    "expectedAnswer": "x = 3, y = 2",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Aplica eliminación gaussiana o sustitución."
+  },
+
+  {
+    "id": "ex.u3.ecuaciones_lineales.1",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "type": "numerical",
+    "difficulty": 1,
+    "prompt": "Resuelve 2x + 3 = 7",
+    "expectedAnswer": "2",
+    "commonErrorTags": ["u2_aislamiento_variable", "u2_signo_al_mover"],
+    "pedagogicalNote": "Aísla la variable aplicando operaciones inversas."
+  },
+  {
+    "id": "ex.u3.ecuaciones_cuadraticas.1",
+    "skillId": "mat.u3.ecuaciones_cuadraticas",
+    "type": "symbolic",
+    "difficulty": 2,
+    "prompt": "Resuelve x² - 5x + 6 = 0",
+    "expectedAnswer": "x = 2, x = 3",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Factoriza o usa fórmula general."
+  },
+  {
+    "id": "ex.u3.inecuaciones_lineales.1",
+    "skillId": "mat.u3.inecuaciones_lineales",
+    "type": "symbolic",
+    "difficulty": 2,
+    "prompt": "Resuelve 3x - 2 > 4",
+    "expectedAnswer": "x > 2",
+    "commonErrorTags": ["u3_signo_desigualdad"],
+    "pedagogicalNote": "Recuerda que al multiplicar o dividir por negativo se invierte la desigualdad."
+  },
+  {
+    "id": "ex.u3.recta.1",
+    "skillId": "mat.u3.recta",
+    "type": "symbolic",
+    "difficulty": 2,
+    "prompt": "¿Cuál es la pendiente de la recta que pasa por (0, 2) y (3, 5)?",
+    "expectedAnswer": "1",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Pendiente = (y2 - y1) / (x2 - x1)."
+  },
+  {
+    "id": "ex.u3.sistemas.1",
+    "skillId": "mat.u3.sistemas",
+    "type": "symbolic",
+    "difficulty": 3,
+    "prompt": "Resuelve el sistema: 2x + y = 7, x - y = 2",
+    "expectedAnswer": "x = 3, y = 1",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Usa sustitución o eliminación."
+  },
+
+  {
+    "id": "ex.u4.perimetro_area_volumen.1",
+    "skillId": "mat.u4.perimetro_area_volumen",
+    "type": "numerical",
+    "difficulty": 1,
+    "prompt": "Calcula el área de un rectángulo de base 5 y altura 3",
+    "expectedAnswer": "15",
+    "commonErrorTags": ["u4_formula_area"],
+    "pedagogicalNote": "Área = base × altura."
+  },
+  {
+    "id": "ex.u4.proporciones.1",
+    "skillId": "mat.u4.proporciones",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Si 3 metros representan 6 unidades, ¿cuántos metros representan 10 unidades?",
+    "expectedAnswer": "5",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Plantea una proporción y resuelve."
+  },
+  {
+    "id": "ex.u4.thales.1",
+    "skillId": "mat.u4.thales",
+    "type": "symbolic",
+    "difficulty": 3,
+    "prompt": "En un triángulo, si una paralela corta dos lados, ¿qué relación establece entre los segmentos?",
+    "expectedAnswer": "Los segmentos correspondientes son proporcionales",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Teorema de Thales: paralela implica proporcionalidad."
+  },
+  {
+    "id": "ex.u4.pitagoras.1",
+    "skillId": "mat.u4.pitagoras",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Calcula la hipotenusa de un triángulo rectángulo de catetos 3 y 4",
+    "expectedAnswer": "5",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Pitágoras: c² = a² + b²."
+  },
+  {
+    "id": "ex.u4.razones_trigonometricas.1",
+    "skillId": "mat.u4.razones_trigonometricas",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "En un triángulo rectángulo, si el cateto opuesto es 3 y la hipotenusa es 5, ¿cuál es el seno del ángulo?",
+    "expectedAnswer": "0.6",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Seno = cateto opuesto / hipotenusa."
+  },
+
+  {
+    "id": "ex.u5.angulos.1",
+    "skillId": "mat.u5.angulos",
+    "type": "numerical",
+    "difficulty": 1,
+    "prompt": "¿Cuánto suman los ángulos internos de un triángulo?",
+    "expectedAnswer": "180",
+    "commonErrorTags": ["u4_suma_angulos"],
+    "pedagogicalNote": "La suma de ángulos internos de cualquier triángulo es 180°."
+  },
+  {
+    "id": "ex.u5.radianes.1",
+    "skillId": "mat.u5.radianes",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Convierte 180° a radianes",
+    "expectedAnswer": "π",
+    "commonErrorTags": [],
+    "pedagogicalNote": "180° = π radianes."
+  },
+  {
+    "id": "ex.u5.circunferencia_trigonometrica.1",
+    "skillId": "mat.u5.circunferencia_trigonometrica",
+    "type": "symbolic",
+    "difficulty": 2,
+    "prompt": "¿En qué cuadrante está el ángulo de 300°?",
+    "expectedAnswer": "Cuarto cuadrante",
+    "commonErrorTags": [],
+    "pedagogicalNote": "300° está entre 270° y 360°."
+  },
+  {
+    "id": "ex.u5.identidades.1",
+    "skillId": "mat.u5.identidades",
+    "type": "symbolic",
+    "difficulty": 2,
+    "prompt": "Simplifica sin²(θ) + cos²(θ)",
+    "expectedAnswer": "1",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Identidad pitagórica fundamental."
+  },
+  {
+    "id": "ex.u5.ecuaciones_trigonometricas.1",
+    "skillId": "mat.u5.ecuaciones_trigonometricas",
+    "type": "symbolic",
+    "difficulty": 3,
+    "prompt": "Resuelve sen(θ) = 0 para 0° ≤ θ < 360°",
+    "expectedAnswer": "θ = 0°, 180°",
+    "commonErrorTags": [],
+    "pedagogicalNote": "El seno es cero en 0° y 180°."
+  },
+
+  {
+    "id": "ex.u6.funcion_concepto.1",
+    "skillId": "mat.u6.funcion_concepto",
+    "type": "true-false",
+    "difficulty": 1,
+    "prompt": "¿Es una función una relación donde cada entrada tiene exactamente una salida?",
+    "expectedAnswer": "true",
+    "commonErrorTags": ["u6_dominio_funcion"],
+    "pedagogicalNote": "Definición fundamental de función."
+  },
+  {
+    "id": "ex.u6.dominio_imagen.1",
+    "skillId": "mat.u6.dominio_imagen",
+    "type": "symbolic",
+    "difficulty": 2,
+    "prompt": "¿Cuál es el dominio de f(x) = 1/x?",
+    "expectedAnswer": "Todos los reales excepto 0",
+    "commonErrorTags": ["u6_dominio_funcion"],
+    "pedagogicalNote": "No se puede dividir por cero."
+  },
+  {
+    "id": "ex.u6.ceros_positividad_negatividad.1",
+    "skillId": "mat.u6.ceros_positividad_negatividad",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "¿Cuáles son los ceros de f(x) = x² - 4?",
+    "expectedAnswer": "x = -2, x = 2",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Los ceros son los valores donde f(x) = 0."
+  },
+  {
+    "id": "ex.u6.funcion_afin.1",
+    "skillId": "mat.u6.funcion_afin",
+    "type": "symbolic",
+    "difficulty": 2,
+    "prompt": "¿Cuál es la pendiente de f(x) = 2x + 3?",
+    "expectedAnswer": "2",
+    "commonErrorTags": [],
+    "pedagogicalNote": "En f(x) = mx + b, m es la pendiente."
+  },
+  {
+    "id": "ex.u6.funcion_cuadratica.1",
+    "skillId": "mat.u6.funcion_cuadratica",
+    "type": "symbolic",
+    "difficulty": 3,
+    "prompt": "¿Cuál es el vértice de f(x) = x² - 4x + 3?",
+    "expectedAnswer": "(2, -1)",
+    "commonErrorTags": [],
+    "pedagogicalNote": "El vértice de una parábola se encuentra con x = -b/(2a)."
+  }
+]
