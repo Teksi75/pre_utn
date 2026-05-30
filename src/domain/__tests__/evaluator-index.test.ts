@@ -129,6 +129,52 @@ describe("Evaluator dispatcher", () => {
     });
   });
 
+  describe("error-tag integration via evaluateAnswer", () => {
+    test("incorrect numerical answer with declared sign-error tag returns the tag", () => {
+      const exercise = makeExercise({
+        type: "numerical",
+        expectedAnswer: "5",
+        commonErrorTags: ["u1_signo_racionalizacion"],
+      });
+      const result = evaluateAnswer(exercise, "-5");
+      expect(result.correct).toBe(false);
+      expect(result.errorTag).toBe("u1_signo_racionalizacion");
+    });
+
+    test("incorrect numerical answer with undeclared matching tag returns no tag", () => {
+      const exercise = makeExercise({
+        type: "numerical",
+        expectedAnswer: "5",
+        commonErrorTags: ["u1_orden_operaciones"],
+      });
+      const result = evaluateAnswer(exercise, "-5");
+      expect(result.correct).toBe(false);
+      expect(result.errorTag).toBeUndefined();
+    });
+
+    test("correct numerical answer with declared tags never returns errorTag", () => {
+      const exercise = makeExercise({
+        type: "numerical",
+        expectedAnswer: "5",
+        commonErrorTags: ["u1_signo_racionalizacion"],
+      });
+      const result = evaluateAnswer(exercise, "5");
+      expect(result.correct).toBe(true);
+      expect(result.errorTag).toBeUndefined();
+    });
+
+    test("incorrect numerical answer with empty commonErrorTags returns no tag", () => {
+      const exercise = makeExercise({
+        type: "numerical",
+        expectedAnswer: "5",
+        commonErrorTags: [],
+      });
+      const result = evaluateAnswer(exercise, "-5");
+      expect(result.correct).toBe(false);
+      expect(result.errorTag).toBeUndefined();
+    });
+  });
+
   describe("EvaluationResult shape", () => {
     test("correct result has no errorTag or feedback", () => {
       const exercise = makeExercise({ type: "numerical", expectedAnswer: "5" });
