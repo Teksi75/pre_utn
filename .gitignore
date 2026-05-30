@@ -1,0 +1,32 @@
+# OS / editor noise
+desktop.ini
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/
+
+# Next.js / build outputs
+.next/
+out/
+dist/
+coverage/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local generated caches
+.atl/.skill-registry.cache.json
+
+# Package manager guardrails
+package-lock.json
+yarn.lock

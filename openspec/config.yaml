@@ -1,0 +1,38 @@
+schema: spec-driven
+
+context: |
+  Project: Pre UTN — App de preparación para el ingreso a Ingeniería UTN Mendoza
+  Stack: Next.js (App Router) · TypeScript strict · React + Tailwind · Supabase (PostgreSQL, Auth, Storage) · Vercel · pnpm
+  Testing: Vitest (unit/domain) + Playwright (e2e, planned)
+  Architecture: Hexagonal/Clean — src/domain/ pure logic, src/app/ routes, src/components/ UI, content/ exercises, supabase/ migrations
+  Methodology: SDD · TDD · ENGRAM · GGA
+  Product sequencing: Matemática MVP first; Física second phase
+  Package manager: pnpm only (no npm, no yarn)
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+    - Reference relevant ADR from docs/sdd/13-adr-foundation.md
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+    - Every spec must address pedagogical impact (alumno + docente)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+    - domain/ must not import React, Next, or Supabase
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+    - TDD tasks: RED → GREEN → REFACTOR
+  apply:
+    - Follow existing code patterns
+    tdd: true
+    test_command: pnpm run test
+  verify:
+    test_command: pnpm run test
+    build_command: pnpm run build
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas
+    - Preserve pedagogical intent in archived specs

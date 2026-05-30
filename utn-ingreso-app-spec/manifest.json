@@ -1,0 +1,25 @@
+{
+  "project": "utn-ingreso-app-spec",
+  "files": [
+    "docs/00-conventions.md",
+    "docs/README.md",
+    "docs/architecture/10-project-structure.md",
+    "docs/architecture/11-evaluator-design.md",
+    "docs/architecture/12-repo-extraction-map.md",
+    "docs/pedagogy/04-pedagogical-model.md",
+    "docs/pedagogy/05-math-content-map.md",
+    "docs/pedagogy/06-skill-map.md",
+    "docs/pedagogy/07-exercise-types.md",
+    "docs/pedagogy/08-recommendation-engine.md",
+    "docs/pedagogy/09-metrics.md",
+    "docs/product/01-vision-app.md",
+    "docs/product/02-mvp-scope.md",
+    "docs/product/03-modes-of-work.md",
+    "docs/roadmap/16-implementation-roadmap.md",
+    "docs/sdd/13-adr-foundation.md",
+    "docs/sdd/14-agent-workflow-sdd-tdd-engram-gga.md",
+    "docs/sdd/15-documentation-gap.md"
+  ],
+  "count": 18,
+  "notes": "Markdown specs for Codex/OpenCode/Gentle-AI agents with SDD/TDD/ENGRAM/GGA and pnpm."
+}
