@@ -5,12 +5,15 @@ Thumbs.db
 
 # Dependencies
 node_modules/
+.pnp
+.pnp.*
 
 # Next.js / build outputs
 .next/
 out/
 dist/
 coverage/
+/build
 
 # Environment files
 .env
@@ -26,7 +29,20 @@ pnpm-debug.log*
 
 # Local generated caches
 .atl/.skill-registry.cache.json
+.gga-tmp/
+
+# Canonical reference material stays local until storage policy is decided
+material_canonico/
 
 # Package manager guardrails
 package-lock.json
 yarn.lock
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+
+# Debug
+.pnpm-debug.log*
