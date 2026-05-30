@@ -8,7 +8,7 @@ La primera etapa implementa **Matemática**. Física queda preparada como segund
 
 | Área | Estado |
 |---|---|
-| Matemática | MVP inicial |
+| Matemática | Dominio base implementado |
 | Física | Segunda fase |
 | Stack previsto | Next.js · TypeScript · Supabase · Vercel · pnpm |
 | Metodología | SDD · TDD · ENGRAM · GGA |
@@ -51,14 +51,19 @@ Lectura mínima para agentes o colaboradores:
 - Repositorio GitHub privado inicializado.
 - GGA instalado como pre-commit hook con provider `opencode`.
 - Scaffold de app creado con Next.js, TypeScript, Tailwind, pnpm y Vitest.
-- Verificación actual: `pnpm run test`, `pnpm run typecheck` y `pnpm run build` pasan.
+- Dominio base de Matemática implementado y archivado con SDD:
+  - modelos de habilidad, ejercicio, error y resultado;
+  - evaluador inicial para respuestas numéricas, exactas y booleanas;
+  - taxonomía inicial de errores;
+  - catálogo de 30 ejercicios pedagógicos originales, 5 por unidad.
+- Verificación actual: `pnpm run test:run` (141 tests), `pnpm run typecheck` y `pnpm run build` pasan.
 - `material_canonico/` queda fuera del repo hasta definir política de uso y trazabilidad.
 
 ## Próximo paso
 
-Analizar el material canónico de **Matemática** para construir un mapa pedagógico propio del MVP:
+Construir la primera experiencia usable sobre el dominio de **Matemática** ya implementado:
 
-1. Inventariar unidades, temas, ejercicios y evaluaciones.
-2. Extraer habilidades evaluables sin copiar contenido canónico como contenido propio.
-3. Comparar el análisis contra `utn-ingreso-app-spec/docs/pedagogy/05-math-content-map.md` y `06-skill-map.md`.
-4. Proponer la primera feature de dominio con SDD antes de implementar código.
+1. Definir con SDD la primera experiencia de práctica o diagnóstico.
+2. Resolver la auto-asignación de `errorTag` cuando el patrón de respuesta lo permita.
+3. Diseñar feedback pedagógico sin exponer contenido canónico como contenido propio.
+4. Mantener TDD estricto en dominio, evaluadores, métricas y recomendaciones.
