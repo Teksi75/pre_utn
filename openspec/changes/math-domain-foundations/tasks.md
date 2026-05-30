@@ -37,14 +37,14 @@ Chain strategy: stacked-to-main
 
 ## Phase 2: Evaluator (TDD RED → GREEN)
 
-- [ ] 2.1 RED: `evaluator-numeric.test.ts` — tolerance boundary (3.1405 vs 3.14), exact match, out-of-tolerance (spec: math-answer-evaluator §Numerical)
-- [ ] 2.2 GREEN: `src/domain/evaluator/numeric.ts` — `Math.abs(a-b) < 0.01`
-- [ ] 2.3 RED: `evaluator-exact.test.ts` — whitespace trimming, case insensitivity (spec: §Type-Specific Matching)
-- [ ] 2.4 GREEN: `src/domain/evaluator/exact.ts` — trimmed lowercase comparison
-- [ ] 2.5 RED: `evaluator-boolean.test.ts` — all aliases: `v`/`verdadero`/`true`/`sí` and `f`/`falso`/`false`/`no` (spec: §Boolean Aliases)
-- [ ] 2.6 GREEN: `src/domain/evaluator/boolean.ts` — Spanish/English alias resolution
-- [ ] 2.7 RED: `evaluator-index.test.ts` — dispatch to correct module; unsupported types → manual-review (spec: §Unsupported)
-- [ ] 2.8 GREEN: `src/domain/evaluator/index.ts` — `evaluateAnswer()`, `EvaluationResult`, manual-review for free-response/graphical/matching/ordering
+- [x] 2.1 RED: `evaluator-numeric.test.ts` — tolerance boundary (3.1405 vs 3.14), exact match, out-of-tolerance (spec: math-answer-evaluator §Numerical)
+- [x] 2.2 GREEN: `src/domain/evaluator/numeric.ts` — `Math.abs(a-b) < 0.01`
+- [x] 2.3 RED: `evaluator-exact.test.ts` — whitespace trimming, case insensitivity (spec: §Type-Specific Matching)
+- [x] 2.4 GREEN: `src/domain/evaluator/exact.ts` — trimmed lowercase comparison
+- [x] 2.5 RED: `evaluator-boolean.test.ts` — all aliases: `v`/`verdadero`/`true`/`sí` and `f`/`falso`/`false`/`no` (spec: §Boolean Aliases)
+- [x] 2.6 GREEN: `src/domain/evaluator/boolean.ts` — Spanish/English alias resolution
+- [x] 2.7 RED: `evaluator-index.test.ts` — dispatch to correct module; unsupported types → manual-review (spec: §Unsupported)
+- [x] 2.8 GREEN: `src/domain/evaluator/index.ts` — `evaluateAnswer()`, `EvaluationResult`, manual-review for free-response/graphical/matching/ordering
 
 ## Phase 3: Error Taxonomy + Catalog (TDD RED → GREEN)
 
