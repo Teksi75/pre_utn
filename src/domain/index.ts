@@ -66,6 +66,20 @@ export {
   queryByUnit,
 } from "./catalog/index";
 
+// ── Diagnostic ───────────────────────────────────────────────────────────────
+
+export type {
+  Attempt,
+  DiagnosticSelection,
+  SkillEstimate,
+  PracticeSuggestion,
+} from "./diagnostic/index";
+export {
+  selectBalancedSet,
+  estimateSkills,
+  suggestPractice,
+} from "./diagnostic/index";
+
 // ── Error Taxonomy ───────────────────────────────────────────────────────────
 
 export { loadTaxonomy, lookupTag, filterByUnit } from "./error-taxonomy/index";
