@@ -32,12 +32,12 @@ Chain strategy: pending
 
 ## Phase 2: Guided Practice UI (PR2)
 
-- [ ] 2.1 Create `src/app/practice/page.tsx` "use client" — local state for unit→skill→exercise→answer→feedback loop; uses `queryByUnit`, `queryBySkill`, `evaluateAnswer` from domain
-- [ ] 2.2 Create `src/components/practice/FocusSelector.tsx` — unit dropdown (1-6) + filtered skill list; excludes Física
-- [ ] 2.3 Create `src/components/practice/ExerciseCard.tsx` — shows prompt; never exposes expectedAnswer
-- [ ] 2.4 Create `src/components/practice/AnswerForm.tsx` — text input + submit; disables during evaluation
-- [ ] 2.5 Create `src/components/practice/FeedbackDisplay.tsx` — correctness + `lookupTag` description when errorTag present; never shows expectedAnswer
-- [ ] 2.6 Verify: `pnpm typecheck && pnpm build`; manual smoke /practice: select unit→skill, answer, see feedback
+- [x] 2.1 Create `src/app/practice/page.tsx` "use client" — local state for unit→skill→exercise→answer→feedback loop; uses `queryBySkill`, `evaluateAnswer` from domain
+- [x] 2.2 Create `src/components/practice/FocusSelector.tsx` — unit dropdown (1-6) + filtered skill list; excludes Física
+- [x] 2.3 Create `src/components/practice/ExerciseCard.tsx` — shows prompt; never exposes expectedAnswer
+- [x] 2.4 Create `src/components/practice/AnswerForm.tsx` — text input + submit; disables during evaluation
+- [x] 2.5 Create `src/components/practice/FeedbackDisplay.tsx` — correctness + `lookupTag` description when errorTag present; never shows expectedAnswer
+- [x] 2.6 Verify: `pnpm typecheck && pnpm build`; manual smoke /practice: select unit→skill, answer, see feedback
 
 ## Phase 3: Diagnostic Domain (PR3 — domain slice)
 
