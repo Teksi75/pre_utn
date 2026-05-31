@@ -51,19 +51,36 @@ Lectura mínima para agentes o colaboradores:
 - Repositorio GitHub privado inicializado.
 - GGA instalado como pre-commit hook con provider `opencode`.
 - Scaffold de app creado con Next.js, TypeScript, Tailwind, pnpm y Vitest.
-- Dominio base de Matemática implementado y archivado con SDD:
-  - modelos de habilidad, ejercicio, error y resultado;
-  - evaluador inicial para respuestas numéricas, exactas y booleanas;
-  - taxonomía inicial de errores;
-  - catálogo de 30 ejercicios pedagógicos originales, 5 por unidad.
-- Verificación actual: `pnpm run test:run` (141 tests), `pnpm run typecheck` y `pnpm run build` pasan.
+- **Primera experiencia usable completada** (change `first-usable-student-experience`):
+  - Dominio base de Matemática implementado y archivado con SDD
+  - Error tagging automático en evaluador (patrones de error comunes)
+  - Práctica guiada: selección de unidad/skill, ejercicios, feedback pedagógico
+  - Diagnóstico inicial: selección balanceada, estimación de skills, sugerencias de práctica
+  - Navegación home con links a `/practice` y `/diagnostic`
+- Verificación actual: `pnpm run test:run` (168 tests), `pnpm run typecheck` y `pnpm run build` pasan.
 - `material_canonico/` queda fuera del repo hasta definir política de uso y trazabilidad.
 
-## Próximo paso
+## Rutas disponibles
 
-Construir la primera experiencia usable sobre el dominio de **Matemática** ya implementado:
+| Ruta | Descripción |
+|------|-------------|
+| `/` | Home con navegación a práctica y diagnóstico |
+| `/practice` | Práctica guiada: seleccionar unidad/skill, resolver ejercicios, recibir feedback con error tags |
+| `/diagnostic` | Diagnóstico inicial: selección balanceada de ejercicios, estimación de skills débiles, sugerencias de práctica |
 
-1. Definir con SDD la primera experiencia de práctica o diagnóstico.
-2. Resolver la auto-asignación de `errorTag` cuando el patrón de respuesta lo permita.
-3. Diseñar feedback pedagógico sin exponer contenido canónico como contenido propio.
-4. Mantener TDD estricto en dominio, evaluadores, métricas y recomendaciones.
+## Cómo correr
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Abrir http://localhost:3000 en el navegador.
+
+## Próximos pasos
+
+1. **Revisión visual humana**: verificar que las rutas funcionan correctamente en navegador
+2. **Física (segunda fase)**: extender el dominio y catálogo a Física
+3. **Métricas avanzadas**: tracking de progreso, analytics, reportes para docentes
+4. **Persistencia Supabase**: guardar intentos, progreso, perfiles de usuario
+5. **Component tests**: testing de componentes React con React Testing Library
