@@ -41,9 +41,9 @@ Chain strategy: pending
 
 ## Phase 3: Diagnostic Domain (PR3 — domain slice)
 
-- [ ] 3.1 RED: Write `src/domain/__tests__/diagnostic.test.ts` — balanced selection across units, insufficient catalog report, provisional accuracy ranking, weak-area tag aggregation
-- [ ] 3.2 GREEN: Create `src/domain/diagnostic/index.ts` — `selectBalancedSet(catalog)`, `estimateSkills(attempts)`, `suggestPractice(estimates)` per design contracts
-- [ ] 3.3 Export diagnostic types and functions from `src/domain/index.ts`
+- [x] 3.1 RED: Write `src/domain/__tests__/diagnostic.test.ts` — balanced selection across units, insufficient catalog report, provisional accuracy ranking, weak-area tag aggregation
+- [x] 3.2 GREEN: Create `src/domain/diagnostic/index.ts` — `selectBalancedSet(catalog)`, `estimateSkills(attempts)`, `suggestPractice(estimates)` per design contracts
+- [x] 3.3 Export diagnostic types and functions from `src/domain/index.ts`
 
 ## Phase 4: Diagnostic UI (PR3 — UI slice)
 
