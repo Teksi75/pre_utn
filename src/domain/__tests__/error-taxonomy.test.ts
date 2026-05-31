@@ -7,7 +7,7 @@ describe("Error Taxonomy", () => {
     test("loads a taxonomy with at least 2 tags per unit", () => {
       const taxonomy = loadTaxonomy();
       expect(taxonomy).toBeInstanceOf(Array);
-      expect(taxonomy.length).toBeGreaterThanOrEqual(12); // 2 per unit × 6 units
+      expect(taxonomy.length).toBeGreaterThanOrEqual(16); // 2 per unit × 6 units + extras
       // Verify each unit has at least 2 tags
       for (let unit = 1; unit <= 6; unit++) {
         const unitTags = taxonomy.filter((t) => t.unit === unit);
@@ -33,6 +33,10 @@ describe("Error Taxonomy", () => {
       expect(tagsByUnit.get(1)?.map((tag) => tag.id)).toEqual([
         "u1_orden_operaciones",
         "u1_signo_racionalizacion",
+        "u1_error_intervalo",
+        "u1_extremo_inclusion",
+        "u1_propiedad_operacion",
+        "u1_agrupacion_signo",
       ]);
       expect(tagsByUnit.get(2)?.map((tag) => tag.id)).toEqual([
         "u2_aislamiento_variable",

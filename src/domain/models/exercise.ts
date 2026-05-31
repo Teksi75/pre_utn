@@ -35,6 +35,8 @@ export interface Exercise {
   readonly expectedAnswer: string;
   readonly commonErrorTags: readonly string[];
   readonly pedagogicalNote: string;
+  /** Selectable choices for multiple-choice exercises. Required when type is "multiple-choice". */
+  readonly options?: readonly string[];
 }
 
 /** Validation error with field and message. */
@@ -111,6 +113,16 @@ export function validateExercise(
 
   if (!input.expectedAnswer || input.expectedAnswer.trim().length === 0) {
     return err({ field: "expectedAnswer", message: "expectedAnswer is required and must be non-empty" });
+  }
+
+  // Validate options for multiple-choice exercises
+  if (input.type === "multiple-choice") {
+    if (!input.options || input.options.length < 2) {
+      return err({ field: "options", message: "multiple-choice exercises require at least 2 options" });
+    }
+    if (!input.options.includes(input.expectedAnswer)) {
+      return err({ field: "expectedAnswer", message: "expectedAnswer must be one of the options for multiple-choice exercises" });
+    }
   }
 
   return ok(input);

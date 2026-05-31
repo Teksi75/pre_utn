@@ -1,0 +1,113 @@
+[
+  {
+    "id": "theory-reales-operaciones",
+    "skillId": "mat.u1.reales_operaciones",
+    "concepts": [
+      {
+        "id": "concept-cerradura",
+        "title": "Cerradura de los reales",
+        "body": "El conjunto de los números reales es cerrado bajo suma, resta, multiplicación y división (excepto división por cero). Esto significa que al operar dos reales, el resultado siempre es un real."
+      },
+      {
+        "id": "concept-conmutatividad",
+        "title": "Propiedades conmutativa y asociativa",
+        "body": "Conmutatividad: a + b = b + a y a × b = b × a. Asociatividad: (a + b) + c = a + (b + c) y (a × b) × c = a × (b × c). Estas propiedades permiten reorganizar términos para simplificar cálculos."
+      },
+      {
+        "id": "concept-distributiva",
+        "title": "Propiedad distributiva",
+        "body": "a × (b + c) = a × b + a × c. La distributiva conecta multiplicación con suma. Error común: aplicar a(b + c) = ab + c en lugar de ab + ac."
+      },
+      {
+        "id": "concept-orden",
+        "title": "Orden de operaciones (PEMDAS)",
+        "body": "El orden correcto es: Paréntesis, Exponentes, Multiplicación y División (izq. a der.), Suma y Resta (izq. a der.). Multiplicar antes de sumar: 2 + 3 × 4 = 2 + 12 = 14, no (2+3) × 4 = 20."
+      }
+    ],
+    "notation": [
+      "a + b, a − b, a × b, a ÷ b (o a/b)",
+      "−a para el opuesto de a",
+      "|a| para el valor absoluto de a"
+    ],
+    "commonMistakes": [
+      "Sumar antes que multiplicar: 2 + 3 × 4 ≠ 20",
+      "Cambiar signo al agrupar: 5 − 3 + 2 ≠ 5 − (3 + 2)",
+      "Distribuir mal: −(2 + 3) ≠ −2 + 3"
+    ],
+    "practicePrompts": [
+      "Calcula 2 + 3 × 4 respetando el orden de operaciones",
+      "Simplifica −(2 + 3) usando la propiedad del opuesto",
+      "Aplica distributiva: 3 × (4 + 5)"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.1 Operaciones con números reales",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar propiedades de operaciones con números reales: cerradura, conmutatividad, asociatividad, distributiva, y orden de operaciones"
+      },
+      {
+        "path": "material_canonico/Matemática/RESOLUCIÓN DE EJERCICIOS SEMINARIO UNIVERSITARIO MATEMÁTICA.pdf",
+        "section": "Ejercicios de operaciones con reales",
+        "sourceUse": "reinforcement",
+        "pedagogicalIntent": "Reforzar la aplicación correcta del orden de operaciones con ejercicios de complejidad creciente"
+      }
+    ]
+  },
+  {
+    "id": "theory-intervalos",
+    "skillId": "mat.u1.intervalos",
+    "concepts": [
+      {
+        "id": "concept-intervalo-definicion",
+        "title": "¿Qué es un intervalo?",
+        "body": "Un intervalo es un conjunto de números reales comprendidos entre dos extremos. Puede ser abierto ( extremos no incluidos), cerrado (extremos incluidos) o semiabierto."
+      },
+      {
+        "id": "concept-notacion",
+        "title": "Notación de intervalos",
+        "body": "(a, b) = {x ∈ ℝ : a < x < b} abierto. [a, b] = {x ∈ ℝ : a ≤ x ≤ b} cerrado. (a, b] y [a, b) son semiabiertos. Para infinitos siempre se usa paréntesis: (−∞, b], [a, ∞)."
+      },
+      {
+        "id": "concept-union-interseccion",
+        "title": "Unión e intersección de intervalos",
+        "body": "Unión (A ∪ B): todos los elementos de A o B. Intersección (A ∩ B): elementos comunes. Ejemplo: [1,3] ∪ [3,5] = [1,5] (el 3 está incluido en ambos). [1,3] ∩ [3,5] = {3}."
+      },
+      {
+        "id": "concept-inclusion-grafica",
+        "title": "Representación gráfica",
+        "body": "En la recta numérica: • extremo incluido se marca con punto cerrado (●), • extremo excluido con punto abierto (○). La sombra indica los valores del intervalo."
+      }
+    ],
+    "notation": [
+      "(a, b) intervalo abierto",
+      "[a, b] intervalo cerrado",
+      "(a, b] y [a, b) intervalos semiabiertos",
+      "(−∞, a), (a, ∞) para extremo infinito"
+    ],
+    "commonMistakes": [
+      "Usar corchetes con infinito: [−∞, a] es incorrecto, siempre (−∞, a)",
+      "Confundir x > 3 con [3,∞): debe ser (3,∞)",
+      "Unir [1,3] y [3,5] como [1,5) cuando el 3 está incluido en ambos"
+    ],
+    "practicePrompts": [
+      "Escribe en notación de intervalo: todos los reales mayores que 3",
+      "¿Cuál es la intersección de [1,4] y [3,6]?",
+      "Representa (−2, 5] en la recta numérica"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.3 Intervalos y notación",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar la notación de intervalos, inclusión de extremos y representación gráfica en la recta numérica"
+      },
+      {
+        "path": "material_canonico/Matemática/Resultados_matemática_de la guía unidad 1 .pdf",
+        "section": "Resolución de ejercicios de intervalos",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Verificar procedimientos de unión, intersección y representación de intervalos con ejercicios resueltos"
+      }
+    ]
+  }
+]

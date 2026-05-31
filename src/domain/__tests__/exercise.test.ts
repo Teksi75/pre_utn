@@ -55,6 +55,9 @@ describe("Exercise validation", () => {
           ...validExercise,
           id: `ex.u1.reales_operaciones.${index + 1}` as Exercise["id"],
           type: exerciseType,
+          ...(exerciseType === "multiple-choice"
+            ? { options: ["13", "10", "16", "11"] }
+            : {}),
         };
         const result = validateExercise(exercise, knownSkills, knownErrorTags);
         expect(result.ok).toBe(true);

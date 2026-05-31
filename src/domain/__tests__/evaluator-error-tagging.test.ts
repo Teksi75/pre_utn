@@ -35,6 +35,52 @@ describe("Error tagging — tagError()", () => {
     });
   });
 
+  describe("order-of-operations pattern", () => {
+    test("detects sum-before-multiply error when declared", () => {
+      // Exercise: 2 + 3 × 4 = 14, student computes (2+3)×4 = 20
+      const exercise = makeExercise({
+        prompt: "Calcula 2 + 3 × 4",
+        expectedAnswer: "14",
+        commonErrorTags: ["u1_orden_operaciones"],
+      });
+      const tag = tagError(exercise, "20");
+      expect(tag).toBe("u1_orden_operaciones");
+    });
+
+    test("no tag when exercise does not declare the pattern tag", () => {
+      const exercise = makeExercise({
+        prompt: "Calcula 2 + 3 × 4",
+        expectedAnswer: "14",
+        commonErrorTags: ["u1_signo_racionalizacion"],
+      });
+      const tag = tagError(exercise, "20");
+      expect(tag).toBeUndefined();
+    });
+  });
+
+  describe("interval endpoint-inclusion pattern", () => {
+    test("detects endpoint inclusion error when declared", () => {
+      // Exercise expects [3,7] but student writes (3,7) — endpoint type mismatch
+      const exercise = makeExercise({
+        type: "symbolic",
+        expectedAnswer: "[3,7]",
+        commonErrorTags: ["u1_extremo_inclusion"],
+      });
+      const tag = tagError(exercise, "(3,7)");
+      expect(tag).toBe("u1_extremo_inclusion");
+    });
+
+    test("no tag for interval when exercise does not declare the tag", () => {
+      const exercise = makeExercise({
+        type: "symbolic",
+        expectedAnswer: "[3,7]",
+        commonErrorTags: [],
+      });
+      const tag = tagError(exercise, "(3,7)");
+      expect(tag).toBeUndefined();
+    });
+  });
+
   describe("undeclared-tag no-match", () => {
     test("no tag returned when exercise does not declare the matching tag", () => {
       const exercise = makeExercise({

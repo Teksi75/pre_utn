@@ -1,0 +1,91 @@
+[
+  {
+    "id": "example-reales-operaciones-1",
+    "skillId": "mat.u1.reales_operaciones",
+    "problem": "Calcular: 2 + 3 × 4 − 1",
+    "steps": [
+      { "order": 1, "explanation": "Se identifican las operaciones presentes: suma, multiplicación y resta. Según la jerarquía de operaciones, la multiplicación tiene prioridad sobre la suma y la resta." },
+      { "order": 2, "explanation": "Se evalúa la multiplicación: 3 × 4 = 12. La expresión se reduce a 2 + 12 − 1." },
+      { "order": 3, "explanation": "Resta evaluar suma y resta de izquierda a derecha, ya que tienen igual jerarquía: 2 + 12 = 14." },
+      { "order": 4, "explanation": "Finalmente: 14 − 1 = 13." }
+    ],
+    "finalAnswer": "13",
+    "pedagogicalNote": "La jerarquía de operaciones establece: paréntesis, potencias y raíces, multiplicación y división (izquierda a derecha), suma y resta (izquierda a derecha). Evaluar fuera de este orden produce resultados incorrectos.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/RESOLUCIÓN DE EJERCICIOS SEMINARIO UNIVERSITARIO MATEMÁTICA.pdf",
+        "section": "Ejercicios de operaciones combinadas",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar paso a paso la aplicación correcta del orden de operaciones"
+      }
+    ]
+  },
+  {
+    "id": "example-reales-operaciones-2",
+    "skillId": "mat.u1.reales_operaciones",
+    "problem": "Simplificar: −(2 + 3) + 4 × (1 − 3)",
+    "steps": [
+      { "order": 1, "explanation": "Se resuelven primero las expresiones dentro de paréntesis: (2 + 3) = 5 y (1 − 3) = −2. La expresión queda −5 + 4 × (−2)." },
+      { "order": 2, "explanation": "El signo negativo delante del paréntesis equivale a multiplicar por −1: −(2 + 3) = −1 × 5 = −5." },
+      { "order": 3, "explanation": "Se evalúa la multiplicación: 4 × (−2) = −8. Producto de positivo por negativo da negativo." },
+      { "order": 4, "explanation": "Se suman los resultados: −5 + (−8) = −13." }
+    ],
+    "finalAnswer": "−13",
+    "pedagogicalNote": "El opuesto de una suma distribuye el signo negativo a cada término: −(a + b) = −a − b. Confundir −(a + b) con −a + b es un error frecuente que invierte el signo del segundo término.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.1 Propiedad distributiva y signos",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar la correcta aplicación del signo negativo sobre paréntesis y la distributiva"
+      }
+    ]
+  },
+  {
+    "id": "example-intervalos-1",
+    "skillId": "mat.u1.intervalos",
+    "problem": "Expresar en notación de intervalo: {x ∈ ℝ : x > 3}",
+    "steps": [
+      { "order": 1, "explanation": "La condición x > 3 define una desigualdad estricta: el extremo 3 no pertenece al conjunto. En notación de intervalo, esto se indica con paréntesis en el extremo inferior." },
+      { "order": 2, "explanation": "No existe cota superior: el conjunto se extiende indefinidamente hacia la derecha de la recta real. Se representa con el símbolo ∞." },
+      { "order": 3, "explanation": "El símbolo ∞ no es un número real; siempre se escribe con paréntesis, ya que no puede ser un extremo incluido. Resultado: (3, ∞)." }
+    ],
+    "finalAnswer": "(3, ∞)",
+    "pedagogicalNote": "Regla general: desigualdad estricta (> o <) → paréntesis en el extremo; desigualdad no estricta (≥ o ≤) → corchete. El infinito siempre se acompaña con paréntesis porque no es un valor alcanzable.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.3 Notación de intervalos",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar la traducción de desigualdades a notación de intervalos, con énfasis en inclusión/exclusión de extremos"
+      }
+    ]
+  },
+  {
+    "id": "example-intervalos-2",
+    "skillId": "mat.u1.intervalos",
+    "problem": "Determinar [1, 4] ∪ [3, 6]",
+    "steps": [
+      { "order": 1, "explanation": "Se representan ambos intervalos en la recta real: [1, 4] = {x ∈ ℝ : 1 ≤ x ≤ 4} y [3, 6] = {x ∈ ℝ : 3 ≤ x ≤ 6}. Ambos extremos de cada intervalo son incluidos (corchetes)." },
+      { "order": 2, "explanation": "Se identifica la superposición: los intervalos se solapan en [3, 4], ya que 3 ≤ 4. La unión de intervalos superpuestos es un único intervalo continuo." },
+      { "order": 3, "explanation": "El extremo inferior de la unión es el menor de los extremos inferiores: min(1, 3) = 1. El extremo superior es el mayor: max(4, 6) = 6." },
+      { "order": 4, "explanation": "Verificación de inclusión de extremos: 1 ∈ [1, 4] y 6 ∈ [3, 6], por lo que ambos extremos se incluyen en la unión. Resultado: [1, 6]." }
+    ],
+    "finalAnswer": "[1, 6]",
+    "pedagogicalNote": "La unión de intervalos cerrados superpuestos produce un intervalo cerrado cuyos extremos son el mínimo de los inferiores y el máximo de los superiores. Si los intervalos no se superponen ni son adyacentes, la unión no se puede expresar como un solo intervalo.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.3 Unión e intersección de intervalos",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar el procedimiento de unión de intervalos con superposición, verificando inclusión de extremos"
+      },
+      {
+        "path": "material_canonico/Matemática/Resultados_matemática_de la guía unidad 1 .pdf",
+        "section": "Resolución de ejercicios de intervalos",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Verificar resultado con ejercicios canónicos de la guía"
+      }
+    ]
+  }
+]

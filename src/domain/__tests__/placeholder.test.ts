@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import { PROJECT_PHASE, PROJECT_SCOPE } from "../index";
 
-describe("Domain barrel — scaffold stage", () => {
+describe("Domain barrel — pilot stage", () => {
   test("barrel is importable without side effects", () => {
     // Proves the domain index can be imported at module resolution time
     // without throwing. This is the scaffold-stage smoke gate: the barrel
@@ -9,8 +9,8 @@ describe("Domain barrel — scaffold stage", () => {
     expect(PROJECT_PHASE).toBeDefined();
   });
 
-  test("PROJECT_PHASE is 'scaffold' — math features not yet implemented", () => {
-    expect(PROJECT_PHASE).toBe("scaffold");
+  test("PROJECT_PHASE is 'pilot' — Unit 1 content and guided practice active", () => {
+    expect(PROJECT_PHASE).toBe("pilot");
   });
 
   test("PROJECT_SCOPE is 'matematica' — first subject, Física deferred", () => {

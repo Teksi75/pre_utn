@@ -32,6 +32,46 @@ const TAXONOMY: readonly ErrorTag[] = [
       "Olvidar cambiar signo al multiplicar por conjugado",
     ],
   },
+  {
+    id: "u1_error_intervalo",
+    unit: 1,
+    description:
+      "Error al evaluar operaciones con intervalos: confunde notación de intervalo abierto/cerrado o aplica operaciones incorrectamente sobre extremos.",
+    examples: [
+      "Unir [1,3] y [3,5] como [1,5) en vez de [1,5]",
+      "Sumar extremos de [2,4] y [1,3] como [3,7] sin considerar intersección",
+    ],
+  },
+  {
+    id: "u1_extremo_inclusion",
+    unit: 1,
+    description:
+      "Error al determinar inclusión de extremos en intervalos: usa paréntesis cuando debería usar corchetes o viceversa.",
+    examples: [
+      "Escribir x > 3 como [3,∞) en vez de (3,∞)",
+      "Escribir x ≤ 5 como (−∞,5) en vez de (−∞,5]",
+    ],
+  },
+  {
+    id: "u1_propiedad_operacion",
+    unit: 1,
+    description:
+      "Error al aplicar propiedades de operaciones con reales: distribuye mal o confunde conmutatividad con asociatividad.",
+    examples: [
+      "Aplicar a(b + c) = ab + c en vez de ab + ac",
+      "Calcular -(2 + 3) como -2 + 3 = 1 en vez de -5",
+    ],
+  },
+  {
+    id: "u1_agrupacion_signo",
+    unit: 1,
+    description:
+      "Error al agrupar términos con signos: pierde o cambia signo al reorganizar sumas y restas.",
+    examples: [
+      "Calcular 5 - 3 + 2 como 5 - (3 + 2) = 0 en vez de 4",
+      "Reordenar 7 - 4 + 1 como 7 + 1 - 4 y olvidar que el signo original era negativo",
+    ],
+  },
 
   // Unit 2: Equations and systems
   {

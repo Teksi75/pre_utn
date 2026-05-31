@@ -7,7 +7,45 @@
     "prompt": "Calcula 2 + 3 × 4",
     "expectedAnswer": "14",
     "commonErrorTags": ["u1_orden_operaciones"],
-    "pedagogicalNote": "Verifica el orden de operaciones: multiplicaciones antes que sumas."
+    "pedagogicalNote": "Verifica el orden de operaciones: multiplicaciones antes que sumas.",
+    "relatedTheoryIds": ["theory-reales-operaciones"],
+    "relatedExampleIds": ["example-reales-operaciones-1"]
+  },
+  {
+    "id": "ex.u1.reales_operaciones.2",
+    "skillId": "mat.u1.reales_operaciones",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Calcula 5 − 3 × (2 + 1)",
+    "expectedAnswer": "−4",
+    "commonErrorTags": ["u1_orden_operaciones", "u1_propiedad_operacion"],
+    "pedagogicalNote": "Primero resolvé dentro de paréntesis, luego multiplicación, y finalmente resta.",
+    "relatedTheoryIds": ["theory-reales-operaciones"],
+    "relatedExampleIds": ["example-reales-operaciones-1"]
+  },
+  {
+    "id": "ex.u1.reales_operaciones.3",
+    "skillId": "mat.u1.reales_operaciones",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Simplifica: −(4 − 7) + 2 × 3",
+    "expectedAnswer": "9",
+    "commonErrorTags": ["u1_agrupacion_signo", "u1_orden_operaciones"],
+    "pedagogicalNote": "Cuidado con el signo menos fuera del paréntesis: distribuilo a todos los términos dentro.",
+    "relatedTheoryIds": ["theory-reales-operaciones"],
+    "relatedExampleIds": ["example-reales-operaciones-2"]
+  },
+  {
+    "id": "ex.u1.reales_operaciones.4",
+    "skillId": "mat.u1.reales_operaciones",
+    "type": "numerical",
+    "difficulty": 3,
+    "prompt": "Calcula 3 × (−2 + 5) − 4 ÷ 2",
+    "expectedAnswer": "7",
+    "commonErrorTags": ["u1_propiedad_operacion", "u1_orden_operaciones"],
+    "pedagogicalNote": "Aplicá paréntesis primero, luego multiplicación y división de izquierda a derecha, y finalmente resta.",
+    "relatedTheoryIds": ["theory-reales-operaciones"],
+    "relatedExampleIds": ["example-reales-operaciones-1", "example-reales-operaciones-2"]
   },
   {
     "id": "ex.u1.potencias_raices.1",
@@ -36,8 +74,50 @@
     "difficulty": 2,
     "prompt": "¿Qué intervalo representa x > 3?",
     "expectedAnswer": "(3, ∞)",
-    "commonErrorTags": [],
-    "pedagogicalNote": "Interpretación de desigualdades estrictas en notación de intervalos."
+    "options": ["(3, ∞)", "[3, ∞)", "(3, ∞]", "[3, ∞]"],
+    "commonErrorTags": ["u1_extremo_inclusion"],
+    "pedagogicalNote": "Interpretación de desigualdades estrictas en notación de intervalos.",
+    "relatedTheoryIds": ["theory-intervalos"],
+    "relatedExampleIds": ["example-intervalos-1"]
+  },
+  {
+    "id": "ex.u1.intervalos.2",
+    "skillId": "mat.u1.intervalos",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "¿Qué intervalo representa x ≥ −1?",
+    "expectedAnswer": "[−1, ∞)",
+    "options": ["[−1, ∞)", "(−1, ∞)", "[−1, ∞]", "(−1, ∞]"],
+    "commonErrorTags": ["u1_extremo_inclusion"],
+    "pedagogicalNote": "La desigualdad incluyente (≥) usa corchete en el extremo finito.",
+    "relatedTheoryIds": ["theory-intervalos"],
+    "relatedExampleIds": ["example-intervalos-1"]
+  },
+  {
+    "id": "ex.u1.intervalos.3",
+    "skillId": "mat.u1.intervalos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "¿Cuál es la intersección de [1, 4] y [3, 6]?",
+    "expectedAnswer": "[3, 4]",
+    "options": ["[3, 4]", "(3, 4)", "[1, 6]", "[3, 6]"],
+    "commonErrorTags": ["u1_error_intervalo"],
+    "pedagogicalNote": "La intersección toma los valores comunes: desde el mayor de los extremos inferiores hasta el menor de los superiores.",
+    "relatedTheoryIds": ["theory-intervalos"],
+    "relatedExampleIds": ["example-intervalos-2"]
+  },
+  {
+    "id": "ex.u1.intervalos.4",
+    "skillId": "mat.u1.intervalos",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "¿Cuál es la unión de (−∞, 2] y [1, ∞)?",
+    "expectedAnswer": "(−∞, ∞)",
+    "options": ["(−∞, ∞)", "[−∞, ∞]", "(−∞, ∞]", "[−∞, ∞)"],
+    "commonErrorTags": ["u1_error_intervalo", "u1_extremo_inclusion"],
+    "pedagogicalNote": "Cuando dos intervalos se superponen y cubren toda la recta, la unión es todo el conjunto de los reales.",
+    "relatedTheoryIds": ["theory-intervalos"],
+    "relatedExampleIds": ["example-intervalos-2"]
   },
   {
     "id": "ex.u1.valor_absoluto.1",

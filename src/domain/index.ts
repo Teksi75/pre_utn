@@ -7,8 +7,8 @@
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-/** Current project phase — scaffold only; math features not yet implemented. */
-export const PROJECT_PHASE = "scaffold" as const;
+/** Current project phase — pilot with Unit 1 content, domain models, and guided practice. */
+export const PROJECT_PHASE = "pilot" as const;
 
 /** Project scope — first subject is Matemática; Física deferred to phase 2. */
 export const PROJECT_SCOPE = "matematica" as const;
@@ -66,6 +66,16 @@ export {
   queryByUnit,
 } from "./catalog/index";
 
+export type { ExerciseLinkage } from "./catalog/content-loaders";
+export {
+  loadTheoryContent,
+  loadExampleContent,
+  loadFeedbackContent,
+  pilotExercisesWithLinks,
+} from "./catalog/content-loaders";
+
+export { isSkillReady, getSkillComponents } from "./catalog/readiness";
+
 // ── Diagnostic ───────────────────────────────────────────────────────────────
 
 export type {
@@ -83,3 +93,45 @@ export {
 // ── Error Taxonomy ───────────────────────────────────────────────────────────
 
 export { loadTaxonomy, lookupTag, filterByUnit } from "./error-taxonomy/index";
+
+// ── Theory ──────────────────────────────────────────────────────────────────
+
+export type {
+  SourceUse,
+  CanonicalTrace,
+  ConceptBlock,
+  TheoryNode,
+  ValidationError as TheoryValidationError,
+} from "./models/theory";
+export { validateTheoryNode } from "./models/theory";
+
+// ── Worked Example ──────────────────────────────────────────────────────────
+
+export type {
+  SolutionStep,
+  WorkedExample,
+  ValidationError as WorkedExampleValidationError,
+} from "./models/worked-example";
+export { validateWorkedExample } from "./models/worked-example";
+
+// ── Feedback ────────────────────────────────────────────────────────────────
+
+export type { FeedbackMapping, Feedback } from "./feedback/index";
+export { generateFeedback } from "./feedback/index";
+
+// ── Progress ────────────────────────────────────────────────────────────────
+
+export type {
+  PracticeAttempt,
+  PracticeProgress,
+  Trend,
+} from "./progress/index";
+export { computeAccuracy, computeTrend } from "./progress/index";
+
+// ── Readiness ───────────────────────────────────────────────────────────────
+
+export type {
+  ReadinessComponent,
+  ReadinessResult,
+} from "./readiness/index";
+export { computeReadiness } from "./readiness/index";
