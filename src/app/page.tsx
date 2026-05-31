@@ -17,6 +17,17 @@ export default function Home() {
         aria-label="Acciones principales"
       >
         <Link
+          href="/learn"
+          className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)]"
+        >
+          <span className="text-[var(--text-lg)] font-semibold text-brand-900 group-hover:text-accent-600 transition-colors">
+            Aprender
+          </span>
+          <span className="block text-sm text-brand-500 mt-2 leading-[var(--leading-relaxed)]">
+            Estudiá la teoría y ejemplos antes de practicar.
+          </span>
+        </Link>
+        <Link
           href="/practice"
           className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)]"
         >
@@ -29,7 +40,7 @@ export default function Home() {
         </Link>
         <Link
           href="/diagnostic"
-          className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)]"
+          className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)] md:col-start-1 md:col-end-3"
         >
           <span className="text-[var(--text-lg)] font-semibold text-brand-900 group-hover:text-accent-600 transition-colors">
             Diagnóstico

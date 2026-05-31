@@ -9,6 +9,7 @@ import {
   UNIT_5_SKILLS,
   UNIT_6_SKILLS,
 } from "@/domain/models/skill-catalog";
+import { isSkillReady } from "@/domain/catalog/readiness";
 import type { SkillId } from "@/domain/models/skill";
 
 /** Derive a human-readable label from a skill ID slug. */
@@ -47,12 +48,24 @@ export function FocusSelector({
     return SKILLS_BY_UNIT[selectedUnit] ?? [];
   }, [selectedUnit]);
 
+  const readinessMap = useMemo(() => {
+    const map = new Map<SkillId, { ready: boolean; missing: readonly string[] }>();
+    for (const skills of Object.values(SKILLS_BY_UNIT)) {
+      for (const skillId of skills) {
+        map.set(skillId, isSkillReady(skillId));
+      }
+    }
+    return map;
+  }, []);
+
   function handleUnitChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const value = e.target.value;
     setSelectedUnit(value === "" ? null : Number(value));
   }
 
   function handleSkillClick(skillId: SkillId) {
+    const readiness = readinessMap.get(skillId);
+    if (!readiness?.ready) return;
     onSkillSelect(skillId);
   }
 
@@ -75,7 +88,7 @@ export function FocusSelector({
         case "Enter":
         case " ":
           e.preventDefault();
-          onSkillSelect(skills[index]);
+          handleSkillClick(skills[index]);
           return;
         case "Escape":
           e.preventDefault();
@@ -87,7 +100,7 @@ export function FocusSelector({
         skillRefs.current[nextIndex]?.focus();
       }
     },
-    [skillsForUnit, onSkillSelect]
+    [skillsForUnit, handleSkillClick]
   );
 
   return (
@@ -120,23 +133,43 @@ export function FocusSelector({
             Habilidad
           </label>
           <div className="grid gap-2" role="listbox" aria-label="Habilidades">
-            {skillsForUnit.map((skillId, index) => (
-              <button
-                key={skillId}
-                ref={(el) => { skillRefs.current[index] = el; }}
-                onClick={() => handleSkillClick(skillId)}
-                onKeyDown={(e) => handleSkillKeyDown(e, index)}
-                role="option"
-                aria-selected={selectedSkillId === skillId}
-                className={`w-full text-left px-4 py-3 text-sm rounded-[var(--radius-card)] border transition-all duration-[var(--duration-fast)] min-h-[44px] ${
-                  selectedSkillId === skillId
-                    ? "bg-accent-500/10 border-accent-500 text-brand-900 font-medium shadow-[var(--shadow-card)]"
-                    : "bg-white border-brand-200 text-brand-700 hover:border-brand-400 hover:shadow-[var(--shadow-card)]"
-                }`}
-              >
-                {skillLabel(skillId)}
-              </button>
-            ))}
+            {skillsForUnit.map((skillId, index) => {
+              const readiness = readinessMap.get(skillId);
+              const isReady = readiness?.ready ?? false;
+
+              return (
+                <button
+                  key={skillId}
+                  ref={(el) => { skillRefs.current[index] = el; }}
+                  onClick={() => handleSkillClick(skillId)}
+                  onKeyDown={(e) => handleSkillKeyDown(e, index)}
+                  disabled={!isReady}
+                  role="option"
+                  aria-selected={selectedSkillId === skillId}
+                  aria-disabled={!isReady}
+                  className={`w-full text-left px-4 py-3 text-sm rounded-[var(--radius-card)] border transition-all duration-[var(--duration-fast)] min-h-[44px] ${
+                    selectedSkillId === skillId
+                      ? "bg-accent-500/10 border-accent-500 text-brand-900 font-medium shadow-[var(--shadow-card)]"
+                      : isReady
+                        ? "bg-white border-brand-200 text-brand-700 hover:border-brand-400 hover:shadow-[var(--shadow-card)]"
+                        : "bg-brand-50 border-brand-100 text-brand-400 cursor-not-allowed"
+                  }`}
+                >
+                  <span className="flex items-center justify-between">
+                    {skillLabel(skillId)}
+                    {isReady ? (
+                      <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full font-medium">
+                        Disponible
+                      </span>
+                    ) : (
+                      <span className="text-xs text-brand-400 bg-brand-100 px-2 py-0.5 rounded-full">
+                        Próximamente
+                      </span>
+                    )}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
