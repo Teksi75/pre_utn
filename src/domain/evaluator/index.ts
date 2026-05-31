@@ -8,6 +8,7 @@ import type { Exercise } from "../models/exercise";
 import { evaluateNumeric } from "./numeric";
 import { evaluateExact } from "./exact";
 import { evaluateBoolean } from "./boolean";
+import { tagError } from "./error-tagging";
 
 /** The result of evaluating a student's answer. */
 export interface EvaluationResult {
@@ -49,20 +50,34 @@ export function evaluateAnswer(
   }
 
   // Dispatch to type-specific evaluator
+  let result: EvaluationResult;
   switch (exercise.type) {
     case "numerical":
-      return evaluateNumeric(exercise.expectedAnswer, userAnswer);
+      result = evaluateNumeric(exercise.expectedAnswer, userAnswer);
+      break;
 
     case "true-false":
-      return evaluateBoolean(exercise.expectedAnswer, userAnswer);
+      result = evaluateBoolean(exercise.expectedAnswer, userAnswer);
+      break;
 
     case "symbolic":
     case "fill-blank":
     case "multiple-choice":
-      return evaluateExact(exercise.expectedAnswer, userAnswer);
+      result = evaluateExact(exercise.expectedAnswer, userAnswer);
+      break;
 
     default:
       // Exhaustiveness guard — should never reach here
       return UNSUPPORTED_TYPE_RESULT;
   }
+
+  // For incorrect supported answers, attempt error-tag assignment
+  if (!result.correct) {
+    const errorTag = tagError(exercise, userAnswer);
+    if (errorTag) {
+      return { ...result, errorTag };
+    }
+  }
+
+  return result;
 }
