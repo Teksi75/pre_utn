@@ -47,10 +47,10 @@ Chain strategy: pending
 
 ## Phase 4: Diagnostic UI (PR3 — UI slice)
 
-- [ ] 4.1 Create `src/app/diagnostic/page.tsx` "use client" — runs balanced selection, collects answers, computes estimates, shows results
-- [ ] 4.2 Create `src/components/diagnostic/DiagnosticQuestion.tsx` — exercise prompt + answer input
-- [ ] 4.3 Create `src/components/diagnostic/ResultsDisplay.tsx` — ranked skill estimates + practice links for weakest skills
+- [x] 4.1 Create `src/app/diagnostic/page.tsx` "use client" — runs balanced selection, collects answers, computes estimates, shows results
+- [x] 4.2 Create `src/components/diagnostic/DiagnosticQuestion.tsx` — exercise prompt + answer input
+- [x] 4.3 Create `src/components/diagnostic/ResultsDisplay.tsx` — ranked skill estimates + practice links for weakest skills
 
 ## Phase 5: Wiring
 
-- [ ] 5.1 Update `src/app/page.tsx` — add nav links to /practice and /diagnostic
+- [x] 5.1 Update `src/app/page.tsx` — add nav links to /practice and /diagnostic
