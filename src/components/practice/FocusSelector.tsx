@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import {
   UNIT_1_SKILLS,
   UNIT_2_SKILLS,
@@ -40,6 +40,7 @@ export function FocusSelector({
   selectedSkillId,
 }: FocusSelectorProps) {
   const [selectedUnit, setSelectedUnit] = useState<number | null>(null);
+  const skillRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const skillsForUnit = useMemo(() => {
     if (selectedUnit === null) return [];
@@ -55,12 +56,46 @@ export function FocusSelector({
     onSkillSelect(skillId);
   }
 
+  const handleSkillKeyDown = useCallback(
+    (e: React.KeyboardEvent, index: number) => {
+      const skills = skillsForUnit;
+      let nextIndex: number | null = null;
+
+      switch (e.key) {
+        case "ArrowDown":
+        case "ArrowRight":
+          e.preventDefault();
+          nextIndex = (index + 1) % skills.length;
+          break;
+        case "ArrowUp":
+        case "ArrowLeft":
+          e.preventDefault();
+          nextIndex = (index - 1 + skills.length) % skills.length;
+          break;
+        case "Enter":
+        case " ":
+          e.preventDefault();
+          onSkillSelect(skills[index]);
+          return;
+        case "Escape":
+          e.preventDefault();
+          setSelectedUnit(null);
+          return;
+      }
+
+      if (nextIndex !== null) {
+        skillRefs.current[nextIndex]?.focus();
+      }
+    },
+    [skillsForUnit, onSkillSelect]
+  );
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div>
         <label
           htmlFor="unit-select"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-semibold text-brand-700 mb-2"
         >
           Unidad
         </label>
@@ -68,7 +103,7 @@ export function FocusSelector({
           id="unit-select"
           value={selectedUnit ?? ""}
           onChange={handleUnitChange}
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
+          className="w-full border border-brand-300 rounded-[var(--radius-button)] px-3 py-2.5 text-sm bg-white text-brand-900 min-h-[44px] focus-visible:shadow-[var(--ring-focus)]"
         >
           <option value="">Seleccionar unidad...</option>
           {UNITS.map((unit) => (
@@ -81,18 +116,22 @@ export function FocusSelector({
 
       {selectedUnit !== null && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-brand-700 mb-2">
             Habilidad
           </label>
-          <div className="space-y-1">
-            {skillsForUnit.map((skillId) => (
+          <div className="grid gap-2" role="listbox" aria-label="Habilidades">
+            {skillsForUnit.map((skillId, index) => (
               <button
                 key={skillId}
+                ref={(el) => { skillRefs.current[index] = el; }}
                 onClick={() => handleSkillClick(skillId)}
-                className={`w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${
+                onKeyDown={(e) => handleSkillKeyDown(e, index)}
+                role="option"
+                aria-selected={selectedSkillId === skillId}
+                className={`w-full text-left px-4 py-3 text-sm rounded-[var(--radius-card)] border transition-all duration-[var(--duration-fast)] min-h-[44px] ${
                   selectedSkillId === skillId
-                    ? "bg-blue-100 text-blue-800 border border-blue-300"
-                    : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200"
+                    ? "bg-accent-500/10 border-accent-500 text-brand-900 font-medium shadow-[var(--shadow-card)]"
+                    : "bg-white border-brand-200 text-brand-700 hover:border-brand-400 hover:shadow-[var(--shadow-card)]"
                 }`}
               >
                 {skillLabel(skillId)}

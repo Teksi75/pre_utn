@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { Exercise } from "@/domain/models/exercise";
 
 interface DiagnosticQuestionProps {
@@ -23,6 +23,13 @@ export function DiagnosticQuestion({
   disabled,
 }: DiagnosticQuestionProps) {
   const [answer, setAnswer] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!disabled) {
+      inputRef.current?.focus();
+    }
+  }, [disabled, questionNumber]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,39 +42,47 @@ export function DiagnosticQuestion({
 
   return (
     <div className="space-y-4">
-      <div className="text-xs text-gray-500">
+      <div className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-600 bg-brand-100 px-2.5 py-1 rounded-[var(--radius-badge)]">
         Pregunta {questionNumber} de {totalQuestions}
       </div>
 
-      <div className="border border-gray-200 rounded-lg p-4 bg-white">
-        <div className="text-xs text-gray-500 mb-2">
-          {exercise.type} • Dificultad {exercise.difficulty}
+      <div className="shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-5 bg-white border border-brand-200">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="inline-block text-xs font-medium text-brand-600 bg-brand-100 px-2.5 py-1 rounded-[var(--radius-badge)]">
+            {exercise.type}
+          </span>
+          <span className="inline-block text-xs font-medium text-accent-600 bg-amber-50 px-2.5 py-1 rounded-[var(--radius-badge)]">
+            Dificultad {exercise.difficulty}
+          </span>
         </div>
-        <p className="text-lg text-gray-900">{exercise.prompt}</p>
+        <p className="text-[var(--text-lg)] text-brand-900 leading-[var(--leading-relaxed)]">
+          {exercise.prompt}
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
           <label
             htmlFor="diagnostic-answer"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-semibold text-brand-700 mb-1"
           >
             Tu respuesta
           </label>
           <input
+            ref={inputRef}
             id="diagnostic-answer"
             type="text"
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             disabled={disabled}
             placeholder="Escribí tu respuesta..."
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm disabled:bg-gray-100 disabled:text-gray-500"
+            className="w-full border border-brand-300 rounded-[var(--radius-button)] px-3 py-2.5 text-sm bg-white text-brand-900 min-h-[44px] disabled:bg-brand-100 disabled:text-brand-500 focus-visible:shadow-[var(--ring-focus)] transition-colors duration-[var(--duration-fast)]"
           />
         </div>
         <button
           type="submit"
           disabled={disabled || !answer.trim()}
-          className="w-full bg-blue-600 text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          className="w-full bg-brand-900 text-white px-4 py-2.5 text-sm font-medium rounded-[var(--radius-button)] hover:bg-brand-800 disabled:bg-brand-400 disabled:cursor-not-allowed min-h-[44px] transition-colors duration-[var(--duration-fast)] focus-visible:shadow-[var(--ring-focus)]"
         >
           {disabled ? "Evaluando..." : "Enviar respuesta"}
         </button>

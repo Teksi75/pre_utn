@@ -21,14 +21,16 @@ export function FeedbackDisplay({
 
   return (
     <div
-      className={`rounded-lg p-4 ${
+      role="status"
+      aria-live="polite"
+      className={`rounded-[var(--radius-card)] p-4 border ${
         correct
-          ? "bg-green-50 border border-green-200"
-          : "bg-red-50 border border-red-200"
+          ? "bg-green-50 border-green-300"
+          : "bg-red-50 border-red-300"
       }`}
     >
       <div
-        className={`font-medium ${
+        className={`font-semibold ${
           correct ? "text-green-800" : "text-red-800"
         }`}
       >
@@ -36,7 +38,7 @@ export function FeedbackDisplay({
       </div>
 
       {feedback && feedback !== "manual-review" && (
-        <p className="mt-2 text-sm text-gray-700">{feedback}</p>
+        <p className="mt-2 text-sm text-brand-700">{feedback}</p>
       )}
 
       {errorTagData && (
@@ -45,8 +47,8 @@ export function FeedbackDisplay({
           <p className="text-red-600">{errorTagData.description}</p>
           {errorTagData.examples.length > 0 && (
             <div className="mt-2">
-              <p className="text-xs text-gray-500">Ejemplo común:</p>
-              <p className="text-xs text-gray-600 italic">
+              <p className="text-xs text-brand-500">Ejemplo común:</p>
+              <p className="text-xs text-brand-600 italic">
                 {errorTagData.examples[0]}
               </p>
             </div>

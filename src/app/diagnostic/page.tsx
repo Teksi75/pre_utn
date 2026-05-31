@@ -86,31 +86,39 @@ export default function DiagnosticPage() {
 
   if (phase === "loading") {
     return (
-      <main className="max-w-2xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Diagnóstico</h1>
-        <div className="text-center py-8 text-gray-500">
-          Preparando diagnóstico...
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <h1 className="text-[var(--text-2xl)] font-bold text-brand-900 mb-6">
+          Diagnóstico
+        </h1>
+        <div className="text-center py-12">
+          <div className="inline-block w-8 h-8 border-3 border-brand-300 border-t-brand-700 rounded-full animate-spin mb-4" />
+          <p className="text-brand-500 text-sm">Preparando diagnóstico...</p>
         </div>
-      </main>
+      </div>
     );
   }
 
   if (phase === "error") {
     return (
-      <main className="max-w-2xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Diagnóstico</h1>
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-800">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <h1 className="text-[var(--text-2xl)] font-bold text-brand-900 mb-6">
+          Diagnóstico
+        </h1>
+        <div
+          role="alert"
+          className="bg-amber-50 border border-amber-300 rounded-[var(--radius-card)] p-4 text-sm text-amber-800"
+        >
           {errorMessage}
         </div>
         <div className="mt-4">
           <Link
             href="/"
-            className="text-sm text-blue-600 hover:text-blue-800"
+            className="text-sm text-brand-700 hover:text-brand-900 font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-brand-100 transition-colors focus-visible:shadow-[var(--ring-focus)]"
           >
             ← Volver al inicio
           </Link>
         </div>
-      </main>
+      </div>
     );
   }
 
@@ -132,9 +140,9 @@ export default function DiagnosticPage() {
     };
 
     return (
-      <main className="max-w-2xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-8">
         <ResultsDisplay estimates={estimates} suggestions={suggestions} onRestart={handleRestart} />
-      </main>
+      </div>
     );
   }
 
@@ -142,30 +150,34 @@ export default function DiagnosticPage() {
   const currentExercise = exercises[currentIndex];
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Diagnóstico</h1>
+        <h1 className="text-[var(--text-2xl)] font-bold text-brand-900">
+          Diagnóstico
+        </h1>
         <Link
           href="/"
-          className="text-sm text-blue-600 hover:text-blue-800"
+          className="text-sm text-brand-700 hover:text-brand-900 font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-brand-100 transition-colors focus-visible:shadow-[var(--ring-focus)]"
         >
           ← Inicio
         </Link>
       </div>
 
-      {currentExercise ? (
-        <DiagnosticQuestion
-          exercise={currentExercise}
-          questionNumber={currentIndex + 1}
-          totalQuestions={exercises.length}
-          onSubmit={handleAnswerSubmit}
-          disabled={isEvaluating}
-        />
-      ) : (
-        <div className="text-center py-8 text-gray-500">
-          No hay ejercicios disponibles.
-        </div>
-      )}
-    </main>
+      <div aria-live="polite" aria-atomic="false">
+        {currentExercise ? (
+          <DiagnosticQuestion
+            exercise={currentExercise}
+            questionNumber={currentIndex + 1}
+            totalQuestions={exercises.length}
+            onSubmit={handleAnswerSubmit}
+            disabled={isEvaluating}
+          />
+        ) : (
+          <div className="text-center py-8 text-brand-500">
+            No hay ejercicios disponibles.
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

@@ -80,8 +80,10 @@ export default function PracticePage() {
   }, [exerciseIndex, exercises, resetToSelect]);
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Práctica</h1>
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <h1 className="text-[var(--text-2xl)] font-bold text-brand-900 mb-6">
+        Práctica
+      </h1>
 
       {phase === "select" && (
         <FocusSelector
@@ -91,17 +93,17 @@ export default function PracticePage() {
       )}
 
       {phase === "exercise" && (
-        <div className="space-y-4">
+        <div className="space-y-4" aria-live="polite" aria-atomic="false">
           <button
             onClick={resetToSelect}
-            className="text-sm text-blue-600 hover:text-blue-800"
+            className="text-sm text-brand-700 hover:text-brand-900 font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-brand-100 transition-colors focus-visible:shadow-[var(--ring-focus)]"
           >
             ← Volver a selección
           </button>
 
           {currentExercise ? (
             <>
-              <div className="text-xs text-gray-500">
+              <div className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-600 bg-brand-100 px-2.5 py-1 rounded-[var(--radius-badge)]">
                 Ejercicio {exerciseIndex + 1} de {exercises.length}
               </div>
               <ExerciseCard exercise={currentExercise} />
@@ -111,7 +113,7 @@ export default function PracticePage() {
               />
             </>
           ) : (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-brand-500">
               No hay ejercicios disponibles para esta habilidad.
             </div>
           )}
@@ -119,10 +121,10 @@ export default function PracticePage() {
       )}
 
       {phase === "feedback" && currentExercise && evaluation && (
-        <div className="space-y-4">
+        <div className="space-y-4" aria-live="polite" aria-atomic="false">
           <button
             onClick={resetToSelect}
-            className="text-sm text-blue-600 hover:text-blue-800"
+            className="text-sm text-brand-700 hover:text-brand-900 font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-brand-100 transition-colors focus-visible:shadow-[var(--ring-focus)]"
           >
             ← Volver a selección
           </button>
@@ -137,7 +139,7 @@ export default function PracticePage() {
 
           <button
             onClick={handleNextExercise}
-            className="w-full bg-gray-100 text-gray-700 px-4 py-2 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors"
+            className="w-full bg-brand-100 text-brand-700 px-4 py-2.5 text-sm font-medium rounded-[var(--radius-button)] hover:bg-brand-200 min-h-[44px] transition-colors duration-[var(--duration-fast)] focus-visible:shadow-[var(--ring-focus)]"
           >
             {exerciseIndex + 1 < exercises.length
               ? "Siguiente ejercicio"
@@ -145,6 +147,6 @@ export default function PracticePage() {
           </button>
         </div>
       )}
-    </main>
+    </div>
   );
 }
