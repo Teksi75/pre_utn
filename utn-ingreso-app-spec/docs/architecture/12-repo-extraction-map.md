@@ -87,7 +87,7 @@ Adaptar:
 ## 5. Criterios de aceptación
 
 - [ ] Cada componente tomado tiene justificación.
-- [ ] No se copia contenido oficial.
+- [ ] El contenido oficial usado tiene trazabilidad e intención pedagógica; las repeticiones literales están justificadas.
 - [ ] No se copia una arquitectura que impida Física.
 - [ ] Las métricas mantienen escala interna [0,1].
 - [ ] El nuevo proyecto usa pnpm.

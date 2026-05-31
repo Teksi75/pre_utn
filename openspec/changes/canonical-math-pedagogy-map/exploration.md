@@ -91,9 +91,9 @@
 
 ## 3. Estrategia de extracción pedagógica
 
-### 3.1 Principio de transmutación (NO copiar contenido)
+### 3.1 Principio de valor pedagógico (variar salvo repetición intencional)
 
-El AGENTS.md prohíbe copiar material canónico como contenido propio. La estrategia es:
+El material canónico es fuente pedagógica válida. La estrategia recomendada es variar ejercicios/ejemplos cuando eso aporte práctica nueva, y repetirlos cuando la repetición tenga intención didáctica explícita:
 
 ```text
 Material canónico (PDF/DOCX)
@@ -118,7 +118,7 @@ interface PedagogicalPattern {
   difficulty: 1 | 2 | 3 | 4 | 5;  // Calibrado contra material real
   errorTags: string[];             // ["denominador_no_excluido", "signo_al_despejar"]
   evaluableEvidence: string;       // "Resuelve ecuación fraccionaria verificando exclusiones"
-  sourceReference: string;         // "UNIDAD2_matemática.pdf, pág. X" (referencia, no copia)
+  sourceReference: string;         // "UNIDAD2_matemática.pdf, pág. X" (trazabilidad pedagógica)
   canonicalInspiration: string;    // Descripción del patrón, no el ejercicio literal
 }
 ```

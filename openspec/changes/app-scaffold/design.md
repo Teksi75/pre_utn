@@ -120,7 +120,7 @@ pre_utn/
 |------------|--------|-------------|
 | `domain/` pure (no React/Next/Supabase) | 00-conventions, 10-project-structure | GGA check + test imports only `vitest` |
 | pnpm only | ADR-003, 00-conventions | `pnpm create`, `pnpm-lock.yaml`, `.gitignore` blocks npm/yarn locks |
-| No canonical material copied | ADR-006, doc 00 | Zero references to `material_canonico/` |
+| Canonical material use stays traceable | ADR-006, doc 00 | Scaffold avoids direct runtime PDF coupling; pedagogical content may reference canonical sources explicitly |
 | Multi-subject structure | doc 10 §3 | Both `matematica/` and `fisica/` dirs created |
 | TypeScript strict | doc 00 §7 | `strict: true` in tsconfig |
 

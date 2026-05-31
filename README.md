@@ -22,7 +22,7 @@ src/                      App Next.js inicial
 openspec/                 Cambios SDD y trazabilidad de implementación
 ```
 
-El material canónico se trata como fuente de análisis y referencia. Los ejercicios y experiencias de la app deben ser diseñados como contenido pedagógico propio, respetando la intención formativa del ingreso.
+El material canónico se trata como fuente pedagógica válida. La app puede apoyarse en su teoría, ejemplos y evaluaciones; para los ejercicios se prefiere variar valores, contexto o redacción cuando eso aporte práctica nueva, salvo repeticiones intencionales para reforzar un concepto.
 
 ## Documentación principal
 
@@ -44,7 +44,7 @@ Lectura mínima para agentes o colaboradores:
 - Usar `pnpm`; no usar `npm` ni `yarn`.
 - Aplicar TDD en dominio, evaluadores, métricas y recomendaciones.
 - Pasar revisión GGA antes de cerrar tareas.
-- Mantener separación entre material canónico y contenido propio de la app.
+- Mantener trazabilidad del material de referencia usado y justificar repeticiones literales cuando tengan intención didáctica.
 
 ## Estado actual
 
@@ -58,7 +58,7 @@ Lectura mínima para agentes o colaboradores:
   - Diagnóstico inicial: selección balanceada, estimación de skills, sugerencias de práctica
   - Navegación home con links a `/practice` y `/diagnostic`
 - Verificación actual: `pnpm run test:run` (168 tests), `pnpm run typecheck` y `pnpm run build` pasan.
-- `material_canonico/` queda fuera del repo hasta definir política de uso y trazabilidad.
+- `material_canonico/` contiene PDFs de referencia para orientar teoría, ejemplos, ejercicios y evaluación.
 
 ## Rutas disponibles
 

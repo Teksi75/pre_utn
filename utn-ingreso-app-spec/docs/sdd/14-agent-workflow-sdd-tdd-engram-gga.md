@@ -93,7 +93,7 @@ Antes de cerrar:
 - [ ] Tests pasan.
 - [ ] Build pasa.
 - [ ] La feature respeta alumno + docente.
-- [ ] La feature no copia material oficial.
+- [ ] La feature usa material oficial con trazabilidad e intención pedagógica; las repeticiones literales están justificadas.
 - [ ] La deuda técnica queda registrada.
 
 ---

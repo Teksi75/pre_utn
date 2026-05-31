@@ -80,7 +80,7 @@ utn-ingreso-app/
 
 - Ejercicios originales.
 - JSON o TS tipado.
-- Sin copias textuales de material oficial.
+- Con uso trazable del material oficial cuando aporte valor pedagógico.
 - Con referencias internas a unidad/skill.
 
 ### `src/app/`

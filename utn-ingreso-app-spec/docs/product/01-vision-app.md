@@ -87,7 +87,7 @@ Ingreso UTN Ingeniería
 |---|---|
 | Un LMS genérico | Está orientada al ingreso UTN. |
 | Un sustituto del profesor | El docente sigue tomando decisiones pedagógicas. |
-| Una copia de cuadernillos | Los materiales oficiales son referencia, no contenido reproducido. |
+| Una repetición mecánica de cuadernillos | Los materiales oficiales son fuente pedagógica válida; la app debe usarlos con intención, trazabilidad y práctica adicional. |
 | Un examen automático final | Es herramienta de entrenamiento, no certificación. |
 | Una app gamificada infantil | El público es preuniversitario; la estética debe ser seria, clara y motivadora. |
 

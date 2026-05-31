@@ -6,7 +6,7 @@ The repo is **spec-only** — no application code, no `package.json`, no test ru
 
 - `utn-ingreso-app-spec/docs/` — 18 spec documents covering product, pedagogy, architecture, ADRs, and SDD workflow
 - `openspec/` — SDD config (hybrid mode) with empty `specs/` and `changes/archive/`
-- `material_canonico/` — reference material (untracked, must NOT be copied into app)
+- `material_canonico/` — canonical reference material for theory, exercises, and evaluations
 - `.gga` — GGA config pointing to AGENTS.md as rules file
 - `.atl/skill-registry.md` — skill index
 - `AGENTS.md` — project work standards
@@ -73,7 +73,7 @@ This keeps the review surface minimal while leveraging battle-tested config.
 - **Next.js version drift**: The spec doesn't pin a Next.js version. Using latest (v15) is fine but should be documented. If a breaking change exists, the scaffold will need adjustment.
 - **pnpm enforcement**: Must use `pnpm create next-app` (not `npx`). If the user runs `npx create-next-app` instead, it will use npm. The scaffold PR description should explicitly call this out.
 - **GGA pre-commit hook**: `.gga` exists but `gga install` may not have been run yet. The scaffold should verify GGA works or note it as a follow-up. If GGA isn't installed, commits won't be guarded.
-- **material_canonico contamination**: The scaffold must NOT reference, import, or copy anything from `material_canonico/`. This is a hard boundary per doc 00 and ADR-006.
+- **material_canonico coupling**: The scaffold should not import PDFs directly into runtime code. Pedagogical features may use canonical material through explicit content artifacts and traceable references.
 - **Supabase premature coupling**: The scaffold should NOT install `@supabase/supabase-js` or create Supabase client code yet. Only the `supabase/migrations/` directory structure. Supabase integration is Sprint 3.
 - **Tailwind version**: Need to confirm whether to use Tailwind v3 (stable) or v4 (latest). `create-next-app` defaults may vary. Should pin whichever is used.
 

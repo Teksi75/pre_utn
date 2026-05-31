@@ -34,7 +34,7 @@ The system SHALL display one eligible exercise for the chosen skill and accept a
 
 ### Requirement: Tagged Pedagogical Feedback
 
-The system SHALL show correctness and, when present, error-tag feedback understandable by learners and useful to teachers. It MUST NOT copy canonical material as feedback.
+The system SHALL show correctness and, when present, error-tag feedback understandable by learners and useful to teachers. Feedback MAY reference canonical explanations when useful, but SHOULD adapt them to the learner's current answer and next step.
 
 #### Scenario: tagged incorrect answer receives guidance
 

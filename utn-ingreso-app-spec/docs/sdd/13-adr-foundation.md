@@ -69,11 +69,11 @@ No se evalúa igual un intervalo, un complejo, una recta o una función por tram
 
 ---
 
-## ADR-006 — Contenido original
+## ADR-006 — Uso pedagógico del material canónico
 
 ### Decisión
 
-Los cuadernillos y exámenes son fuente de referencia; los ejercicios de la App son originales.
+Los cuadernillos y exámenes son fuente pedagógica válida. Los ejercicios de la App preferentemente varían valores, contexto o redacción para aportar práctica nueva; pueden repetir ejemplos o ejercicios oficiales cuando la repetición tenga intención didáctica explícita.
 
 ### Razón
 

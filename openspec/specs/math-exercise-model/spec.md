@@ -40,7 +40,7 @@ The system MUST support exactly these exercise types: `multiple-choice`, `true-f
 
 ### Requirement: Prompt and Answer Contract
 
-Each exercise MUST include a student-facing prompt and an expected answer suitable for its type. Content MUST be original, not copied verbatim from canonical UTN material.
+Each exercise MUST include a student-facing prompt and an expected answer suitable for its type. Content MAY use canonical material when pedagogically justified; otherwise it SHOULD vary the source pattern to create additional practice value.
 
 #### Scenario: missing evaluable data is rejected
 

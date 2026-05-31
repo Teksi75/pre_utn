@@ -121,7 +121,7 @@ docs/
 - [ ] Toda feature nueva se puede ubicar en producto, pedagogía, arquitectura o SDD.
 - [ ] Ningún agente implementa sin spec previa.
 - [ ] Ningún agente usa `npm`; todo se ejecuta con `pnpm`.
-- [ ] La App mantiene separación explícita entre material oficial de referencia y ejercicios originales.
+- [ ] La App usa material oficial con trazabilidad e intención pedagógica, evitando repeticiones mecánicas sin valor agregado.
 - [ ] El alumno tiene feedback formativo.
 - [ ] El docente tiene visibilidad pedagógica accionable.
 - [ ] `pnpm run test`, `pnpm run typecheck` y `pnpm run build` pasan antes de cerrar una tarea.

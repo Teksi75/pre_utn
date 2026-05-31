@@ -50,5 +50,5 @@ Chain strategy: pending
 ## Phase 5: Lock-in
 
 - [x] 5.1 Confirm `.gitignore` blocks `npm`/`yarn` lockfiles (add if missing)
-- [x] 5.2 GGA check: scan entire diff for React/Next/Supabase imports in `src/domain/`, forbidden package managers, copied canonical material
+- [x] 5.2 GGA check: scan entire diff for React/Next/Supabase imports in `src/domain/`, forbidden package managers, and accidental runtime coupling to canonical PDFs
 - [x] 5.3 Verify all 5 success criteria from proposal pass

@@ -158,5 +158,5 @@ Los modelos de examen muestran una estructura recurrente de diez tipos de proble
 - [ ] Cada ejercicio de la App está vinculado a una unidad y a una skill.
 - [ ] Las unidades siguen el orden oficial en el modo “práctica por unidad”.
 - [ ] Los simulacros siguen el mapa de examen.
-- [ ] Los ejercicios son originales, aunque inspirados en habilidades del material.
+- [ ] Los ejercicios aportan valor pedagógico: suelen variar el material de referencia y solo repiten ejercicios oficiales cuando la repetición tiene intención didáctica.
 - [ ] El contenido prioriza temas frecuentes del examen.

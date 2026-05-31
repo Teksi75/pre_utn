@@ -22,9 +22,9 @@ The system SHALL provide at least 30 mathematics exercises, with at least 5 exer
 - WHEN the catalog is loaded
 - THEN loading fails naming the insufficient unit
 
-### Requirement: Original Transformed Content
+### Requirement: Pedagogically Valuable Content
 
-Catalog content MUST be original pedagogical transformation. It MAY preserve skill patterns from canonical material, but MUST NOT embed canonical exercise text verbatim.
+Catalog content MUST provide pedagogical value beyond mechanical duplication. It MAY reuse canonical material directly when repetition is intentionally used to reinforce a concept; otherwise it SHOULD vary values, wording, representation, or context while preserving the target skill.
 
 #### Scenario: transformed pattern is accepted
 
@@ -32,11 +32,11 @@ Catalog content MUST be original pedagogical transformation. It MAY preserve ski
 - WHEN the catalog is reviewed
 - THEN the exercise is eligible for inclusion
 
-#### Scenario: verbatim canonical content is rejected
+#### Scenario: intentional repetition is accepted
 
-- GIVEN an exercise prompt matches canonical UTN material verbatim
+- GIVEN an exercise prompt matches canonical UTN material
 - WHEN the catalog is reviewed
-- THEN the exercise is rejected
+- THEN it is eligible when metadata explains the reinforcement purpose
 
 ### Requirement: Catalog Querying
 
@@ -56,7 +56,7 @@ The catalog SHALL support querying by unit, skill, and difficulty range. Results
 
 ### Requirement: Pedagogical Traceability
 
-Each catalog exercise SHOULD retain non-verbatim pedagogical source notes describing the practiced pattern and intended learner evidence.
+Each catalog exercise SHOULD retain pedagogical source notes describing the practiced pattern, intended learner evidence, and whether any canonical repetition is intentional.
 
 #### Scenario: teacher can interpret intent
 
