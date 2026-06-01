@@ -60,8 +60,12 @@ function normalizeSuperscripts(value: string): string {
 }
 
 function numericAnswer(userAnswer: string): number | undefined {
-  const student = Number(userAnswer.trim());
+  const student = Number(userAnswer.trim().replace(/−/g, "-"));
   return Number.isNaN(student) ? undefined : student;
+}
+
+function numericExpected(expectedAnswer: string): number {
+  return Number(expectedAnswer.trim().replace(/−/g, "-"));
 }
 
 /**
@@ -72,10 +76,10 @@ function numericAnswer(userAnswer: string): number | undefined {
 function isSignError(exercise: Exercise, userAnswer: string): boolean {
   if (exercise.type !== "numerical") return false;
 
-  const expectedNum = Number(exercise.expectedAnswer);
-  const studentNum = Number(userAnswer.trim());
+  const expectedNum = numericExpected(exercise.expectedAnswer);
+  const studentNum = numericAnswer(userAnswer);
 
-  if (Number.isNaN(expectedNum) || Number.isNaN(studentNum)) return false;
+  if (Number.isNaN(expectedNum) || studentNum === undefined) return false;
   if (expectedNum === 0) return false;
 
   return Math.abs(expectedNum) === Math.abs(studentNum) && expectedNum !== studentNum;
@@ -89,10 +93,10 @@ function isSignError(exercise: Exercise, userAnswer: string): boolean {
 function isOrderOfOpsError(exercise: Exercise, userAnswer: string): boolean {
   if (exercise.type !== "numerical") return false;
 
-  const expected = Number(exercise.expectedAnswer);
-  const student = Number(userAnswer.trim());
+  const expected = numericExpected(exercise.expectedAnswer);
+  const student = numericAnswer(userAnswer);
 
-  if (Number.isNaN(expected) || Number.isNaN(student)) return false;
+  if (Number.isNaN(expected) || student === undefined) return false;
 
   // Parse the prompt to detect mixed addition/multiplication pattern
   const prompt = exercise.prompt;
@@ -158,10 +162,10 @@ function isIntervalEndpointError(exercise: Exercise, userAnswer: string): boolea
 function isZeroExponentError(exercise: Exercise, userAnswer: string): boolean {
   if (exercise.type !== "numerical") return false;
 
-  const expected = Number(exercise.expectedAnswer);
-  const student = Number(userAnswer.trim());
+  const expected = numericExpected(exercise.expectedAnswer);
+  const student = numericAnswer(userAnswer);
 
-  if (Number.isNaN(expected) || Number.isNaN(student)) return false;
+  if (Number.isNaN(expected) || student === undefined) return false;
 
   // Classic misconception: x^0 = 0 instead of 1
   return expected === 1 && student === 0;
@@ -176,10 +180,10 @@ function isZeroExponentError(exercise: Exercise, userAnswer: string): boolean {
 function isPrincipalRootError(exercise: Exercise, userAnswer: string): boolean {
   if (exercise.type !== "numerical") return false;
 
-  const expected = Number(exercise.expectedAnswer);
-  const student = Number(userAnswer.trim());
+  const expected = numericExpected(exercise.expectedAnswer);
+  const student = numericAnswer(userAnswer);
 
-  if (Number.isNaN(expected) || Number.isNaN(student)) return false;
+  if (Number.isNaN(expected) || student === undefined) return false;
   if (expected <= 0) return false;
 
   return student === -expected;
@@ -192,7 +196,7 @@ function isProductOfPowersError(exercise: Exercise, userAnswer: string): boolean
   const prompt = normalizeSuperscripts(exercise.prompt);
   const match = prompt.match(/(\d+)\s*\^?\s*(\d+)\s*[×x*]\s*\1\s*\^?\s*(\d+)/);
   const student = numericAnswer(userAnswer);
-  const expected = Number(exercise.expectedAnswer);
+  const expected = numericExpected(exercise.expectedAnswer);
 
   if (!match || student === undefined || Number.isNaN(expected)) return false;
 
@@ -211,7 +215,7 @@ function isQuotientOfPowersError(exercise: Exercise, userAnswer: string): boolea
   const prompt = normalizeSuperscripts(exercise.prompt);
   const match = prompt.match(/(\d+)\s*\^?\s*(\d+)\s*[÷/]\s*\1\s*\^?\s*(\d+)/);
   const student = numericAnswer(userAnswer);
-  const expected = Number(exercise.expectedAnswer);
+  const expected = numericExpected(exercise.expectedAnswer);
 
   if (!match || student === undefined || Number.isNaN(expected)) return false;
 
@@ -230,7 +234,7 @@ function isPowerOfPowerError(exercise: Exercise, userAnswer: string): boolean {
   const prompt = normalizeSuperscripts(exercise.prompt);
   const match = prompt.match(/\(\s*(\d+)\s*\^?\s*(\d+)\s*\)\s*\^?\s*(\d+)/);
   const student = numericAnswer(userAnswer);
-  const expected = Number(exercise.expectedAnswer);
+  const expected = numericExpected(exercise.expectedAnswer);
 
   if (!match || student === undefined || Number.isNaN(expected)) return false;
 

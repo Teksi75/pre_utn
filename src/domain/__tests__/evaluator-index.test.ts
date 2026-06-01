@@ -33,6 +33,16 @@ describe("Evaluator dispatcher", () => {
       const result = evaluateAnswer(exercise, "3.1405");
       expect(result.correct).toBe(true);
     });
+
+    test("numerical exercise accepts keyboard hyphen for unicode minus expected answer", () => {
+      const exercise = makeExercise({
+        type: "numerical",
+        prompt: "Calcula 5 − 3 × (2 + 1)",
+        expectedAnswer: "−4",
+      });
+      const result = evaluateAnswer(exercise, "-4");
+      expect(result.correct).toBe(true);
+    });
   });
 
   describe("dispatches to exact evaluator", () => {

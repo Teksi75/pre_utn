@@ -6,6 +6,10 @@
 
 const TOLERANCE = 0.01;
 
+function normalizeNumericInput(value: string): string {
+  return value.trim().replace(/−/g, "-");
+}
+
 interface NumericResult {
   readonly correct: boolean;
 }
@@ -19,12 +23,12 @@ interface NumericResult {
  * @returns { correct: true } if within tolerance, { correct: false } otherwise
  */
 export function evaluateNumeric(expected: string, student: string): NumericResult {
-  const trimmed = student.trim();
+  const trimmed = normalizeNumericInput(student);
   if (trimmed === "") {
     return { correct: false };
   }
 
-  const expectedNum = Number(expected);
+  const expectedNum = Number(normalizeNumericInput(expected));
   const studentNum = Number(trimmed);
 
   if (Number.isNaN(expectedNum) || Number.isNaN(studentNum)) {

@@ -39,6 +39,16 @@ describe("Numeric evaluator", () => {
       const result = evaluateNumeric("-5", "-5");
       expect(result.correct).toBe(true);
     });
+
+    test("unicode minus expected answer matches keyboard hyphen student answer", () => {
+      const result = evaluateNumeric("−4", "-4");
+      expect(result.correct).toBe(true);
+    });
+
+    test("keyboard hyphen expected answer matches unicode minus student answer", () => {
+      const result = evaluateNumeric("-4", "−4");
+      expect(result.correct).toBe(true);
+    });
   });
 
   describe("out-of-tolerance", () => {
