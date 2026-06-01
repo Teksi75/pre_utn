@@ -94,7 +94,7 @@ export function NumberLineInterval({
             orient="auto"
             markerUnits="strokeWidth"
           >
-            <path d="M0,0 L8,4 L0,8 Z" className="fill-accent-600" />
+            <path d="M0,0 L8,4 L0,8 Z" fill="var(--color-accent-600)" />
           </marker>
         </defs>
 
@@ -103,7 +103,7 @@ export function NumberLineInterval({
           y1={AXIS_Y}
           x2={LINE_END}
           y2={AXIS_Y}
-          className="stroke-brand-400"
+          stroke="var(--color-brand-400)"
           strokeWidth="2"
         />
 
@@ -116,14 +116,15 @@ export function NumberLineInterval({
                 y1={TICK_TOP}
                 x2={x}
                 y2={TICK_BOTTOM}
-                className="stroke-brand-300"
+                stroke="var(--color-brand-300)"
                 strokeWidth="1.5"
               />
               <text
                 x={x}
                 y={96}
                 textAnchor="middle"
-                className="fill-brand-600 text-[11px]"
+                fill="var(--color-brand-600)"
+                className="text-[11px]"
               >
                 {formatTick(tick)}
               </text>
@@ -137,7 +138,7 @@ export function NumberLineInterval({
             y1={AXIS_Y}
             x2={rightX}
             y2={AXIS_Y}
-            className="stroke-accent-600"
+            stroke="var(--color-accent-600)"
             strokeWidth="6"
             strokeLinecap="round"
             markerStart={showLeftArrow ? "url(#interval-arrow)" : undefined}
@@ -150,11 +151,8 @@ export function NumberLineInterval({
             cx={leftX}
             cy={AXIS_Y}
             r="7"
-            className={
-              interval.left.closed
-                ? "fill-accent-600 stroke-accent-600"
-                : "fill-white stroke-accent-600"
-            }
+              fill={interval.left.closed ? "var(--color-accent-600)" : "#ffffff"}
+              stroke="var(--color-accent-600)"
             strokeWidth="3"
           />
         )}
@@ -164,11 +162,8 @@ export function NumberLineInterval({
             cx={rightX}
             cy={AXIS_Y}
             r="7"
-            className={
-              interval.right.closed
-                ? "fill-accent-600 stroke-accent-600"
-                : "fill-white stroke-accent-600"
-            }
+              fill={interval.right.closed ? "var(--color-accent-600)" : "#ffffff"}
+              stroke="var(--color-accent-600)"
             strokeWidth="3"
           />
         )}
@@ -177,7 +172,8 @@ export function NumberLineInterval({
           x={SVG_WIDTH / 2}
           y={24}
           textAnchor="middle"
-          className="fill-brand-900 text-[15px] font-semibold"
+          fill="var(--color-brand-900)"
+          className="text-[15px] font-semibold"
         >
           {formatted}
         </text>
