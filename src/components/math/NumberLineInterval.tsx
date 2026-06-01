@@ -71,9 +71,9 @@ export function NumberLineInterval({
             <p className="text-sm font-semibold text-brand-900">{title}</p>
           )}
           {description && (
-            <p className="mt-1 text-xs leading-[var(--leading-relaxed)] text-brand-600">
+            <div className="mt-1 text-xs leading-[var(--leading-relaxed)] text-brand-600">
               {description}
-            </p>
+            </div>
           )}
         </figcaption>
       )}
