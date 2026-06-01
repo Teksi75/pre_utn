@@ -1,6 +1,7 @@
 "use client";
 
 import { lookupTag } from "@/domain/error-taxonomy/index";
+import { RichText } from "@/components/math/RichText";
 
 interface FeedbackDisplayProps {
   readonly correct: boolean;
@@ -38,19 +39,23 @@ export function FeedbackDisplay({
       </div>
 
       {feedback && feedback !== "manual-review" && (
-        <p className="mt-2 text-sm text-brand-700">{feedback}</p>
+        <div className="mt-2 text-sm text-brand-700">
+          <RichText text={feedback} />
+        </div>
       )}
 
       {errorTagData && (
         <div className="mt-3 text-sm">
           <p className="font-medium text-red-700">Categoría del error:</p>
-          <p className="text-red-600">{errorTagData.description}</p>
+          <div className="text-red-600">
+            <RichText text={errorTagData.description} />
+          </div>
           {errorTagData.examples.length > 0 && (
             <div className="mt-2">
               <p className="text-xs text-brand-500">Ejemplo común:</p>
-              <p className="text-xs text-brand-600 italic">
-                {errorTagData.examples[0]}
-              </p>
+              <div className="text-xs text-brand-600 italic">
+                <RichText text={errorTagData.examples[0]} />
+              </div>
             </div>
           )}
         </div>

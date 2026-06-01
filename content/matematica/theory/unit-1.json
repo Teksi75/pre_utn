@@ -180,7 +180,7 @@
       "Confundir $(-2)^2 = 4$ con $-2^2 = -4$: los paréntesis cambian el resultado",
       "Afirmar que $a^0 = 0$: cualquier base no nula elevada a cero da 1",
       "Sumar exponentes al multiplicar potencias de bases distintas: $2^3 \\times 3^2 \\neq 6^5$",
-      "Afirmar que $\\sqrt{-4} = 2i$ en contexto de reales: no existe raíz cuadrada de un negativo en $\\mathbb{R}$"
+      "Afirmar que $\\sqrt{-4}$ pertenece a los reales: la raíz cuadrada de un número negativo no pertenece a $\\mathbb{R}$"
     ],
     "practicePrompts": [
       "Calcula $(-3)^2$ y $-3^2$. ¿Cuál es la diferencia?",

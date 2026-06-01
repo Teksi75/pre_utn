@@ -1,6 +1,7 @@
 "use client";
 
 import { getExerciseTypeLabel } from "@/components/exercises/exercise-labels";
+import { RichText } from "@/components/math/RichText";
 import type { Exercise } from "@/domain/models/exercise";
 
 interface ExerciseCardProps {
@@ -21,9 +22,9 @@ export function ExerciseCard({ exercise }: ExerciseCardProps) {
           Dificultad {exercise.difficulty}
         </span>
       </div>
-      <p className="text-[var(--text-lg)] text-brand-900 leading-[var(--leading-relaxed)]">
-        {exercise.prompt}
-      </p>
+      <div className="text-[var(--text-lg)] text-brand-900 leading-[var(--leading-relaxed)]">
+        <RichText text={exercise.prompt} />
+      </div>
     </div>
   );
 }

@@ -58,8 +58,9 @@ export function TheoryCard({ node }: TheoryCardProps) {
       {/* Notation toggle */}
       <button
         onClick={() => setShowNotation(!showNotation)}
-        className="mt-4 text-sm text-brand-600 hover:text-brand-800 font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-brand-100 transition-colors focus-visible:shadow-[var(--ring-focus)]"
+        className="mt-4 min-h-[44px] inline-flex items-center gap-2 rounded-[var(--radius-button)] border border-brand-300 bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-800 shadow-sm transition-colors hover:border-brand-400 hover:bg-brand-100 focus-visible:shadow-[var(--ring-focus)]"
       >
+        <span aria-hidden="true">{showNotation ? "−" : "+"}</span>
         {showNotation ? "Ocultar notación" : "Ver notación"}
       </button>
 
@@ -74,8 +75,9 @@ export function TheoryCard({ node }: TheoryCardProps) {
       {/* Common mistakes toggle */}
       <button
         onClick={() => setShowMistakes(!showMistakes)}
-        className="mt-2 text-sm text-brand-600 hover:text-brand-800 font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-brand-100 transition-colors focus-visible:shadow-[var(--ring-focus)]"
+        className="mt-2 min-h-[44px] inline-flex items-center gap-2 rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 shadow-sm transition-colors hover:border-red-300 hover:bg-red-100 focus-visible:shadow-[var(--ring-focus)]"
       >
+        <span aria-hidden="true">{showMistakes ? "−" : "+"}</span>
         {showMistakes ? "Ocultar errores comunes" : "Ver errores comunes"}
       </button>
 

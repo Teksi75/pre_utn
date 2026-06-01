@@ -208,7 +208,7 @@ describe("Error tagging — tagError()", () => {
   describe("exponent-law patterns", () => {
     test("detects product-of-powers error when student multiplies exponents", () => {
       const exercise = makeExercise({
-        prompt: "Calcula 2³ × 2⁴",
+        prompt: "Calcula $2^3 \\times 2^4$",
         expectedAnswer: "128",
         commonErrorTags: ["u1_producto_potencias"],
       });
@@ -218,7 +218,7 @@ describe("Error tagging — tagError()", () => {
 
     test("detects quotient-of-powers error when student adds exponents", () => {
       const exercise = makeExercise({
-        prompt: "Calcula 2⁵ ÷ 2²",
+        prompt: "Calcula $2^5 \\div 2^2$",
         expectedAnswer: "8",
         commonErrorTags: ["u1_cociente_potencias"],
       });
@@ -228,7 +228,7 @@ describe("Error tagging — tagError()", () => {
 
     test("detects power-of-power error when student adds exponents", () => {
       const exercise = makeExercise({
-        prompt: "Calcula (2³)²",
+        prompt: "Calcula $(2^3)^2$",
         expectedAnswer: "64",
         commonErrorTags: ["u1_potencia_de_potencia"],
       });
@@ -238,7 +238,7 @@ describe("Error tagging — tagError()", () => {
 
     test("does not tag exponent-law misconception when tag is not declared", () => {
       const exercise = makeExercise({
-        prompt: "Calcula 2³ × 2⁴",
+        prompt: "Calcula $2^3 \\times 2^4$",
         expectedAnswer: "128",
         commonErrorTags: [],
       });
@@ -251,7 +251,7 @@ describe("Error tagging — tagError()", () => {
     test("detects even-root-of-negative misconception in multiple choice", () => {
       const exercise = makeExercise({
         type: "multiple-choice",
-        prompt: "¿Qué resultado tiene √(-4) en los números reales?",
+        prompt: "¿Qué resultado tiene $\\sqrt{-4}$ en los números reales?",
         expectedAnswer: "No tiene resultado real",
         options: ["2", "-2", "No tiene resultado real", "4"],
         commonErrorTags: ["u1_raiz_negativa_par"],

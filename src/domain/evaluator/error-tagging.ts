@@ -51,7 +51,12 @@ const SUPERSCRIPT_DIGITS: Readonly<Record<string, string>> = {
 };
 
 function normalizeSuperscripts(value: string): string {
-  return value.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, (digit) => SUPERSCRIPT_DIGITS[digit]);
+  // Supports both legacy Unicode prompts and KaTeX-delimited LaTeX prompts.
+  // Regression coverage: src/domain/__tests__/evaluator-error-tagging.test.ts
+  return value
+    .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, (digit) => SUPERSCRIPT_DIGITS[digit])
+    .replace(/\\times/g, "×")
+    .replace(/\\div/g, "÷");
 }
 
 function numericAnswer(userAnswer: string): number | undefined {
@@ -240,7 +245,10 @@ function isPowerOfPowerError(exercise: Exercise, userAnswer: string): boolean {
 /** Detect answers that treat √(negative) as a real number in multiple choice. */
 function isNegativeEvenRootError(exercise: Exercise, userAnswer: string): boolean {
   if (exercise.type !== "multiple-choice") return false;
-  if (!/[√] ?\( ?-\d+ ?\)/.test(exercise.prompt)) return false;
+  const prompt = normalizeSuperscripts(exercise.prompt);
+  const hasNegativeEvenRoot =
+    /[√] ?\( ?-\d+ ?\)/.test(prompt) || /\\sqrt\{\s*-\d+\s*\}/.test(prompt);
+  if (!hasNegativeEvenRoot) return false;
 
   const expected = exercise.expectedAnswer.trim().toLowerCase();
   const student = userAnswer.trim().toLowerCase();

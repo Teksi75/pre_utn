@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
+import { RichText } from "@/components/math/RichText";
 import type { Exercise } from "@/domain/models/exercise";
 import {
   canSubmitExerciseAnswer,
@@ -124,7 +125,7 @@ export function ExerciseAnswerInput({
                   onChange={() => setSelectedOption(option)}
                   className="h-4 w-4 accent-brand-900"
                 />
-                <span>{option}</span>
+                <span><RichText text={option} /></span>
               </label>
             );
           })}

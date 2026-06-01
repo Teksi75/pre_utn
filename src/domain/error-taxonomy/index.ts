@@ -78,20 +78,21 @@ const TAXONOMY: readonly ErrorTag[] = [
     description:
       "Error al interpretar potencia con base negativa: confunde (-a)^n con -a^n, olvidando que los paréntesis incluyen al signo negativo.",
     examples: [
-      "Calcular (-3)^2 = -9 en vez de 9, confundiendo (-3)×(-3) con -(3×3)",
-      "Calcular (-2)^3 = 8 en vez de -8, invirtiendo la regla de signos",
+      "Calcular $(-3)^2 = -9$ en vez de $9$, confundiendo $(-3)\\times(-3)$ con $-(3\\times3)$",
+      "Calcular $(-2)^3 = 8$ en vez de $-8$, invirtiendo la regla de signos",
     ],
   },
 
-  // Unit 1: Potencias y raíces — new error tags
+  // Unit 1: Potencias y raíces — error tags backed by the Unit 1 SDD sequence
+  // and regression coverage in src/domain/__tests__/error-taxonomy.test.ts.
   {
     id: "u1_exponente_cero",
     unit: 1,
     description:
       "Error al evaluar exponente cero: cree que cualquier número elevado a la potencia cero es 0 en vez de 1.",
     examples: [
-      "Calcular 5^0 = 0 en vez de 1",
-      "Calcular (-3)^0 = 0 en vez de 1",
+      "Calcular $5^0 = 0$ en vez de $1$",
+      "Calcular $(-3)^0 = 0$ en vez de $1$",
     ],
   },
   {
@@ -100,8 +101,8 @@ const TAXONOMY: readonly ErrorTag[] = [
     description:
       "Error al multiplicar potencias de distinta base: suma los exponentes cuando las bases son diferentes, o multiplica los exponentes en vez de sumarlos.",
     examples: [
-      "Calcular 2^3 × 3^2 como 6^5 en vez de 8 × 9 = 72",
-      "Calcular 2^3 × 2^4 como 2^12 en vez de 2^7 = 128",
+      "Calcular $2^3 \\times 3^2$ como $6^5$ en vez de $8 \\times 9 = 72$",
+      "Calcular $2^3 \\times 2^4$ como $2^{12}$ en vez de $2^7 = 128$",
     ],
   },
   {
@@ -110,18 +111,18 @@ const TAXONOMY: readonly ErrorTag[] = [
     description:
       "Error al dividir potencias de distinta base: resta los exponentes cuando las bases son diferentes, o aplica la regla incorrectamente.",
     examples: [
-      "Calcular 6^4 ÷ 3^2 como 2^2 = 4 en vez de 36",
-      "Calcular 5^6 ÷ 5^2 como 5^3 en vez de 5^4 = 625",
+      "Calcular $6^4 \\div 3^2$ como $2^2 = 4$ en vez de $36$",
+      "Calcular $5^6 \\div 5^2$ como $5^3$ en vez de $5^4 = 625$",
     ],
   },
   {
     id: "u1_potencia_de_potencia",
     unit: 1,
     description:
-      "Error al elevar una potencia a otra potencia: multiplica los exponentes en vez de multiplicarlos, o no aplica la regla (a^m)^n = a^(m×n).",
+      "Error al elevar una potencia a otra potencia: suma los exponentes en vez de multiplicarlos, o no aplica la regla $(a^m)^n = a^{m\\times n}$.",
     examples: [
-      "Calcular (2^3)^2 como 2^5 = 32 en vez de 2^6 = 64",
-      "Calcular (3^2)^3 como 3^5 = 243 en vez de 3^6 = 729",
+      "Calcular $(2^3)^2$ como $2^5 = 32$ en vez de $2^6 = 64$",
+      "Calcular $(3^2)^3$ como $3^5 = 243$ en vez de $3^6 = 729$",
     ],
   },
   {
@@ -130,8 +131,8 @@ const TAXONOMY: readonly ErrorTag[] = [
     description:
       "Error al calcular raíz cuadrada: responde con el valor negativo en vez de la raíz principal (no negativa).",
     examples: [
-      "Calcular √9 = -3 en vez de 3",
-      "Calcular √25 = -5 en vez de 5",
+      "Calcular $\\sqrt{9} = -3$ en vez de $3$",
+      "Calcular $\\sqrt{25} = -5$ en vez de $5$",
     ],
   },
   {
@@ -140,8 +141,8 @@ const TAXONOMY: readonly ErrorTag[] = [
     description:
       "Error al evaluar raíz par de número negativo: afirma que existe resultado real en vez de reconocer que no tiene raíz real.",
     examples: [
-      "Calcular √(-4) = 2i en vez de indicar que no tiene resultado real",
-      "Decir que √(-9) = -3 en vez de que no existe en los reales",
+      "Afirmar que $\\sqrt{-4}$ pertenece a los números reales",
+      "Decir que $\\sqrt{-9} = -3$ en vez de que no existe en los reales",
     ],
   },
 
@@ -241,7 +242,7 @@ const TAXONOMY: readonly ErrorTag[] = [
       "Error al determinar el dominio: olvida restricciones como división por cero o raíz de negativo.",
     examples: [
       "Decir que el dominio de f(x)=1/x son todos los reales",
-      "Incluir -4 en el dominio de f(x)=√(x+4)",
+      "Incluir -5 en el dominio de f(x)=√(x+4)",
     ],
   },
   {
