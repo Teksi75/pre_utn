@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { getPracticeHrefForSuggestion } from "./practice-link";
 import type { SkillEstimate, PracticeSuggestion } from "@/domain/diagnostic/index";
 
 interface ResultsDisplayProps {
@@ -96,12 +97,26 @@ export function ResultsDisplay({ estimates, suggestions, onRestart }: ResultsDis
                       {Math.round(s.accuracy * 100)}% precisión
                     </span>
                   </div>
-                  <Link
-                    href={`/practice?skill=${s.skillId}`}
-                    className="text-sm text-brand-700 hover:text-brand-900 font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-brand-100 transition-colors focus-visible:shadow-[var(--ring-focus)]"
-                  >
-                    Practicar →
-                  </Link>
+                  {(() => {
+                    const practiceHref = getPracticeHrefForSuggestion(s.skillId);
+
+                    if (!practiceHref) {
+                      return (
+                        <span className="text-sm text-amber-700 bg-amber-100 min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)]">
+                          Ruta en preparación
+                        </span>
+                      );
+                    }
+
+                    return (
+                      <Link
+                        href={practiceHref}
+                        className="text-sm text-brand-700 hover:text-brand-900 font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-brand-100 transition-colors focus-visible:shadow-[var(--ring-focus)]"
+                      >
+                        Practicar →
+                      </Link>
+                    );
+                  })()}
                 </div>
                 {s.errorTags.length > 0 && (
                   <div className="mt-2 text-xs text-amber-700">

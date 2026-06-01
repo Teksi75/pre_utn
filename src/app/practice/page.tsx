@@ -13,16 +13,12 @@ import { evaluateAnswer } from "@/domain/evaluator/index";
 import { generateFeedback, type FeedbackMapping } from "@/domain/feedback/index";
 import { addAttempt } from "@/lib/practice-progress";
 import { nextPhase, type PracticePhase } from "./phases";
+import { PRACTICE_SKILL_UNIT_MAP, resolveInitialPracticeSkill } from "./start-skill";
 import type { SkillId } from "@/domain/models/skill";
 import type { Exercise } from "@/domain/models/exercise";
 import type { TheoryNode } from "@/domain/models/theory";
 import type { WorkedExample } from "@/domain/models/worked-example";
 import type { EvaluationResult } from "@/domain/evaluator/index";
-
-const SKILL_UNIT_MAP: Record<string, string> = {
-  "mat.u1.reales_operaciones": "unit-1",
-  "mat.u1.intervalos": "unit-1",
-};
 
 export default function PracticePage() {
   const [phase, setPhase] = useState<PracticePhase>("select");
@@ -39,6 +35,7 @@ export default function PracticePage() {
   const [exampleIndex, setExampleIndex] = useState(0);
   const [feedbackMappings, setFeedbackMappings] = useState<readonly FeedbackMapping[]>([]);
   const evaluateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const initialSkillConsumedRef = useRef(false);
 
   useEffect(() => {
     return () => {
@@ -71,7 +68,7 @@ export default function PracticePage() {
     setCurrentExercise(skillExercises[0] ?? null);
 
     // Load content for this skill
-    const unitKey = SKILL_UNIT_MAP[skillId];
+    const unitKey = PRACTICE_SKILL_UNIT_MAP[skillId];
     if (unitKey) {
       const theory = loadTheoryContent(unitKey).find((t) => t.skillId === skillId) ?? null;
       setTheoryNode(theory);
@@ -84,6 +81,17 @@ export default function PracticePage() {
 
     setPhase("theory");
   }, []);
+
+  useEffect(() => {
+    if (initialSkillConsumedRef.current || selectedSkillId !== null) return;
+
+    const requestedSkill = new URLSearchParams(window.location.search).get("skill");
+    const initialSkill = resolveInitialPracticeSkill(requestedSkill);
+    if (!initialSkill) return;
+
+    initialSkillConsumedRef.current = true;
+    handleSkillSelect(initialSkill);
+  }, [handleSkillSelect, selectedSkillId]);
 
   const handleNextPhase = useCallback(() => {
     const lastExercise = exerciseIndex >= exercises.length - 1;

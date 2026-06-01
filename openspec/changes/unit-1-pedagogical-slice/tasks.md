@@ -113,3 +113,11 @@ Chain strategy: feature-branch-chain
 - [ ] 12.3 Integrate interval graphics into Unit 1 interval theory/worked examples and practice options/feedback where representation translation is taught.
 - [ ] 12.4 Add textual fallback or aria labels that include notation, condition, endpoint inclusion, and ray direction.
 - [ ] 12.5 Verify with tests plus `pnpm run test`, `pnpm run typecheck`, and `pnpm run build`.
+
+## Phase 13: Diagnostic-to-practice loop
+
+- [x] 13.1 Add a readiness-aware resolver for `/practice?skill=...` so a ready pilot skill opens the guided sequence directly instead of dropping the learner at the generic selector.
+- [x] 13.2 Add tests for accepted, missing, unknown, and not-ready skill query params.
+- [x] 13.3 Prevent diagnostic results from linking to skills that are not yet ready for guided practice; show an explicit in-preparation state instead.
+- [x] 13.4 Add tests proving ready suggestions link to practice and unready suggestions do not create broken links.
+- [x] 13.5 Verify with `pnpm run test:run`, `pnpm run typecheck`, and `pnpm run build`.
