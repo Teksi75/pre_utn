@@ -6,6 +6,7 @@
 import type { Result } from "./result";
 import { ok, err } from "./result";
 import type { SkillId } from "./skill";
+import type { IntervalModel } from "../intervals/index";
 
 /** Source use classification for canonical material. */
 export type SourceUse = "adapted" | "reinforcement" | "reference";
@@ -25,6 +26,14 @@ export interface ConceptBlock {
   readonly body: string;
 }
 
+/** Optional visual interval representation attached to theory nodes. */
+export interface IntervalVisualExample {
+  readonly id: string;
+  readonly title: string;
+  readonly description: string;
+  readonly interval: IntervalModel;
+}
+
 /** A theory node — the smallest teachable unit for a skill. */
 export interface TheoryNode {
   readonly id: string;
@@ -34,6 +43,7 @@ export interface TheoryNode {
   readonly commonMistakes: readonly string[];
   readonly practicePrompts: readonly string[];
   readonly canonicalTrace: readonly CanonicalTrace[];
+  readonly intervalVisuals?: readonly IntervalVisualExample[];
 }
 
 /** Validation error with field and message. */

@@ -129,3 +129,20 @@ Chain strategy: feature-branch-chain
 - [x] 14.3 Add a small client component that reads local practice progress and renders the recommended next step.
 - [x] 14.4 Replace the generic home with a lightweight preparation dashboard that states the real product status: Matemática active, Física later, Unit 1 partial, only two skills ready.
 - [x] 14.5 Close the promise: the learner enters and knows what to do first, without presenting the app as a complete course.
+
+## Phase 15: Interval visual model and number line
+
+- [x] 15.1 Add a pure internal interval model for bounded intervals, rays, and the total real interval.
+- [x] 15.2 Add `formatInterval`, `isValidInterval`, and `normalizeInfinityInput` so infinity is represented consistently without depending on the physical keyboard.
+- [x] 15.3 Add a reusable SVG number-line component that receives `IntervalModel` and uses no external images or third-party assets.
+- [x] 15.4 Integrate two visual interval representations into `mat.u1.intervalos` theory: `x ≥ −2 → [−2, +∞)` and `(−3, 2]`.
+- [x] 15.5 Pedagogical promise: the app represents intervals in recta numérica without depending on external images or requiring the learner to type `∞`.
+
+## Phase 16: Exercise answer controls by type
+
+- [x] 16.1 Extract a reusable answer input component that renders the control according to exercise type.
+- [x] 16.2 Render multiple-choice exercises as selectable options in both diagnostic and practice flows, so students do not type interval notation manually.
+- [x] 16.3 Render true-false exercises as Verdadero/Falso controls, while keeping text input for numerical, symbolic, and fill-blank exercises.
+- [x] 16.4 Replace raw technical exercise type labels with student-facing labels.
+- [x] 16.5 Pedagogical promise: the learner answers with a control adequate to the exercise type, not with a generic input.
+- [x] 16.6 Stabilize selectable-answer state with controlled radio cards: select → retain selection → enable submit → submit exact option.

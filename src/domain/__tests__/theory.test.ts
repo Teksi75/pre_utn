@@ -4,6 +4,7 @@ import {
   type TheoryNode,
   type ConceptBlock,
   type CanonicalTrace,
+  type IntervalVisualExample,
 } from "../models/theory";
 
 describe("TheoryNode", () => {
@@ -33,6 +34,19 @@ describe("TheoryNode", () => {
     ...overrides,
   });
 
+  const makeIntervalVisual = (
+    overrides: Partial<IntervalVisualExample> = {}
+  ): IntervalVisualExample => ({
+    id: "visual-interval-ray",
+    title: "Semirrecta cerrada",
+    description: "x ≥ −2 se representa como [−2, +∞).",
+    interval: {
+      left: { kind: "finite", value: -2, closed: true },
+      right: { kind: "positiveInfinity" },
+    },
+    ...overrides,
+  });
+
   describe("valid theory node", () => {
     test("accepts a complete theory node", () => {
       const node = makeNode();
@@ -46,6 +60,14 @@ describe("TheoryNode", () => {
           makeConcept({ id: "c1", title: "Cerradura" }),
           makeConcept({ id: "c2", title: "Conmutatividad" }),
         ],
+      });
+      const result = validateTheoryNode(node);
+      expect(result.ok).toBe(true);
+    });
+
+    test("accepts optional interval visual examples", () => {
+      const node = makeNode({
+        intervalVisuals: [makeIntervalVisual()],
       });
       const result = validateTheoryNode(node);
       expect(result.ok).toBe(true);

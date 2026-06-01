@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { NumberLineInterval } from "@/components/math/NumberLineInterval";
 import type { TheoryNode } from "@/domain/models/theory";
 
 interface TheoryCardProps {
@@ -36,6 +37,22 @@ export function TheoryCard({ node }: TheoryCardProps) {
           </div>
         ))}
       </div>
+
+      {node.intervalVisuals && node.intervalVisuals.length > 0 && (
+        <div className="mt-5 space-y-3">
+          <p className="text-xs font-medium text-brand-500">
+            Representación en recta numérica:
+          </p>
+          {node.intervalVisuals.map((visual) => (
+            <NumberLineInterval
+              key={visual.id}
+              interval={visual.interval}
+              title={visual.title}
+              description={visual.description}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Notation toggle */}
       <button

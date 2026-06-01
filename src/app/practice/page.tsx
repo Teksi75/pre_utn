@@ -147,6 +147,19 @@ export default function PracticePage() {
     }
   }, [exerciseIndex, exercises, resetToSelect]);
 
+  const handleContinueAfterFeedback = useCallback(() => {
+    if (evaluation?.errorTag) {
+      setPhase("recovery");
+      return;
+    }
+
+    handleNextExercise();
+  }, [evaluation, handleNextExercise]);
+
+  const handleContinueAfterRecovery = useCallback(() => {
+    handleNextExercise();
+  }, [handleNextExercise]);
+
   const handleNextExample = useCallback(() => {
     const nextIdx = exampleIndex + 1;
     if (nextIdx < examples.length) {
@@ -312,7 +325,7 @@ export default function PracticePage() {
           />
 
           <button
-            onClick={handleNextPhase}
+            onClick={handleContinueAfterFeedback}
             className="w-full bg-brand-100 text-brand-700 px-4 py-2.5 text-sm font-medium rounded-[var(--radius-button)] hover:bg-brand-200 min-h-[44px] transition-colors duration-[var(--duration-fast)] focus-visible:shadow-[var(--ring-focus)]"
           >
             {evaluation.errorTag
@@ -374,7 +387,7 @@ export default function PracticePage() {
           })()}
 
           <button
-            onClick={handleNextPhase}
+            onClick={handleContinueAfterRecovery}
             className="w-full bg-brand-100 text-brand-700 px-4 py-2.5 text-sm font-medium rounded-[var(--radius-button)] hover:bg-brand-200 min-h-[44px] transition-colors duration-[var(--duration-fast)] focus-visible:shadow-[var(--ring-focus)]"
           >
             {exerciseIndex + 1 < exercises.length

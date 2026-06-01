@@ -95,6 +95,26 @@
       "¿Cuál es la intersección de [1,4] y [3,6]?",
       "Representa (−2, 5] en la recta numérica"
     ],
+    "intervalVisuals": [
+      {
+        "id": "visual-intervalos-semirecta-cerrada",
+        "title": "De desigualdad a semirrecta",
+        "description": "La condición x ≥ −2 incluye el −2 y se extiende hacia +∞: [−2, +∞).",
+        "interval": {
+          "left": { "kind": "finite", "value": -2, "closed": true },
+          "right": { "kind": "positiveInfinity" }
+        }
+      },
+      {
+        "id": "visual-intervalos-acotado-semiabierto",
+        "title": "Intervalo acotado semiabierto",
+        "description": "El intervalo (−3, 2] excluye −3 e incluye 2.",
+        "interval": {
+          "left": { "kind": "finite", "value": -3, "closed": false },
+          "right": { "kind": "finite", "value": 2, "closed": true }
+        }
+      }
+    ],
     "canonicalTrace": [
       {
         "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
