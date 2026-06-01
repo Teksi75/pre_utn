@@ -12,6 +12,7 @@ import type { Exercise } from "../models/exercise";
 /** Tags that represent sign-related misconceptions. */
 const SIGN_ERROR_TAGS = new Set([
   "u1_signo_racionalizacion",
+  "u1_signo_parentesis",
   "u2_signo_al_mover",
   "u3_signo_desigualdad",
 ]);
@@ -21,6 +22,42 @@ const ORDER_OF_OPS_TAGS = new Set(["u1_orden_operaciones"]);
 
 /** Tags that represent interval endpoint-inclusion misconceptions. */
 const INTERVAL_ENDPOINT_TAGS = new Set(["u1_extremo_inclusion"]);
+
+/** Tags that represent zero-exponent misconceptions (x^0 ≠ 0). */
+const ZERO_EXPONENT_TAGS = new Set(["u1_exponente_cero"]);
+
+/** Tags that represent principal-square-root misconceptions (√x ≥ 0). */
+const PRINCIPAL_ROOT_TAGS = new Set(["u1_raiz_principal"]);
+
+/** Tags that represent exponent-law misconceptions. */
+const PRODUCT_OF_POWERS_TAGS = new Set(["u1_producto_potencias"]);
+const QUOTIENT_OF_POWERS_TAGS = new Set(["u1_cociente_potencias"]);
+const POWER_OF_POWER_TAGS = new Set(["u1_potencia_de_potencia"]);
+
+/** Tags that represent invalid even roots of negative numbers in ℝ. */
+const NEGATIVE_EVEN_ROOT_TAGS = new Set(["u1_raiz_negativa_par"]);
+
+const SUPERSCRIPT_DIGITS: Readonly<Record<string, string>> = {
+  "⁰": "0",
+  "¹": "1",
+  "²": "2",
+  "³": "3",
+  "⁴": "4",
+  "⁵": "5",
+  "⁶": "6",
+  "⁷": "7",
+  "⁸": "8",
+  "⁹": "9",
+};
+
+function normalizeSuperscripts(value: string): string {
+  return value.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, (digit) => SUPERSCRIPT_DIGITS[digit]);
+}
+
+function numericAnswer(userAnswer: string): number | undefined {
+  const student = Number(userAnswer.trim());
+  return Number.isNaN(student) ? undefined : student;
+}
 
 /**
  * Detect a sign-error pattern: the absolute value of the user's answer
@@ -109,6 +146,109 @@ function isIntervalEndpointError(exercise: Exercise, userAnswer: string): boolea
 }
 
 /**
+ * Detect a zero-exponent error: the expected answer is 1 (x^0 = 1) but the
+ * student answered 0, a common misconception that anything to the power 0 is 0.
+ * Only applies to numerical exercises.
+ */
+function isZeroExponentError(exercise: Exercise, userAnswer: string): boolean {
+  if (exercise.type !== "numerical") return false;
+
+  const expected = Number(exercise.expectedAnswer);
+  const student = Number(userAnswer.trim());
+
+  if (Number.isNaN(expected) || Number.isNaN(student)) return false;
+
+  // Classic misconception: x^0 = 0 instead of 1
+  return expected === 1 && student === 0;
+}
+
+/**
+ * Detect a principal-square-root error: the expected answer is positive (the
+ * principal root) but the student answered its negation. For example, √9 = 3
+ * but student writes -3.
+ * Only applies to numerical exercises.
+ */
+function isPrincipalRootError(exercise: Exercise, userAnswer: string): boolean {
+  if (exercise.type !== "numerical") return false;
+
+  const expected = Number(exercise.expectedAnswer);
+  const student = Number(userAnswer.trim());
+
+  if (Number.isNaN(expected) || Number.isNaN(student)) return false;
+  if (expected <= 0) return false;
+
+  return student === -expected;
+}
+
+/** Detect product-of-powers misconception: a^m × a^n treated as a^(m×n). */
+function isProductOfPowersError(exercise: Exercise, userAnswer: string): boolean {
+  if (exercise.type !== "numerical") return false;
+
+  const prompt = normalizeSuperscripts(exercise.prompt);
+  const match = prompt.match(/(\d+)\s*\^?\s*(\d+)\s*[×x*]\s*\1\s*\^?\s*(\d+)/);
+  const student = numericAnswer(userAnswer);
+  const expected = Number(exercise.expectedAnswer);
+
+  if (!match || student === undefined || Number.isNaN(expected)) return false;
+
+  const base = Number(match[1]);
+  const leftExponent = Number(match[2]);
+  const rightExponent = Number(match[3]);
+  const multiplyExponents = base ** (leftExponent * rightExponent);
+
+  return student === multiplyExponents && student !== expected;
+}
+
+/** Detect quotient-of-powers misconception: a^m ÷ a^n treated as a^(m+n). */
+function isQuotientOfPowersError(exercise: Exercise, userAnswer: string): boolean {
+  if (exercise.type !== "numerical") return false;
+
+  const prompt = normalizeSuperscripts(exercise.prompt);
+  const match = prompt.match(/(\d+)\s*\^?\s*(\d+)\s*[÷/]\s*\1\s*\^?\s*(\d+)/);
+  const student = numericAnswer(userAnswer);
+  const expected = Number(exercise.expectedAnswer);
+
+  if (!match || student === undefined || Number.isNaN(expected)) return false;
+
+  const base = Number(match[1]);
+  const numeratorExponent = Number(match[2]);
+  const denominatorExponent = Number(match[3]);
+  const addedExponents = base ** (numeratorExponent + denominatorExponent);
+
+  return student === addedExponents && student !== expected;
+}
+
+/** Detect power-of-power misconception: (a^m)^n treated as a^(m+n). */
+function isPowerOfPowerError(exercise: Exercise, userAnswer: string): boolean {
+  if (exercise.type !== "numerical") return false;
+
+  const prompt = normalizeSuperscripts(exercise.prompt);
+  const match = prompt.match(/\(\s*(\d+)\s*\^?\s*(\d+)\s*\)\s*\^?\s*(\d+)/);
+  const student = numericAnswer(userAnswer);
+  const expected = Number(exercise.expectedAnswer);
+
+  if (!match || student === undefined || Number.isNaN(expected)) return false;
+
+  const base = Number(match[1]);
+  const innerExponent = Number(match[2]);
+  const outerExponent = Number(match[3]);
+  const addedExponents = base ** (innerExponent + outerExponent);
+
+  return student === addedExponents && student !== expected;
+}
+
+/** Detect answers that treat √(negative) as a real number in multiple choice. */
+function isNegativeEvenRootError(exercise: Exercise, userAnswer: string): boolean {
+  if (exercise.type !== "multiple-choice") return false;
+  if (!/[√] ?\( ?-\d+ ?\)/.test(exercise.prompt)) return false;
+
+  const expected = exercise.expectedAnswer.trim().toLowerCase();
+  const student = userAnswer.trim().toLowerCase();
+
+  return expected.includes("no tiene resultado real") && student !== expected;
+}
+
+/**
  * Match the user's answer against known error patterns and return a
  * declared commonErrorTag if one fits, or undefined.
  *
@@ -145,6 +285,54 @@ export function tagError(
   if (isIntervalEndpointError(exercise, userAnswer)) {
     for (const tag of tags) {
       if (INTERVAL_ENDPOINT_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isZeroExponentError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (ZERO_EXPONENT_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isPrincipalRootError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (PRINCIPAL_ROOT_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isProductOfPowersError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (PRODUCT_OF_POWERS_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isQuotientOfPowersError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (QUOTIENT_OF_POWERS_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isPowerOfPowerError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (POWER_OF_POWER_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isNegativeEvenRootError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (NEGATIVE_EVEN_ROOT_TAGS.has(tag)) {
         return tag;
       }
     }

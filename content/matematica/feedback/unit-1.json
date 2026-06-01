@@ -28,5 +28,47 @@
     "type": "conceptual",
     "message": "Recordá: > o < significan extremo abierto (paréntesis). ≥ o ≤ significan extremo cerrado (corchete). El infinito SIEMPRE lleva paréntesis.",
     "recoveryTarget": "example-intervalos-1"
+  },
+  {
+    "errorTag": "u1_exponente_cero",
+    "type": "conceptual",
+    "message": "Cualquier número distinto de cero elevado a la potencia cero es igual a 1. No es 0. Recordá la regla: a^0 = 1 para todo a ≠ 0.",
+    "recoveryTarget": "theory-potencias-raices"
+  },
+  {
+    "errorTag": "u1_signo_parentesis",
+    "type": "conceptual",
+    "message": "Los paréntesis determinan qué se eleva a la potencia. (-3)^2 significa (-3)×(-3) = 9. Sin paréntesis, -3^2 = -(3×3) = -9. Prestá atención a dónde van los paréntesis.",
+    "recoveryTarget": "example-potencias-raices-2"
+  },
+  {
+    "errorTag": "u1_producto_potencias",
+    "type": "procedural",
+    "message": "Al multiplicar potencias de la MISMA base, se suman los exponentes: a^m × a^n = a^(m+n). Si las bases son diferentes, no podés sumar exponentes.",
+    "recoveryTarget": "example-potencias-raices-3"
+  },
+  {
+    "errorTag": "u1_cociente_potencias",
+    "type": "procedural",
+    "message": "Al dividir potencias de la misma base, se restan los exponentes: a^m ÷ a^n = a^(m-n). Verificá que las bases coincidan antes de aplicar la regla.",
+    "recoveryTarget": "example-potencias-raices-3"
+  },
+  {
+    "errorTag": "u1_potencia_de_potencia",
+    "type": "procedural",
+    "message": "Al elevar una potencia a otra potencia, se multiplican los exponentes: (a^m)^n = a^(m×n). No sumes los exponentes.",
+    "recoveryTarget": "example-potencias-raices-3"
+  },
+  {
+    "errorTag": "u1_raiz_principal",
+    "type": "conceptual",
+    "message": "La raíz cuadrada de un número positivo siempre es POSITIVA (la raíz principal). √9 = 3, no -3. La raíz principal es la no negativa.",
+    "recoveryTarget": "example-potencias-raices-1"
+  },
+  {
+    "errorTag": "u1_raiz_negativa_par",
+    "type": "conceptual",
+    "message": "No existe raíz cuadrada (ni raíz de índice par) de un número negativo en los números reales. √(-4) no tiene resultado real. Recién se define con números complejos.",
+    "recoveryTarget": "theory-potencias-raices"
   }
 ]

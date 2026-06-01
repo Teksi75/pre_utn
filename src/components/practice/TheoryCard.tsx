@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { NumberLineInterval } from "@/components/math/NumberLineInterval";
+import { RichText } from "@/components/math/RichText";
 import type { TheoryNode } from "@/domain/models/theory";
 
 interface TheoryCardProps {
@@ -31,24 +32,24 @@ export function TheoryCard({ node }: TheoryCardProps) {
             <h3 className="text-[var(--text-lg)] font-semibold text-brand-900">
               {concept.title}
             </h3>
-            <p className="mt-1 text-sm text-brand-700 leading-[var(--leading-relaxed)]">
-              {concept.body}
-            </p>
+            <div className="mt-1 text-sm text-brand-700 leading-[var(--leading-relaxed)]">
+              <RichText text={concept.body} />
+            </div>
           </div>
         ))}
       </div>
 
       {node.intervalVisuals && node.intervalVisuals.length > 0 && (
         <div className="mt-5 space-y-3">
-          <p className="text-xs font-medium text-brand-500">
+          <div className="text-xs font-medium text-brand-500">
             Representación en recta numérica:
-          </p>
+          </div>
           {node.intervalVisuals.map((visual) => (
             <NumberLineInterval
               key={visual.id}
               interval={visual.interval}
               title={visual.title}
-              description={visual.description}
+              description={<RichText text={visual.description} />}
             />
           ))}
         </div>
@@ -65,7 +66,7 @@ export function TheoryCard({ node }: TheoryCardProps) {
       {showNotation && (
         <ul className="mt-2 list-disc list-inside text-sm text-brand-700 space-y-1">
           {node.notation.map((item, i) => (
-            <li key={i}>{item}</li>
+            <li key={i}><RichText text={item} /></li>
           ))}
         </ul>
       )}
@@ -81,7 +82,7 @@ export function TheoryCard({ node }: TheoryCardProps) {
       {showMistakes && (
         <ul className="mt-2 list-disc list-inside text-sm text-red-600 space-y-1">
           {node.commonMistakes.map((mistake, i) => (
-            <li key={i}>{mistake}</li>
+            <li key={i}><RichText text={mistake} /></li>
           ))}
         </ul>
       )}
@@ -89,12 +90,12 @@ export function TheoryCard({ node }: TheoryCardProps) {
       {/* Practice prompts */}
       {node.practicePrompts.length > 0 && (
         <div className="mt-4 pt-3 border-t border-brand-100">
-          <p className="text-xs font-medium text-brand-500 mb-1">
+          <div className="text-xs font-medium text-brand-500 mb-1">
             Para practicar:
-          </p>
+          </div>
           <ul className="text-sm text-brand-700 space-y-1">
             {node.practicePrompts.map((prompt, i) => (
-              <li key={i}>• {prompt}</li>
+              <li key={i}>• <RichText text={prompt} /></li>
             ))}
           </ul>
         </div>

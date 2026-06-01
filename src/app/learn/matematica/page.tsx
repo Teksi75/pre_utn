@@ -4,6 +4,7 @@ import { loadTheoryContent } from "@/domain/catalog/content-loaders";
 const SKILL_DISPLAY_NAMES: Record<string, string> = {
   "mat.u1.reales_operaciones": "Números reales y operaciones",
   "mat.u1.intervalos": "Intervalos",
+  "mat.u1.potencias_raices": "Potencias y raíces",
 };
 
 export default function LearnMatematicaPage() {

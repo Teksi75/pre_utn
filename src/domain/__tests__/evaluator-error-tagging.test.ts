@@ -33,6 +33,16 @@ describe("Error tagging — tagError()", () => {
       const tag = tagError(exercise, "-3");
       expect(tag).toBe("u2_signo_al_mover");
     });
+
+    test("sign-and-parentheses tag is returned for negative-base power misconception", () => {
+      const exercise = makeExercise({
+        prompt: "Calcula (−3)^2",
+        expectedAnswer: "9",
+        commonErrorTags: ["u1_signo_parentesis"],
+      });
+      const tag = tagError(exercise, "-9");
+      expect(tag).toBe("u1_signo_parentesis");
+    });
   });
 
   describe("order-of-operations pattern", () => {
@@ -118,6 +128,136 @@ describe("Error tagging — tagError()", () => {
       });
       const tag = tagError(exercise, "abc");
       expect(tag).toBeUndefined();
+    });
+  });
+
+  describe("zero-exponent pattern", () => {
+    test("detects zero-exponent error when student answers 0 for x^0 = 1", () => {
+      const exercise = makeExercise({
+        prompt: "Calcula 5^0",
+        expectedAnswer: "1",
+        commonErrorTags: ["u1_exponente_cero"],
+      });
+      const tag = tagError(exercise, "0");
+      expect(tag).toBe("u1_exponente_cero");
+    });
+
+    test("no tag when exercise does not declare u1_exponente_cero", () => {
+      const exercise = makeExercise({
+        prompt: "Calcula 5^0",
+        expectedAnswer: "1",
+        commonErrorTags: [],
+      });
+      const tag = tagError(exercise, "0");
+      expect(tag).toBeUndefined();
+    });
+
+    test("no tag when expected is not 1 (not a zero-exponent case)", () => {
+      const exercise = makeExercise({
+        prompt: "Calcula 3 + 2",
+        expectedAnswer: "5",
+        commonErrorTags: ["u1_exponente_cero"],
+      });
+      const tag = tagError(exercise, "0");
+      expect(tag).toBeUndefined();
+    });
+  });
+
+  describe("principal-square-root pattern", () => {
+    test("detects principal-root error when student answers negative of expected positive root", () => {
+      const exercise = makeExercise({
+        prompt: "Calcula √9",
+        expectedAnswer: "3",
+        commonErrorTags: ["u1_raiz_principal"],
+      });
+      const tag = tagError(exercise, "-3");
+      expect(tag).toBe("u1_raiz_principal");
+    });
+
+    test("detects principal-root error for √16", () => {
+      const exercise = makeExercise({
+        prompt: "Calcula √16",
+        expectedAnswer: "4",
+        commonErrorTags: ["u1_raiz_principal"],
+      });
+      const tag = tagError(exercise, "-4");
+      expect(tag).toBe("u1_raiz_principal");
+    });
+
+    test("no tag when exercise does not declare u1_raiz_principal", () => {
+      const exercise = makeExercise({
+        prompt: "Calcula √9",
+        expectedAnswer: "3",
+        commonErrorTags: [],
+      });
+      const tag = tagError(exercise, "-3");
+      expect(tag).toBeUndefined();
+    });
+
+    test("no tag when expected answer is already negative", () => {
+      const exercise = makeExercise({
+        prompt: "Calcula algo",
+        expectedAnswer: "-3",
+        commonErrorTags: ["u1_raiz_principal"],
+      });
+      const tag = tagError(exercise, "3");
+      expect(tag).toBeUndefined();
+    });
+  });
+
+  describe("exponent-law patterns", () => {
+    test("detects product-of-powers error when student multiplies exponents", () => {
+      const exercise = makeExercise({
+        prompt: "Calcula 2³ × 2⁴",
+        expectedAnswer: "128",
+        commonErrorTags: ["u1_producto_potencias"],
+      });
+      const tag = tagError(exercise, "4096");
+      expect(tag).toBe("u1_producto_potencias");
+    });
+
+    test("detects quotient-of-powers error when student adds exponents", () => {
+      const exercise = makeExercise({
+        prompt: "Calcula 2⁵ ÷ 2²",
+        expectedAnswer: "8",
+        commonErrorTags: ["u1_cociente_potencias"],
+      });
+      const tag = tagError(exercise, "128");
+      expect(tag).toBe("u1_cociente_potencias");
+    });
+
+    test("detects power-of-power error when student adds exponents", () => {
+      const exercise = makeExercise({
+        prompt: "Calcula (2³)²",
+        expectedAnswer: "64",
+        commonErrorTags: ["u1_potencia_de_potencia"],
+      });
+      const tag = tagError(exercise, "32");
+      expect(tag).toBe("u1_potencia_de_potencia");
+    });
+
+    test("does not tag exponent-law misconception when tag is not declared", () => {
+      const exercise = makeExercise({
+        prompt: "Calcula 2³ × 2⁴",
+        expectedAnswer: "128",
+        commonErrorTags: [],
+      });
+      const tag = tagError(exercise, "4096");
+      expect(tag).toBeUndefined();
+    });
+  });
+
+  describe("negative even root in real numbers pattern", () => {
+    test("detects even-root-of-negative misconception in multiple choice", () => {
+      const exercise = makeExercise({
+        type: "multiple-choice",
+        prompt: "¿Qué resultado tiene √(-4) en los números reales?",
+        expectedAnswer: "No tiene resultado real",
+        options: ["2", "-2", "No tiene resultado real", "4"],
+        commonErrorTags: ["u1_raiz_negativa_par"],
+      });
+      const tag = tagError(exercise, "2");
+      expect(tag).toBe("u1_raiz_negativa_par");
     });
   });
 

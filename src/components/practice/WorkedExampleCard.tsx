@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { RichText } from "@/components/math/RichText";
 import type { WorkedExample } from "@/domain/models/worked-example";
 
 interface WorkedExampleCardProps {
@@ -23,9 +24,9 @@ export function WorkedExampleCard({ example }: WorkedExampleCardProps) {
         </span>
       </div>
 
-      <p className="text-[var(--text-lg)] text-brand-900 font-medium leading-[var(--leading-relaxed)]">
-        {example.problem}
-      </p>
+      <div className="text-[var(--text-lg)] text-brand-900 font-medium leading-[var(--leading-relaxed)]">
+        <RichText text={example.problem} />
+      </div>
 
       {/* Steps toggle */}
       <button
@@ -45,9 +46,9 @@ export function WorkedExampleCard({ example }: WorkedExampleCardProps) {
               <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-brand-100 text-brand-600 text-xs font-medium">
                 {step.order}
               </span>
-              <p className="leading-[var(--leading-relaxed)]">
-                {step.explanation}
-              </p>
+              <div className="leading-[var(--leading-relaxed)]">
+                <RichText text={step.explanation} />
+              </div>
             </div>
           ))}
         </div>
@@ -56,21 +57,21 @@ export function WorkedExampleCard({ example }: WorkedExampleCardProps) {
       {/* Final answer */}
       {showSteps && (
         <div className="mt-3 pt-3 border-t border-brand-100">
-          <p className="text-sm font-semibold text-brand-900">
-            Respuesta: {example.finalAnswer}
-          </p>
+          <div className="text-sm font-semibold text-brand-900">
+            Respuesta: <RichText text={example.finalAnswer} />
+          </div>
         </div>
       )}
 
       {/* Pedagogical note */}
       {showSteps && example.pedagogicalNote && (
         <div className="mt-2 p-3 bg-amber-50 rounded-[var(--radius-card)] border border-amber-200">
-          <p className="text-xs font-medium text-amber-800 mb-1">
+          <div className="text-xs font-medium text-amber-800 mb-1">
             Tip pedagógico:
-          </p>
-          <p className="text-sm text-amber-700 leading-[var(--leading-relaxed)]">
-            {example.pedagogicalNote}
-          </p>
+          </div>
+          <div className="text-sm text-amber-700 leading-[var(--leading-relaxed)]">
+            <RichText text={example.pedagogicalNote} />
+          </div>
         </div>
       )}
     </div>

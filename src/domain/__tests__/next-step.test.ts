@@ -4,6 +4,7 @@ import type { PracticeProgress } from "../progress/index";
 
 const readySkills: readonly ReadySkill[] = [
   { skillId: "mat.u1.reales_operaciones", label: "Números reales y operaciones" },
+  { skillId: "mat.u1.potencias_raices", label: "Potencias y raíces" },
   { skillId: "mat.u1.intervalos", label: "Intervalos" },
 ];
 
@@ -66,7 +67,7 @@ describe("deriveHomeNextStep", () => {
     expect(nextStep.href).not.toContain("mat.u2.factorizacion");
   });
 
-  it("recommends continuing Unit 1 when ready skills have acceptable progress", () => {
+  it("recommends the next unattempted ready step when previous skills have acceptable progress", () => {
     const nextStep = deriveHomeNextStep(
       progress({
         attempts: [
@@ -83,7 +84,40 @@ describe("deriveHomeNextStep", () => {
       readySkills
     );
 
-    expect(nextStep.kind).toBe("continue-unit");
-    expect(nextStep.href).toBe("/learn/matematica");
+    expect(nextStep.kind).toBe("practice");
+    expect(nextStep.href).toBe("/practice?skill=mat.u1.potencias_raices");
+  });
+
+  it("prioritizes the next pedagogical step before recovering later ready skills", () => {
+    const nextStep = deriveHomeNextStep(
+      progress({
+        attempts: [
+          {
+            exerciseId: "ex-1",
+            skillId: "mat.u1.reales_operaciones",
+            correct: true,
+            answeredAt: "2026-06-01T00:00:00.000Z",
+          },
+          {
+            exerciseId: "ex-2",
+            skillId: "mat.u1.intervalos",
+            correct: false,
+            answeredAt: "2026-06-01T00:01:00.000Z",
+          },
+        ],
+        accuracyBySkill: {
+          "mat.u1.reales_operaciones": 1,
+          "mat.u1.intervalos": 0.5,
+        },
+        trendBySkill: {
+          "mat.u1.reales_operaciones": "stable",
+          "mat.u1.intervalos": "needs-review",
+        },
+      }),
+      readySkills
+    );
+
+    expect(nextStep.kind).toBe("practice");
+    expect(nextStep.href).toBe("/practice?skill=mat.u1.potencias_raices");
   });
 });

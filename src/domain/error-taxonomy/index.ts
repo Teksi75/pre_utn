@@ -72,6 +72,78 @@ const TAXONOMY: readonly ErrorTag[] = [
       "Reordenar 7 - 4 + 1 como 7 + 1 - 4 y olvidar que el signo original era negativo",
     ],
   },
+  {
+    id: "u1_signo_parentesis",
+    unit: 1,
+    description:
+      "Error al interpretar potencia con base negativa: confunde (-a)^n con -a^n, olvidando que los paréntesis incluyen al signo negativo.",
+    examples: [
+      "Calcular (-3)^2 = -9 en vez de 9, confundiendo (-3)×(-3) con -(3×3)",
+      "Calcular (-2)^3 = 8 en vez de -8, invirtiendo la regla de signos",
+    ],
+  },
+
+  // Unit 1: Potencias y raíces — new error tags
+  {
+    id: "u1_exponente_cero",
+    unit: 1,
+    description:
+      "Error al evaluar exponente cero: cree que cualquier número elevado a la potencia cero es 0 en vez de 1.",
+    examples: [
+      "Calcular 5^0 = 0 en vez de 1",
+      "Calcular (-3)^0 = 0 en vez de 1",
+    ],
+  },
+  {
+    id: "u1_producto_potencias",
+    unit: 1,
+    description:
+      "Error al multiplicar potencias de distinta base: suma los exponentes cuando las bases son diferentes, o multiplica los exponentes en vez de sumarlos.",
+    examples: [
+      "Calcular 2^3 × 3^2 como 6^5 en vez de 8 × 9 = 72",
+      "Calcular 2^3 × 2^4 como 2^12 en vez de 2^7 = 128",
+    ],
+  },
+  {
+    id: "u1_cociente_potencias",
+    unit: 1,
+    description:
+      "Error al dividir potencias de distinta base: resta los exponentes cuando las bases son diferentes, o aplica la regla incorrectamente.",
+    examples: [
+      "Calcular 6^4 ÷ 3^2 como 2^2 = 4 en vez de 36",
+      "Calcular 5^6 ÷ 5^2 como 5^3 en vez de 5^4 = 625",
+    ],
+  },
+  {
+    id: "u1_potencia_de_potencia",
+    unit: 1,
+    description:
+      "Error al elevar una potencia a otra potencia: multiplica los exponentes en vez de multiplicarlos, o no aplica la regla (a^m)^n = a^(m×n).",
+    examples: [
+      "Calcular (2^3)^2 como 2^5 = 32 en vez de 2^6 = 64",
+      "Calcular (3^2)^3 como 3^5 = 243 en vez de 3^6 = 729",
+    ],
+  },
+  {
+    id: "u1_raiz_principal",
+    unit: 1,
+    description:
+      "Error al calcular raíz cuadrada: responde con el valor negativo en vez de la raíz principal (no negativa).",
+    examples: [
+      "Calcular √9 = -3 en vez de 3",
+      "Calcular √25 = -5 en vez de 5",
+    ],
+  },
+  {
+    id: "u1_raiz_negativa_par",
+    unit: 1,
+    description:
+      "Error al evaluar raíz par de número negativo: afirma que existe resultado real en vez de reconocer que no tiene raíz real.",
+    examples: [
+      "Calcular √(-4) = 2i en vez de indicar que no tiene resultado real",
+      "Decir que √(-9) = -3 en vez de que no existe en los reales",
+    ],
+  },
 
   // Unit 2: Equations and systems
   {

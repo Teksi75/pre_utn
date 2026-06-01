@@ -1,9 +1,10 @@
+import type { ReactNode } from "react";
 import { formatInterval, isValidInterval, type IntervalModel } from "@/domain/intervals/index";
 
 interface NumberLineIntervalProps {
   readonly interval: IntervalModel;
   readonly title?: string;
-  readonly description?: string;
+  readonly description?: ReactNode;
 }
 
 const SVG_WIDTH = 520;

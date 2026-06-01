@@ -1,86 +1,75 @@
-# Pre UTN — App de preparación para el ingreso
+# Pre UTN
 
-Aplicación de preparación para el ingreso a Ingeniería UTN Mendoza. El proyecto busca convertir el material de referencia en un sistema de práctica, feedback y seguimiento pedagógico para alumnos y docentes.
+Pre UTN es una app de preparación para el ingreso a Ingeniería UTN Mendoza. Complementa las clases presenciales con práctica, feedback y seguimiento pedagógico para alumnos y docentes.
 
-## Foco del MVP
+## Estado real del MVP
 
-La primera etapa implementa **Matemática**. Física queda preparada como segunda fase, sin bloquear decisiones de arquitectura ni modelo pedagógico.
+- Matemática es el primer módulo activo.
+- Física queda para una segunda fase.
+- Unidad 1 está en construcción: no es todavía un curso completo.
+- Las rutas actuales permiten aprender, practicar y diagnosticar sobre el catálogo disponible, pero solo deben tratarse como transitables las skills que tengan teoría, ejemplos, práctica, feedback y readiness real.
 
-| Área | Estado |
-|---|---|
-| Matemática | Dominio base implementado |
-| Física | Segunda fase |
-| Stack previsto | Next.js · TypeScript · Supabase · Vercel · pnpm |
-| Metodología | SDD · TDD · ENGRAM · GGA |
+Skills de Unidad 1 realmente transitables hoy:
 
-## Estructura inicial
+| Skill | Estado |
+|-------|--------|
+| Números reales y operaciones | Listo |
+| Intervalos | Listo |
+| Potencias y raíces | Listo |
 
-```text
-material_canonico/        Material de referencia: teoría, ejercicios y evaluaciones
-utn-ingreso-app-spec/     Especificación del producto y plan de implementación
-src/                      App Next.js inicial
-openspec/                 Cambios SDD y trazabilidad de implementación
-```
+## Fuente de verdad
 
-El material canónico se trata como fuente pedagógica válida. La app puede apoyarse en su teoría, ejemplos y evaluaciones; para los ejercicios se prefiere variar valores, contexto o redacción cuando eso aporte práctica nueva, salvo repeticiones intencionales para reforzar un concepto.
+Este README es una puerta de entrada y un mapa de navegación. No es la fuente normativa única.
 
-## Documentación principal
+| Tema | Fuente activa |
+|------|---------------|
+| Pedagogía y contenido canónico | `material_canonico/Matemática/` |
+| Mapa de contenidos | `utn-ingreso-app-spec/docs/pedagogy/05-math-content-map.md` |
+| Mapa de skills | `utn-ingreso-app-spec/docs/pedagogy/06-skill-map.md` |
+| Estado de implementación SDD | `openspec/changes/` vigentes |
+| Contenido cargado en la app | `content/matematica/` |
+| Catálogo y readiness técnico | `src/domain/catalog/` |
+| Scripts reales | `package.json` |
 
-El punto de entrada de especificación está en:
+La fuente pedagógica es el material canónico y las specs activas. La fuente técnica es el código y los tests. La fuente de estado implementado son los cambios SDD vigentes y el contenido real del repo.
 
-```text
-utn-ingreso-app-spec/docs/README.md
-```
+## Reglas para agentes
 
-Lectura mínima para agentes o colaboradores:
+- No implementar features sin revisar material canónico y specs activas.
+- No asumir que este README está más actualizado que el código, `openspec/changes/` o el contenido real.
+- No cerrar una tarea solo porque pasan tests técnicos.
+- No listar una skill como transitable hasta que tenga teoría, ejemplos, práctica, feedback y readiness real.
+- No medir progreso pedagógico por cantidad de ejercicios.
+- Justificar el camino didáctico mediante microobjetivos y errores esperados.
 
-1. `utn-ingreso-app-spec/docs/00-conventions.md`
-2. `utn-ingreso-app-spec/docs/README.md`
-3. `utn-ingreso-app-spec/docs/sdd/14-agent-workflow-sdd-tdd-engram-gga.md`
+## Camino actual de Unidad 1
 
-## Reglas de trabajo
+| Paso | Tema | Estado |
+|------|------|--------|
+| 1 | Números reales y operaciones | Listo |
+| 2 | Potencias y raíces | Listo |
+| 3 | Racionalización | Pendiente |
+| 4 | Intervalos | Listo |
+| 5 | Valor absoluto | Pendiente |
+| 6 | Logaritmos | Pendiente |
+| 7 | Complejos | Pendiente |
 
-- No implementar features sin especificación previa.
-- Usar `pnpm`; no usar `npm` ni `yarn`.
-- Aplicar TDD en dominio, evaluadores, métricas y recomendaciones.
-- Pasar revisión GGA antes de cerrar tareas.
-- Mantener trazabilidad del material de referencia usado y justificar repeticiones literales cuando tengan intención didáctica.
-
-## Estado actual
-
-- Repositorio GitHub privado inicializado.
-- GGA instalado como pre-commit hook con provider `opencode`.
-- Scaffold de app creado con Next.js, TypeScript, Tailwind, pnpm y Vitest.
-- **Primera experiencia usable completada** (change `first-usable-student-experience`):
-  - Dominio base de Matemática implementado y archivado con SDD
-  - Error tagging automático en evaluador (patrones de error comunes)
-  - Práctica guiada: selección de unidad/skill, ejercicios, feedback pedagógico
-  - Diagnóstico inicial: selección balanceada, estimación de skills, sugerencias de práctica
-  - Navegación home con links a `/practice` y `/diagnostic`
-- Verificación actual: `pnpm run test:run` (168 tests), `pnpm run typecheck` y `pnpm run build` pasan.
-- `material_canonico/` contiene PDFs de referencia para orientar teoría, ejemplos, ejercicios y evaluación.
-
-## Rutas disponibles
-
-| Ruta | Descripción |
-|------|-------------|
-| `/` | Home con navegación a práctica y diagnóstico |
-| `/practice` | Práctica guiada: seleccionar unidad/skill, resolver ejercicios, recibir feedback con error tags |
-| `/diagnostic` | Diagnóstico inicial: selección balanceada de ejercicios, estimación de skills débiles, sugerencias de práctica |
+`En construcción` significa que ya existe una parte del recorrido, pero todavía no alcanza readiness completo. `Pendiente` puede incluir ejercicios sueltos o referencias parciales, pero todavía no tiene recorrido pedagógico completo y validado para el alumno.
 
 ## Cómo correr
 
 ```bash
 pnpm install
 pnpm dev
+pnpm run test:run
+pnpm run typecheck
+pnpm run build
 ```
 
-Abrir http://localhost:3000 en el navegador.
+Abrir `http://localhost:3000` para usar la app en desarrollo.
 
-## Próximos pasos
+## Advertencia de validación
 
-1. **Revisión visual humana**: verificar que las rutas funcionan correctamente en navegador
-2. **Física (segunda fase)**: extender el dominio y catálogo a Física
-3. **Métricas avanzadas**: tracking de progreso, analytics, reportes para docentes
-4. **Persistencia Supabase**: guardar intentos, progreso, perfiles de usuario
-5. **Component tests**: testing de componentes React con React Testing Library
+Que `build`, `typecheck` y los tests pasen significa que el sistema no se rompe técnicamente.
+
+No significa que el contenido sea suficiente, que la secuencia sea pedagógicamente correcta o que la experiencia sea satisfactoria para un alumno. La validación pedagógica humana sigue siendo obligatoria.

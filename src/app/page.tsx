@@ -56,6 +56,10 @@ export default function Home() {
               <span className="h-2 w-2 rounded-full bg-green-600" aria-hidden="true" />
               Intervalos
             </li>
+            <li className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-green-600" aria-hidden="true" />
+              Potencias y raíces
+            </li>
           </ul>
           <p className="mt-4 text-xs leading-[var(--leading-relaxed)] text-brand-500">
             El resto de las unidades no se presentan como curso completo hasta

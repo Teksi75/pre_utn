@@ -54,8 +54,72 @@
     "difficulty": 2,
     "prompt": "Calcula √(9) + 2²",
     "expectedAnswer": "7",
+    "commonErrorTags": ["u1_raiz_principal"],
+    "pedagogicalNote": "Combina raíces cuadradas y potencias en una expresión. Recordá que √9 = 3 (raíz principal).",
+    "relatedTheoryIds": ["theory-potencias-raices"],
+    "relatedExampleIds": ["example-potencias-raices-1"]
+  },
+  {
+    "id": "ex.u1.potencias_raices.2",
+    "skillId": "mat.u1.potencias_raices",
+    "type": "numerical",
+    "difficulty": 1,
+    "prompt": "Calcula 2³",
+    "expectedAnswer": "8",
     "commonErrorTags": [],
-    "pedagogicalNote": "Combina raíces cuadradas y potencias en una expresión."
+    "pedagogicalNote": "Identificá la base (2) y el exponente (3). La potencia es 2 × 2 × 2.",
+    "relatedTheoryIds": ["theory-potencias-raices"],
+    "relatedExampleIds": ["example-potencias-raices-1"]
+  },
+  {
+    "id": "ex.u1.potencias_raices.3",
+    "skillId": "mat.u1.potencias_raices",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Calcula (-3)²",
+    "expectedAnswer": "9",
+    "commonErrorTags": ["u1_signo_parentesis"],
+    "pedagogicalNote": "Los paréntesis incluyen al signo negativo: (-3)² = (-3) × (-3) = 9. Sin paréntesis, -3² = -(3²) = -9.",
+    "relatedTheoryIds": ["theory-potencias-raices"],
+    "relatedExampleIds": ["example-potencias-raices-2"]
+  },
+  {
+    "id": "ex.u1.potencias_raices.4",
+    "skillId": "mat.u1.potencias_raices",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Calcula 2³ × 2⁴",
+    "expectedAnswer": "128",
+    "commonErrorTags": ["u1_producto_potencias"],
+    "pedagogicalNote": "Misma base → sumá exponentes: 2³ × 2⁴ = 2^(3+4) = 2⁷ = 128.",
+    "relatedTheoryIds": ["theory-potencias-raices"],
+    "relatedExampleIds": ["example-potencias-raices-3"]
+  },
+  {
+    "id": "ex.u1.potencias_raices.5",
+    "skillId": "mat.u1.potencias_raices",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "¿Cuál es el resultado de 5^0?",
+    "expectedAnswer": "1",
+    "options": ["0", "1", "5", "undefined"],
+    "commonErrorTags": ["u1_exponente_cero"],
+    "pedagogicalNote": "Cualquier número distinto de cero elevado a la potencia cero es 1.",
+    "relatedTheoryIds": ["theory-potencias-raices"],
+    "relatedExampleIds": ["example-potencias-raices-1"]
+  },
+  {
+    "id": "ex.u1.potencias_raices.6",
+    "skillId": "mat.u1.potencias_raices",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "¿Qué resultado tiene √(-4) en los números reales?",
+    "expectedAnswer": "No tiene resultado real",
+    "options": ["2", "-2", "No tiene resultado real", "4"],
+    "commonErrorTags": ["u1_raiz_negativa_par"],
+    "pedagogicalNote": "La raíz cuadrada de un número negativo no existe en los reales. Recién se define con números complejos.",
+    "relatedTheoryIds": ["theory-potencias-raices"],
+    "relatedExampleIds": ["example-potencias-raices-1"]
   },
   {
     "id": "ex.u1.racionalizacion.1",

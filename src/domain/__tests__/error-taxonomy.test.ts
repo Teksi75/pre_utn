@@ -37,6 +37,13 @@ describe("Error Taxonomy", () => {
         "u1_extremo_inclusion",
         "u1_propiedad_operacion",
         "u1_agrupacion_signo",
+        "u1_signo_parentesis",
+        "u1_exponente_cero",
+        "u1_producto_potencias",
+        "u1_cociente_potencias",
+        "u1_potencia_de_potencia",
+        "u1_raiz_principal",
+        "u1_raiz_negativa_par",
       ]);
       expect(tagsByUnit.get(2)?.map((tag) => tag.id)).toEqual([
         "u2_aislamiento_variable",
@@ -72,6 +79,26 @@ describe("Error Taxonomy", () => {
     test("returns undefined for unknown ID", () => {
       const found = lookupTag("u99_nonexistent");
       expect(found).toBeUndefined();
+    });
+
+    test("each new potencias_raices error tag is lookupable", () => {
+      const newTags = [
+        "u1_signo_parentesis",
+        "u1_exponente_cero",
+        "u1_producto_potencias",
+        "u1_cociente_potencias",
+        "u1_potencia_de_potencia",
+        "u1_raiz_principal",
+        "u1_raiz_negativa_par",
+      ];
+      for (const tagId of newTags) {
+        const found = lookupTag(tagId);
+        expect(found).toBeDefined();
+        expect(found!.id).toBe(tagId);
+        expect(found!.unit).toBe(1);
+        expect(found!.description).toBeTruthy();
+        expect(found!.examples.length).toBeGreaterThan(0);
+      }
     });
   });
 

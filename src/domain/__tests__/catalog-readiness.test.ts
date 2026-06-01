@@ -6,10 +6,12 @@ import {
   loadFeedbackContent,
 } from "../catalog/content-loaders";
 import { queryBySkill } from "../catalog/index";
+import { PILOT_SKILLS } from "../catalog/pilot-skills";
 
-const PILOT_SKILLS = [
+const PILOT_SKILL_IDS = [
   "mat.u1.reales_operaciones",
   "mat.u1.intervalos",
+  "mat.u1.potencias_raices",
 ] as const;
 
 describe("getSkillComponents", () => {
@@ -47,28 +49,42 @@ describe("getSkillComponents", () => {
     const evaluation = components.find((c) => c.name === "evaluation");
     expect(evaluation?.present).toBe(true);
   });
+
+  test("potencias_raices has all 5 components present", () => {
+    const components = getSkillComponents("mat.u1.potencias_raices");
+    expect(components).toHaveLength(5);
+    for (const component of components) {
+      expect(component.present).toBe(true);
+    }
+  });
 });
 
 describe("isSkillReady", () => {
-  test.each(PILOT_SKILLS)("pilot skill %s is ready", (skillId) => {
+  test.each(PILOT_SKILL_IDS)("pilot skill %s is ready", (skillId) => {
     const result = isSkillReady(skillId);
     expect(result.ready).toBe(true);
     expect(result.missing).toEqual([]);
   });
 
-  test("returns missing components for non-pilot skill", () => {
+  test("potencias_raices is ready with all components", () => {
     const result = isSkillReady("mat.u1.potencias_raices");
+    expect(result.ready).toBe(true);
+    expect(result.missing).toEqual([]);
+  });
+
+  test("returns missing components for non-pilot skill", () => {
+    const result = isSkillReady("mat.u1.logaritmos");
     expect(result.ready).toBe(false);
     expect(result.missing.length).toBeGreaterThan(0);
   });
 
   test("non-pilot skill is missing theory", () => {
-    const result = isSkillReady("mat.u1.potencias_raices");
+    const result = isSkillReady("mat.u1.logaritmos");
     expect(result.missing).toContain("theory");
   });
 
   test("non-pilot skill is missing examples", () => {
-    const result = isSkillReady("mat.u1.potencias_raices");
+    const result = isSkillReady("mat.u1.logaritmos");
     expect(result.missing).toContain("examples");
   });
 });
@@ -94,7 +110,7 @@ describe("no exercise available scenario", () => {
 });
 
 describe("pilot skill readiness integration", () => {
-  test.each(PILOT_SKILLS)(
+  test.each(PILOT_SKILL_IDS)(
     "%s has ≥4 exercises in catalog",
     (skillId) => {
       const exercises = queryBySkill(skillId);
@@ -102,7 +118,7 @@ describe("pilot skill readiness integration", () => {
     }
   );
 
-  test.each(PILOT_SKILLS)(
+  test.each(PILOT_SKILL_IDS)(
     "%s has theory content with ≥1 concept",
     (skillId) => {
       const nodes = loadTheoryContent("unit-1");
@@ -112,7 +128,7 @@ describe("pilot skill readiness integration", () => {
     }
   );
 
-  test.each(PILOT_SKILLS)(
+  test.each(PILOT_SKILL_IDS)(
     "%s has ≥2 worked examples",
     (skillId) => {
       const examples = loadExampleContent("unit-1");
@@ -120,4 +136,32 @@ describe("pilot skill readiness integration", () => {
       expect(skillExamples.length).toBeGreaterThanOrEqual(2);
     }
   );
+});
+
+describe("recommendation safety", () => {
+  test("PILOT_SKILLS does not contain downstream not-ready skills", () => {
+    const downstreamSkills = [
+      "mat.u1.racionalizacion",
+      "mat.u1.logaritmos",
+      "mat.u1.exponenciales",
+      "mat.u1.complejos",
+    ];
+    const pilotSkillIds = PILOT_SKILLS.map((s) => s.skillId);
+    for (const downstream of downstreamSkills) {
+      expect(pilotSkillIds).not.toContain(downstream);
+    }
+  });
+
+  test("not-ready downstream skills are not recommended via readiness", () => {
+    const downstreamSkills = [
+      "mat.u1.racionalizacion",
+      "mat.u1.logaritmos",
+      "mat.u1.exponenciales",
+      "mat.u1.complejos",
+    ];
+    for (const skillId of downstreamSkills) {
+      const result = isSkillReady(skillId);
+      expect(result.ready).toBe(false);
+    }
+  });
 });

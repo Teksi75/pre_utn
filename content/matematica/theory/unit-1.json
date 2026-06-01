@@ -11,33 +11,33 @@
       {
         "id": "concept-conmutatividad",
         "title": "Propiedades conmutativa y asociativa",
-        "body": "Conmutatividad: a + b = b + a y a × b = b × a. Asociatividad: (a + b) + c = a + (b + c) y (a × b) × c = a × (b × c). Estas propiedades permiten reorganizar términos para simplificar cálculos."
+        "body": "Conmutatividad: $a + b = b + a$ y $a \\times b = b \\times a$. Asociatividad: $(a + b) + c = a + (b + c)$ y $(a \\times b) \\times c = a \\times (b \\times c)$. Estas propiedades permiten reorganizar términos para simplificar cálculos."
       },
       {
         "id": "concept-distributiva",
         "title": "Propiedad distributiva",
-        "body": "a × (b + c) = a × b + a × c. La distributiva conecta multiplicación con suma. Error común: aplicar a(b + c) = ab + c en lugar de ab + ac."
+        "body": "$a \\times (b + c) = a \\times b + a \\times c$. La distributiva conecta multiplicación con suma. Error común: aplicar $a(b + c) = ab + c$ en lugar de $ab + ac$."
       },
       {
         "id": "concept-orden",
         "title": "Orden de operaciones (PEMDAS)",
-        "body": "El orden correcto es: Paréntesis, Exponentes, Multiplicación y División (izq. a der.), Suma y Resta (izq. a der.). Multiplicar antes de sumar: 2 + 3 × 4 = 2 + 12 = 14, no (2+3) × 4 = 20."
+        "body": "El orden correcto es: Paréntesis, Exponentes, Multiplicación y División (izq. a der.), Suma y Resta (izq. a der.). Multiplicar antes de sumar: $2 + 3 \\times 4 = 2 + 12 = 14$, no $(2+3) \\times 4 = 20$."
       }
     ],
     "notation": [
-      "a + b, a − b, a × b, a ÷ b (o a/b)",
-      "−a para el opuesto de a",
-      "|a| para el valor absoluto de a"
+      "$a + b$, $a - b$, $a \\times b$, $a \\div b$ (o $a/b$)",
+      "$-a$ para el opuesto de $a$",
+      "$|a|$ para el valor absoluto de $a$"
     ],
     "commonMistakes": [
-      "Sumar antes que multiplicar: 2 + 3 × 4 ≠ 20",
-      "Cambiar signo al agrupar: 5 − 3 + 2 ≠ 5 − (3 + 2)",
-      "Distribuir mal: −(2 + 3) ≠ −2 + 3"
+      "Sumar antes que multiplicar: $2 + 3 \\times 4 \\neq 20$",
+      "Cambiar signo al agrupar: $5 - 3 + 2 \\neq 5 - (3 + 2)$",
+      "Distribuir mal: $-(2 + 3) \\neq -2 + 3$"
     ],
     "practicePrompts": [
-      "Calcula 2 + 3 × 4 respetando el orden de operaciones",
-      "Simplifica −(2 + 3) usando la propiedad del opuesto",
-      "Aplica distributiva: 3 × (4 + 5)"
+      "Calcula $2 + 3 \\times 4$ respetando el orden de operaciones",
+      "Simplifica $-(2 + 3)$ usando la propiedad del opuesto",
+      "Aplica distributiva: $3 \\times (4 + 5)$"
     ],
     "canonicalTrace": [
       {
@@ -66,12 +66,12 @@
       {
         "id": "concept-notacion",
         "title": "Notación de intervalos",
-        "body": "(a, b) = {x ∈ ℝ : a < x < b} abierto. [a, b] = {x ∈ ℝ : a ≤ x ≤ b} cerrado. (a, b] y [a, b) son semiabiertos. Para infinitos siempre se usa paréntesis: (−∞, b], [a, ∞)."
+        "body": "$(a, b) = \\{x \\in \\mathbb{R} : a < x < b\\}$ abierto. $[a, b] = \\{x \\in \\mathbb{R} : a \\leq x \\leq b\\}$ cerrado. $(a, b]$ y $[a, b)$ son semiabiertos. Para infinitos siempre se usa paréntesis: $(-\\infty, b]$, $[a, \\infty)$."
       },
       {
         "id": "concept-union-interseccion",
         "title": "Unión e intersección de intervalos",
-        "body": "Unión (A ∪ B): todos los elementos de A o B. Intersección (A ∩ B): elementos comunes. Ejemplo: [1,3] ∪ [3,5] = [1,5] (el 3 está incluido en ambos). [1,3] ∩ [3,5] = {3}."
+        "body": "Unión ($A \\cup B$): todos los elementos de $A$ o $B$. Intersección ($A \\cap B$): elementos comunes. Ejemplo: $[1,3] \\cup [3,5] = [1,5]$ (el 3 está incluido en ambos). $[1,3] \\cap [3,5] = \\{3\\}$."
       },
       {
         "id": "concept-inclusion-grafica",
@@ -80,26 +80,26 @@
       }
     ],
     "notation": [
-      "(a, b) intervalo abierto",
-      "[a, b] intervalo cerrado",
-      "(a, b] y [a, b) intervalos semiabiertos",
-      "(−∞, a), (a, ∞) para extremo infinito"
+      "$(a, b)$ intervalo abierto",
+      "$[a, b]$ intervalo cerrado",
+      "$(a, b]$ y $[a, b)$ intervalos semiabiertos",
+      "$(-\\infty, a)$, $(a, \\infty)$ para extremo infinito"
     ],
     "commonMistakes": [
-      "Usar corchetes con infinito: [−∞, a] es incorrecto, siempre (−∞, a)",
-      "Confundir x > 3 con [3,∞): debe ser (3,∞)",
-      "Unir [1,3] y [3,5] como [1,5) cuando el 3 está incluido en ambos"
+      "Usar corchetes con infinito: $[-\\infty, a]$ es incorrecto, siempre $(-\\infty, a)$",
+      "Confundir $x > 3$ con $[3,\\infty)$: debe ser $(3,\\infty)$",
+      "Unir $[1,3]$ y $[3,5]$ como $[1,5)$ cuando el 3 está incluido en ambos"
     ],
     "practicePrompts": [
       "Escribe en notación de intervalo: todos los reales mayores que 3",
-      "¿Cuál es la intersección de [1,4] y [3,6]?",
-      "Representa (−2, 5] en la recta numérica"
+      "¿Cuál es la intersección de $[1,4]$ y $[3,6]$?",
+      "Representa $(-2, 5]$ en la recta numérica"
     ],
     "intervalVisuals": [
       {
         "id": "visual-intervalos-semirecta-cerrada",
         "title": "De desigualdad a semirrecta",
-        "description": "La condición x ≥ −2 incluye el −2 y se extiende hacia +∞: [−2, +∞).",
+        "description": "La condición $x \\geq -2$ incluye el $-2$ y se extiende hacia $+\\infty$: $[-2, +\\infty)$.",
         "interval": {
           "left": { "kind": "finite", "value": -2, "closed": true },
           "right": { "kind": "positiveInfinity" }
@@ -108,7 +108,7 @@
       {
         "id": "visual-intervalos-acotado-semiabierto",
         "title": "Intervalo acotado semiabierto",
-        "description": "El intervalo (−3, 2] excluye −3 e incluye 2.",
+        "description": "El intervalo $(-3, 2]$ excluye $-3$ e incluye $2$.",
         "interval": {
           "left": { "kind": "finite", "value": -3, "closed": false },
           "right": { "kind": "finite", "value": 2, "closed": true }
@@ -127,6 +127,79 @@
         "section": "Resolución de ejercicios de intervalos",
         "sourceUse": "reference",
         "pedagogicalIntent": "Verificar procedimientos de unión, intersección y representación de intervalos con ejercicios resueltos"
+      }
+    ]
+  },
+  {
+    "id": "theory-potencias-raices",
+    "skillId": "mat.u1.potencias_raices",
+    "concepts": [
+      {
+        "id": "concept-potencia-significado",
+        "title": "Significado de potencia",
+        "body": "Una potencia $a^n$ representa la multiplicación repetida de $a$ por sí mismo $n$ veces. La base $a$ es el número que se multiplica, y el exponente $n$ indica cuántas veces aparece como factor. Ejemplo: $3^4 = 3 \\times 3 \\times 3 \\times 3 = 81$."
+      },
+      {
+        "id": "concept-base-negativa",
+        "title": "Bases negativas y paréntesis",
+        "body": "La expresión $(-a)^n$ aplica el signo negativo antes de elevar: $(-2)^3 = (-2)(-2)(-2) = -8$. En cambio, $-a^n$ eleva primero y luego aplica el signo: $-2^3 = -(2^3) = -8$. Para exponentes pares la diferencia es clave: $(-2)^2 = 4$ pero $-2^2 = -4$."
+      },
+      {
+        "id": "concept-exponente-cero",
+        "title": "Exponente cero",
+        "body": "Cualquier número distinto de cero elevado a la potencia cero es igual a 1: $a^0 = 1$ (para $a \\neq 0$). Este resultado se deriva de las leyes de exponentes: $a^n \\div a^n = a^{n-n} = a^0 = 1$."
+      },
+      {
+        "id": "concept-reglas-exponentes",
+        "title": "Reglas de exponentes (producto y cociente)",
+        "body": "Producto de potencias de igual base: $a^m \\times a^n = a^{m+n}$. Cociente de potencias de igual base: $a^m \\div a^n = a^{m-n}$. Ejemplo: $2^3 \\times 2^4 = 2^7 = 128$. Ejemplo: $5^6 \\div 5^2 = 5^4 = 625$."
+      },
+      {
+        "id": "concept-potencia-de-potencia",
+        "title": "Potencia de potencia",
+        "body": "$(a^m)^n = a^{m \\times n}$. Se multiplican los exponentes. Ejemplo: $(2^3)^2 = 2^6 = 64$. Equivale a elevar $2^3 = 8$ al cuadrado: $8^2 = 64$."
+      },
+      {
+        "id": "concept-raices",
+        "title": "Raíces como inversa de la potencia",
+        "body": "La raíz n-ésima de $a$, escrita $\\sqrt[n]{a}$, es el número $b$ tal que $b^n = a$. La raíz cuadrada principal $\\sqrt{a}$ devuelve el valor no negativo: $\\sqrt{9} = 3$. Raíces pares de negativos no tienen resultado en los reales: $\\sqrt{-4}$ no existe en $\\mathbb{R}$."
+      },
+      {
+        "id": "concept-orden-operaciones",
+        "title": "Orden de operaciones con potencias y raíces",
+        "body": "Potencias y raíces se evalúan después de paréntesis y antes de multiplicación, división, suma y resta. Cuando aparecen juntas en el mismo nivel, se resuelve cada una antes de pasar a multiplicar, dividir, sumar o restar. Ejemplo: $\\sqrt{16} + 2^3 \\times 3 = 4 + 8 \\times 3 = 4 + 24 = 28$."
+      }
+    ],
+    "notation": [
+      "$a^n$ para $a$ elevado a la potencia $n$",
+      "$(-a)^n$ con paréntesis incluye el signo en la base",
+      "$\\sqrt{a}$ raíz cuadrada principal de $a$",
+      "$\\sqrt[n]{a}$ raíz n-ésima de $a$"
+    ],
+    "commonMistakes": [
+      "Confundir $(-2)^2 = 4$ con $-2^2 = -4$: los paréntesis cambian el resultado",
+      "Afirmar que $a^0 = 0$: cualquier base no nula elevada a cero da 1",
+      "Sumar exponentes al multiplicar potencias de bases distintas: $2^3 \\times 3^2 \\neq 6^5$",
+      "Afirmar que $\\sqrt{-4} = 2i$ en contexto de reales: no existe raíz cuadrada de un negativo en $\\mathbb{R}$"
+    ],
+    "practicePrompts": [
+      "Calcula $(-3)^2$ y $-3^2$. ¿Cuál es la diferencia?",
+      "Simplifica $2^5 \\times 2^3$ usando la ley de producto",
+      "¿Cuánto vale $7^0$? ¿Por qué?",
+      "Resuelve $\\sqrt{49} + 2^3$"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.2 Potencias y raíces",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar potenciación y radicación: significado, leyes de exponentes, raíces, y orden de operaciones con potencias"
+      },
+      {
+        "path": "material_canonico/Matemática/RESOLUCIÓN DE EJERCICIOS SEMINARIO UNIVERSITARIO MATEMÁTICA.pdf",
+        "section": "Ejercicios de potencias y raíces",
+        "sourceUse": "reinforcement",
+        "pedagogicalIntent": "Reforzar la correcta aplicación de leyes de exponentes y resolución de expresiones con potencias y raíces"
       }
     ]
   }

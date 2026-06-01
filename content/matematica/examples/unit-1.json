@@ -2,12 +2,12 @@
   {
     "id": "example-reales-operaciones-1",
     "skillId": "mat.u1.reales_operaciones",
-    "problem": "Calcular: 2 + 3 × 4 − 1",
+    "problem": "Calcular: $2 + 3 \\times 4 - 1$",
     "steps": [
       { "order": 1, "explanation": "Se identifican las operaciones presentes: suma, multiplicación y resta. Según la jerarquía de operaciones, la multiplicación tiene prioridad sobre la suma y la resta." },
-      { "order": 2, "explanation": "Se evalúa la multiplicación: 3 × 4 = 12. La expresión se reduce a 2 + 12 − 1." },
-      { "order": 3, "explanation": "Resta evaluar suma y resta de izquierda a derecha, ya que tienen igual jerarquía: 2 + 12 = 14." },
-      { "order": 4, "explanation": "Finalmente: 14 − 1 = 13." }
+      { "order": 2, "explanation": "Se evalúa la multiplicación: $3 \\times 4 = 12$. La expresión se reduce a $2 + 12 - 1$." },
+      { "order": 3, "explanation": "Resta evaluar suma y resta de izquierda a derecha, ya que tienen igual jerarquía: $2 + 12 = 14$." },
+      { "order": 4, "explanation": "Finalmente: $14 - 1 = 13$." }
     ],
     "finalAnswer": "13",
     "pedagogicalNote": "La jerarquía de operaciones establece: paréntesis, potencias y raíces, multiplicación y división (izquierda a derecha), suma y resta (izquierda a derecha). Evaluar fuera de este orden produce resultados incorrectos.",
@@ -23,15 +23,15 @@
   {
     "id": "example-reales-operaciones-2",
     "skillId": "mat.u1.reales_operaciones",
-    "problem": "Simplificar: −(2 + 3) + 4 × (1 − 3)",
+    "problem": "Simplificar: $-(2 + 3) + 4 \\times (1 - 3)$",
     "steps": [
-      { "order": 1, "explanation": "Se resuelven primero las expresiones dentro de paréntesis: (2 + 3) = 5 y (1 − 3) = −2. La expresión queda −5 + 4 × (−2)." },
-      { "order": 2, "explanation": "El signo negativo delante del paréntesis equivale a multiplicar por −1: −(2 + 3) = −1 × 5 = −5." },
-      { "order": 3, "explanation": "Se evalúa la multiplicación: 4 × (−2) = −8. Producto de positivo por negativo da negativo." },
-      { "order": 4, "explanation": "Se suman los resultados: −5 + (−8) = −13." }
+      { "order": 1, "explanation": "Se resuelven primero las expresiones dentro de paréntesis: $(2 + 3) = 5$ y $(1 - 3) = -2$. La expresión queda $-5 + 4 \\times (-2)$." },
+      { "order": 2, "explanation": "El signo negativo delante del paréntesis equivale a multiplicar por $-1$: $-(2 + 3) = -1 \\times 5 = -5$." },
+      { "order": 3, "explanation": "Se evalúa la multiplicación: $4 \\times (-2) = -8$. Producto de positivo por negativo da negativo." },
+      { "order": 4, "explanation": "Se suman los resultados: $-5 + (-8) = -13$." }
     ],
-    "finalAnswer": "−13",
-    "pedagogicalNote": "El opuesto de una suma distribuye el signo negativo a cada término: −(a + b) = −a − b. Confundir −(a + b) con −a + b es un error frecuente que invierte el signo del segundo término.",
+    "finalAnswer": "$-13$",
+    "pedagogicalNote": "El opuesto de una suma distribuye el signo negativo a cada término: $-(a + b) = -a - b$. Confundir $-(a + b)$ con $-a + b$ es un error frecuente que invierte el signo del segundo término.",
     "canonicalTrace": [
       {
         "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
@@ -44,14 +44,14 @@
   {
     "id": "example-intervalos-1",
     "skillId": "mat.u1.intervalos",
-    "problem": "Expresar en notación de intervalo: {x ∈ ℝ : x > 3}",
+    "problem": "Expresar en notación de intervalo: $\\{x \\in \\mathbb{R} : x > 3\\}$",
     "steps": [
-      { "order": 1, "explanation": "La condición x > 3 define una desigualdad estricta: el extremo 3 no pertenece al conjunto. En notación de intervalo, esto se indica con paréntesis en el extremo inferior." },
-      { "order": 2, "explanation": "No existe cota superior: el conjunto se extiende indefinidamente hacia la derecha de la recta real. Se representa con el símbolo ∞." },
-      { "order": 3, "explanation": "El símbolo ∞ no es un número real; siempre se escribe con paréntesis, ya que no puede ser un extremo incluido. Resultado: (3, ∞)." }
+      { "order": 1, "explanation": "La condición $x > 3$ define una desigualdad estricta: el extremo 3 no pertenece al conjunto. En notación de intervalo, esto se indica con paréntesis en el extremo inferior." },
+      { "order": 2, "explanation": "No existe cota superior: el conjunto se extiende indefinidamente hacia la derecha de la recta real. Se representa con el símbolo $\\infty$." },
+      { "order": 3, "explanation": "El símbolo $\\infty$ no es un número real; siempre se escribe con paréntesis, ya que no puede ser un extremo incluido. Resultado: $(3, \\infty)$." }
     ],
-    "finalAnswer": "(3, ∞)",
-    "pedagogicalNote": "Regla general: desigualdad estricta (> o <) → paréntesis en el extremo; desigualdad no estricta (≥ o ≤) → corchete. El infinito siempre se acompaña con paréntesis porque no es un valor alcanzable.",
+    "finalAnswer": "$(3, \\infty)$",
+    "pedagogicalNote": "Regla general: desigualdad estricta ($>$ o $<$) → paréntesis en el extremo; desigualdad no estricta ($\\geq$ o $\\leq$) → corchete. El infinito siempre se acompaña con paréntesis porque no es un valor alcanzable.",
     "canonicalTrace": [
       {
         "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
@@ -64,14 +64,14 @@
   {
     "id": "example-intervalos-2",
     "skillId": "mat.u1.intervalos",
-    "problem": "Determinar [1, 4] ∪ [3, 6]",
+    "problem": "Determinar $[1, 4] \\cup [3, 6]$",
     "steps": [
-      { "order": 1, "explanation": "Se representan ambos intervalos en la recta real: [1, 4] = {x ∈ ℝ : 1 ≤ x ≤ 4} y [3, 6] = {x ∈ ℝ : 3 ≤ x ≤ 6}. Ambos extremos de cada intervalo son incluidos (corchetes)." },
-      { "order": 2, "explanation": "Se identifica la superposición: los intervalos se solapan en [3, 4], ya que 3 ≤ 4. La unión de intervalos superpuestos es un único intervalo continuo." },
-      { "order": 3, "explanation": "El extremo inferior de la unión es el menor de los extremos inferiores: min(1, 3) = 1. El extremo superior es el mayor: max(4, 6) = 6." },
-      { "order": 4, "explanation": "Verificación de inclusión de extremos: 1 ∈ [1, 4] y 6 ∈ [3, 6], por lo que ambos extremos se incluyen en la unión. Resultado: [1, 6]." }
+      { "order": 1, "explanation": "Se representan ambos intervalos en la recta real: $[1, 4] = \\{x \\in \\mathbb{R} : 1 \\leq x \\leq 4\\}$ y $[3, 6] = \\{x \\in \\mathbb{R} : 3 \\leq x \\leq 6\\}$. Ambos extremos de cada intervalo son incluidos (corchetes)." },
+      { "order": 2, "explanation": "Se identifica la superposición: los intervalos se solapan en $[3, 4]$, ya que $3 \\leq 4$. La unión de intervalos superpuestos es un único intervalo continuo." },
+      { "order": 3, "explanation": "El extremo inferior de la unión es el menor de los extremos inferiores: $\\min(1, 3) = 1$. El extremo superior es el mayor: $\\max(4, 6) = 6$." },
+      { "order": 4, "explanation": "Verificación de inclusión de extremos: $1 \\in [1, 4]$ y $6 \\in [3, 6]$, por lo que ambos extremos se incluyen en la unión. Resultado: $[1, 6]$." }
     ],
-    "finalAnswer": "[1, 6]",
+    "finalAnswer": "$[1, 6]$",
     "pedagogicalNote": "La unión de intervalos cerrados superpuestos produce un intervalo cerrado cuyos extremos son el mínimo de los inferiores y el máximo de los superiores. Si los intervalos no se superponen ni son adyacentes, la unión no se puede expresar como un solo intervalo.",
     "canonicalTrace": [
       {
@@ -85,6 +85,88 @@
         "section": "Resolución de ejercicios de intervalos",
         "sourceUse": "reference",
         "pedagogicalIntent": "Verificar resultado con ejercicios canónicos de la guía"
+      }
+    ]
+  },
+  {
+    "id": "example-potencias-raices-1",
+    "skillId": "mat.u1.potencias_raices",
+    "problem": "Calcular: $3^4 + \\sqrt{16}$",
+    "steps": [
+      { "order": 1, "explanation": "Se evalúa la potencia: $3^4 = 3 \\times 3 \\times 3 \\times 3 = 81$." },
+      { "order": 2, "explanation": "Se evalúa la raíz cuadrada: $\\sqrt{16} = 4$, porque $4^2 = 16$ y buscamos el valor no negativo." },
+      { "order": 3, "explanation": "Se suman los resultados: $81 + 4 = 85$." }
+    ],
+    "finalAnswer": "85",
+    "pedagogicalNote": "Las potencias y raíces se evalúan antes que la suma. Identificar cada operación por separado evita errores de jerarquía.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.2 Potencias y raíces",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar evaluación separada de potencia y raíz antes de combinar con suma"
+      }
+    ]
+  },
+  {
+    "id": "example-potencias-raices-2",
+    "skillId": "mat.u1.potencias_raices",
+    "problem": "Comparar $(-2)^3$ y $-2^3$",
+    "steps": [
+      { "order": 1, "explanation": "En $(-2)^3$, el paréntesis incluye el signo negativo en la base: $(-2)^3 = (-2)(-2)(-2) = 4 \\times (-2) = -8$." },
+      { "order": 2, "explanation": "En $-2^3$, la potencia se evalúa primero sobre la base positiva: $2^3 = 8$, y luego se aplica el signo negativo: $-8$." },
+      { "order": 3, "explanation": "Ambos resultados coinciden en este caso ($-8$), pero la diferencia es conceptual: los paréntesis determinan si el signo es parte de la base." },
+      { "order": 4, "explanation": "La diferencia es visible con exponentes pares: $(-2)^2 = 4$ mientras que $-2^2 = -4$." }
+    ],
+    "finalAnswer": "$(-2)^3 = -8$ y $-2^3 = -8$",
+    "pedagogicalNote": "Los paréntesis en una base negativa determinan si el signo se eleva junto con el número. Con exponentes pares, la distinción produce resultados de signo opuesto.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.2 Potenciación con bases negativas",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar la diferencia crítica entre $(-a)^n$ y $-a^n$, énfasis en exponentes pares"
+      }
+    ]
+  },
+  {
+    "id": "example-potencias-raices-3",
+    "skillId": "mat.u1.potencias_raices",
+    "problem": "Simplificar: $2^3 \\times 2^4 \\div 2^5$",
+    "steps": [
+      { "order": 1, "explanation": "Se aplica la ley de producto de potencias de igual base: $2^3 \\times 2^4 = 2^{3+4} = 2^7$." },
+      { "order": 2, "explanation": "Se aplica la ley de cociente de potencias de igual base: $2^7 \\div 2^5 = 2^{7-5} = 2^2$." },
+      { "order": 3, "explanation": "Se evalúa la potencia resultante: $2^2 = 4$." }
+    ],
+    "finalAnswer": "4",
+    "pedagogicalNote": "Las leyes de exponentes permiten simplificar expresiones sin calcular cada potencia por separado. Sumar en productos, restar en cocientes, todo con la misma base.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.2 Leyes de los exponentes",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar aplicación combinada de leyes de producto y cociente de potencias"
+      }
+    ]
+  },
+  {
+    "id": "example-potencias-raices-4",
+    "skillId": "mat.u1.potencias_raices",
+    "problem": "Calcular: $5 + 2^3 \\times \\sqrt{9} - 3^0$",
+    "steps": [
+      { "order": 1, "explanation": "Se resuelven paréntesis (ninguno). Luego se evalúan potencias y raíces: $2^3 = 8$, $\\sqrt{9} = 3$, $3^0 = 1$." },
+      { "order": 2, "explanation": "Se sustituyen los valores: $5 + 8 \\times 3 - 1$." },
+      { "order": 3, "explanation": "Se evalúa multiplicación antes que suma y resta: $8 \\times 3 = 24$. La expresión queda $5 + 24 - 1$." },
+      { "order": 4, "explanation": "Se realizan suma y resta de izquierda a derecha: $5 + 24 = 29$, luego $29 - 1 = 28$." }
+    ],
+    "finalAnswer": "28",
+    "pedagogicalNote": "El orden completo es: paréntesis → potencias/raíces → multiplicación/división → suma/resta. Evaluar en este orden evita los errores más frecuentes.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.2 Orden de operaciones con potencias y raíces",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar la secuencia completa PEMDAS aplicada a una expresión con potencias, raíces y exponente cero"
       }
     ]
   }

@@ -7,17 +7,19 @@ import {
 } from "../catalog/content-loaders";
 import { validateTheoryNode } from "../models/theory";
 import { validateWorkedExample } from "../models/worked-example";
+import exercisesJson from "../../../content/matematica/exercises.json";
+import { loadTaxonomy } from "../error-taxonomy/index";
 
 describe("Theory content loading", () => {
-  test("loads two pilot theory nodes from JSON", () => {
+  test("loads three theory nodes from JSON", () => {
     const nodes = loadTheoryContent("unit-1");
-    expect(nodes).toHaveLength(2);
+    expect(nodes).toHaveLength(3);
   });
 
   test("each theory node has a unique skillId", () => {
     const nodes = loadTheoryContent("unit-1");
     const skillIds = nodes.map((n) => n.skillId);
-    expect(new Set(skillIds).size).toBe(2);
+    expect(new Set(skillIds).size).toBe(3);
   });
 
   test("each theory node validates successfully", () => {
@@ -28,11 +30,12 @@ describe("Theory content loading", () => {
     }
   });
 
-  test("theory nodes cover both pilot skills", () => {
+  test("theory nodes cover all pilot skills", () => {
     const nodes = loadTheoryContent("unit-1");
     const skillIds = nodes.map((n) => n.skillId);
     expect(skillIds).toContain("mat.u1.reales_operaciones");
     expect(skillIds).toContain("mat.u1.intervalos");
+    expect(skillIds).toContain("mat.u1.potencias_raices");
   });
 
   test("each theory node has canonicalTrace entries", () => {
@@ -48,12 +51,28 @@ describe("Theory content loading", () => {
       expect(node.concepts.length).toBeGreaterThanOrEqual(1);
     }
   });
+
+  test("potencias_raices theory node has at least 7 concept blocks", () => {
+    const nodes = loadTheoryContent("unit-1");
+    const prNode = nodes.find((n) => n.skillId === "mat.u1.potencias_raices");
+    expect(prNode).toBeDefined();
+    expect(prNode!.concepts.length).toBeGreaterThanOrEqual(7);
+  });
+
+  test("potencias_raices theory node has notation, commonMistakes, and practicePrompts", () => {
+    const nodes = loadTheoryContent("unit-1");
+    const prNode = nodes.find((n) => n.skillId === "mat.u1.potencias_raices");
+    expect(prNode).toBeDefined();
+    expect(prNode!.notation.length).toBeGreaterThanOrEqual(1);
+    expect(prNode!.commonMistakes.length).toBeGreaterThanOrEqual(1);
+    expect(prNode!.practicePrompts.length).toBeGreaterThanOrEqual(1);
+  });
 });
 
 describe("Example content loading", () => {
-  test("loads four worked examples from JSON", () => {
+  test("loads eight worked examples from JSON", () => {
     const examples = loadExampleContent("unit-1");
-    expect(examples).toHaveLength(4);
+    expect(examples).toHaveLength(8);
   });
 
   test("each example has at least 2 solution steps", () => {
@@ -71,19 +90,22 @@ describe("Example content loading", () => {
     }
   });
 
-  test("examples cover both pilot skills", () => {
+  test("examples cover all pilot skills", () => {
     const examples = loadExampleContent("unit-1");
     const skillIds = examples.map((e) => e.skillId);
     expect(skillIds).toContain("mat.u1.reales_operaciones");
     expect(skillIds).toContain("mat.u1.intervalos");
+    expect(skillIds).toContain("mat.u1.potencias_raices");
   });
 
   test("each skill has at least 2 examples", () => {
     const examples = loadExampleContent("unit-1");
     const reales = examples.filter((e) => e.skillId === "mat.u1.reales_operaciones");
     const intervalos = examples.filter((e) => e.skillId === "mat.u1.intervalos");
+    const potencias = examples.filter((e) => e.skillId === "mat.u1.potencias_raices");
     expect(reales.length).toBeGreaterThanOrEqual(2);
     expect(intervalos.length).toBeGreaterThanOrEqual(2);
+    expect(potencias.length).toBeGreaterThanOrEqual(2);
   });
 
   test("each example has canonicalTrace entries", () => {
@@ -91,6 +113,22 @@ describe("Example content loading", () => {
     for (const ex of examples) {
       expect(ex.canonicalTrace.length).toBeGreaterThanOrEqual(1);
     }
+  });
+
+  test("potencias_raices examples include (-a)^n vs -a^n distinction", () => {
+    const examples = loadExampleContent("unit-1");
+    const prExamples = examples.filter((e) => e.skillId === "mat.u1.potencias_raices");
+    const hasParenthesesDistinction = prExamples.some(
+      (e) =>
+        e.problem.includes("(-") ||
+        e.steps.some(
+          (s) =>
+            s.explanation.includes("paréntesis") ||
+            s.explanation.includes("(-a)") ||
+            s.explanation.includes("signo")
+        )
+    );
+    expect(hasParenthesesDistinction).toBe(true);
   });
 });
 
@@ -147,6 +185,81 @@ describe("Exercise content linkage", () => {
       for (const eid of link.relatedExampleIds) {
         expect(exampleIds.has(eid)).toBe(true);
       }
+    }
+  });
+});
+
+describe("Potencias y raíces exercise catalog", () => {
+  const prExercises = (exercisesJson as unknown as Record<string, unknown>[])
+    .filter((ex) => (ex.skillId as string) === "mat.u1.potencias_raices");
+
+  test("potencias_raices has at least 6 exercises", () => {
+    expect(prExercises.length).toBeGreaterThanOrEqual(6);
+  });
+
+  test("every potencias_raices exercise has required fields", () => {
+    for (const ex of prExercises) {
+      expect(ex.id).toBeTruthy();
+      expect(ex.skillId).toBe("mat.u1.potencias_raices");
+      expect(ex.type).toBeTruthy();
+      expect(typeof ex.difficulty).toBe("number");
+      expect(ex.difficulty).toBeGreaterThanOrEqual(1);
+      expect(ex.difficulty).toBeLessThanOrEqual(3);
+      expect(Array.isArray(ex.commonErrorTags)).toBe(true);
+      expect(ex.pedagogicalNote).toBeTruthy();
+    }
+  });
+
+  test("every potencias_raices exercise has relatedTheoryIds and relatedExampleIds", () => {
+    for (const ex of prExercises) {
+      expect(Array.isArray(ex.relatedTheoryIds)).toBe(true);
+      expect((ex.relatedTheoryIds as string[]).length).toBeGreaterThan(0);
+      expect(Array.isArray(ex.relatedExampleIds)).toBe(true);
+      expect((ex.relatedExampleIds as string[]).length).toBeGreaterThan(0);
+    }
+  });
+
+  test("every potencias_raices exercise error tag references a valid taxonomy tag", () => {
+    const taxonomy = loadTaxonomy();
+    const taxonomyIds = new Set<string>(taxonomy.map((t) => t.id));
+    for (const ex of prExercises) {
+      const tags = ex.commonErrorTags as string[];
+      for (const tag of tags) {
+        expect(taxonomyIds.has(tag)).toBe(true);
+      }
+    }
+  });
+
+  test("potencias_raices exercises cover difficulties 1 through 3", () => {
+    const difficulties = new Set(prExercises.map((ex) => ex.difficulty));
+    expect(difficulties.has(1)).toBe(true);
+    expect(difficulties.has(2)).toBe(true);
+    expect(difficulties.has(3)).toBe(true);
+  });
+
+  test("potencias_raices exercises include both numerical and multiple-choice types", () => {
+    const types = new Set(prExercises.map((ex) => ex.type));
+    expect(types.has("numerical")).toBe(true);
+    expect(types.has("multiple-choice")).toBe(true);
+  });
+
+  test("potencias_raices exercises have no duplicate prompts", () => {
+    const prompts = prExercises.map((ex) => ex.prompt as string);
+    expect(new Set(prompts).size).toBe(prompts.length);
+  });
+
+  test("multiple-choice potencias_raices exercises have options array", () => {
+    const mcExercises = prExercises.filter((ex) => ex.type === "multiple-choice");
+    for (const ex of mcExercises) {
+      expect(Array.isArray(ex.options)).toBe(true);
+      expect((ex.options as string[]).length).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  test("potencias_raices exercises have pedagogicalNote referencing learning intent", () => {
+    for (const ex of prExercises) {
+      const note = ex.pedagogicalNote as string;
+      expect(note.length).toBeGreaterThan(10);
     }
   });
 });

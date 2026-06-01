@@ -31,6 +31,32 @@ export function deriveHomeNextStep(
     };
   }
 
+  const firstUnattemptedReadySkill = readySkills.find(({ skillId }, index) => {
+    if (index === 0) return false;
+
+    const hasAttempts = progress.attempts.some((attempt) => attempt.skillId === skillId);
+    if (hasAttempts) return false;
+
+    const previousReadySkills = readySkills.slice(0, index);
+    return previousReadySkills.every((skill) => {
+      const attempts = progress.attempts.filter((attempt) => attempt.skillId === skill.skillId);
+      const accuracy = progress.accuracyBySkill[skill.skillId] ?? 0;
+      const trend = progress.trendBySkill[skill.skillId] as Trend | undefined;
+
+      return attempts.length > 0 && accuracy >= LOW_ACCURACY_THRESHOLD && trend !== "needs-review";
+    });
+  });
+
+  if (firstUnattemptedReadySkill) {
+    return {
+      kind: "practice",
+      title: `Practicar ${firstUnattemptedReadySkill.label}`,
+      description: "Este es el próximo paso disponible del camino de Unidad 1 antes de avanzar a temas posteriores.",
+      href: `/practice?skill=${firstUnattemptedReadySkill.skillId}`,
+      skillId: firstUnattemptedReadySkill.skillId,
+    };
+  }
+
   const weakReadySkill = readySkills.find(({ skillId }) => {
     const attempts = progress.attempts.filter((attempt) => attempt.skillId === skillId);
     if (attempts.length === 0) return false;

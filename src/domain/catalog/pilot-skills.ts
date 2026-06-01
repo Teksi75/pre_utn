@@ -13,6 +13,11 @@ export const PILOT_SKILLS: readonly PilotSkill[] = [
     label: "Números reales y operaciones",
   },
   {
+    skillId: "mat.u1.potencias_raices",
+    unitKey: "unit-1",
+    label: "Potencias y raíces",
+  },
+  {
     skillId: "mat.u1.intervalos",
     unitKey: "unit-1",
     label: "Intervalos",
