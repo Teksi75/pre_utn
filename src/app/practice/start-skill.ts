@@ -1,4 +1,5 @@
 import { isSkillReady } from "../../domain/catalog/readiness";
+import { PILOT_SKILL_UNIT_MAP } from "../../domain/catalog/pilot-skills";
 import type { SkillId } from "../../domain/models/skill";
 
 /**
@@ -6,8 +7,7 @@ import type { SkillId } from "../../domain/models/skill";
  * TDD coverage: `src/app/practice/__tests__/start-skill.test.ts`.
  */
 export const PRACTICE_SKILL_UNIT_MAP: Readonly<Record<string, string>> = {
-  "mat.u1.reales_operaciones": "unit-1",
-  "mat.u1.intervalos": "unit-1",
+  ...PILOT_SKILL_UNIT_MAP,
 };
 
 export function resolveInitialPracticeSkill(

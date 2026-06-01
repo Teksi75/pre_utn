@@ -6,12 +6,7 @@
 import { computeReadiness, type ReadinessComponent } from "../readiness/index";
 import { loadTheoryContent, loadExampleContent, loadFeedbackContent } from "./content-loaders";
 import { queryBySkill } from "./index";
-
-/** Known pilot skills with their unit keys. */
-const PILOT_SKILLS: ReadonlyMap<string, string> = new Map([
-  ["mat.u1.reales_operaciones", "unit-1"],
-  ["mat.u1.intervalos", "unit-1"],
-]);
+import { PILOT_SKILL_UNIT_MAP } from "./pilot-skills";
 
 /**
  * Get readiness components for a skill.
@@ -20,7 +15,7 @@ const PILOT_SKILLS: ReadonlyMap<string, string> = new Map([
  * @returns Array of ReadinessComponent with presence status
  */
 export function getSkillComponents(skillId: string): readonly ReadinessComponent[] {
-  const unitKey = PILOT_SKILLS.get(skillId);
+  const unitKey = PILOT_SKILL_UNIT_MAP[skillId];
 
   // Theory: check if theory content exists for this skill
   const hasTheory = unitKey

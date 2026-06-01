@@ -121,3 +121,11 @@ Chain strategy: feature-branch-chain
 - [x] 13.3 Prevent diagnostic results from linking to skills that are not yet ready for guided practice; show an explicit in-preparation state instead.
 - [x] 13.4 Add tests proving ready suggestions link to practice and unready suggestions do not create broken links.
 - [x] 13.5 Verify with `pnpm run test:run`, `pnpm run typecheck`, and `pnpm run build`.
+
+## Phase 14: Home preparation dashboard
+
+- [x] 14.1 Add a pure `deriveHomeNextStep(progress, readySkills)` function so the home can recommend a real next step without React or localStorage.
+- [x] 14.2 Test the minimum decision cases: no attempts → diagnostic, weak ready skill → direct practice, not-ready skill → no broken link, acceptable progress → continue Unit 1 / repeat diagnostic.
+- [x] 14.3 Add a small client component that reads local practice progress and renders the recommended next step.
+- [x] 14.4 Replace the generic home with a lightweight preparation dashboard that states the real product status: Matemática active, Física later, Unit 1 partial, only two skills ready.
+- [x] 14.5 Close the promise: the learner enters and knows what to do first, without presenting the app as a complete course.

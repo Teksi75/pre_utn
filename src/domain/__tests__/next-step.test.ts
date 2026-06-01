@@ -1,0 +1,89 @@
+import { describe, expect, it } from "vitest";
+import { deriveHomeNextStep, type ReadySkill } from "../next-step/index";
+import type { PracticeProgress } from "../progress/index";
+
+const readySkills: readonly ReadySkill[] = [
+  { skillId: "mat.u1.reales_operaciones", label: "Números reales y operaciones" },
+  { skillId: "mat.u1.intervalos", label: "Intervalos" },
+];
+
+function progress(overrides: Partial<PracticeProgress>): PracticeProgress {
+  return {
+    attempts: [],
+    accuracyBySkill: {},
+    trendBySkill: {},
+    ...overrides,
+  };
+}
+
+describe("deriveHomeNextStep", () => {
+  it("recommends the initial diagnostic when there are no practice attempts", () => {
+    const nextStep = deriveHomeNextStep(progress({}), readySkills);
+
+    expect(nextStep.kind).toBe("diagnostic");
+    expect(nextStep.href).toBe("/diagnostic");
+  });
+
+  it("recommends direct practice for a ready skill with low accuracy", () => {
+    const nextStep = deriveHomeNextStep(
+      progress({
+        attempts: [
+          {
+            exerciseId: "ex-1",
+            skillId: "mat.u1.intervalos",
+            correct: false,
+            answeredAt: "2026-06-01T00:00:00.000Z",
+          },
+        ],
+        accuracyBySkill: { "mat.u1.intervalos": 0.5 },
+        trendBySkill: { "mat.u1.intervalos": "stable" },
+      }),
+      readySkills
+    );
+
+    expect(nextStep.kind).toBe("practice");
+    expect(nextStep.href).toBe("/practice?skill=mat.u1.intervalos");
+  });
+
+  it("does not generate a direct practice link for a skill that is not ready", () => {
+    const nextStep = deriveHomeNextStep(
+      progress({
+        attempts: [
+          {
+            exerciseId: "ex-2",
+            skillId: "mat.u2.factorizacion",
+            correct: false,
+            answeredAt: "2026-06-01T00:00:00.000Z",
+          },
+        ],
+        accuracyBySkill: { "mat.u2.factorizacion": 0 },
+        trendBySkill: { "mat.u2.factorizacion": "needs-review" },
+      }),
+      readySkills
+    );
+
+    expect(nextStep.kind).not.toBe("practice");
+    expect(nextStep.href).not.toContain("mat.u2.factorizacion");
+  });
+
+  it("recommends continuing Unit 1 when ready skills have acceptable progress", () => {
+    const nextStep = deriveHomeNextStep(
+      progress({
+        attempts: [
+          {
+            exerciseId: "ex-3",
+            skillId: "mat.u1.reales_operaciones",
+            correct: true,
+            answeredAt: "2026-06-01T00:00:00.000Z",
+          },
+        ],
+        accuracyBySkill: { "mat.u1.reales_operaciones": 1 },
+        trendBySkill: { "mat.u1.reales_operaciones": "stable" },
+      }),
+      readySkills
+    );
+
+    expect(nextStep.kind).toBe("continue-unit");
+    expect(nextStep.href).toBe("/learn/matematica");
+  });
+});
