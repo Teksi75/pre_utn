@@ -1,0 +1,20 @@
+[
+  {
+    "errorTag": "u1_pertenencia_vs_inclusion",
+    "type": "conceptual",
+    "message": "Pertenencia ($\\in$) y inclusion ($\\subset$) NO son sinonimos. Pertenencia relaciona un elemento con un conjunto: $5 \\in \\mathbb{Z}$ significa que 5 es un elemento de $\\mathbb{Z}$. Inclusion relaciona un conjunto con un conjunto mas amplio: $\\mathbb{N} \\subset \\mathbb{Z}$ significa que todo natural es entero. Si el sujeto es un elemento, no un conjunto, se usa $\\in$, no $\\subset$. Por ejemplo, $5 \\subset \\mathbb{Z}$ es incorrecto (5 es un numero); lo correcto es $\\{5\\} \\subset \\mathbb{Z}$ o $5 \\in \\mathbb{Z}$.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_inclusion_chain_order",
+    "type": "procedural",
+    "message": "La cadena de inclusion entre conjuntos numericos va de menor a mayor: $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$. Cada conjunto esta contenido en el siguiente, NO al reves. $\\mathbb{Z}$ contiene a $\\mathbb{N}$ (todo natural es entero), no al reves. Si un numero pertenece a $\\mathbb{Q}$, pertenece a $\\mathbb{R}$, pero NO necesariamente a $\\mathbb{Z}$ ni a $\\mathbb{N}$: por ejemplo, $\\frac{1}{2} \\in \\mathbb{Q}$ pero $\\frac{1}{2} \\notin \\mathbb{Z}$. El orden de la cadena es siempre el mismo y no se puede invertir.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_n_sin_cero",
+    "type": "conceptual",
+    "message": "Por la convencion N-sin-cero del proyecto, los naturales $\\mathbb{N}$ NO incluyen al cero: $\\mathbb{N} = \\{1, 2, 3, \\ldots\\}$. El cero pertenece a $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$ (y a $\\mathbb{R} \\setminus \\mathbb{Q}^+$ o $\\mathbb{R} \\setminus \\mathbb{Q}^-$ segun el signo), pero NO a $\\mathbb{N}$. Si la pregunta es si 0 es natural, la respuesta es NO, siempre. Esta es una convencion explicita del proyecto y se mantiene en todos los ejercicios de conjuntos numericos.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  }
+]

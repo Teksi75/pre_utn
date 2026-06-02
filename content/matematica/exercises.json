@@ -30,11 +30,11 @@
     "skillId": "mat.u1.conjuntos_numericos",
     "type": "multiple-choice",
     "difficulty": 1,
-    "prompt": "¿Cuál es el conjunto más pequeño al que pertenece 3/5?",
+    "prompt": "¿Cuál es el conjunto más pequeño al que pertenece $\\frac{3}{5}$?",
     "expectedAnswer": "ℚ",
     "options": ["ℕ", "ℤ", "ℚ", "Irracionales"],
     "commonErrorTags": ["u1_confunde_racional_irracional"],
-    "pedagogicalNote": "3/5 es racional porque puede escribirse como fracción con enteros. No es irracional.",
+    "pedagogicalNote": "$\\frac{3}{5}$ es racional porque puede escribirse como fracción con enteros. No es irracional.",
     "relatedTheoryIds": ["theory-conjuntos-numericos"],
     "relatedExampleIds": ["example-conjuntos-numericos-2"]
   },

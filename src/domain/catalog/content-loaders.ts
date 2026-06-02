@@ -12,6 +12,7 @@ import type { Exercise } from "../models/exercise";
 import theoryUnit1 from "../../../content/matematica/theory/unit-1.json";
 import examplesUnit1 from "../../../content/matematica/examples/unit-1.json";
 import feedbackUnit1 from "../../../content/matematica/feedback/unit-1.json";
+import feedbackUnit1ConjuntosNumericos from "../../../content/matematica/feedback/unit-1-conjuntos-numericos.json";
 import exercisesJson from "../../../content/matematica/exercises.json";
 import conjuntosNumericosExercises from "../../../content/matematica/exercises/conjuntos-numericos.json";
 
@@ -38,6 +39,7 @@ const REGISTRY: ContentRegistry = {
   },
   feedback: {
     "unit-1": feedbackUnit1 as unknown as readonly FeedbackMapping[],
+    "unit-1-conjuntos-numericos": feedbackUnit1ConjuntosNumericos as unknown as readonly FeedbackMapping[],
   },
 };
 
