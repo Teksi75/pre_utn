@@ -1,0 +1,157 @@
+[
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-per-01",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "category": "pertenencia",
+    "tags": ["pertenencia", "notacion_conjuntos"],
+    "prompt": "¿A qué conjunto pertenece el número 5?",
+    "expectedAnswer": "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+    "options": [
+      "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+      "Solo a $\\mathbb{N}$",
+      "Solo a $\\mathbb{Z}$",
+      "Solo a $\\mathbb{Q}$"
+    ],
+    "commonErrorTags": ["u1_pertenencia_vs_inclusion"],
+    "pedagogicalNote": "5 es un número natural, y por la cadena $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$, también pertenece a todos los conjuntos que lo contienen.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-1"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-per-02",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "category": "pertenencia",
+    "tags": ["pertenencia", "entero_negativo"],
+    "prompt": "¿A qué conjuntos pertenece $-3$?",
+    "expectedAnswer": "$\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+    "options": [
+      "$\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+      "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+      "Solo a $\\mathbb{Z}$",
+      "Solo a $\\mathbb{R}$"
+    ],
+    "commonErrorTags": ["u1_confunde_natural_entero"],
+    "pedagogicalNote": "$-3$ es entero negativo, por lo que NO pertenece a $\\mathbb{N}$. Pero sí a $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-1"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-per-03",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "pertenencia",
+    "tags": ["pertenencia", "raiz_cuadrada", "render_safety"],
+    "prompt": "¿A qué conjuntos pertenece $\\sqrt{9}$?",
+    "expectedAnswer": "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+    "options": [
+      "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+      "Solo a $\\mathbb{Q}$ y $\\mathbb{R}$",
+      "Solo a $\\mathbb{R}$ (irracional)",
+      "No pertenece a ningún conjunto"
+    ],
+    "commonErrorTags": ["u1_toda_raiz_irracional"],
+    "pedagogicalNote": "$\\sqrt{9} = 3$, que es un número natural. No toda raíz es irracional: $\\sqrt{9}$ es racional (y entero, y natural).",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-per-04",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "pertenencia",
+    "tags": ["pertenencia", "decimal_finito", "render_safety"],
+    "prompt": "El número $0{,}75$ pertenece a:",
+    "expectedAnswer": "$\\mathbb{Q}$ y $\\mathbb{R}$",
+    "options": [
+      "$\\mathbb{Q}$ y $\\mathbb{R}$",
+      "$\\mathbb{N}$ y $\\mathbb{Z}$",
+      "Solo a $\\mathbb{R}$ (irracional)",
+      "Solo a $\\mathbb{Q}$"
+    ],
+    "commonErrorTags": ["u1_confunde_racional_irracional"],
+    "pedagogicalNote": "$0{,}75 = \\frac{3}{4}$, una fracción de enteros. Es racional, y todo racional es real. No es natural ni entero.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-per-05",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "true-false",
+    "difficulty": 2,
+    "category": "pertenencia",
+    "tags": ["pertenencia", "inclusion", "∈_vs_⊂"],
+    "prompt": "Verdadero o falso: \"$5 \\subset \\mathbb{Z}$\" es una afirmación correcta.",
+    "expectedAnswer": "Falso",
+    "options": ["Verdadero", "Falso"],
+    "commonErrorTags": ["u1_pertenencia_vs_inclusion"],
+    "pedagogicalNote": "$5$ es un número, no un conjunto. La relación correcta es $5 \\in \\mathbb{Z}$ (pertenencia). $\\{5\\} \\subset \\mathbb{Z}$ sería correcto porque $\\{5\\}$ es un subconjunto de $\\mathbb{Z}$, pero $5 \\subset \\mathbb{Z}$ no tiene sentido.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-1"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-per-06",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "pertenencia",
+    "tags": ["pertenencia", "conjunto_mas_pequeño"],
+    "prompt": "¿Cuál es el conjunto más pequeño al que pertenece $-\\sqrt{16}$?",
+    "expectedAnswer": "$\\mathbb{Z}$",
+    "options": [
+      "$\\mathbb{Z}$",
+      "$\\mathbb{N}$",
+      "$\\mathbb{Q}$ (no entero)",
+      "$\\mathbb{R} \\setminus \\mathbb{Q}$"
+    ],
+    "commonErrorTags": ["u1_confunde_natural_entero"],
+    "pedagogicalNote": "$-\\sqrt{16} = -4$. Es un entero negativo. No pertenece a $\\mathbb{N}$ (por convención N-sin-cero: los naturales son positivos). El conjunto más pequeño es $\\mathbb{Z}$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-1"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-per-07",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "pertenencia",
+    "tags": ["pertenencia", "inclusion", "∈_vs_⊂"],
+    "prompt": "¿Cuál de las siguientes afirmaciones es CORRECTA?",
+    "expectedAnswer": "$\\mathbb{Q} \\subset \\mathbb{R}$: todo racional es real",
+    "options": [
+      "$\\mathbb{Q} \\subset \\mathbb{R}$: todo racional es real",
+      "$\\mathbb{R} \\subset \\mathbb{Q}$: todo real es racional",
+      "$\\mathbb{Q} \\in \\mathbb{R}$: los racionales pertenecen a los reales como elemento",
+      "$\\mathbb{R} \\in \\mathbb{Q}$: los reales pertenecen a los racionales"
+    ],
+    "commonErrorTags": ["u1_pertenencia_vs_inclusion"],
+    "pedagogicalNote": "$\\mathbb{Q} \\subset \\mathbb{R}$ es correcto porque todo número racional es un número real. $\\mathbb{Q}$ es un subconjunto de $\\mathbb{R}$, no un elemento. Usar $\\in$ para conjuntos es un error de notación.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-1"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-per-08",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "pertenencia",
+    "tags": ["pertenencia", "inclusion", "irracional", "∈_vs_⊂"],
+    "prompt": "Sea $x = \\sqrt{2}$. ¿Cuál de las siguientes es VERDADERA?",
+    "expectedAnswer": "$x \\in \\mathbb{R}$ y $\\{x\\} \\subset \\mathbb{R}$",
+    "options": [
+      "$x \\in \\mathbb{R}$ y $\\{x\\} \\subset \\mathbb{R}$",
+      "$x \\subset \\mathbb{R}$ porque $\\sqrt{2}$ es un conjunto",
+      "$x \\in \\mathbb{Q}$ porque toda raíz es racional",
+      "$x \\in \\mathbb{N}$ porque $\\sqrt{2}$ es aproximadamente 1,41"
+    ],
+    "commonErrorTags": ["u1_pertenencia_vs_inclusion", "u1_confunde_racional_irracional"],
+    "pedagogicalNote": "$\\sqrt{2}$ es irracional y real. Como número, pertenece a $\\mathbb{R}$ ($x \\in \\mathbb{R}$). Como singleton, $\\{x\\}$ es subconjunto de $\\mathbb{R}$ ($\\{x\\} \\subset \\mathbb{R}$). La notación $x \\subset \\mathbb{R}$ es incorrecta porque $x$ no es un conjunto.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  }
+]

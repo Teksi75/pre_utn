@@ -13,6 +13,7 @@ import theoryUnit1 from "../../../content/matematica/theory/unit-1.json";
 import examplesUnit1 from "../../../content/matematica/examples/unit-1.json";
 import feedbackUnit1 from "../../../content/matematica/feedback/unit-1.json";
 import exercisesJson from "../../../content/matematica/exercises.json";
+import conjuntosNumericosExercises from "../../../content/matematica/exercises/conjuntos-numericos.json";
 
 /** Linkage metadata for exercises referencing theory and examples. */
 export interface ExerciseLinkage {
@@ -125,6 +126,27 @@ export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
     category: (raw.category as string | undefined) ?? "clasificacion",
     tags: (raw.tags as readonly string[] | undefined) ?? [],
   } as unknown as Exercise;
+}
+
+/** Per-skill exercise file registry. */
+const SKILL_EXERCISE_FILES: Readonly<Record<string, readonly Record<string, unknown>[]>> = {
+  "mat.u1.conjuntos_numericos": conjuntosNumericosExercises as unknown as readonly Record<string, unknown>[],
+};
+
+/**
+ * Load all exercises for a given skill, merging per-skill files with the main catalog.
+ *
+ * @param skillId - The skill ID to load exercises for
+ * @returns Array of Exercise objects with defaults applied
+ */
+export function loadExercisesForSkill(skillId: string): readonly Exercise[] {
+  const mainRaw = exercisesJson as unknown as readonly Record<string, unknown>[];
+  const skillRaw = SKILL_EXERCISE_FILES[skillId] ?? [];
+
+  const mainFiltered = mainRaw.filter((ex) => (ex.skillId as string) === skillId);
+  const allRaw = [...mainFiltered, ...skillRaw];
+
+  return allRaw.map(applyExerciseDefaults);
 }
 
 /** Per-category minimum exercise counts for practice bank validation. */
