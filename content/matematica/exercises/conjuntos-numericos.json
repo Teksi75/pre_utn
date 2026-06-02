@@ -233,5 +233,228 @@
     "pedagogicalNote": "I es correcta: $\\mathbb{N} \\subset \\mathbb{Z}$. II es falsa: $\\sqrt{2}$ es irracional, NO racional. III es falsa: por convención N-sin-cero, $0 \\notin \\mathbb{N}$. IV es correcta: $-3$ es entero. Solo I y IV son verdaderas.",
     "relatedTheoryIds": ["theory-conjuntos-numericos"],
     "relatedExampleIds": ["example-conjuntos-numericos-1", "example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-cla-01",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "category": "clasificacion",
+    "tags": ["clasificacion", "numero_natural", "cadena_subconjuntos"],
+    "prompt": "¿A qué conjuntos pertenece el número $5$?",
+    "expectedAnswer": "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+    "options": [
+      "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+      "Solo a $\\mathbb{N}$",
+      "Solo a $\\mathbb{R}$",
+      "$\\mathbb{N}$ y $\\mathbb{Z}$, pero no a $\\mathbb{Q}$"
+    ],
+    "commonErrorTags": ["u1_conjunto_minimo"],
+    "pedagogicalNote": "$5$ es un número natural positivo, y por la cadena $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$, pertenece a TODOS los conjuntos numéricos. El conjunto más pequeño es $\\mathbb{N}$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-1"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-cla-02",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "category": "clasificacion",
+    "tags": ["clasificacion", "entero_negativo", "n_sin_cero"],
+    "prompt": "¿A qué conjuntos pertenece el número $-3$?",
+    "expectedAnswer": "$\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$ (no a $\\mathbb{N}$)",
+    "options": [
+      "$\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$ (no a $\\mathbb{N}$)",
+      "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+      "Solo a $\\mathbb{Z}$",
+      "$\\mathbb{N}$ y $\\mathbb{Z}$, pero no a $\\mathbb{Q}$ ni a $\\mathbb{R}$"
+    ],
+    "commonErrorTags": ["u1_confunde_natural_entero", "u1_entero_no_siempre_natural"],
+    "pedagogicalNote": "$-3$ es un entero negativo. Por la convención N-sin-cero, los naturales NO incluyen negativos, así que $-3 \\notin \\mathbb{N}$. Sí pertenece a $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$. El conjunto más pequeño es $\\mathbb{Z}$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-1"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-cla-03",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "clasificacion",
+    "tags": ["clasificacion", "cero", "n_sin_cero"],
+    "prompt": "¿A qué conjuntos pertenece el número $0$?",
+    "expectedAnswer": "$\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$ (porque $0 \\notin \\mathbb{N}$)",
+    "options": [
+      "$\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$ (porque $0 \\notin \\mathbb{N}$)",
+      "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+      "Solo a $\\mathbb{Z}$",
+      "$\\mathbb{N}$ y $\\mathbb{Z}$, pero no a $\\mathbb{Q}$"
+    ],
+    "commonErrorTags": ["u1_n_sin_cero", "u1_entero_no_siempre_natural"],
+    "pedagogicalNote": "$0$ es un entero, racional y real. Por la convención N-sin-cero del proyecto, $0 \\notin \\mathbb{N}$. El conjunto más pequeño al que pertenece $0$ es $\\mathbb{Z}$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-1"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-cla-04",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "clasificacion",
+    "tags": ["clasificacion", "raiz_cuadrada", "racional"],
+    "prompt": "¿A qué conjuntos pertenece $\\sqrt{9}$?",
+    "expectedAnswer": "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+    "options": [
+      "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+      "Solo a $\\mathbb{Q}$ y $\\mathbb{R}$ (irracional)",
+      "Solo a $\\mathbb{R}$ (no es entero)",
+      "$\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$ (no es natural porque es una raíz)"
+    ],
+    "commonErrorTags": ["u1_toda_raiz_irracional"],
+    "pedagogicalNote": "$\\sqrt{9} = 3$, un número natural. NO toda raíz es irracional: cuando el radicando es un cuadrado perfecto, la raíz es entera. $\\sqrt{9}$ pertenece a $\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-cla-05",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "clasificacion",
+    "tags": ["clasificacion", "raiz_cuadrada", "irracional"],
+    "prompt": "¿A qué conjuntos pertenece $\\sqrt{2}$?",
+    "expectedAnswer": "Solo a $\\mathbb{R}$ (es irracional)",
+    "options": [
+      "Solo a $\\mathbb{R}$ (es irracional)",
+      "$\\mathbb{Q}$ y $\\mathbb{R}$ (es racional)",
+      "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$ (es entero)",
+      "A ningún conjunto (no existe)"
+    ],
+    "commonErrorTags": ["u1_toda_raiz_irracional", "u1_confunde_racional_irracional"],
+    "pedagogicalNote": "$\\sqrt{2}$ no puede escribirse como fracción exacta, así que es irracional. Pertenece a $\\mathbb{R}$ pero NO a $\\mathbb{N}$, $\\mathbb{Z}$ ni $\\mathbb{Q}$. El conjunto más pequeño al que pertenece es $\\mathbb{R}$ (en realidad $\\mathbb{R} \\setminus \\mathbb{Q}$).",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-cla-06",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "clasificacion",
+    "tags": ["clasificacion", "pi", "irracional"],
+    "prompt": "¿A qué conjuntos pertenece $\\pi$?",
+    "expectedAnswer": "Solo a $\\mathbb{R}$ (es irracional)",
+    "options": [
+      "Solo a $\\mathbb{R}$ (es irracional)",
+      "$\\mathbb{Q}$ y $\\mathbb{R}$ (es racional)",
+      "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$ (es entero)",
+      "A $\\mathbb{Z}$ y $\\mathbb{R}$ (es entero)"
+    ],
+    "commonErrorTags": ["u1_confunde_racional_irracional", "u1_toda_raiz_irracional"],
+    "pedagogicalNote": "$\\pi$ es irracional: su desarrollo decimal $3{,}14159\\ldots$ no se repite y no puede escribirse como fracción exacta. Pertenece a $\\mathbb{R}$ pero NO a $\\mathbb{N}$, $\\mathbb{Z}$ ni $\\mathbb{Q}$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-cla-07",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "true-false",
+    "difficulty": 3,
+    "category": "clasificacion",
+    "tags": ["clasificacion", "fraccion_negativa", "negativo_racional"],
+    "prompt": "Verdadero o falso: \"$-\\frac{4}{1} \\in \\mathbb{Z}$\" es una afirmación correcta.",
+    "expectedAnswer": "Verdadero",
+    "options": ["Verdadero", "Falso"],
+    "commonErrorTags": ["u1_confunde_natural_entero", "u1_negativo_puede_ser_racional"],
+    "pedagogicalNote": "$-\\frac{4}{1} = -4$ es un entero negativo. Los números negativos SÍ pueden ser racionales: $-\\frac{4}{1}$ es una fracción con enteros en numerador y denominador. Por convención N-sin-cero, $-4 \\notin \\mathbb{N}$, pero $-4 \\in \\mathbb{Z}$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-1"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-cla-08",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "fill-blank",
+    "difficulty": 3,
+    "category": "clasificacion",
+    "tags": ["clasificacion", "cero", "n_sin_cero", "conjunto_minimo"],
+    "prompt": "Escribí el conjunto MÁS PEQUEÑO al que pertenece el número $0$.",
+    "expectedAnswer": "$\\mathbb{Z}$",
+    "commonErrorTags": ["u1_n_sin_cero", "u1_entero_no_siempre_natural"],
+    "pedagogicalNote": "Por la convención N-sin-cero, $0 \\notin \\mathbb{N}$. Sí pertenece a $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$. El conjunto más pequeño (el primero de la cadena que lo contiene) es $\\mathbb{Z}$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-1"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-cla-09",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "fill-blank",
+    "difficulty": 4,
+    "category": "clasificacion",
+    "tags": ["clasificacion", "fraccion", "racional", "conjunto_minimo"],
+    "prompt": "Escribí el conjunto MÁS PEQUEÑO al que pertenece $\\frac{2}{5}$.",
+    "expectedAnswer": "$\\mathbb{Q}$",
+    "commonErrorTags": ["u1_confunde_racional_irracional", "u1_negativo_puede_ser_racional"],
+    "pedagogicalNote": "$\\frac{2}{5}$ es una fracción con numerador y denominador enteros, así que es racional. No es natural (numerador no es entero natural), no es entero (denominador distinto de 1). El conjunto más pequeño es $\\mathbb{Q}$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-cla-10",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "clasificacion",
+    "tags": ["clasificacion", "decimal_finito", "racional"],
+    "prompt": "¿A qué conjuntos pertenece $0{,}75$?",
+    "expectedAnswer": "$\\mathbb{Q}$ y $\\mathbb{R}$ (es racional)",
+    "options": [
+      "$\\mathbb{Q}$ y $\\mathbb{R}$ (es racional)",
+      "Solo a $\\mathbb{R}$ (irracional)",
+      "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+      "Solo a $\\mathbb{Q}$ (no es real)"
+    ],
+    "commonErrorTags": ["u1_confunde_racional_irracional", "u1_racional_tambien_es_real"],
+    "pedagogicalNote": "$0{,}75 = \\frac{3}{4}$, una fracción exacta, así que es racional. Por la cadena $\\mathbb{Q} \\subset \\mathbb{R}$, todo racional ES real. No es natural ni entero. Pertenece a $\\mathbb{Q}$ y $\\mathbb{R}$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-cla-11",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 5,
+    "category": "clasificacion",
+    "tags": ["clasificacion", "decimal_periodico", "racional", "racional_tambien_real"],
+    "prompt": "El número $0{,}3\\overline{3}$ (cero coma tres periódico) pertenece a:",
+    "expectedAnswer": "$\\mathbb{Q}$ y $\\mathbb{R}$ (es racional)",
+    "options": [
+      "$\\mathbb{Q}$ y $\\mathbb{R}$ (es racional)",
+      "Solo a $\\mathbb{R}$ (irracional)",
+      "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$",
+      "A ningún conjunto (no existe el número)"
+    ],
+    "commonErrorTags": ["u1_confunde_racional_irracional", "u1_racional_tambien_es_real"],
+    "pedagogicalNote": "$0{,}3\\overline{3} = \\frac{1}{3}$ es una fracción exacta, así que es RACIONAL. Los decimales periódicos son siempre racionales: pueden escribirse como fracción. Como todo racional, también pertenece a $\\mathbb{R}$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-cla-12",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 5,
+    "category": "clasificacion",
+    "tags": ["clasificacion", "irracional", "identificacion", "razonamiento"],
+    "prompt": "¿Cuál de los siguientes conjuntos contiene SOLO números irracionales?",
+    "expectedAnswer": "$\\{\\sqrt{2}, \\pi\\}$",
+    "options": [
+      "$\\{\\sqrt{2}, \\pi\\}$",
+      "$\\{\\sqrt{2}, \\pi, 0{,}\\overline{3}\\}$",
+      "$\\{\\sqrt{9}, -4/1, 0{,}75\\}$",
+      "$\\{2/5, 0{,}75, 0{,}\\overline{3}\\}$"
+    ],
+    "commonErrorTags": ["u1_toda_raiz_irracional", "u1_confunde_racional_irracional"],
+    "pedagogicalNote": "Irracionales son los que NO pueden escribirse como fracción exacta. $\\sqrt{2}$ y $\\pi$ son irracionales. $0{,}\\overline{3}$ es periódico y por lo tanto RACIONAL. $\\sqrt{9} = 3$ y $-4/1 = -4$ son enteros. $2/5$, $0{,}75$ y $0{,}\\overline{3}$ son racionales. Solo $\\{\\sqrt{2}, \\pi\\}$ contiene solo irracionales.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2", "example-conjuntos-numericos-3"]
   }
 ]

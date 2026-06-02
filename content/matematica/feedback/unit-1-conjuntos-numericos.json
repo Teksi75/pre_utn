@@ -16,5 +16,23 @@
     "type": "conceptual",
     "message": "Por la convencion N-sin-cero del proyecto, los naturales $\\mathbb{N}$ NO incluyen al cero: $\\mathbb{N} = \\{1, 2, 3, \\ldots\\}$. El cero pertenece a $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$ (y a $\\mathbb{R} \\setminus \\mathbb{Q}^+$ o $\\mathbb{R} \\setminus \\mathbb{Q}^-$ segun el signo), pero NO a $\\mathbb{N}$. Si la pregunta es si 0 es natural, la respuesta es NO, siempre. Esta es una convencion explicita del proyecto y se mantiene en todos los ejercicios de conjuntos numericos.",
     "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_racional_tambien_es_real",
+    "type": "conceptual",
+    "message": "Todo numero racional ES un numero real: $\\mathbb{Q} \\subset \\mathbb{R}$ por la cadena de inclusion. $\\mathbb{Q}$ y $\\mathbb{R}$ NO son conjuntos disjuntos. Lo que distingue a $\\mathbb{Q}$ de $\\mathbb{R}$ es que $\\mathbb{R}$ incluye ADEMAS a los irracionales $\\mathbb{R} \\setminus \\mathbb{Q}$. Por ejemplo, $\\frac{2}{5}$, $0{,}75$ y $0{,}3\\overline{3}$ son racionales Y reales a la vez. Decir que un racional solo pertenece a $\\mathbb{Q}$ (y no a $\\mathbb{R}$) es incorrecto.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_entero_no_siempre_natural",
+    "type": "conceptual",
+    "message": "No todo entero es un numero natural. Por la convencion N-sin-cero del proyecto, $\\mathbb{N} = \\{1, 2, 3, \\ldots\\}$ NO incluye ni al cero ni a los negativos. Asi, $-3$, $-4$ y $0$ pertenecen a $\\mathbb{Z}$ pero NO a $\\mathbb{N}$. Un numero es natural solo si es entero Y positivo Y no es cero. Esta distincion es clave para clasificar numeros en el conjunto mas pequeno que los contiene.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_negativo_puede_ser_racional",
+    "type": "conceptual",
+    "message": "Un numero negativo SI puede ser racional. Un racional es cualquier numero que pueda escribirse como $\\frac{a}{b}$ con $a, b \\in \\mathbb{Z}$ y $b \\neq 0$; el numerador $a$ puede ser negativo. Asi, $-\\frac{4}{1} = -4$ y $-\\frac{2}{5}$ son racionales (con denominador positivo y numerador entero, posiblemente negativo). Decir que un numero negativo no es racional es una confusion comun: la racionalidad depende de la representacion como fraccion, no del signo.",
+    "recoveryTarget": "theory-conjuntos-numericos"
   }
 ]

@@ -225,6 +225,36 @@ const TAXONOMY: readonly ErrorTag[] = [
       "Definir $\\mathbb{N} = \\{0, 1, 2, \\ldots\\}$ (la convención del proyecto excluye al 0)",
     ],
   },
+  {
+    id: "u1_racional_tambien_es_real",
+    unit: 1,
+    description:
+      "Error al tratar racionales y reales como conjuntos disjuntos: cree que $\\mathbb{Q}$ y $\\mathbb{R}$ no se solapan. En realidad $\\mathbb{Q} \\subset \\mathbb{R}$: todo racional es real. La diferencia es que $\\mathbb{R}$ también incluye a los irracionales $\\mathbb{R} \\setminus \\mathbb{Q}$.",
+    examples: [
+      "Decir que $\\frac{2}{5}$ solo pertenece a $\\mathbb{Q}$ y no a $\\mathbb{R}$",
+      "Clasificar $0{,}75$ como irracional porque no se da cuenta de que es real y racional a la vez",
+    ],
+  },
+  {
+    id: "u1_entero_no_siempre_natural",
+    unit: 1,
+    description:
+      "Error al asumir que todo entero es natural: por la convención N-sin-cero, los naturales no incluyen al cero ni a los negativos. Solo los enteros positivos $\{1, 2, 3, \\ldots\\}$ son naturales.",
+    examples: [
+      "Decir que $-3 \\in \\mathbb{N}$ porque es entero",
+      "Decir que $0 \\in \\mathbb{N}$ porque es entero (convención N-sin-cero lo excluye)",
+    ],
+  },
+  {
+    id: "u1_negativo_puede_ser_racional",
+    unit: 1,
+    description:
+      "Error al creer que los números negativos no pueden ser racionales: un racional es todo número que puede escribirse como $\\frac{a}{b}$ con $a, b \\in \\mathbb{Z}$ y $b \\neq 0$. El numerador puede ser negativo.",
+    examples: [
+      "Decir que $-\\frac{4}{1}$ no es racional porque es negativo",
+      "Excluir a $-\\frac{2}{5}$ de $\\mathbb{Q}$ por tener signo negativo",
+    ],
+  },
 
   // Unit 2: Equations and systems
   {

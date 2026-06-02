@@ -118,5 +118,23 @@
     "type": "conceptual",
     "message": "Por convención del proyecto, los números naturales $\\mathbb{N}$ NO incluyen al cero: $\\mathbb{N} = \\{1, 2, 3, \\ldots\\}$. El cero pertenece a $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$, pero NO a $\\mathbb{N}$. Si la pregunta es si 0 es natural, la respuesta es NO.",
     "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_racional_tambien_es_real",
+    "type": "conceptual",
+    "message": "Todo numero racional ES un numero real: $\\mathbb{Q} \\subset \\mathbb{R}$. $\\mathbb{Q}$ y $\\mathbb{R}$ NO son disjuntos. $\\frac{2}{5}$, $0{,}75$ y $0{,}3\\overline{3}$ son racionales Y reales a la vez. Decir que un racional solo pertenece a $\\mathbb{Q}$ es incorrecto.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_entero_no_siempre_natural",
+    "type": "conceptual",
+    "message": "No todo entero es natural. Por la convencion N-sin-cero, $\\mathbb{N} = \\{1, 2, 3, \\ldots\\}$ NO incluye cero ni negativos. Asi $-3$, $-4$ y $0$ pertenecen a $\\mathbb{Z}$ pero NO a $\\mathbb{N}$. Un numero es natural solo si es entero, positivo y no es cero.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_negativo_puede_ser_racional",
+    "type": "conceptual",
+    "message": "Un numero negativo SI puede ser racional. Un racional es $\\frac{a}{b}$ con $a, b \\in \\mathbb{Z}$ y $b \\neq 0$; el numerador puede ser negativo. Asi $-\\frac{4}{1} = -4$ y $-\\frac{2}{5}$ son racionales. La racionalidad depende de la representacion como fraccion, no del signo.",
+    "recoveryTarget": "theory-conjuntos-numericos"
   }
 ]

@@ -52,6 +52,9 @@ describe("Error Taxonomy", () => {
         "u1_pertenencia_vs_inclusion",
         "u1_inclusion_chain_order",
         "u1_n_sin_cero",
+        "u1_racional_tambien_es_real",
+        "u1_entero_no_siempre_natural",
+        "u1_negativo_puede_ser_racional",
       ]);
       expect(tagsByUnit.get(2)?.map((tag) => tag.id)).toEqual([
         "u2_aislamiento_variable",
