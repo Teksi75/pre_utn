@@ -11,9 +11,9 @@ import exercisesJson from "../../../content/matematica/exercises.json";
 import { loadTaxonomy } from "../error-taxonomy/index";
 
 describe("Theory content loading", () => {
-  test("loads three theory nodes from JSON", () => {
+  test("loads at least four theory nodes from JSON", () => {
     const nodes = loadTheoryContent("unit-1");
-    expect(nodes).toHaveLength(3);
+    expect(nodes.length).toBeGreaterThanOrEqual(4);
   });
 
   test("each theory node has a unique skillId", () => {
@@ -33,6 +33,7 @@ describe("Theory content loading", () => {
   test("theory nodes cover all pilot skills", () => {
     const nodes = loadTheoryContent("unit-1");
     const skillIds = nodes.map((n) => n.skillId);
+    expect(skillIds).toContain("mat.u1.conjuntos_numericos");
     expect(skillIds).toContain("mat.u1.reales_operaciones");
     expect(skillIds).toContain("mat.u1.intervalos");
     expect(skillIds).toContain("mat.u1.potencias_raices");
@@ -70,9 +71,9 @@ describe("Theory content loading", () => {
 });
 
 describe("Example content loading", () => {
-  test("loads eight worked examples from JSON", () => {
+  test("loads at least eleven worked examples from JSON", () => {
     const examples = loadExampleContent("unit-1");
-    expect(examples).toHaveLength(8);
+    expect(examples.length).toBeGreaterThanOrEqual(11);
   });
 
   test("each example has at least 2 solution steps", () => {
@@ -93,6 +94,7 @@ describe("Example content loading", () => {
   test("examples cover all pilot skills", () => {
     const examples = loadExampleContent("unit-1");
     const skillIds = examples.map((e) => e.skillId);
+    expect(skillIds).toContain("mat.u1.conjuntos_numericos");
     expect(skillIds).toContain("mat.u1.reales_operaciones");
     expect(skillIds).toContain("mat.u1.intervalos");
     expect(skillIds).toContain("mat.u1.potencias_raices");
@@ -100,9 +102,11 @@ describe("Example content loading", () => {
 
   test("each skill has at least 2 examples", () => {
     const examples = loadExampleContent("unit-1");
+    const conjuntos = examples.filter((e) => e.skillId === "mat.u1.conjuntos_numericos");
     const reales = examples.filter((e) => e.skillId === "mat.u1.reales_operaciones");
     const intervalos = examples.filter((e) => e.skillId === "mat.u1.intervalos");
     const potencias = examples.filter((e) => e.skillId === "mat.u1.potencias_raices");
+    expect(conjuntos.length).toBeGreaterThanOrEqual(2);
     expect(reales.length).toBeGreaterThanOrEqual(2);
     expect(intervalos.length).toBeGreaterThanOrEqual(2);
     expect(potencias.length).toBeGreaterThanOrEqual(2);

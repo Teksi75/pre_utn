@@ -32,6 +32,7 @@ describe("Exercise Catalog", () => {
     test("all exercises have valid skill IDs (known in catalog)", () => {
       const catalog = loadCatalog();
       const knownSkillIds = new Set([
+        "mat.u1.conjuntos_numericos",
         "mat.u1.reales_operaciones",
         "mat.u1.potencias_raices",
         "mat.u1.racionalizacion",

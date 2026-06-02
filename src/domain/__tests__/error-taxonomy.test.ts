@@ -44,6 +44,11 @@ describe("Error Taxonomy", () => {
         "u1_potencia_de_potencia",
         "u1_raiz_principal",
         "u1_raiz_negativa_par",
+        "u1_confunde_natural_entero",
+        "u1_confunde_racional_irracional",
+        "u1_toda_raiz_irracional",
+        "u1_raiz_negativa_en_reales",
+        "u1_conjunto_minimo",
       ]);
       expect(tagsByUnit.get(2)?.map((tag) => tag.id)).toEqual([
         "u2_aislamiento_variable",

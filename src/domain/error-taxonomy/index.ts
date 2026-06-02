@@ -145,6 +145,56 @@ const TAXONOMY: readonly ErrorTag[] = [
       "Decir que $\\sqrt{-9} = -3$ en vez de que no existe en los reales",
     ],
   },
+  {
+    id: "u1_confunde_natural_entero",
+    unit: 1,
+    description:
+      "Error al clasificar un entero negativo como natural: cree que un número negativo pertenece a $\\mathbb{N}$ en vez de a $\\mathbb{Z}$.",
+    examples: [
+      "Decir que $-4 \\in \\mathbb{N}$ en vez de $-4 \\in \\mathbb{Z} \\setminus \\mathbb{N}$",
+      "Ubicar $-3$ dentro del conjunto de los naturales al operar clasificaciones",
+    ],
+  },
+  {
+    id: "u1_confunde_racional_irracional",
+    unit: 1,
+    description:
+      "Error al distinguir racional de irracional: trata un decimal periódico como irracional o afirma que una raíz no es racional sin verificar si se puede escribir como fracción.",
+    examples: [
+      "Decir que $0,333\\dots$ es irracional en vez de racional ($= 1/3$)",
+      "Decir que $\\sqrt{9}$ es irracional en vez de $3 \\in \\mathbb{N}$",
+    ],
+  },
+  {
+    id: "u1_toda_raiz_irracional",
+    unit: 1,
+    description:
+      "Error al generalizar: asume que toda raíz es irracional, sin distinguir entre raíces que dan un resultado entero o racional y raíces cuyo resultado no puede escribirse como fracción exacta.",
+    examples: [
+      "Decir que $\\sqrt{9}$ es irracional en vez de $3 \\in \\mathbb{N}$",
+      "Decir que $\\sqrt{25}$ es irracional en vez de $5 \\in \\mathbb{N}$",
+    ],
+  },
+  {
+    id: "u1_raiz_negativa_en_reales",
+    unit: 1,
+    description:
+      "Error al evaluar raíz de un número negativo dentro de los reales: afirma que $\\sqrt{-a}$ pertenece a $\\mathbb{R}$ en vez de reconocer que no tiene resultado real.",
+    examples: [
+      "Decir que $\\sqrt{-4} \\in \\mathbb{R}$ en vez de indicar que no pertenece a $\\mathbb{R}$",
+      "Decir que $\\sqrt{-9} = -3$ como si viviera en los reales",
+    ],
+  },
+  {
+    id: "u1_conjunto_minimo",
+    unit: 1,
+    description:
+      "Error al elegir el conjunto más pequeño: cuando se pide el menor conjunto al que pertenece un número, escoge uno más amplio en vez del primero de la cadena $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$ que lo contenga.",
+    examples: [
+      "Decir que $7 \\in \\mathbb{Z}$ cuando se pide el conjunto más pequeño (debería ser $\\mathbb{N}$)",
+      "Decir que $-2 \\in \\mathbb{Q}$ cuando se pide el más pequeño (debería ser $\\mathbb{Z}$)",
+    ],
+  },
 
   // Unit 2: Equations and systems
   {

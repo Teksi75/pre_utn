@@ -16,4 +16,10 @@ describe("resolveInitialPracticeSkill", () => {
     expect(resolveInitialPracticeSkill(null)).toBeNull();
     expect(resolveInitialPracticeSkill("mat.u99.inexistente")).toBeNull();
   });
+
+  it("accepts conjuntos_numericos from the query string", () => {
+    expect(resolveInitialPracticeSkill("mat.u1.conjuntos_numericos")).toBe(
+      "mat.u1.conjuntos_numericos"
+    );
+  });
 });

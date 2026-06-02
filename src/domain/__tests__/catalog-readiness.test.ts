@@ -9,6 +9,7 @@ import { queryBySkill } from "../catalog/index";
 import { PILOT_SKILLS } from "../catalog/pilot-skills";
 
 const PILOT_SKILL_IDS = [
+  "mat.u1.conjuntos_numericos",
   "mat.u1.reales_operaciones",
   "mat.u1.intervalos",
   "mat.u1.potencias_raices",

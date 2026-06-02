@@ -3,6 +3,7 @@ import { deriveHomeNextStep, type ReadySkill } from "../next-step/index";
 import type { PracticeProgress } from "../progress/index";
 
 const readySkills: readonly ReadySkill[] = [
+  { skillId: "mat.u1.conjuntos_numericos", label: "Conjuntos numéricos" },
   { skillId: "mat.u1.reales_operaciones", label: "Números reales y operaciones" },
   { skillId: "mat.u1.potencias_raices", label: "Potencias y raíces" },
   { skillId: "mat.u1.intervalos", label: "Intervalos" },
@@ -72,14 +73,26 @@ describe("deriveHomeNextStep", () => {
       progress({
         attempts: [
           {
+            exerciseId: "ex-cn",
+            skillId: "mat.u1.conjuntos_numericos",
+            correct: true,
+            answeredAt: "2026-06-01T00:00:00.000Z",
+          },
+          {
             exerciseId: "ex-3",
             skillId: "mat.u1.reales_operaciones",
             correct: true,
             answeredAt: "2026-06-01T00:00:00.000Z",
           },
         ],
-        accuracyBySkill: { "mat.u1.reales_operaciones": 1 },
-        trendBySkill: { "mat.u1.reales_operaciones": "stable" },
+        accuracyBySkill: {
+          "mat.u1.conjuntos_numericos": 1,
+          "mat.u1.reales_operaciones": 1,
+        },
+        trendBySkill: {
+          "mat.u1.conjuntos_numericos": "stable",
+          "mat.u1.reales_operaciones": "stable",
+        },
       }),
       readySkills
     );
@@ -92,6 +105,12 @@ describe("deriveHomeNextStep", () => {
     const nextStep = deriveHomeNextStep(
       progress({
         attempts: [
+          {
+            exerciseId: "ex-0",
+            skillId: "mat.u1.conjuntos_numericos",
+            correct: true,
+            answeredAt: "2026-06-01T00:00:00.000Z",
+          },
           {
             exerciseId: "ex-1",
             skillId: "mat.u1.reales_operaciones",
@@ -106,10 +125,12 @@ describe("deriveHomeNextStep", () => {
           },
         ],
         accuracyBySkill: {
+          "mat.u1.conjuntos_numericos": 1,
           "mat.u1.reales_operaciones": 1,
           "mat.u1.intervalos": 0.5,
         },
         trendBySkill: {
+          "mat.u1.conjuntos_numericos": "stable",
           "mat.u1.reales_operaciones": "stable",
           "mat.u1.intervalos": "needs-review",
         },
@@ -119,5 +140,68 @@ describe("deriveHomeNextStep", () => {
 
     expect(nextStep.kind).toBe("practice");
     expect(nextStep.href).toBe("/practice?skill=mat.u1.potencias_raices");
+  });
+
+  it("recommends conjuntos_numericos as the first pedagogical step when no attempts yet but progress exists on later skills", () => {
+    const nextStep = deriveHomeNextStep(
+      progress({
+        attempts: [
+          {
+            exerciseId: "ex-1",
+            skillId: "mat.u1.reales_operaciones",
+            correct: true,
+            answeredAt: "2026-06-01T00:00:00.000Z",
+          },
+        ],
+        accuracyBySkill: { "mat.u1.reales_operaciones": 1 },
+        trendBySkill: { "mat.u1.reales_operaciones": "stable" },
+      }),
+      readySkills
+    );
+
+    expect(nextStep.kind).toBe("practice");
+    expect(nextStep.href).toBe("/practice?skill=mat.u1.conjuntos_numericos");
+  });
+
+  it("advances to reales_operaciones after conjuntos_numericos is completed with stable accuracy", () => {
+    const nextStep = deriveHomeNextStep(
+      progress({
+        attempts: [
+          {
+            exerciseId: "ex-cn-1",
+            skillId: "mat.u1.conjuntos_numericos",
+            correct: true,
+            answeredAt: "2026-06-01T00:00:00.000Z",
+          },
+        ],
+        accuracyBySkill: { "mat.u1.conjuntos_numericos": 1 },
+        trendBySkill: { "mat.u1.conjuntos_numericos": "stable" },
+      }),
+      readySkills
+    );
+
+    expect(nextStep.kind).toBe("practice");
+    expect(nextStep.href).toBe("/practice?skill=mat.u1.reales_operaciones");
+  });
+
+  it("recovers conjuntos_numericos when accuracy is low or trend is needs-review", () => {
+    const nextStep = deriveHomeNextStep(
+      progress({
+        attempts: [
+          {
+            exerciseId: "ex-cn-1",
+            skillId: "mat.u1.conjuntos_numericos",
+            correct: false,
+            answeredAt: "2026-06-01T00:00:00.000Z",
+          },
+        ],
+        accuracyBySkill: { "mat.u1.conjuntos_numericos": 0.5 },
+        trendBySkill: { "mat.u1.conjuntos_numericos": "needs-review" },
+      }),
+      readySkills
+    );
+
+    expect(nextStep.kind).toBe("practice");
+    expect(nextStep.href).toBe("/practice?skill=mat.u1.conjuntos_numericos");
   });
 });
