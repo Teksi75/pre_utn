@@ -13,6 +13,7 @@ import theoryUnit1 from "../../../content/matematica/theory/unit-1.json";
 import examplesUnit1 from "../../../content/matematica/examples/unit-1.json";
 import feedbackUnit1 from "../../../content/matematica/feedback/unit-1.json";
 import exercisesJson from "../../../content/matematica/exercises.json";
+import conjuntosNumericosExercises from "../../../content/matematica/exercises/conjuntos-numericos.json";
 
 /** Linkage metadata for exercises referencing theory and examples. */
 export interface ExerciseLinkage {
@@ -125,4 +126,101 @@ export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
     category: (raw.category as string | undefined) ?? "clasificacion",
     tags: (raw.tags as readonly string[] | undefined) ?? [],
   } as unknown as Exercise;
+}
+
+/** Per-skill exercise file registry. */
+const SKILL_EXERCISE_FILES: Readonly<Record<string, readonly Record<string, unknown>[]>> = {
+  "mat.u1.conjuntos_numericos": conjuntosNumericosExercises as unknown as readonly Record<string, unknown>[],
+};
+
+/**
+ * Load all exercises for a given skill, merging per-skill files with the main catalog.
+ *
+ * @param skillId - The skill ID to load exercises for
+ * @returns Array of Exercise objects with defaults applied
+ */
+export function loadExercisesForSkill(skillId: string): readonly Exercise[] {
+  const mainRaw = exercisesJson as unknown as readonly Record<string, unknown>[];
+  const skillRaw = SKILL_EXERCISE_FILES[skillId] ?? [];
+
+  const mainFiltered = mainRaw.filter((ex) => (ex.skillId as string) === skillId);
+  const allRaw = [...mainFiltered, ...skillRaw];
+
+  return allRaw.map(applyExerciseDefaults);
+}
+
+/** Per-category minimum exercise counts for practice bank validation. */
+const CATEGORY_MINIMUMS: Readonly<Record<string, number>> = {
+  pertenencia: 8,
+  clasificacion: 12,
+  "racionales-vs-irracionales": 8,
+  decimales: 6,
+  mapa: 4,
+  "errores-comunes": 6,
+};
+
+/**
+ * Validate a practice bank for category coverage and minimum counts.
+ *
+ * Checks that every exercise has a category field, that each required
+ * category meets its minimum exercise count, and that all referenced
+ * error tags have corresponding feedback entries.
+ *
+ * @param skillId - The skill being validated
+ * @param exercises - The exercises in the bank for this skill
+ * @param feedback - Optional feedback mappings to cross-check against exercise error tags
+ * @returns Array of diagnostic strings (empty if bank is valid)
+ */
+export function validatePracticeBank(
+  skillId: string,
+  exercises: readonly Exercise[],
+  feedback?: readonly FeedbackMapping[]
+): readonly string[] {
+  const diagnostics: string[] = [];
+
+  // Check for exercises missing the category field
+  const missingCategory = exercises.filter((ex) => !ex.category);
+  if (missingCategory.length > 0) {
+    diagnostics.push(
+      `${missingCategory.length} exercise(s) missing category field: ${missingCategory.map((e) => e.id).join(", ")}`
+    );
+  }
+
+  // Count exercises per category
+  const counts = new Map<string, number>();
+  for (const ex of exercises) {
+    if (ex.category) {
+      counts.set(ex.category, (counts.get(ex.category) ?? 0) + 1);
+    }
+  }
+
+  // Check each required category against its minimum
+  for (const [category, minimum] of Object.entries(CATEGORY_MINIMUMS)) {
+    const count = counts.get(category) ?? 0;
+    if (count < minimum) {
+      diagnostics.push(
+        `Category "${category}" has ${count} exercise(s) but requires at least ${minimum}`
+      );
+    }
+  }
+
+  // Cross-check feedback coverage for exercises with error tags
+  if (feedback) {
+    const feedbackTags = new Set(feedback.map((f) => f.errorTag));
+    const exercisesWithMissingFeedback = exercises.filter(
+      (ex) =>
+        ex.commonErrorTags.length > 0 &&
+        ex.commonErrorTags.some((tag) => !feedbackTags.has(tag))
+    );
+    if (exercisesWithMissingFeedback.length > 0) {
+      for (const ex of exercisesWithMissingFeedback) {
+        const missing = ex.commonErrorTags.filter((tag) => !feedbackTags.has(tag));
+        diagnostics.push(
+          `Exercise "${ex.id}" references error tag(s) without feedback: ${missing.join(", ")}`
+        );
+      }
+    }
+  }
+
+  return diagnostics;
 }

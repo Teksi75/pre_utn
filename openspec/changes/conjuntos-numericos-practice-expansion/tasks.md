@@ -61,11 +61,11 @@ Chain strategy: stacked-to-main
 **Goal**: 12 new exercises covering ∈/⊂ discrimination and the inclusion map among ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ.
 
 ### Tasks
-- [ ] 2.1 Create `content/matematica/exercises/conjuntos-numericos.json` with 8 pertenencia/inclusión exercises (`cn-per-01`..`cn-per-08`). Distribution: 3 básico, 3 intermedio, 2 desafiante. At least 2 test ∈ vs ⊂ confusion. All math via `$...$` KaTeX.
-- [ ] 2.2 Add 4 mapa-de-inclusión exercises to same file (`cn-map-01`..`cn-map-04`). Distribution: 1 básico, 2 intermedio, 1 desafiante. At least 1 asks student to identify ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ chain.
-- [ ] 2.3 Update `src/domain/catalog/content-loaders.ts` to merge per-skill JSON files. Add import for `conjuntos-numericos.json` and merge into exercise list for `mat.u1.conjuntos_numericos`.
-- [ ] 2.4 Create `content/matematica/feedback/unit-1-conjuntos-numericos.json` with feedback entries for all 12 exercises. Include ∈/⊂ confusion example and inclusion chain explanation.
-- [ ] 2.5 [TDD] Extend `validatePracticeBank` to assert ≥8 pertenencia + ≥4 mapa, all categories present, all exercises have feedback. RED → GREEN.
+- [x] 2.1 Create `content/matematica/exercises/conjuntos-numericos.json` with 8 pertenencia/inclusión exercises (`cn-per-01`..`cn-per-08`). Distribution: 3 básico, 3 intermedio, 2 desafiante. At least 2 test ∈ vs ⊂ confusion. All math via `$...$` KaTeX.
+- [x] 2.2 Add 4 mapa-de-inclusión exercises to same file (`cn-map-01`..`cn-map-04`). Distribution: 1 básico, 2 intermedio, 1 desafiante. At least 1 asks student to identify ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ chain.
+- [x] 2.3 Update `src/domain/catalog/content-loaders.ts` to merge per-skill JSON files. Add import for `conjuntos-numericos.json` and merge into exercise list for `mat.u1.conjuntos_numericos`.
+- [x] 2.4 Create `content/matematica/feedback/unit-1-conjuntos-numericos.json` with feedback entries for all 12 exercises. Include ∈/⊂ confusion example and inclusion chain explanation.
+- [x] 2.5 [TDD] Extend `validatePracticeBank` to assert ≥8 pertenencia + ≥4 mapa, all categories present, all exercises have feedback. RED → GREEN.
 
 ### Verification
 - `pnpm run test`, `pnpm run typecheck`, `pnpm run build` pass.

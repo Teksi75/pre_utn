@@ -100,5 +100,23 @@
     "type": "conceptual",
     "message": "No existe raíz cuadrada (ni raíz de índice par) de un número negativo en los números reales. $\\sqrt{-4}$ no pertenece a $\\mathbb{R}$.",
     "recoveryTarget": "theory-potencias-raices"
+  },
+  {
+    "errorTag": "u1_pertenencia_vs_inclusion",
+    "type": "conceptual",
+    "message": "Pertenencia ($\\in$) y inclusión ($\\subset$) son relaciones distintas. $5 \\in \\mathbb{Z}$ significa que 5 es un elemento de $\\mathbb{Z}$. Pero $5 \\subset \\mathbb{Z}$ es incorrecto: 5 es un número, no un conjunto. Para que la inclusión tenga sentido, el lado izquierdo debe ser un conjunto: $\\{5\\} \\subset \\mathbb{Z}$.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_inclusion_chain_order",
+    "type": "procedural",
+    "message": "La cadena de inclusiones entre conjuntos numéricos es $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$. Cada conjunto está contenido en el siguiente: todo natural es entero, todo entero es racional, y todo racional es real. El orden NO se puede invertir: $\\mathbb{Z}$ contiene a $\\mathbb{N}$, no al revés.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_n_sin_cero",
+    "type": "conceptual",
+    "message": "Por convención del proyecto, los números naturales $\\mathbb{N}$ NO incluyen al cero: $\\mathbb{N} = \\{1, 2, 3, \\ldots\\}$. El cero pertenece a $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$, pero NO a $\\mathbb{N}$. Si la pregunta es si 0 es natural, la respuesta es NO.",
+    "recoveryTarget": "theory-conjuntos-numericos"
   }
 ]
