@@ -149,6 +149,55 @@ export function loadExercisesForSkill(skillId: string): readonly Exercise[] {
   return allRaw.map(applyExerciseDefaults);
 }
 
+/**
+ * Result of loading a practice bank: the exercises plus the diagnostics
+ * produced by the bank validator.
+ */
+export interface SkillBank {
+  readonly exercises: readonly Exercise[];
+  readonly diagnostics: readonly string[];
+}
+
+/**
+ * Derive the unit feedback key (e.g. "unit-1") from a skill ID.
+ * Throws if the skill ID does not match the `mat.u{N}.*` convention.
+ */
+function skillIdToUnitKey(skillId: string): string {
+  const match = /^mat\.u(\d+)\./.exec(skillId);
+  if (!match) {
+    throw new Error(`Cannot derive unit key from skillId: ${skillId}`);
+  }
+  return `unit-${match[1]}`;
+}
+
+/**
+ * Load a skill's practice bank together with validation diagnostics.
+ *
+ * Wires the bank validator into the catalog load path: callers receive both
+ * the exercises and any diagnostics produced by `validatePracticeBank`,
+ * without having to call them separately. Backward compatible with
+ * `loadExercisesForSkill`, which still returns exercises only.
+ *
+ * @param skillId - The skill ID to load the bank for
+ * @returns Object with `exercises` array and `diagnostics` array (empty if bank is valid)
+ */
+export function loadSkillBank(skillId: string): SkillBank {
+  const exercises = loadExercisesForSkill(skillId);
+
+  // Try to load unit feedback for cross-checking error tag coverage.
+  // If the unit is unknown or has no feedback, the validator will skip
+  // the coverage check and return diagnostics only for category counts.
+  let feedback: readonly FeedbackMapping[] = [];
+  try {
+    feedback = loadFeedbackContent(skillIdToUnitKey(skillId));
+  } catch {
+    // No feedback registered for this unit — proceed without.
+  }
+
+  const diagnostics = validatePracticeBank(skillId, exercises, feedback);
+  return { exercises, diagnostics };
+}
+
 /** Per-category minimum exercise counts for practice bank validation. */
 const CATEGORY_MINIMUMS: Readonly<Record<string, number>> = {
   pertenencia: 8,

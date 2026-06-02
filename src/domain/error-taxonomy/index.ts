@@ -195,6 +195,36 @@ const TAXONOMY: readonly ErrorTag[] = [
       "Decir que $-2 \\in \\mathbb{Q}$ cuando se pide el más pequeño (debería ser $\\mathbb{Z}$)",
     ],
   },
+  {
+    id: "u1_pertenencia_vs_inclusion",
+    unit: 1,
+    description:
+      "Error al confundir pertenencia ($\\in$) con inclusión ($\\subset$): usar $\\subset$ cuando el sujeto es un elemento (no un conjunto). Pertenencia relaciona elemento con conjunto; inclusión relaciona conjunto con conjunto.",
+    examples: [
+      "Escribir $5 \\subset \\mathbb{Z}$ en vez de $5 \\in \\mathbb{Z}$ (5 es un elemento, no un conjunto)",
+      "Escribir $\\mathbb{Q} \\in \\mathbb{R}$ en vez de $\\mathbb{Q} \\subset \\mathbb{R}$ ($\\mathbb{Q}$ es un conjunto, no un elemento)",
+    ],
+  },
+  {
+    id: "u1_inclusion_chain_order",
+    unit: 1,
+    description:
+      "Error en el orden de la cadena de inclusiones: invertir $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$ o afirmar que un conjunto contiene a uno mayor en la cadena.",
+    examples: [
+      "Escribir $\\mathbb{Z} \\subset \\mathbb{N}$ en vez de $\\mathbb{N} \\subset \\mathbb{Z}$",
+      "Afirmar que $\\mathbb{R} \\subset \\mathbb{Q}$ cuando en realidad es $\\mathbb{Q} \\subset \\mathbb{R}$",
+    ],
+  },
+  {
+    id: "u1_n_sin_cero",
+    unit: 1,
+    description:
+      "Error al clasificar el cero como número natural: por la convención N-sin-cero, $0 \\notin \\mathbb{N}$. Cero pertenece a $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$, pero no a $\\mathbb{N}$.",
+    examples: [
+      "Decir que $0 \\in \\mathbb{N}$",
+      "Definir $\\mathbb{N} = \\{0, 1, 2, \\ldots\\}$ (la convención del proyecto excluye al 0)",
+    ],
+  },
 
   // Unit 2: Equations and systems
   {

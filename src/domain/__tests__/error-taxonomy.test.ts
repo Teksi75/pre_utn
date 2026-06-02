@@ -49,6 +49,9 @@ describe("Error Taxonomy", () => {
         "u1_toda_raiz_irracional",
         "u1_raiz_negativa_en_reales",
         "u1_conjunto_minimo",
+        "u1_pertenencia_vs_inclusion",
+        "u1_inclusion_chain_order",
+        "u1_n_sin_cero",
       ]);
       expect(tagsByUnit.get(2)?.map((tag) => tag.id)).toEqual([
         "u2_aislamiento_variable",
@@ -104,6 +107,37 @@ describe("Error Taxonomy", () => {
         expect(found!.description).toBeTruthy();
         expect(found!.examples.length).toBeGreaterThan(0);
       }
+    });
+
+    test("each conjuntos_numericos misconception tag from PR#2 feedback is lookupable", () => {
+      // These tags are referenced by feedback entries in unit-1.json and by
+      // exercises in conjuntos-numericos.json, so the taxonomy must define them
+      // for validateExercise to accept the references.
+      const newTags = [
+        "u1_pertenencia_vs_inclusion",
+        "u1_inclusion_chain_order",
+        "u1_n_sin_cero",
+      ];
+      for (const tagId of newTags) {
+        const found = lookupTag(tagId);
+        expect(found, `Tag ${tagId} should be defined in the taxonomy`).toBeDefined();
+        expect(found!.id).toBe(tagId);
+        expect(found!.unit).toBe(1);
+        expect(found!.description).toBeTruthy();
+        expect(found!.examples.length).toBeGreaterThan(0);
+      }
+    });
+
+    test("u1_pertenencia_vs_inclusion addresses ∈ vs ⊂ confusion by name", () => {
+      // Triangulation: the description must reference both relations to be
+      // pedagogically meaningful — forces a real definition, not a stub.
+      const tag = lookupTag("u1_pertenencia_vs_inclusion");
+      expect(tag).toBeDefined();
+      const text = `${tag!.description} ${tag!.examples.join(" ")}`.toLowerCase();
+      expect(text.includes("pertenencia") || text.includes("∈")).toBe(true);
+      expect(
+        text.includes("inclusion") || text.includes("inclusión") || text.includes("⊂")
+      ).toBe(true);
     });
   });
 

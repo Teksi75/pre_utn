@@ -6,7 +6,13 @@
  */
 
 import { describe, test, expect } from "vitest";
-import { applyExerciseDefaults } from "../catalog/content-loaders";
+import {
+  applyExerciseDefaults,
+  loadExercisesForSkill,
+  loadSkillBank,
+  validatePracticeBank,
+} from "../catalog/content-loaders";
+import { loadFeedbackContent } from "../catalog/content-loaders";
 import type { Exercise } from "../models/exercise";
 
 describe("applyExerciseDefaults", () => {
@@ -45,5 +51,36 @@ describe("applyExerciseDefaults", () => {
     const result = applyExerciseDefaults(raw);
     expect(result.category).toBe("decimales");
     expect(result.tags).toEqual(["decimal_finito"]);
+  });
+});
+
+describe("loadSkillBank — wiring bank validator into catalog load path", () => {
+  const SKILL_ID = "mat.u1.conjuntos_numericos";
+
+  test("returns { exercises, diagnostics } shape for the skill", () => {
+    const result = loadSkillBank(SKILL_ID);
+    expect(result).toHaveProperty("exercises");
+    expect(result).toHaveProperty("diagnostics");
+    expect(Array.isArray(result.exercises)).toBe(true);
+    expect(Array.isArray(result.diagnostics)).toBe(true);
+  });
+
+  test("exercises match the legacy loadExercisesForSkill output (backward compat)", () => {
+    const legacy = loadExercisesForSkill(SKILL_ID);
+    const banked = loadSkillBank(SKILL_ID);
+    expect(banked.exercises.length).toBe(legacy.length);
+    expect(banked.exercises.map((e) => e.id)).toEqual(legacy.map((e) => e.id));
+  });
+
+  test("diagnostics match a direct validatePracticeBank call with the same inputs", () => {
+    // Triangulation: the wiring must surface the same diagnostics as calling
+    // the validator directly. This is the contract that the new entry point
+    // guarantees — exact content changes as the bank grows, but the wiring
+    // contract is preserved.
+    const exercises = loadExercisesForSkill(SKILL_ID);
+    const feedback = loadFeedbackContent("unit-1");
+    const directDiagnostics = validatePracticeBank(SKILL_ID, exercises, feedback);
+    const banked = loadSkillBank(SKILL_ID);
+    expect(banked.diagnostics).toEqual(directDiagnostics);
   });
 });
