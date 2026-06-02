@@ -28,7 +28,7 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Local generated caches
-.atl/.skill-registry.cache.json
+.atl/
 .gga-tmp/
 
 # Canonical reference material stays local until storage policy is decided
