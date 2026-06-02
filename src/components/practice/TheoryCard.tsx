@@ -9,6 +9,29 @@ interface TheoryCardProps {
   readonly node: TheoryNode;
 }
 
+function conceptCardClass(id: string): string {
+  if (id === "concept-atencion-cero-naturales") {
+    return "border-amber-300 bg-amber-50";
+  }
+
+  if (id === "concept-error-comun-correccion") {
+    return "border-red-200 bg-red-50";
+  }
+
+  if (id === "concept-cierre-dominio") {
+    return "border-green-200 bg-green-50";
+  }
+
+  return "border-brand-200 bg-brand-50";
+}
+
+function conceptTitleClass(id: string): string {
+  if (id === "concept-atencion-cero-naturales") return "text-amber-900";
+  if (id === "concept-error-comun-correccion") return "text-red-800";
+  if (id === "concept-cierre-dominio") return "text-green-800";
+  return "text-brand-900";
+}
+
 /**
  * Displays a theory node: concepts, notation, common mistakes, and practice prompts.
  * Concepts are expanded by default; notation and mistakes can be toggled.
@@ -28,14 +51,17 @@ export function TheoryCard({ node }: TheoryCardProps) {
       {/* Concepts */}
       <div className="space-y-3">
         {node.concepts.map((concept) => (
-          <div key={concept.id}>
-            <h3 className="text-[var(--text-lg)] font-semibold text-brand-900">
+          <section
+            key={concept.id}
+            className={`rounded-[var(--radius-card)] border p-4 shadow-sm ${conceptCardClass(concept.id)}`}
+          >
+            <h3 className={`text-[var(--text-lg)] font-semibold ${conceptTitleClass(concept.id)}`}>
               {concept.title}
             </h3>
             <div className="mt-1 text-sm text-brand-700 leading-[var(--leading-relaxed)]">
               <RichText text={concept.body} />
             </div>
-          </div>
+          </section>
         ))}
       </div>
 
@@ -93,7 +119,9 @@ export function TheoryCard({ node }: TheoryCardProps) {
       {node.practicePrompts.length > 0 && (
         <div className="mt-4 pt-3 border-t border-brand-100">
           <div className="text-xs font-medium text-brand-500 mb-1">
-            Para practicar:
+            {node.skillId === "mat.u1.conjuntos_numericos"
+              ? "Antes de pasar a la práctica:"
+              : "Para practicar:"}
           </div>
           <ul className="text-sm text-brand-700 space-y-1">
             {node.practicePrompts.map((prompt, i) => (
