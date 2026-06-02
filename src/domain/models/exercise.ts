@@ -7,8 +7,8 @@ import type { Result } from "./result";
 import { ok, err } from "./result";
 import type { SkillId } from "./skill";
 
-/** Exercise ID format: ex.u{1-6}.{skill_slug}.{index} */
-export type ExerciseId = `ex.u${1 | 2 | 3 | 4 | 5 | 6}.${string}.${number}`;
+/** Exercise ID format: ex.u{1-6}.{skill_slug}.{index} or ex.u{1-6}.{skill_slug}.{slug-id} */
+export type ExerciseId = `ex.u${1 | 2 | 3 | 4 | 5 | 6}.${string}.${string}`;
 
 /** The 9 supported exercise types. */
 export type ExerciseType =
@@ -37,6 +37,10 @@ export interface Exercise {
   readonly pedagogicalNote: string;
   /** Selectable choices for multiple-choice exercises. Required when type is "multiple-choice". */
   readonly options?: readonly string[];
+  /** Practice category for bank organization (e.g. "clasificacion", "pertenencia"). */
+  readonly category?: string;
+  /** Semantic tags for filtering and pedagogical tracing. */
+  readonly tags?: readonly string[];
 }
 
 /** Validation error with field and message. */
@@ -45,7 +49,7 @@ export interface ValidationError {
   readonly message: string;
 }
 
-const EXERCISE_ID_PATTERN = /^ex\.u([1-6])\.(.+)\.(\d+)$/;
+const EXERCISE_ID_PATTERN = /^ex\.u([1-6])\.(.+)\.([a-z0-9-]+)$/;
 
 const SUPPORTED_TYPES: ReadonlySet<string> = new Set<ExerciseType>([
   "multiple-choice",

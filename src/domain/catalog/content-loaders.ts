@@ -6,6 +6,7 @@
 import type { TheoryNode } from "../models/theory";
 import type { WorkedExample } from "../models/worked-example";
 import type { FeedbackMapping } from "../feedback/index";
+import type { Exercise } from "../models/exercise";
 
 // Static JSON imports
 import theoryUnit1 from "../../../content/matematica/theory/unit-1.json";
@@ -106,4 +107,22 @@ export function pilotExercisesWithLinks(unitKey: string): readonly ExerciseLinka
       relatedTheoryIds: (ex.relatedTheoryIds as readonly string[]) ?? [],
       relatedExampleIds: (ex.relatedExampleIds as readonly string[]) ?? [],
     }));
+}
+
+/**
+ * Apply backward-compat defaults to a raw exercise object.
+ *
+ * When loading exercises from JSON, optional metadata fields (category, tags)
+ * may be absent. This function fills in sensible defaults so downstream code
+ * can rely on their presence without null checks.
+ *
+ * @param raw - Raw exercise object from JSON (may lack optional fields)
+ * @returns Exercise with defaults applied for missing optional fields
+ */
+export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
+  return {
+    ...raw,
+    category: (raw.category as string | undefined) ?? "clasificacion",
+    tags: (raw.tags as readonly string[] | undefined) ?? [],
+  } as unknown as Exercise;
 }

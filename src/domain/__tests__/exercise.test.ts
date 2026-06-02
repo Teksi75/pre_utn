@@ -151,6 +151,47 @@ describe("Exercise validation", () => {
         expect(result.error.field).toBe("id");
       }
     });
+
+    test("existing numeric final segment is accepted", () => {
+      const exercise: Exercise = { ...validExercise, id: "ex.u1.reales_operaciones.1" as Exercise["id"] };
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+      expect(result.ok).toBe(true);
+    });
+
+    test("slug-style final segment (cn-per-01) is accepted", () => {
+      const exercise: Exercise = {
+        ...validExercise,
+        id: "ex.u1.conjuntos_numericos.cn-per-01" as Exercise["id"],
+      };
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+      expect(result.ok).toBe(true);
+    });
+  });
+
+  describe("optional metadata fields", () => {
+    test("exercise without category and tags is valid (backward compat)", () => {
+      const exercise: Exercise = { ...validExercise };
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.value.category).toBeUndefined();
+        expect(result.value.tags).toBeUndefined();
+      }
+    });
+
+    test("exercise with category and tags is valid", () => {
+      const exercise: Exercise = {
+        ...validExercise,
+        category: "clasificacion",
+        tags: ["u1_conjunto_minimo", "pertenencia"],
+      };
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.value.category).toBe("clasificacion");
+        expect(result.value.tags).toEqual(["u1_conjunto_minimo", "pertenencia"]);
+      }
+    });
   });
 
   describe("missing required fields", () => {
