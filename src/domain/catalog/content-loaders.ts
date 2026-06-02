@@ -162,16 +162,19 @@ const CATEGORY_MINIMUMS: Readonly<Record<string, number>> = {
 /**
  * Validate a practice bank for category coverage and minimum counts.
  *
- * Checks that every exercise has a category field and that each required
- * category meets its minimum exercise count.
+ * Checks that every exercise has a category field, that each required
+ * category meets its minimum exercise count, and that all referenced
+ * error tags have corresponding feedback entries.
  *
  * @param skillId - The skill being validated
  * @param exercises - The exercises in the bank for this skill
+ * @param feedback - Optional feedback mappings to cross-check against exercise error tags
  * @returns Array of diagnostic strings (empty if bank is valid)
  */
 export function validatePracticeBank(
   skillId: string,
-  exercises: readonly Exercise[]
+  exercises: readonly Exercise[],
+  feedback?: readonly FeedbackMapping[]
 ): readonly string[] {
   const diagnostics: string[] = [];
 
@@ -198,6 +201,24 @@ export function validatePracticeBank(
       diagnostics.push(
         `Category "${category}" has ${count} exercise(s) but requires at least ${minimum}`
       );
+    }
+  }
+
+  // Cross-check feedback coverage for exercises with error tags
+  if (feedback) {
+    const feedbackTags = new Set(feedback.map((f) => f.errorTag));
+    const exercisesWithMissingFeedback = exercises.filter(
+      (ex) =>
+        ex.commonErrorTags.length > 0 &&
+        ex.commonErrorTags.some((tag) => !feedbackTags.has(tag))
+    );
+    if (exercisesWithMissingFeedback.length > 0) {
+      for (const ex of exercisesWithMissingFeedback) {
+        const missing = ex.commonErrorTags.filter((tag) => !feedbackTags.has(tag));
+        diagnostics.push(
+          `Exercise "${ex.id}" references error tag(s) without feedback: ${missing.join(", ")}`
+        );
+      }
     }
   }
 
