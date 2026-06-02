@@ -126,3 +126,58 @@ export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
     tags: (raw.tags as readonly string[] | undefined) ?? [],
   } as unknown as Exercise;
 }
+
+/** Per-category minimum exercise counts for practice bank validation. */
+const CATEGORY_MINIMUMS: Readonly<Record<string, number>> = {
+  pertenencia: 8,
+  clasificacion: 12,
+  "racionales-vs-irracionales": 8,
+  decimales: 6,
+  mapa: 4,
+  "errores-comunes": 6,
+};
+
+/**
+ * Validate a practice bank for category coverage and minimum counts.
+ *
+ * Checks that every exercise has a category field and that each required
+ * category meets its minimum exercise count.
+ *
+ * @param skillId - The skill being validated
+ * @param exercises - The exercises in the bank for this skill
+ * @returns Array of diagnostic strings (empty if bank is valid)
+ */
+export function validatePracticeBank(
+  skillId: string,
+  exercises: readonly Exercise[]
+): readonly string[] {
+  const diagnostics: string[] = [];
+
+  // Check for exercises missing the category field
+  const missingCategory = exercises.filter((ex) => !ex.category);
+  if (missingCategory.length > 0) {
+    diagnostics.push(
+      `${missingCategory.length} exercise(s) missing category field: ${missingCategory.map((e) => e.id).join(", ")}`
+    );
+  }
+
+  // Count exercises per category
+  const counts = new Map<string, number>();
+  for (const ex of exercises) {
+    if (ex.category) {
+      counts.set(ex.category, (counts.get(ex.category) ?? 0) + 1);
+    }
+  }
+
+  // Check each required category against its minimum
+  for (const [category, minimum] of Object.entries(CATEGORY_MINIMUMS)) {
+    const count = counts.get(category) ?? 0;
+    if (count < minimum) {
+      diagnostics.push(
+        `Category "${category}" has ${count} exercise(s) but requires at least ${minimum}`
+      );
+    }
+  }
+
+  return diagnostics;
+}
