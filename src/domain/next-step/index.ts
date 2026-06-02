@@ -31,9 +31,12 @@ export function deriveHomeNextStep(
     };
   }
 
+  // The pedagogical chain is encoded by the order of `readySkills` (PILOT_SKILLS).
+  // Walk it in order: the first skill with no attempts, whose every predecessor has
+  // acceptable progress (attempts, accuracy >= LOW_ACCURACY_THRESHOLD, no needs-review),
+  // is the next pedagogical step. The diagnostic branch above still wins when the
+  // user has never practiced anything.
   const firstUnattemptedReadySkill = readySkills.find(({ skillId }, index) => {
-    if (index === 0) return false;
-
     const hasAttempts = progress.attempts.some((attempt) => attempt.skillId === skillId);
     if (hasAttempts) return false;
 

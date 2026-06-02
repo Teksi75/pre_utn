@@ -1,5 +1,66 @@
 [
   {
+    "id": "theory-conjuntos-numericos",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "concepts": [
+      {
+        "id": "concept-conjuntos-definicion",
+        "title": "Conjuntos numéricos",
+        "body": "Un conjunto numérico agrupa números que comparten operaciones y propiedades. A lo largo de la historia se fueron ampliando para responder a nuevas preguntas: contar, incluir negativos, dividir, sacar raíces, y finalmente representar raíces de números negativos."
+      },
+      {
+        "id": "concept-naturales-enteros-racionales",
+        "title": "Naturales, enteros y racionales",
+        "body": "$\\mathbb{N} = \\{0, 1, 2, 3, \\dots\\}$ sirve para contar. $\\mathbb{Z} = \\{\\dots, -2, -1, 0, 1, 2, \\dots\\}$ incorpora los negativos. $\\mathbb{Q} = \\{p/q \\mid p, q \\in \\mathbb{Z}, q \\neq 0\\}$ permite expresar cocientes. Cada conjunto amplía al anterior: $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q}$."
+      },
+      {
+        "id": "concept-irracionales-reales",
+        "title": "Irracionales y reales",
+        "body": "Hay números que NO pueden escribirse como fracción: $\\sqrt{2}$, $\\pi$, $e$. Se llaman irracionales. La unión de racionales e irracionales forma $\\mathbb{R}$, el conjunto de los números reales. Todo número de $\\mathbb{Q}$ también pertenece a $\\mathbb{R}$."
+      },
+      {
+        "id": "concept-complejos-ampliacion",
+        "title": "Complejos como ampliación",
+        "body": "El conjunto $\\mathbb{C}$ amplía a $\\mathbb{R}$ para representar raíces de números negativos y resolver ecuaciones que no tienen solución real. En esta skill sólo se menciona; la operatoria con $\\mathbb{C}$ se trabaja más adelante."
+      },
+      {
+        "id": "concept-inclusion-conjuntos",
+        "title": "Inclusión entre conjuntos",
+        "body": "La cadena de inclusiones $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R} \\subset \\mathbb{C}$ indica que todo número natural es también entero, racional, real y complejo. Para clasificar un número se busca el conjunto más pequeño al que pertenece."
+      }
+    ],
+    "notation": [
+      "$\\mathbb{N}$ naturales",
+      "$\\mathbb{Z}$ enteros",
+      "$\\mathbb{Q}$ racionales",
+      "$\\mathbb{R}$ reales",
+      "$\\mathbb{C}$ complejos",
+      "$\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R} \\subset \\mathbb{C}$"
+    ],
+    "commonMistakes": [
+      "Creer que todo decimal es irracional: $0,333\\dots = 1/3$ es racional",
+      "Creer que toda raíz es irracional: $\\sqrt{9} = 3$ es natural",
+      "Confundir entero negativo con natural: $-4 \\in \\mathbb{Z}$ pero $-4 \\notin \\mathbb{N}$",
+      "Decir que $\\sqrt{-4}$ pertenece a $\\mathbb{R}$: la raíz de un negativo no está en los reales",
+      "Confundir 'no tiene resultado real' con 'no existe en ningún sistema numérico'"
+    ],
+    "practicePrompts": [
+      "Indicá el conjunto más pequeño al que pertenece $5$",
+      "¿$−3$ pertenece a $\\mathbb{N}$? ¿A qué conjunto pertenece?",
+      "Explicá por qué $0,333\\dots$ es racional",
+      "¿$\\sqrt{2}$ pertenece a $\\mathbb{Q}$? ¿Y a $\\mathbb{R}$?",
+      "¿$\\sqrt{-4}$ pertenece a $\\mathbb{R}$? ¿Qué conjunto lo contiene más adelante?"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.0 Conjuntos numéricos",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Reconocer la estructura de los conjuntos numéricos y la ubicación de los reales dentro de una jerarquía más amplia"
+      }
+    ]
+  },
+  {
     "id": "theory-reales-operaciones",
     "skillId": "mat.u1.reales_operaciones",
     "concepts": [

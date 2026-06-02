@@ -19,7 +19,7 @@ describe("Theory content loading", () => {
   test("each theory node has a unique skillId", () => {
     const nodes = loadTheoryContent("unit-1");
     const skillIds = nodes.map((n) => n.skillId);
-    expect(new Set(skillIds).size).toBe(3);
+    expect(new Set(skillIds).size).toBe(nodes.length);
   });
 
   test("each theory node validates successfully", () => {

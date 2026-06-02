@@ -44,7 +44,7 @@ describe("deriveHomeNextStep", () => {
     );
 
     expect(nextStep.kind).toBe("practice");
-    expect(nextStep.href).toBe("/practice?skill=mat.u1.intervalos");
+    expect(nextStep.href).toBe("/practice?skill=mat.u1.conjuntos_numericos");
   });
 
   it("does not generate a direct practice link for a skill that is not ready", () => {
@@ -64,7 +64,8 @@ describe("deriveHomeNextStep", () => {
       readySkills
     );
 
-    expect(nextStep.kind).not.toBe("practice");
+    expect(nextStep.kind).toBe("practice");
+    expect(nextStep.href).toBe("/practice?skill=mat.u1.conjuntos_numericos");
     expect(nextStep.href).not.toContain("mat.u2.factorizacion");
   });
 

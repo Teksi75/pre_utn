@@ -1,5 +1,35 @@
 [
   {
+    "errorTag": "u1_confunde_natural_entero",
+    "type": "conceptual",
+    "message": "Un número entero negativo pertenece a ℤ, pero NO a ℕ. ℕ incluye a 0, 1, 2, … sin negativos.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_confunde_racional_irracional",
+    "type": "conceptual",
+    "message": "Un decimal periódico puede escribirse como fracción: 0,333… = 1/3 ∈ ℚ. Un decimal así NO es irracional. Un irracional como √2 no se puede escribir como fracción exacta.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_toda_raiz_irracional",
+    "type": "corrective",
+    "message": "No toda raíz es irracional. Por ejemplo, √9 = 3 ∈ ℕ. Una raíz es irracional sólo cuando su resultado no se puede escribir como fracción exacta.",
+    "recoveryTarget": "example-conjuntos-numericos-2"
+  },
+  {
+    "errorTag": "u1_raiz_negativa_en_reales",
+    "type": "conceptual",
+    "message": "√(-4) no pertenece a ℝ. La raíz cuadrada de un número negativo no tiene resultado real. Más adelante se interpreta en ℂ.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_conjunto_minimo",
+    "type": "procedural",
+    "message": "Cuando te preguntan por el conjunto más pequeño, buscá el primero de la cadena ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ al que pertenece el número. Por ejemplo, 7 ∈ ℕ, así que ℕ es la respuesta.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
     "errorTag": "u1_orden_operaciones",
     "type": "corrective",
     "message": "Revisá el orden de operaciones: multiplicá y dividí antes de sumar y restar. Recordá PEMDAS.",

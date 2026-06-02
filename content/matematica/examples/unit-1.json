@@ -1,5 +1,69 @@
 [
   {
+    "id": "example-conjuntos-numericos-1",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "problem": "Clasificar en el conjunto más pequeño posible: $5$, $-3$, $0$, $2/7$, $\\sqrt{2}$, $\\sqrt{9}$",
+    "steps": [
+      { "order": 1, "explanation": "Para cada número se busca el primer conjunto de la cadena $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$ al que pertenece." },
+      { "order": 2, "explanation": "$5 \\in \\mathbb{N}$ (entero no negativo). Por la cadena, $5$ también está en $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$, pero el más pequeño es $\\mathbb{N}$." },
+      { "order": 3, "explanation": "$-3$ no es natural (los naturales no incluyen negativos). $-3 \\in \\mathbb{Z}$, y por la cadena también está en $\\mathbb{Q}$ y $\\mathbb{R}$. El más pequeño es $\\mathbb{Z}$." },
+      { "order": 4, "explanation": "$0 \\in \\mathbb{N}$ y por la cadena en $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$." },
+      { "order": 5, "explanation": "$2/7$ es un cociente de enteros con denominador no nulo, así que $2/7 \\in \\mathbb{Q}$. También está en $\\mathbb{R}$, pero no es entero ni natural." },
+      { "order": 6, "explanation": "$\\sqrt{2}$ no puede escribirse como fracción exacta: es irracional. Está en $\\mathbb{R}$ pero NO en $\\mathbb{Q}$." },
+      { "order": 7, "explanation": "$\\sqrt{9} = 3$ (raíz principal no negativa). Como $3 \\in \\mathbb{N}$, también pertenece a $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$; el más pequeño es $\\mathbb{N}$." }
+    ],
+    "finalAnswer": "$5, 0, \\sqrt{9} \\in \\mathbb{N}$; $-3 \\in \\mathbb{Z}$; $2/7 \\in \\mathbb{Q}$; $\\sqrt{2} \\in \\mathbb{R} \\setminus \\mathbb{Q}$",
+    "pedagogicalNote": "Clasificar un número en el conjunto más pequeño de la cadena $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$ permite reconocer la jerarquía. No toda raíz es irracional: $\\sqrt{9} = 3$ es natural. Un entero negativo nunca es natural.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.0 Conjuntos numéricos",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Mostrar cómo se clasifican números concretos en el conjunto más pequeño de la cadena"
+      }
+    ]
+  },
+  {
+    "id": "example-conjuntos-numericos-2",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "problem": "Decidir si $0,333\\dots$, $\\sqrt{2}$ y $\\sqrt{9}$ son racionales, irracionales o enteros",
+    "steps": [
+      { "order": 1, "explanation": "$0,333\\dots$ es un decimal periódico con período $1$. Se puede escribir como fracción: $0,333\\dots = 1/3$. Por lo tanto es RACIONAL y pertenece a $\\mathbb{Q}$ (y por la cadena, también a $\\mathbb{R}$)." },
+      { "order": 2, "explanation": "$\\sqrt{2}$ no puede escribirse como fracción exacta de enteros. Esto se demuestra por argumento clásico: si $\\sqrt{2} = p/q$ con $p, q$ coprimos, entonces $2q^2 = p^2$, lo que lleva a una contradicción sobre la paridad. Por lo tanto $\\sqrt{2}$ es IRRACIONAL." },
+      { "order": 3, "explanation": "$\\sqrt{9} = 3$ (raíz principal). $3$ es un entero no negativo, así que $3 \\in \\mathbb{N}$. Por lo tanto $\\sqrt{9}$ es ENTERO, RACIONAL y REAL. No es irracional." }
+    ],
+    "finalAnswer": "$0,333\\dots \\in \\mathbb{Q}$; $\\sqrt{2}$ es irracional; $\\sqrt{9} = 3 \\in \\mathbb{N}$",
+    "pedagogicalNote": "Un decimal periódico NO es irracional: $0,333\\dots = 1/3$. Y no toda raíz es irracional: $\\sqrt{9} = 3$ es entero. La frontera entre racional e irracional depende de si el número puede escribirse como fracción exacta de enteros.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.0 Conjuntos numéricos",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Distinguir racional de irracional con casos concretos: decimal periódico, raíz irracional clásica y raíz entera"
+      }
+    ]
+  },
+  {
+    "id": "example-conjuntos-numericos-3",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "problem": "¿$\\sqrt{-4}$ pertenece a $\\mathbb{R}$? ¿Dónde se representa?",
+    "steps": [
+      { "order": 1, "explanation": "$\\sqrt{-4}$ pide un número $x$ tal que $x^2 = -4$. En los reales, $x^2 \\geq 0$ para todo $x \\in \\mathbb{R}$, así que no existe $x \\in \\mathbb{R}$ con $x^2 = -4$. Por lo tanto $\\sqrt{-4}$ NO pertenece a $\\mathbb{R}$." },
+      { "order": 2, "explanation": "Esto no significa que la expresión no exista en ningún sistema numérico. El conjunto $\\mathbb{C}$ amplía a $\\mathbb{R}$ precisamente para representar raíces de números negativos." },
+      { "order": 3, "explanation": "En esta instancia de la materia la operatoria con $\\mathbb{C}$ no se desarrolla; basta con saber que $\\sqrt{-4}$ no tiene resultado en $\\mathbb{R}$ y se interpreta más adelante en $\\mathbb{C}$." }
+    ],
+    "finalAnswer": "$\\sqrt{-4} \\notin \\mathbb{R}$; se interpreta más adelante en $\\mathbb{C}$",
+    "pedagogicalNote": "'No tiene resultado real' NO equivale a 'no existe en ningún sistema numérico'. $\\mathbb{C}$ existe justamente para representar este tipo de expresiones; la operatoria con $\\mathbb{C}$ se trabaja en otra skill.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.0 Conjuntos numéricos",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Marcar la frontera de $\\mathbb{R}$ y mencionar $\\mathbb{C}$ como ampliación, sin desarrollar operatoria con números complejos"
+      }
+    ]
+  },
+  {
     "id": "example-reales-operaciones-1",
     "skillId": "mat.u1.reales_operaciones",
     "problem": "Calcular: $2 + 3 \\times 4 - 1$",

@@ -6,6 +6,7 @@ import { WorkedExampleCard } from "@/components/practice/WorkedExampleCard";
 import type { SkillId } from "@/domain/models/skill";
 
 const SKILL_UNIT_MAP: Record<string, string> = {
+  "mat.u1.conjuntos_numericos": "unit-1",
   "mat.u1.reales_operaciones": "unit-1",
   "mat.u1.intervalos": "unit-1",
   "mat.u1.potencias_raices": "unit-1",

@@ -29,6 +29,7 @@ exam.ecuacion_fraccionaria
 
 ```ts
 export const UNIT_1_SKILLS = [
+  'mat.u1.conjuntos_numericos',
   'mat.u1.reales_operaciones',
   'mat.u1.potencias_raices',
   'mat.u1.racionalizacion',
@@ -136,6 +137,7 @@ export const EXAM_SKILLS = [
 
 ```ts
 export const SKILL_DEPENDENCIES = [
+  { skillId: 'mat.u1.reales_operaciones', prerequisites: ['mat.u1.conjuntos_numericos'] },
   { skillId: 'mat.u1.potencias_raices', prerequisites: ['mat.u1.reales_operaciones'] },
   { skillId: 'mat.u1.racionalizacion', prerequisites: ['mat.u1.potencias_raices'] },
   { skillId: 'mat.u1.logaritmos', prerequisites: ['mat.u1.potencias_raices'] },

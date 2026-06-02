@@ -9,6 +9,7 @@ import type { SkillId } from "./skill";
 // ── Unit 1: Aritmética y números ──────────────────────────────────────────
 
 export const UNIT_1_SKILLS: readonly SkillId[] = [
+  "mat.u1.conjuntos_numericos",
   "mat.u1.reales_operaciones",
   "mat.u1.potencias_raices",
   "mat.u1.racionalizacion",
@@ -102,6 +103,7 @@ export interface SkillDependency {
 }
 
 export const SKILL_DEPENDENCIES: readonly SkillDependency[] = [
+  { skillId: "mat.u1.reales_operaciones", prerequisites: ["mat.u1.conjuntos_numericos"] },
   { skillId: "mat.u1.potencias_raices", prerequisites: ["mat.u1.reales_operaciones"] },
   { skillId: "mat.u1.racionalizacion", prerequisites: ["mat.u1.potencias_raices"] },
   { skillId: "mat.u1.logaritmos", prerequisites: ["mat.u1.potencias_raices"] },

@@ -8,6 +8,11 @@ export interface PilotSkill {
 
 export const PILOT_SKILLS: readonly PilotSkill[] = [
   {
+    skillId: "mat.u1.conjuntos_numericos",
+    unitKey: "unit-1",
+    label: "Conjuntos numéricos",
+  },
+  {
     skillId: "mat.u1.reales_operaciones",
     unitKey: "unit-1",
     label: "Números reales y operaciones",

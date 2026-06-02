@@ -13,6 +13,7 @@ Skills de Unidad 1 realmente transitables hoy:
 
 | Skill | Estado |
 |-------|--------|
+| Conjuntos numéricos | Listo |
 | Números reales y operaciones | Listo |
 | Intervalos | Listo |
 | Potencias y raíces | Listo |
@@ -46,6 +47,7 @@ La fuente pedagógica es el material canónico y las specs activas. La fuente t�
 
 | Paso | Tema | Estado |
 |------|------|--------|
+| 0 | Conjuntos numéricos | Listo |
 | 1 | Números reales y operaciones | Listo |
 | 2 | Potencias y raíces | Listo |
 | 3 | Racionalización | Pendiente |

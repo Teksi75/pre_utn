@@ -50,6 +50,10 @@ export default function Home() {
           <ul className="mt-4 space-y-2 text-sm text-brand-700">
             <li className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-green-600" aria-hidden="true" />
+              Conjuntos numéricos
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-green-600" aria-hidden="true" />
               Números reales y operaciones
             </li>
             <li className="flex items-center gap-2">
