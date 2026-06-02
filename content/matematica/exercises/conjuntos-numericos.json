@@ -719,5 +719,109 @@
     "pedagogicalNote": "(I) $0{,}75 = 3/4$ es RACIONAL (decimal finito). (II) $0{,}\\overline{3} = 1/3$ es RACIONAL (decimal periódico, tiene el arco de repetición). (III) $1{,}41421\\ldots$ ($\\sqrt{2}$) es IRRACIONAL (decimal no periódico). (IV) $0{,}5 = 1/2$ es RACIONAL (decimal finito). Las trampas: asumir que un decimal periódico es irracional por no terminar, o que un desarrollo infinito es siempre irracional.",
     "relatedTheoryIds": ["theory-conjuntos-numericos"],
     "relatedExampleIds": ["example-conjuntos-numericos-3"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-err-01",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "true-false",
+    "difficulty": 1,
+    "category": "errores-comunes",
+    "tags": ["error_comun", "raiz_cuadrada", "racional", "correctivo"],
+    "prompt": "Verdadero o falso: \"$\\sqrt{9}$ es un número irracional porque es una raíz\".",
+    "expectedAnswer": "Falso",
+    "options": ["Verdadero", "Falso"],
+    "commonErrorTags": ["u1_toda_raiz_no_es_irracional", "u1_raiz_cuadrada_exacta_es_racional", "u1_toda_raiz_irracional"],
+    "pedagogicalNote": "FALSO. $\\sqrt{9} = 3$ es un número natural, por lo tanto RACIONAL. La trampa típica es generalizar 'toda raíz es irracional': esto es FALSO. La irracionalidad depende del radicando: si es un cuadrado perfecto (9, 16, 25, …), la raíz es exacta y entera. La raíz principal de un cuadrado perfecto SIEMPRE es racional.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-err-02",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "errores-comunes",
+    "tags": ["error_comun", "decimal_periodico", "racional", "alumno_dice"],
+    "prompt": "Un alumno dice: \"$0{,}\\overline{3}$ es irracional porque su desarrollo decimal no termina\". ¿Es correcta la afirmación del alumno?",
+    "expectedAnswer": "Incorrecto. $0{,}\\overline{3} = \\frac{1}{3}$ es RACIONAL (decimal periódico)",
+    "options": [
+      "Incorrecto. $0{,}\\overline{3} = \\frac{1}{3}$ es RACIONAL (decimal periódico)",
+      "Correcto. Un decimal que no termina siempre es irracional",
+      "Correcto. Los decimales con el arco de repetición son irracionales",
+      "No se puede clasificar sin ver más decimales"
+    ],
+    "commonErrorTags": ["u1_decimal_periodico_es_racional", "u1_decimal_no_es_siempre_irracional"],
+    "pedagogicalNote": "La afirmación es INCORRECTA. $0{,}\\overline{3} = 0{,}333\\ldots = 1/3$ es una fracción exacta, así que es RACIONAL. La trampa típica es confundir 'decimal que no termina' con 'decimal irracional'. Los decimales NO-terminan cuando son periódicos (racionales) o cuando son no-periódicos infinitos (irracionales). La presencia del arco de repetición ($\\overline{\\phantom{x}}$) es la firma de un número racional. Solo los decimales NO-periódicos e infinitos (como la expansión de $\\sqrt{2}$) son irracionales.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-3"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-err-03",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "errores-comunes",
+    "tags": ["error_comun", "negativo_racional", "fraccion", "alumno_dice"],
+    "prompt": "Un alumno afirma: \"$-\\frac{4}{1}$ no puede ser racional porque es negativo\". ¿Es correcta la afirmación?",
+    "expectedAnswer": "Incorrecto. $-\\frac{4}{1} = -4$ es RACIONAL (numerador negativo permitido)",
+    "options": [
+      "Incorrecto. $-\\frac{4}{1} = -4$ es RACIONAL (numerador negativo permitido)",
+      "Correcto. Los números negativos nunca son racionales",
+      "Correcto. Una fracción con denominador 1 no cuenta como racional",
+      "No se puede clasificar por el signo"
+    ],
+    "commonErrorTags": ["u1_negativo_puede_ser_racional"],
+    "pedagogicalNote": "La afirmación es INCORRECTA. $-\\frac{4}{1} = -4$ es un entero negativo, y por definición un racional es cualquier número de la forma $\\frac{a}{b}$ con $a, b \\in \\mathbb{Z}$ y $b \\neq 0$. El numerador $a$ puede ser negativo: $-\\frac{4}{1}$, $-\\frac{2}{5}$, $-3$ son todos racionales. La racionalidad NO depende del signo: depende de si el número puede escribirse como cociente de enteros con denominador no nulo.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-err-04",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "fill-blank",
+    "difficulty": 3,
+    "category": "errores-comunes",
+    "tags": ["error_comun", "pertenencia", "inclusion", "notacion"],
+    "prompt": "Escribí la relación correcta entre $5$ y $\\mathbb{Z}$. Usá $\\in$ o $\\subset$ según corresponda.",
+    "expectedAnswer": "$\\in$",
+    "commonErrorTags": ["u1_pertenencia_vs_inclusion"],
+    "pedagogicalNote": "La respuesta correcta es $5 \\in \\mathbb{Z}$ (pertenencia), porque $5$ es un ELEMENTO del conjunto $\\mathbb{Z}$. La alternativa $5 \\subset \\mathbb{Z}$ (inclusión) es INCORRECTA porque $5$ NO es un conjunto: es un número. La inclusión ($\\subset$) relaciona dos conjuntos: por ejemplo, $\\mathbb{N} \\subset \\mathbb{Z}$ (cada natural es un entero, y $\\mathbb{N}$ es un subconjunto de $\\mathbb{Z}$). Para que la inclusión tenga sentido, ambos lados deben ser conjuntos. Si el lado izquierdo es un elemento (como $5$), se usa $\\in$, nunca $\\subset$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-1"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-err-05",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "true-false",
+    "difficulty": 4,
+    "category": "errores-comunes",
+    "tags": ["error_comun", "entero_natural", "convencion", "correctivo"],
+    "prompt": "Verdadero o falso: \"Todo número entero es un número natural\".",
+    "expectedAnswer": "Falso",
+    "options": ["Verdadero", "Falso"],
+    "commonErrorTags": ["u1_entero_no_siempre_natural", "u1_confunde_natural_entero"],
+    "pedagogicalNote": "FALSO. Por la convención N-sin-cero del proyecto, $\\mathbb{N} = \\{1, 2, 3, \\ldots\\}$ NO incluye al cero ni a los números negativos. Así, $-3$, $-4$ y $0$ son enteros pero NO son naturales. Un número es natural solo si es entero Y positivo Y no es cero. La trampa típica es asumir que $\\mathbb{Z} \\subset \\mathbb{N}$ (entero implica natural) cuando en realidad la cadena correcta es $\\mathbb{N} \\subset \\mathbb{Z}$ (natural implica entero, no al revés).",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-1"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-err-06",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 5,
+    "category": "errores-comunes",
+    "tags": ["error_comun", "racional_real", "cadena_inclusion", "razonamiento"],
+    "prompt": "Un alumno afirma: \"$\\frac{2}{5}$ no pertenece a $\\mathbb{R}$ porque no es entero ni un decimal exacto\". ¿Es correcta la afirmación?",
+    "expectedAnswer": "Incorrecto. $\\frac{2}{5}$ es racional y, por la cadena $\\mathbb{Q} \\subset \\mathbb{R}$, también es real",
+    "options": [
+      "Incorrecto. $\\frac{2}{5}$ es racional y, por la cadena $\\mathbb{Q} \\subset \\mathbb{R}$, también es real",
+      "Correcto. Solo los enteros y los decimales exactos son reales",
+      "Correcto. $\\frac{2}{5}$ no puede escribirse como decimal",
+      "No se puede clasificar"
+    ],
+    "commonErrorTags": ["u1_racional_tambien_es_real"],
+    "pedagogicalNote": "La afirmación es INCORRECTA. $\\frac{2}{5}$ es una fracción con numerador y denominador enteros, así que es RACIONAL. Por la cadena de inclusiones $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$, todo racional ES un número real. La trampa típica es pensar que $\\mathbb{Q}$ y $\\mathbb{R}$ son disjuntos: en realidad $\\mathbb{Q} \\subset \\mathbb{R}$, es decir, $\\mathbb{R}$ incluye a los racionales Y ADEMÁS a los irracionales $\\mathbb{R} \\setminus \\mathbb{Q}$. La diferencia entre $\\mathbb{Q}$ y $\\mathbb{R}$ no es la exclusión mutua sino que $\\mathbb{R}$ es más grande.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2", "example-conjuntos-numericos-3"]
   }
 ]
