@@ -153,6 +153,32 @@ describe("Exercise validation", () => {
     });
   });
 
+  describe("optional metadata fields", () => {
+    test("exercise without category and tags is valid (backward compat)", () => {
+      const exercise: Exercise = { ...validExercise };
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.value.category).toBeUndefined();
+        expect(result.value.tags).toBeUndefined();
+      }
+    });
+
+    test("exercise with category and tags is valid", () => {
+      const exercise: Exercise = {
+        ...validExercise,
+        category: "clasificacion",
+        tags: ["u1_conjunto_minimo", "pertenencia"],
+      };
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.value.category).toBe("clasificacion");
+        expect(result.value.tags).toEqual(["u1_conjunto_minimo", "pertenencia"]);
+      }
+    });
+  });
+
   describe("missing required fields", () => {
     test("empty prompt is rejected", () => {
       const exercise: Exercise = { ...validExercise, prompt: "" };

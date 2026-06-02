@@ -37,6 +37,10 @@ export interface Exercise {
   readonly pedagogicalNote: string;
   /** Selectable choices for multiple-choice exercises. Required when type is "multiple-choice". */
   readonly options?: readonly string[];
+  /** Practice category for bank organization (e.g. "clasificacion", "pertenencia"). */
+  readonly category?: string;
+  /** Semantic tags for filtering and pedagogical tracing. */
+  readonly tags?: readonly string[];
 }
 
 /** Validation error with field and message. */
