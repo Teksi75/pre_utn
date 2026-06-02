@@ -55,6 +55,10 @@ describe("Error Taxonomy", () => {
         "u1_racional_tambien_es_real",
         "u1_entero_no_siempre_natural",
         "u1_negativo_puede_ser_racional",
+        "u1_decimal_no_es_siempre_irracional",
+        "u1_toda_raiz_no_es_irracional",
+        "u1_decimal_periodico_es_racional",
+        "u1_raiz_cuadrada_exacta_es_racional",
       ]);
       expect(tagsByUnit.get(2)?.map((tag) => tag.id)).toEqual([
         "u2_aislamiento_variable",

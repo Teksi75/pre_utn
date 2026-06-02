@@ -255,6 +255,46 @@ const TAXONOMY: readonly ErrorTag[] = [
       "Excluir a $-\\frac{2}{5}$ de $\\mathbb{Q}$ por tener signo negativo",
     ],
   },
+  {
+    id: "u1_decimal_no_es_siempre_irracional",
+    unit: 1,
+    description:
+      "Error al generalizar que todo decimal es irracional: los decimales finitos y los periódicos son racionales. Solo los decimales no-periódicos e infinitos (como la expansión de $\\sqrt{2}$) son irracionales. La clave es si los dígitos se repiten o no.",
+    examples: [
+      "Decir que $0{,}75$ es irracional porque es un decimal (en realidad es $3/4 \\in \\mathbb{Q}$)",
+      "Decir que $0{,}3\\overline{3}$ es irracional porque no termina (en realidad es $1/3 \\in \\mathbb{Q}$)",
+    ],
+  },
+  {
+    id: "u1_toda_raiz_no_es_irracional",
+    unit: 1,
+    description:
+      "Error al generalizar que toda raíz es irracional: cuando el radicando es un cuadrado perfecto (o un cociente de cuadrados perfectos), la raíz es exacta y da un número racional. La raíz de $9$, $16$, $25$, $4/9$ es entera o fraccionaria.",
+    examples: [
+      "Decir que $\\sqrt{9}$ es irracional (en realidad $\\sqrt{9} = 3 \\in \\mathbb{N}$)",
+      "Decir que $\\sqrt{25}$ es irracional (en realidad $\\sqrt{25} = 5 \\in \\mathbb{N}$)",
+    ],
+  },
+  {
+    id: "u1_decimal_periodico_es_racional",
+    unit: 1,
+    description:
+      "Concepto clave: todo decimal periódico (cuyos dígitos se repiten infinitamente según un patrón) es racional. La repetición periódica es la firma de un número racional — significa que puede escribirse como fracción exacta.",
+    examples: [
+      "Decir que $0{,}3\\overline{3}$ es irracional porque 'no termina' (en realidad $0{,}3\\overline{3} = 1/3 \\in \\mathbb{Q}$)",
+      "Decir que $0{,}\\overline{142857}$ es irracional (en realidad $0{,}\\overline{142857} = 1/7 \\in \\mathbb{Q}$)",
+    ],
+  },
+  {
+    id: "u1_raiz_cuadrada_exacta_es_racional",
+    unit: 1,
+    description:
+      "Concepto clave: una raíz cuadrada de un cuadrado perfecto (o cociente de cuadrados perfectos) es exacta y da un número racional. $\\sqrt{9} = 3$, $\\sqrt{16} = 4$, $\\sqrt{25} = 5$ son enteros racionales. Solo las raíces no exactas ($\\sqrt{2}$, $\\sqrt{3}$, $\\sqrt{5}$) son irracionales.",
+    examples: [
+      "Clasificar $\\sqrt{9}$ como irracional cuando en realidad $\\sqrt{9} = 3 \\in \\mathbb{N}$",
+      "Asumir que $\\sqrt{25/4}$ es irracional cuando en realidad $\\sqrt{25/4} = 5/2 \\in \\mathbb{Q}$",
+    ],
+  },
 
   // Unit 2: Equations and systems
   {

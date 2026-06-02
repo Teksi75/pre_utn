@@ -34,5 +34,29 @@
     "type": "conceptual",
     "message": "Un numero negativo SI puede ser racional. Un racional es cualquier numero que pueda escribirse como $\\frac{a}{b}$ con $a, b \\in \\mathbb{Z}$ y $b \\neq 0$; el numerador $a$ puede ser negativo. Asi, $-\\frac{4}{1} = -4$ y $-\\frac{2}{5}$ son racionales (con denominador positivo y numerador entero, posiblemente negativo). Decir que un numero negativo no es racional es una confusion comun: la racionalidad depende de la representacion como fraccion, no del signo.",
     "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_decimal_no_es_siempre_irracional",
+    "type": "conceptual",
+    "message": "Los decimales NO son siempre irracionales. Un decimal finito como $0{,}75 = 3/4$ y un decimal periodico como $0{,}\\overline{3} = 1/3$ son ambos racionales (pueden escribirse como fraccion exacta). Solo los decimales NO-periodicos e infinitos (como la expansion de $\\sqrt{2}$: $1{,}41421\\ldots$) son irracionales. La clave es la periodicidad: si los digitos se repiten en algun momento, es racional; si NO se repiten nunca, es irracional.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_toda_raiz_no_es_irracional",
+    "type": "corrective",
+    "message": "No toda raiz es irracional. Cuando el radicando es un cuadrado perfecto (o un cociente de cuadrados perfectos), la raiz es exacta y da un numero racional: $\\sqrt{9} = 3 \\in \\mathbb{N}$, $\\sqrt{25} = 5 \\in \\mathbb{N}$, $\\sqrt{4/9} = 2/3 \\in \\mathbb{Q}$. Una raiz es irracional SOLO cuando su resultado NO puede escribirse como fraccion exacta, como $\\sqrt{2}$, $\\sqrt{3}$ o $\\sqrt{5}$. Antes de asumir irracionalidad, verifica si el radicando es un cuadrado perfecto.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_decimal_periodico_es_racional",
+    "type": "conceptual",
+    "message": "Un decimal periodico SIEMPRE es racional. La presencia del arco de repeticion ($\\overline{\\phantom{x}}$) sobre un digito o grupo de digitos indica que ese patron se repite infinitamente. Esto significa que el numero puede escribirse como fraccion exacta: $0{,}\\overline{3} = 1/3$, $0{,}\\overline{142857} = 1/7$, $0{,}1\\overline{6} = 1/6$. Si ves un arco de repeticion en un decimal, ese numero es racional sin duda.",
+    "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_raiz_cuadrada_exacta_es_racional",
+    "type": "conceptual",
+    "message": "Una raiz cuadrada EXACTA (de un cuadrado perfecto o cociente de cuadrados perfectos) siempre es un numero racional. $\\sqrt{9} = 3$, $\\sqrt{16} = 4$, $\\sqrt{25} = 5$, $\\sqrt{1/4} = 1/2$. Estos son enteros o fracciones de enteros, asi que pertenecen a $\\mathbb{Q}$. Solo las raices NO exactas ($\\sqrt{2}$, $\\sqrt{3}$, $\\sqrt{5}$, $\\sqrt{7}$) son irracionales. Para clasificar una raiz, primero verifica si el radicando es cuadrado perfecto.",
+    "recoveryTarget": "theory-conjuntos-numericos"
   }
 ]

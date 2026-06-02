@@ -456,5 +456,268 @@
     "pedagogicalNote": "Irracionales son los que NO pueden escribirse como fracción exacta. $\\sqrt{2}$ y $\\pi$ son irracionales. $0{,}\\overline{3}$ es periódico y por lo tanto RACIONAL. $\\sqrt{9} = 3$ y $-4/1 = -4$ son enteros. $2/5$, $0{,}75$ y $0{,}\\overline{3}$ son racionales. Solo $\\{\\sqrt{2}, \\pi\\}$ contiene solo irracionales.",
     "relatedTheoryIds": ["theory-conjuntos-numericos"],
     "relatedExampleIds": ["example-conjuntos-numericos-2", "example-conjuntos-numericos-3"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-rvi-01",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "category": "racionales-vs-irracionales",
+    "tags": ["racional_irracional", "raiz_cuadrada", "racional"],
+    "prompt": "¿El número $\\sqrt{9}$ es racional o irracional?",
+    "expectedAnswer": "Racional (es $3 \\in \\mathbb{N}$)",
+    "options": [
+      "Racional (es $3 \\in \\mathbb{N}$)",
+      "Irracional (toda raíz es irracional)",
+      "No es ni racional ni irracional",
+      "Irracional (su desarrollo es infinito)"
+    ],
+    "commonErrorTags": ["u1_toda_raiz_no_es_irracional", "u1_raiz_cuadrada_exacta_es_racional"],
+    "pedagogicalNote": "$\\sqrt{9} = 3$, un entero natural. Una raíz cuadrada exacta de un cuadrado perfecto es SIEMPRE racional. La trampa común es asumir que 'toda raíz es irracional' — esto es falso: la irracionalidad depende de si el resultado puede escribirse como fracción exacta.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-rvi-02",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "category": "racionales-vs-irracionales",
+    "tags": ["racional_irracional", "pi", "irracional"],
+    "prompt": "¿El número $\\pi$ es racional o irracional?",
+    "expectedAnswer": "Irracional",
+    "options": [
+      "Irracional",
+      "Racional (es $22/7$ exacto)",
+      "Racional (su desarrollo $3{,}14159\\ldots$ se repite)",
+      "No es ni racional ni irracional"
+    ],
+    "commonErrorTags": ["u1_decimal_no_es_siempre_irracional", "u1_decimal_periodico_es_racional"],
+    "pedagogicalNote": "$\\pi$ es irracional. Su desarrollo decimal $3{,}14159\\ldots$ NO se repite nunca, así que no puede escribirse como fracción exacta. El valor $22/7$ es solo una aproximación, no el valor exacto de $\\pi$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-rvi-03",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "true-false",
+    "difficulty": 2,
+    "category": "racionales-vs-irracionales",
+    "tags": ["racional_irracional", "raiz_cuadrada", "correctivo"],
+    "prompt": "Verdadero o falso: \"$\\sqrt{9}$ es un número irracional\".",
+    "expectedAnswer": "Falso",
+    "options": ["Verdadero", "Falso"],
+    "commonErrorTags": ["u1_toda_raiz_no_es_irracional", "u1_raiz_cuadrada_exacta_es_racional"],
+    "pedagogicalNote": "FALSO. $\\sqrt{9} = 3$ es un número natural, por lo tanto racional. La raíz de un cuadrado perfecto (9, 16, 25, 36, ...) es SIEMPRE entera. La generalización 'toda raíz es irracional' es incorrecta: la irracionalidad se da solo cuando el radicando NO es un cuadrado perfecto (como $\\sqrt{2}$ o $\\sqrt{3}$).",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-rvi-04",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "racionales-vs-irracionales",
+    "tags": ["racional_irracional", "fraccion", "racional"],
+    "prompt": "¿El número $\\frac{2}{5}$ es racional o irracional?",
+    "expectedAnswer": "Racional (es una fracción de enteros con denominador no nulo)",
+    "options": [
+      "Racional (es una fracción de enteros con denominador no nulo)",
+      "Irracional (las fracciones son siempre irracionales)",
+      "Irracional (no se puede escribir como decimal finito)",
+      "No es ni racional ni irracional"
+    ],
+    "commonErrorTags": ["u1_decimal_no_es_siempre_irracional", "u1_toda_raiz_no_es_irracional"],
+    "pedagogicalNote": "$\\frac{2}{5}$ es RACIONAL: es la razón entre dos enteros con denominador no nulo. Por definición, todo número de la forma $\\frac{a}{b}$ con $a, b \\in \\mathbb{Z}$ y $b \\neq 0$ es racional. $\\frac{2}{5} = 0{,}4$ es un decimal finito, no periódico.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-rvi-05",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "racionales-vs-irracionales",
+    "tags": ["racional_irracional", "fraccion_negativa", "racional"],
+    "prompt": "¿El número $-\\frac{4}{1}$ es racional o irracional?",
+    "expectedAnswer": "Racional (es $-4 \\in \\mathbb{Z}$)",
+    "options": [
+      "Racional (es $-4 \\in \\mathbb{Z}$)",
+      "Irracional (los negativos no son racionales)",
+      "Irracional (denominador igual a 1 lo hace especial)",
+      "No es racional ni irracional"
+    ],
+    "commonErrorTags": ["u1_negativo_puede_ser_racional", "u1_decimal_no_es_siempre_irracional"],
+    "pedagogicalNote": "$-\\frac{4}{1} = -4$ es RACIONAL: es la razón entre dos enteros con denominador no nulo, y de hecho es un entero. La racionalidad NO depende del signo: un número negativo puede ser racional perfectamente. La definición exige $\\frac{a}{b}$ con $a, b \\in \\mathbb{Z}$ y $b \\neq 0$, sin restricciones sobre el signo de $a$.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-rvi-06",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "fill-blank",
+    "difficulty": 3,
+    "category": "racionales-vs-irracionales",
+    "tags": ["racional_irracional", "clasificacion", "tabla"],
+    "prompt": "Clasificá los siguientes números como RACIONAL o IRRACIONAL. Escribí una lista de 4 valores separados por coma en el orden dado, usando $\\mathbb{Q}$ para racional e $I$ para irracional. Números: $\\sqrt{9}$, $\\pi$, $0{,}\\overline{3}$, $\\sqrt{2}$.",
+    "expectedAnswer": "$\\mathbb{Q}$, $I$, $\\mathbb{Q}$, $I$",
+    "commonErrorTags": ["u1_toda_raiz_no_es_irracional", "u1_decimal_periodico_es_racional", "u1_raiz_cuadrada_exacta_es_racional"],
+    "pedagogicalNote": "Clasificación correcta: $\\sqrt{9} = 3$ es RACIONAL ($\\mathbb{Q}$); $\\pi$ es IRRACIONAL ($I$); $0{,}\\overline{3} = 1/3$ es RACIONAL (decimal periódico); $\\sqrt{2}$ es IRRACIONAL. La trampa común es asumir que 'toda raíz es irracional' (falso: $\\sqrt{9}$ es racional) o que 'todo decimal infinito es irracional' (falso: los periódicos son racionales).",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2", "example-conjuntos-numericos-3"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-rvi-07",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "racionales-vs-irracionales",
+    "tags": ["racional_irracional", "identificacion", "discriminacion"],
+    "prompt": "¿Cuál de los siguientes números es IRRACIONAL?",
+    "expectedAnswer": "$\\sqrt{5}$",
+    "options": [
+      "$\\sqrt{5}$",
+      "$\\sqrt{9}$",
+      "$\\sqrt{16}$",
+      "$\\sqrt{25}$"
+    ],
+    "commonErrorTags": ["u1_toda_raiz_no_es_irracional", "u1_raiz_cuadrada_exacta_es_racional"],
+    "pedagogicalNote": "$\\sqrt{5}$ es irracional: 5 NO es un cuadrado perfecto, así que $\\sqrt{5}$ no se puede escribir como fracción exacta. En cambio, $\\sqrt{9} = 3$, $\\sqrt{16} = 4$ y $\\sqrt{25} = 5$ son raíces exactas de cuadrados perfectos y por lo tanto RACIONALES. La clave es verificar si el radicando es un cuadrado perfecto antes de asumir irracionalidad.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-rvi-08",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 5,
+    "category": "racionales-vs-irracionales",
+    "tags": ["racional_irracional", "multi_statement", "discriminacion"],
+    "prompt": "Analizá las afirmaciones: (I) $\\sqrt{2}$ es irracional, (II) $\\sqrt{9}$ es irracional, (III) $-\\frac{4}{1}$ es racional, (IV) $\\pi$ es racional. ¿Cuántas son correctas?",
+    "expectedAnswer": "Solo I y III son correctas: $\\sqrt{2}$ es irracional y $-\\frac{4}{1}$ es racional",
+    "options": [
+      "Solo I y III son correctas: $\\sqrt{2}$ es irracional y $-\\frac{4}{1}$ es racional",
+      "Tres son correctas: I, II y III",
+      "Todas son correctas",
+      "Solo una es correcta: III"
+    ],
+    "commonErrorTags": ["u1_toda_raiz_no_es_irracional", "u1_negativo_puede_ser_racional", "u1_decimal_no_es_siempre_irracional", "u1_raiz_cuadrada_exacta_es_racional"],
+    "pedagogicalNote": "(I) Verdadera: $\\sqrt{2}$ es irracional. (II) Falsa: $\\sqrt{9} = 3 \\in \\mathbb{N}$ es racional. (III) Verdadera: $-\\frac{4}{1} = -4$ es racional. (IV) Falsa: $\\pi$ es irracional. Solo I y III son correctas. Las trampas más comunes son asumir que toda raíz es irracional (II) o que $\\pi$ es racional (IV).",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2", "example-conjuntos-numericos-3"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-dec-01",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "category": "decimales",
+    "tags": ["decimal", "finito", "clasificacion"],
+    "prompt": "El número $0{,}75$ es un ejemplo de:",
+    "expectedAnswer": "Decimal finito (termina, no se repite)",
+    "options": [
+      "Decimal finito (termina, no se repite)",
+      "Decimal periódico (los dígitos se repiten)",
+      "Decimal no periódico e infinito (irracional)",
+      "Entero escrito como decimal"
+    ],
+    "commonErrorTags": ["u1_decimal_no_es_siempre_irracional"],
+    "pedagogicalNote": "$0{,}75$ es un decimal FINITO: tiene una cantidad fija de dígitos después de la coma y no hay repetición. Los decimales finitos son SIEMPRE racionales: $0{,}75 = 3/4$. Un decimal no termina con la palabra 'decimal' o 'irracional' — la clasificación depende de si los dígitos se repiten o no.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-3"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-dec-02",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "decimales",
+    "tags": ["decimal", "periodico", "racional"],
+    "prompt": "El número $0{,}\\overline{3}$ (cero coma tres periódico) es:",
+    "expectedAnswer": "Decimal periódico puro (y por lo tanto RACIONAL)",
+    "options": [
+      "Decimal periódico puro (y por lo tanto RACIONAL)",
+      "Decimal finito (los dígitos se acaban)",
+      "Decimal no periódico (irracional)",
+      "No se puede clasificar"
+    ],
+    "commonErrorTags": ["u1_decimal_no_es_siempre_irracional", "u1_decimal_periodico_es_racional"],
+    "pedagogicalNote": "$0{,}\\overline{3} = 0{,}333\\ldots$ es un decimal PERIÓDICO PURO: el dígito $3$ se repite infinitamente. La trampa común es creer que 'si no termina, es irracional' — esto es FALSO. Todo decimal periódico es RACIONAL: $0{,}\\overline{3} = 1/3$. La presencia del arco de repetición ($\\overline{\\phantom{x}}$) es la firma de un número racional.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-3"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-dec-03",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "fill-blank",
+    "difficulty": 2,
+    "category": "decimales",
+    "tags": ["decimal", "fraccion_a_decimal", "periodico"],
+    "prompt": "Escribí el desarrollo decimal (periódico) de la fracción $\\frac{1}{3}$. Usá la notación con $\\overline{\\phantom{x}}$ para indicar el período.",
+    "expectedAnswer": "$0{,}\\overline{3}$",
+    "commonErrorTags": ["u1_decimal_periodico_es_racional", "u1_decimal_no_es_siempre_irracional"],
+    "pedagogicalNote": "$\\frac{1}{3} = 0{,}333\\ldots = 0{,}\\overline{3}$. El dígito $3$ se repite infinitamente. Notá que este decimal NO termina: la división de $1$ por $3$ nunca acaba. Pero como es periódico (con un patrón que se repite), es RACIONAL. La notación $\\overline{3}$ indica que el $3$ se repite para siempre.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-3"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-dec-04",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "decimales",
+    "tags": ["decimal", "finito", "racional", "fraccion"],
+    "prompt": "El decimal $0{,}75$ pertenece a:",
+    "expectedAnswer": "$\\mathbb{Q}$ y $\\mathbb{R}$ (es racional, todo racional es real)",
+    "options": [
+      "$\\mathbb{Q}$ y $\\mathbb{R}$ (es racional, todo racional es real)",
+      "Solo a $\\mathbb{R}$ (es irracional porque es decimal)",
+      "Solo a $\\mathbb{Q}$ (no es real)",
+      "A $\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$"
+    ],
+    "commonErrorTags": ["u1_decimal_no_es_siempre_irracional", "u1_racional_tambien_es_real", "u1_decimal_periodico_es_racional"],
+    "pedagogicalNote": "$0{,}75 = 3/4$ es una fracción exacta, así que es RACIONAL. Por la cadena $\\mathbb{Q} \\subset \\mathbb{R}$, todo racional ES real. La trampa es creer que 'ser decimal = ser irracional' (FALSO: decimales finitos y periódicos son racionales) o que 'racional $\\neq$ real' (FALSO: $\\mathbb{Q} \\subset \\mathbb{R}$).",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2", "example-conjuntos-numericos-3"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-dec-05",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "decimales",
+    "tags": ["decimal", "no_periodico", "irracional", "raiz_cuadrada"],
+    "prompt": "El número $\\sqrt{2}$ tiene un desarrollo decimal que comienza $1{,}41421\\ldots$ y continúa sin repetirse. ¿Cómo se clasifica este desarrollo?",
+    "expectedAnswer": "Decimal no periódico e infinito (por lo tanto IRRACIONAL)",
+    "options": [
+      "Decimal no periódico e infinito (por lo tanto IRRACIONAL)",
+      "Decimal periódico (los dígitos se repiten en algún momento)",
+      "Decimal finito (termina en algún dígito)",
+      "Decimal que no se puede clasificar"
+    ],
+    "commonErrorTags": ["u1_decimal_no_es_siempre_irracional", "u1_decimal_periodico_es_racional", "u1_toda_raiz_no_es_irracional"],
+    "pedagogicalNote": "El desarrollo de $\\sqrt{2} = 1{,}41421356\\ldots$ es NO PERIÓDICO e infinito: los dígitos nunca forman un patrón que se repita. Esta es la firma de un número IRRACIONAL. Los decimales no periódicos son irracionales; los periódicos son racionales; los finitos son racionales. La presencia del arco ($\\overline{\\phantom{x}}$) distinguiría un periódico de uno que no lo es.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-2", "example-conjuntos-numericos-3"]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.cn-dec-06",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 5,
+    "category": "decimales",
+    "tags": ["decimal", "clasificacion_multiple", "racional_irracional"],
+    "prompt": "Considerá los siguientes desarrollos decimales: (I) $0{,}75$, (II) $0{,}\\overline{3}$, (III) $1{,}41421\\ldots$ ($\\sqrt{2}$), (IV) $0{,}5$. ¿Cuántos son RACIONALES?",
+    "expectedAnswer": "Tres: I, II y IV son racionales; solo III es irracional",
+    "options": [
+      "Tres: I, II y IV son racionales; solo III es irracional",
+      "Dos: I y IV son racionales; II y III son irracionales",
+      "Todos son racionales",
+      "Solo uno: II (los demás son irracionales)"
+    ],
+    "commonErrorTags": ["u1_decimal_no_es_siempre_irracional", "u1_decimal_periodico_es_racional", "u1_toda_raiz_no_es_irracional"],
+    "pedagogicalNote": "(I) $0{,}75 = 3/4$ es RACIONAL (decimal finito). (II) $0{,}\\overline{3} = 1/3$ es RACIONAL (decimal periódico, tiene el arco de repetición). (III) $1{,}41421\\ldots$ ($\\sqrt{2}$) es IRRACIONAL (decimal no periódico). (IV) $0{,}5 = 1/2$ es RACIONAL (decimal finito). Las trampas: asumir que un decimal periódico es irracional por no terminar, o que un desarrollo infinito es siempre irracional.",
+    "relatedTheoryIds": ["theory-conjuntos-numericos"],
+    "relatedExampleIds": ["example-conjuntos-numericos-3"]
   }
 ]

@@ -161,12 +161,12 @@ describe(`render safety for ${SKILL_ID}`, () => {
     }
   });
 
-  test(`the per-skill bank (PR#2 + PR#3) contributes 24 exercises to the scan`, () => {
-    // Sanity: the per-skill file actually has the 12 PR#2 + 12 PR#3
-    // exercises. This guards against an accidental reset of the per-skill
-    // file. After PR#3 the per-skill file holds 24 exercises
-    // (8 pertenencia + 4 mapa + 12 clasificacion).
+  test(`the per-skill bank (PR#2 + PR#3 + PR#4) contributes 38 exercises to the scan`, () => {
+    // Sanity: the per-skill file actually has the 12 PR#2 + 12 PR#3 +
+    // 14 PR#4 exercises. This guards against an accidental reset of the
+    // per-skill file. After PR#4 the per-skill file holds 38 exercises
+    // (8 pertenencia + 4 mapa + 12 clasificacion + 8 rvi + 6 decimales).
     const perSkill = perSkillExercisesJson as readonly Record<string, unknown>[];
-    expect(perSkill.length).toBe(24);
+    expect(perSkill.length).toBe(38);
   });
 });
