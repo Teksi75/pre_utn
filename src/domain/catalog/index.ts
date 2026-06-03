@@ -12,9 +12,30 @@ import { loadTaxonomy } from "../error-taxonomy/index";
 
 // Import the static JSON catalog
 import exercisesJson from "../../../content/matematica/exercises.json";
+import conjuntosNumericosExercises from "../../../content/matematica/exercises/conjuntos-numericos.json";
+import { applyExerciseDefaults } from "./content-loaders";
 
-// Cast the imported JSON to the correct type
-const EXERCISES: readonly Exercise[] = exercisesJson as unknown as readonly Exercise[];
+/** Skill IDs that have dedicated per-skill exercise files. */
+const PER_SKILL_SKILL_IDS = new Set(["mat.u1.conjuntos_numericos"]);
+
+// Cast and compose: take the main catalog, filter out exercises owned by
+// per-skill files, then merge in the per-skill file entries with defaults applied.
+const mainExercises = exercisesJson as unknown as readonly Record<string, unknown>[];
+const MAIN_FILTERED = mainExercises.filter(
+  (raw) => !PER_SKILL_SKILL_IDS.has(raw.skillId as string)
+);
+const PER_SKILL_EXERCISES: Record<string, readonly Record<string, unknown>[]> = {
+  "mat.u1.conjuntos_numericos": conjuntosNumericosExercises as unknown as readonly Record<string, unknown>[],
+};
+
+const COMPOSED_EXERCISES: Record<string, unknown>[] = [...MAIN_FILTERED];
+for (const [skillId, exercises] of Object.entries(PER_SKILL_EXERCISES)) {
+  for (const raw of exercises) {
+    COMPOSED_EXERCISES.push({ ...raw, skillId } as Record<string, unknown>);
+  }
+}
+
+const EXERCISES: readonly Exercise[] = COMPOSED_EXERCISES.map(applyExerciseDefaults) as unknown as readonly Exercise[];
 
 /**
  * Detect prerequisite cycles in the skill dependency graph.

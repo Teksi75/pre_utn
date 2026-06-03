@@ -107,7 +107,9 @@ describe("Exercise Catalog", () => {
 
     test("exercise IDs follow ex.u{1-6}.{slug}.{number} pattern", () => {
       const catalog = loadCatalog();
-      const idPattern = /^ex\.u[1-6]\.[a-z_]+\.\d+$/;
+      // Accepts both legacy numeric IDs (ex.u1.conjuntos_numericos.1)
+      // and bank-code IDs from per-skill files (ex.u1.conjuntos_numericos.cn-per-01)
+      const idPattern = /^ex\.u[1-6]\.[a-z_]+\.([a-z]+-[a-z]+-\d+|\d+)$/;
       for (const exercise of catalog) {
         expect(exercise.id).toMatch(idPattern);
       }
