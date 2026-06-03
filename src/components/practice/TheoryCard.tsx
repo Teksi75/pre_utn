@@ -90,13 +90,17 @@ export function TheoryCard({ node }: TheoryCardProps) {
         {showNotation ? "Ocultar notación" : "Ver notación"}
       </button>
 
-      {showNotation ? (
+      <div
+        className="overflow-hidden transition-all duration-[var(--duration-normal)]"
+        style={{ maxHeight: showNotation ? '500px' : '0px' }}
+        aria-hidden={!showNotation}
+      >
         <ul className="mt-2 list-disc list-inside text-sm text-brand-700 space-y-1">
           {node.notation.map((item, i) => (
             <li key={i}><RichText text={item} /></li>
           ))}
         </ul>
-      ) : null}
+      </div>
 
       {/* Common mistakes toggle */}
       <button
@@ -107,13 +111,17 @@ export function TheoryCard({ node }: TheoryCardProps) {
         {showMistakes ? "Ocultar errores comunes" : "Ver errores comunes"}
       </button>
 
-      {showMistakes ? (
+      <div
+        className="overflow-hidden transition-all duration-[var(--duration-normal)]"
+        style={{ maxHeight: showMistakes ? '500px' : '0px' }}
+        aria-hidden={!showMistakes}
+      >
         <ul className="mt-2 list-disc list-inside text-sm text-red-600 space-y-1">
           {node.commonMistakes.map((mistake, i) => (
             <li key={i}><RichText text={mistake} /></li>
           ))}
         </ul>
-      ) : null}
+      </div>
 
       {/* Practice prompts */}
       {node.practicePrompts.length > 0 && (

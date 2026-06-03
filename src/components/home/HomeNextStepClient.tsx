@@ -24,8 +24,17 @@ export function HomeNextStepClient() {
 
   if (!nextStep) {
     return (
-      <div className="rounded-[var(--radius-card)] border border-brand-200 bg-white p-5 shadow-[var(--shadow-card)]">
-        <p className="text-sm text-brand-500">Calculando próximo paso...</p>
+      <div
+        aria-busy="true"
+        aria-live="polite"
+        className="rounded-[var(--radius-card)] border border-brand-200 bg-white p-5 shadow-[var(--shadow-card)]"
+      >
+        <div className="animate-pulse space-y-3">
+          <div className="h-3 bg-brand-200 rounded w-1/3" />
+          <div className="h-5 bg-brand-200 rounded w-3/4" />
+          <div className="h-4 bg-brand-200 rounded w-full" />
+          <div className="h-10 bg-brand-200 rounded-[var(--radius-button)] w-40" />
+        </div>
       </div>
     );
   }
