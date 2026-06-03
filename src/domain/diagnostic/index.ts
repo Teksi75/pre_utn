@@ -1,6 +1,9 @@
 import type { Exercise } from "../models/exercise";
 import type { ExerciseId } from "../models/exercise";
 import type { SkillId } from "../models/skill";
+import type { PracticeProgress } from "../progress/index";
+import { PILOT_SKILLS } from "../catalog/pilot-skills";
+import { SKILL_DEPENDENCIES } from "../models/skill-catalog";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -76,6 +79,8 @@ export interface StudyPlan {
 
 const WEAK_THRESHOLD = 0.7;
 const TARGET_PER_UNIT = 2;
+/** Below this accuracy, a prereq is considered "met" for unlocking a downstream skill. */
+const PREREQ_MET_ACCURACY = 0.7;
 
 // ── Functions ────────────────────────────────────────────────────────────────
 
@@ -183,4 +188,166 @@ export function suggestPractice(
 
   suggestions.sort((a, b) => a.accuracy - b.accuracy);
   return suggestions;
+}
+
+// ── Study plan generation ───────────────────────────────────────────────────
+
+/**
+ * Build a study plan from a completed diagnostic and the student's current
+ * practice progress. Pure function — no I/O.
+ *
+ * For every pilot skill, the plan assigns a priority and a reason:
+ *
+ *   1. If the student has already practiced the skill to >= 0.7 accuracy
+ *      (`accuracyBySkill`), the skill is considered mastered enough and
+ *      is omitted from the plan.
+ *   2. Otherwise, if the skill was flagged as weak in the diagnostic
+ *      (accuracy < WEAK_THRESHOLD), it is included with reason
+ *      "diagnostic-weak":
+ *        - prereqs met → priority 1
+ *        - prereqs blocked → priority 3
+ *   3. Otherwise (skill was never tested in the diagnostic and has no
+ *      practice attempts), it is included with reason "not-attempted":
+ *        - prereqs met → priority 2
+ *        - prereqs blocked → priority 4
+ *
+ * "Prereqs met" means: every prerequisite skill has either (a) practice
+ * accuracy >= PREREQ_MET_ACCURACY, or (b) a strong diagnostic estimate
+ * (>= PREREQ_MET_ACCURACY and not flagged in the suggestions list).
+ * A prereq that was never tested and never practiced is NOT met — we
+ * have no positive evidence of readiness.
+ *
+ * `weakConcepts` for a planned skill is the deduplicated union of:
+ *   - the skill's diagnostic error tags (from SkillEstimate)
+ *   - the skill's practice error tags (from PracticeProgress.attempts)
+ *
+ * @param diagnosticResult - The completed diagnostic, or null if the user
+ *                           hasn't taken one yet.
+ * @param progress - The student's current practice progress.
+ * @returns A `StudyPlan` sorted ascending by priority (1 = most urgent),
+ *          or `null` when no diagnostic is available.
+ */
+export function createStudyPlan(
+  diagnosticResult: DiagnosticResult | null,
+  progress: PracticeProgress
+): StudyPlan | null {
+  if (!diagnosticResult) return null;
+
+  const skillPriorities: SkillPriority[] = [];
+
+  for (const pilot of PILOT_SKILLS) {
+    const skillId = pilot.skillId;
+
+    // 1. Already strong via practice → skip
+    const practiceAccuracy = progress.accuracyBySkill[skillId];
+    if (practiceAccuracy !== undefined && practiceAccuracy >= PREREQ_MET_ACCURACY) {
+      continue;
+    }
+
+    // 2. Look up the diagnostic data for this skill
+    const suggestion = diagnosticResult.suggestions.find((s) => s.skillId === skillId);
+    const estimate = diagnosticResult.estimates.find((e) => e.skillId === skillId);
+    const prereqsMet = arePrerequisitesMet(skillId, diagnosticResult, progress);
+
+    if (suggestion) {
+      // Weak in the diagnostic
+      skillPriorities.push({
+        skillId,
+        priority: prereqsMet ? 1 : 3,
+        reason: "diagnostic-weak",
+        weakConcepts: collectWeakConcepts(skillId, estimate, progress),
+      });
+    } else if (!estimate) {
+      // Never tested in the diagnostic AND not strong in practice
+      skillPriorities.push({
+        skillId,
+        priority: prereqsMet ? 2 : 4,
+        reason: "not-attempted",
+        weakConcepts: [],
+      });
+    }
+    // else: was in the diagnostic but accuracy >= WEAK_THRESHOLD → strong
+    // (handled by step 1 via practice OR step 2 via absence from suggestions
+    // combined with having an estimate).
+  }
+
+  skillPriorities.sort((a, b) => a.priority - b.priority);
+  return {
+    createdAt: new Date().toISOString(),
+    diagnosticResult,
+    skillPriorities,
+  };
+}
+
+// ── Study plan helpers ──────────────────────────────────────────────────────
+
+/**
+ * A prerequisite is "met" when there is positive evidence the student can
+ * handle the downstream skill. We accept either:
+ *   - practice accuracy >= PREREQ_MET_ACCURACY (live progress), OR
+ *   - a diagnostic estimate with accuracy >= PREREQ_MET_ACCURACY
+ *     (i.e., the skill was tested AND was not flagged in suggestions).
+ *
+ * Unknown prereqs (never tested AND never practiced) are NOT met.
+ */
+function isPrerequisiteMet(
+  prereqId: SkillId,
+  diagnosticResult: DiagnosticResult,
+  progress: PracticeProgress
+): boolean {
+  const practiceAccuracy = progress.accuracyBySkill[prereqId];
+  if (practiceAccuracy !== undefined && practiceAccuracy >= PREREQ_MET_ACCURACY) {
+    return true;
+  }
+
+  const estimate = diagnosticResult.estimates.find((e) => e.skillId === prereqId);
+  if (estimate && estimate.accuracy >= PREREQ_MET_ACCURACY) {
+    return true;
+  }
+
+  return false;
+}
+
+/** True when every prerequisite of `skillId` is met, or the skill has none. */
+function arePrerequisitesMet(
+  skillId: SkillId,
+  diagnosticResult: DiagnosticResult,
+  progress: PracticeProgress
+): boolean {
+  const dep = SKILL_DEPENDENCIES.find((d) => d.skillId === skillId);
+  if (!dep || dep.prerequisites.length === 0) return true;
+  return dep.prerequisites.every((p) =>
+    isPrerequisiteMet(p, diagnosticResult, progress)
+  );
+}
+
+/**
+ * Collect weak concepts (error tags) for a planned skill from both
+ * the diagnostic snapshot and live practice attempts. Deduped while
+ * preserving the order: diagnostic tags first, then new practice tags.
+ */
+function collectWeakConcepts(
+  skillId: SkillId,
+  estimate: SkillEstimate | undefined,
+  progress: PracticeProgress
+): readonly string[] {
+  const seen = new Set<string>();
+  const result: string[] = [];
+
+  for (const tag of estimate?.errorTags ?? []) {
+    if (!seen.has(tag)) {
+      seen.add(tag);
+      result.push(tag);
+    }
+  }
+
+  for (const attempt of progress.attempts) {
+    if (attempt.skillId !== skillId || !attempt.errorTag) continue;
+    if (!seen.has(attempt.errorTag)) {
+      seen.add(attempt.errorTag);
+      result.push(attempt.errorTag);
+    }
+  }
+
+  return result;
 }

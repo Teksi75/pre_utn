@@ -9,11 +9,22 @@ import {
   selectBalancedSet,
   estimateSkills,
   suggestPractice,
+  createStudyPlan,
 } from "@/domain/diagnostic/index";
 import { loadCatalog } from "@/domain/catalog/index";
 import { evaluateAnswer } from "@/domain/evaluator/index";
+import {
+  saveDiagnosticResult,
+  saveStudyPlan,
+} from "@/lib/diagnostic-storage";
+import { loadProgress } from "@/lib/practice-progress";
 import type { Exercise } from "@/domain/models/exercise";
-import type { Attempt, SkillEstimate, PracticeSuggestion } from "@/domain/diagnostic/index";
+import type {
+  Attempt,
+  SkillEstimate,
+  PracticeSuggestion,
+  DiagnosticResult,
+} from "@/domain/diagnostic/index";
 
 type DiagnosticPhase = "loading" | "question" | "results" | "error";
 
@@ -80,6 +91,16 @@ export default function DiagnosticPage() {
         setSuggestions(sug);
         setIsEvaluating(false);
         setPhase("results");
+
+        // Persist the diagnostic snapshot so the home page can build a
+        // study plan from it on the next visit.
+        const result: DiagnosticResult = {
+          completedAt: new Date().toISOString(),
+          estimates: est,
+          suggestions: sug,
+          version: 1,
+        };
+        saveDiagnosticResult(result);
       }
     },
     [exercises, currentIndex, attempts]
@@ -139,9 +160,28 @@ export default function DiagnosticPage() {
       }
     };
 
+    const handleCreatePlan = (): boolean => {
+      const result: DiagnosticResult = {
+        completedAt: new Date().toISOString(),
+        estimates,
+        suggestions,
+        version: 1,
+      };
+      const progress = loadProgress();
+      const plan = createStudyPlan(result, progress);
+      if (!plan) return false;
+      saveStudyPlan(plan);
+      return true;
+    };
+
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <ResultsDisplay estimates={estimates} suggestions={suggestions} onRestart={handleRestart} />
+        <ResultsDisplay
+          estimates={estimates}
+          suggestions={suggestions}
+          onRestart={handleRestart}
+          onCreatePlan={handleCreatePlan}
+        />
       </div>
     );
   }

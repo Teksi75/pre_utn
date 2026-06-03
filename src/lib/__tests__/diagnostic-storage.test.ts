@@ -3,9 +3,13 @@ import {
   saveDiagnosticResult,
   loadDiagnosticResult,
   clearDiagnosticResult,
+  saveStudyPlan,
+  loadStudyPlan,
+  clearStudyPlan,
   DIAGNOSTIC_STORAGE_KEY,
+  STUDY_PLAN_STORAGE_KEY,
 } from "../diagnostic-storage";
-import type { DiagnosticResult } from "@/domain/diagnostic";
+import type { DiagnosticResult, StudyPlan } from "@/domain/diagnostic";
 
 // Mock localStorage (vitest runs in node environment)
 const localStorageMock = (() => {
@@ -181,6 +185,143 @@ describe("diagnostic-storage", () => {
 
     it("does not throw when nothing was stored", () => {
       expect(() => clearDiagnosticResult()).not.toThrow();
+    });
+  });
+});
+
+// ── Study plan storage ─────────────────────────────────────────────────────
+
+const makePlan = (overrides: Partial<StudyPlan> = {}): StudyPlan => ({
+  createdAt: "2025-06-03T10:00:00.000Z",
+  diagnosticResult: {
+    completedAt: "2025-06-03T10:00:00.000Z",
+    estimates: [],
+    suggestions: [],
+    version: 1,
+  },
+  skillPriorities: [
+    {
+      skillId: "mat.u1.conjuntos_numericos",
+      priority: 1,
+      reason: "diagnostic-weak",
+      weakConcepts: ["u1_orden_operaciones"],
+    },
+  ],
+  ...overrides,
+});
+
+describe("study plan storage", () => {
+  describe("STUDY_PLAN_STORAGE_KEY", () => {
+    it("uses versioned key to avoid collisions", () => {
+      expect(STUDY_PLAN_STORAGE_KEY).toBe("pre-utn.study-plan.v1");
+    });
+  });
+
+  describe("loadStudyPlan", () => {
+    it("returns null when no study plan stored", () => {
+      expect(loadStudyPlan()).toBeNull();
+    });
+
+    it("round-trips a study plan", () => {
+      const plan = makePlan();
+      saveStudyPlan(plan);
+      expect(loadStudyPlan()).toEqual(plan);
+    });
+
+    it("returns null for corrupt JSON", () => {
+      localStorageMock.setItem(STUDY_PLAN_STORAGE_KEY, "not-json {{{{");
+      expect(loadStudyPlan()).toBeNull();
+    });
+
+    it("returns null when stored data lacks required fields", () => {
+      localStorageMock.setItem(
+        STUDY_PLAN_STORAGE_KEY,
+        JSON.stringify({ createdAt: "2025-06-03" })
+      );
+      expect(loadStudyPlan()).toBeNull();
+    });
+
+    it("returns null when skillPriorities is not an array", () => {
+      localStorageMock.setItem(
+        STUDY_PLAN_STORAGE_KEY,
+        JSON.stringify({
+          createdAt: "2025-06-03",
+          diagnosticResult: null,
+          skillPriorities: "not-an-array",
+        })
+      );
+      expect(loadStudyPlan()).toBeNull();
+    });
+
+    it("returns null when diagnosticResult is missing", () => {
+      localStorageMock.setItem(
+        STUDY_PLAN_STORAGE_KEY,
+        JSON.stringify({
+          createdAt: "2025-06-03",
+          skillPriorities: [],
+        })
+      );
+      expect(loadStudyPlan()).toBeNull();
+    });
+
+    it("handles an empty skillPriorities array (all-mastered diagnostic)", () => {
+      const plan = makePlan({ skillPriorities: [] });
+      saveStudyPlan(plan);
+      const loaded = loadStudyPlan();
+      expect(loaded).toEqual(plan);
+      expect(loaded?.skillPriorities).toEqual([]);
+    });
+  });
+
+  describe("saveStudyPlan", () => {
+    it("persists plan to localStorage under versioned key", () => {
+      const plan = makePlan();
+      saveStudyPlan(plan);
+
+      expect(localStorageMock.setItem).toHaveBeenCalledWith(
+        STUDY_PLAN_STORAGE_KEY,
+        JSON.stringify(plan)
+      );
+    });
+
+    it("does not throw when localStorage is unavailable", () => {
+      localStorageMock.setItem.mockImplementationOnce(() => {
+        throw new Error("QuotaExceededError");
+      });
+
+      expect(() => saveStudyPlan(makePlan())).not.toThrow();
+    });
+  });
+
+  describe("clearStudyPlan", () => {
+    it("removes stored study plan from localStorage", () => {
+      saveStudyPlan(makePlan());
+
+      clearStudyPlan();
+
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith(
+        STUDY_PLAN_STORAGE_KEY
+      );
+      expect(loadStudyPlan()).toBeNull();
+    });
+
+    it("does not throw when nothing was stored", () => {
+      expect(() => clearStudyPlan()).not.toThrow();
+    });
+
+    it("does not affect the stored diagnostic", () => {
+      const diag: DiagnosticResult = {
+        completedAt: "2025-06-03",
+        estimates: [],
+        suggestions: [],
+        version: 1,
+      };
+      saveDiagnosticResult(diag);
+      saveStudyPlan(makePlan());
+
+      clearStudyPlan();
+
+      expect(loadDiagnosticResult()).toEqual(diag);
     });
   });
 });

@@ -10,6 +10,7 @@ import {
 } from "../../domain/next-step/index";
 import { loadProgress } from "../../lib/practice-progress";
 import { SkillRoadmap } from "./SkillRoadmap";
+import { StudyPlanSection } from "./StudyPlanSection";
 
 /**
  * Home hero — Zone 1 ("Tu estado") + Zone 2 ("Tu camino") of the home page.
@@ -81,6 +82,12 @@ export function HomeNextStepClient() {
           {nextStep.kind === "diagnostic" ? "Hacer diagnóstico →" : "Continuar →"}
         </Link>
       </article>
+
+      {/* Study plan — sits between Zone 1 (hero) and Zone 2 (roadmap)
+          when the student has generated one. High visual weight on the
+          home page because the plan is the primary entry point for
+          post-diagnostic practice. */}
+      <StudyPlanSection />
 
       {/* Zone 2 — Tu camino (MEDIUM visual weight), embedded under the hero */}
       {nextStep.roadmapSkills.length > 0 && (

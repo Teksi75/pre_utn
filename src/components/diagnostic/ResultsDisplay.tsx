@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { getPracticeHrefForSuggestion } from "./practice-link";
@@ -9,6 +10,14 @@ interface ResultsDisplayProps {
   readonly estimates: readonly SkillEstimate[];
   readonly suggestions: readonly PracticeSuggestion[];
   readonly onRestart?: () => void;
+  /**
+   * Handler invoked when the student clicks "Crear plan de estudio".
+   * The parent is responsible for computing the plan (from
+   * `estimates` + `suggestions` + practice progress), persisting it,
+   * and surfacing a success state. Returning `true` from the handler
+   * causes the card to flip to its "plan created" state.
+   */
+  readonly onCreatePlan?: () => boolean;
 }
 
 function skillLabel(skillId: string): string {
@@ -29,7 +38,19 @@ function accuracyColor(accuracy: number): string {
 /**
  * Ranked skill estimates + practice links for weakest skills.
  */
-export function ResultsDisplay({ estimates, suggestions, onRestart }: ResultsDisplayProps) {
+export function ResultsDisplay({
+  estimates,
+  suggestions,
+  onRestart,
+  onCreatePlan,
+}: ResultsDisplayProps) {
+  const [planCreated, setPlanCreated] = useState(false);
+
+  const handleCreatePlan = () => {
+    if (!onCreatePlan) return;
+    const ok = onCreatePlan();
+    if (ok) setPlanCreated(true);
+  };
   return (
     <div className="space-y-6">
       <h2 className="text-[var(--text-xl)] font-bold text-brand-900">
@@ -134,6 +155,54 @@ export function ResultsDisplay({ estimates, suggestions, onRestart }: ResultsDis
         <div className="bg-green-50 border border-green-200 rounded-[var(--radius-card)] p-4 text-sm text-green-800">
           ¡No se detectaron habilidades débiles! Seguí practicando para mantener
           el nivel.
+        </div>
+      )}
+
+      {/* Create study plan — only offered when there's at least one signal
+          (weak skills flagged OR something to plan around). Hidden once
+          the plan has been created so we don't show the button twice. */}
+      {onCreatePlan && !planCreated && suggestions.length > 0 && (
+        <div
+          className="border border-brand-300 bg-brand-50 rounded-[var(--radius-card)] p-4 space-y-3"
+          data-testid="create-plan-card"
+        >
+          <div>
+            <p className="text-sm font-semibold text-brand-900">
+              Convertí tu diagnóstico en un plan
+            </p>
+            <p className="text-xs text-brand-700 mt-1">
+              Vamos a generar un plan priorizado de práctica basado en lo
+              que acabás de responder. Lo vas a ver en la página de inicio.
+            </p>
+          </div>
+          <Button
+            onClick={handleCreatePlan}
+            className="w-full sm:w-auto"
+            data-testid="create-plan-button"
+          >
+            Crear plan de estudio
+          </Button>
+        </div>
+      )}
+
+      {planCreated && (
+        <div
+          className="bg-green-50 border border-green-200 rounded-[var(--radius-card)] p-4 space-y-2"
+          data-testid="plan-created-card"
+        >
+          <p className="text-sm font-semibold text-green-800">
+            ¡Listo! Guardamos tu plan de estudio.
+          </p>
+          <p className="text-xs text-green-700">
+            Lo encontrás en la página de inicio, con el orden sugerido y los
+            conceptos a reforzar.
+          </p>
+          <Link
+            href="/"
+            className="inline-flex min-h-[44px] items-center px-4 py-2 text-sm font-semibold rounded-[var(--radius-button)] bg-[var(--color-brand-900)] text-white hover:bg-[var(--color-brand-800)] transition-colors focus-visible:shadow-[var(--ring-focus)]"
+          >
+            Ver plan en inicio →
+          </Link>
         </div>
       )}
 
