@@ -13,7 +13,7 @@ export default function LearnPage() {
       <nav className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl" aria-label="Materias disponibles">
         <Link
           href="/learn/matematica"
-          className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)]"
+          className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)] transition-shadow duration-[var(--duration-normal)]"
         >
           <span className="text-[var(--text-lg)] font-semibold text-brand-900 group-hover:text-accent-600 transition-colors">
             Matemática

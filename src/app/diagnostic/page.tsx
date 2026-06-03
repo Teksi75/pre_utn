@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { DiagnosticQuestion } from "@/components/diagnostic/DiagnosticQuestion";
 import { ResultsDisplay } from "@/components/diagnostic/ResultsDisplay";
+import { Card } from "@/components/ui/Card";
 import {
   selectBalancedSet,
   estimateSkills,
@@ -104,11 +105,10 @@ export default function DiagnosticPage() {
         <h1 className="text-[var(--text-2xl)] font-bold text-brand-900 mb-6">
           Diagnóstico
         </h1>
-        <div
-          role="alert"
-          className="bg-amber-50 border border-amber-300 rounded-[var(--radius-card)] p-4 text-sm text-amber-800"
-        >
-          {errorMessage}
+        <div role="alert">
+          <Card variant="accent" className="p-4 text-sm text-amber-800">
+            {errorMessage}
+          </Card>
         </div>
         <div className="mt-4">
           <Link

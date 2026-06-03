@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { CSSProperties } from "react";
 import { RichText } from "@/components/math/RichText";
 import type { Exercise } from "@/domain/models/exercise";
 import {
@@ -24,25 +23,7 @@ const TRUE_FALSE_OPTIONS = [
 ] as const;
 
 const submitButtonClassName =
-  "w-full px-4 py-2.5 text-sm font-medium rounded-[var(--radius-button)] border min-h-[44px] transition-colors duration-[var(--duration-fast)] focus-visible:shadow-[var(--ring-focus)]";
-
-function submitButtonStyle(enabled: boolean): CSSProperties {
-  if (enabled) {
-    return {
-      backgroundColor: "var(--color-brand-900)",
-      borderColor: "var(--color-brand-900)",
-      color: "#ffffff",
-      cursor: "pointer",
-    };
-  }
-
-  return {
-    backgroundColor: "var(--color-brand-200)",
-    borderColor: "var(--color-brand-300)",
-    color: "var(--color-brand-700)",
-    cursor: "not-allowed",
-  };
-}
+  "w-full bg-brand-900 text-white px-4 py-2.5 text-sm font-medium rounded-[var(--radius-button)] hover:bg-brand-800 disabled:bg-brand-200 disabled:text-brand-500 min-h-[44px] transition-colors duration-[var(--duration-fast)] focus-visible:shadow-[var(--ring-focus)]";
 
 function optionClassName(selected: boolean): string {
   return `flex w-full cursor-pointer items-center gap-3 text-left px-4 py-3 text-sm rounded-[var(--radius-button)] min-h-[44px] transition-colors duration-[var(--duration-fast)] focus-within:shadow-[var(--ring-focus)] border ${
@@ -134,7 +115,6 @@ export function ExerciseAnswerInput({
           type="submit"
           disabled={disabled || !canSubmit}
           className={submitButtonClassName}
-          style={submitButtonStyle(!disabled && canSubmit)}
         >
           {disabled ? "Evaluando..." : "Enviar respuesta"}
         </button>
@@ -174,7 +154,6 @@ export function ExerciseAnswerInput({
           type="submit"
           disabled={disabled || !canSubmit}
           className={submitButtonClassName}
-          style={submitButtonStyle(!disabled && canSubmit)}
         >
           {disabled ? "Evaluando..." : "Enviar respuesta"}
         </button>
@@ -207,7 +186,6 @@ export function ExerciseAnswerInput({
           type="submit"
           disabled={disabled || !canSubmit}
           className={submitButtonClassName}
-          style={submitButtonStyle(!disabled && canSubmit)}
         >
           {disabled ? "Evaluando..." : "Enviar respuesta"}
         </button>

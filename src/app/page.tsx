@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { HomeNextStepClient } from "@/components/home/HomeNextStepClient";
+import { Card } from "@/components/ui/Card";
 
 export default function Home() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
-      <section className="rounded-[var(--radius-card)] border border-brand-200 bg-white p-6 shadow-[var(--shadow-card)]">
+      <Card className="p-6">
         <p className="text-xs font-semibold uppercase tracking-wide text-accent-600">
           Matemática · ingreso UTN Mendoza
         </p>
@@ -15,7 +16,7 @@ export default function Home() {
           La app complementa las clases presenciales: primero diagnosticás,
           después practicás y luego revisás errores.
         </p>
-      </section>
+      </Card>
 
       <HomeNextStepClient />
 
@@ -23,7 +24,7 @@ export default function Home() {
         aria-labelledby="course-state-title"
         className="grid grid-cols-1 gap-4 md:grid-cols-2"
       >
-        <div className="rounded-[var(--radius-card)] border border-brand-200 bg-white p-5 shadow-[var(--shadow-card)]">
+        <Card>
           <h2 id="course-state-title" className="text-[var(--text-lg)] font-semibold text-brand-900">
             Estado del curso
           </h2>
@@ -41,9 +42,9 @@ export default function Home() {
               <dd className="font-medium text-amber-700">Unidad 1 parcial</dd>
             </div>
           </dl>
-        </div>
+        </Card>
 
-        <div className="rounded-[var(--radius-card)] border border-brand-200 bg-white p-5 shadow-[var(--shadow-card)]">
+        <Card>
           <h2 className="text-[var(--text-lg)] font-semibold text-brand-900">
             Skills listas
           </h2>
@@ -69,7 +70,7 @@ export default function Home() {
             El resto de las unidades no se presentan como curso completo hasta
             tener teoría, ejemplos, práctica, feedback y evaluación suficientes.
           </p>
-        </div>
+        </Card>
       </section>
 
       <nav
@@ -78,7 +79,7 @@ export default function Home() {
       >
         <Link
           href="/diagnostic"
-          className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)]"
+          className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)] transition-shadow duration-[var(--duration-normal)]"
         >
           <span className="text-[var(--text-lg)] font-semibold text-brand-900 group-hover:text-accent-600 transition-colors">
             Hacer diagnóstico
@@ -89,7 +90,7 @@ export default function Home() {
         </Link>
         <Link
           href="/learn"
-          className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)]"
+          className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)] transition-shadow duration-[var(--duration-normal)]"
         >
           <span className="text-[var(--text-lg)] font-semibold text-brand-900 group-hover:text-accent-600 transition-colors">
             Aprender Unidad 1
@@ -100,7 +101,7 @@ export default function Home() {
         </Link>
         <Link
           href="/practice"
-          className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)]"
+          className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)] transition-shadow duration-[var(--duration-normal)]"
         >
           <span className="text-[var(--text-lg)] font-semibold text-brand-900 group-hover:text-accent-600 transition-colors">
             Práctica

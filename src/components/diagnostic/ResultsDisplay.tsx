@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 import { getPracticeHrefForSuggestion } from "./practice-link";
 import type { SkillEstimate, PracticeSuggestion } from "@/domain/diagnostic/index";
 
@@ -143,12 +144,9 @@ export function ResultsDisplay({ estimates, suggestions, onRestart }: ResultsDis
         >
           Volver al inicio
         </Link>
-        <button
-          onClick={onRestart}
-          className="flex-1 bg-brand-900 text-white px-4 py-2.5 text-sm font-medium rounded-[var(--radius-button)] hover:bg-brand-800 min-h-[44px] transition-colors focus-visible:shadow-[var(--ring-focus)]"
-        >
+        <Button onClick={onRestart} className="flex-1">
           Repetir diagnóstico
-        </button>
+        </Button>
       </div>
     </div>
   );
