@@ -2,6 +2,8 @@
 
 Pre UTN es una app de preparación para el ingreso a Ingeniería UTN Mendoza. Complementa las clases presenciales con práctica, feedback y seguimiento pedagógico para alumnos y docentes.
 
+App publicada: https://pre-utn.vercel.app/
+
 ## Estado real del MVP
 
 - Matemática es el primer módulo activo.
