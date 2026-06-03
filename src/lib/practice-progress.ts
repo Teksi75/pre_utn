@@ -15,7 +15,7 @@ import type { DiagnosticResult, StudyPlan } from "../domain/diagnostic";
 export const PRACTICE_STORAGE_KEY = "pre-utn.practice.v1";
 
 /** Empty initial state with all new fields defaulted. */
-const EMPTY_PROGRESS: PracticeProgress = {
+export const EMPTY_PROGRESS: PracticeProgress = {
   attempts: [],
   accuracyBySkill: {},
   trendBySkill: {},

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { queryBySkill } from "@/domain/catalog/index";
+import type { AccessibleSkill } from "@/domain/catalog/accessibility";
 import {
   loadTheoryContent,
   loadExampleContent,
@@ -9,17 +10,32 @@ import {
 } from "@/domain/catalog/content-loaders";
 import { evaluateAnswer } from "@/domain/evaluator/index";
 import { generateFeedback, type FeedbackMapping } from "@/domain/feedback/index";
-import { addAttempt } from "@/lib/practice-progress";
+import { addAttempt, loadProgress, EMPTY_PROGRESS } from "@/lib/practice-progress";
 import { nextPhase, type PracticePhase } from "./phases";
 import {
   PRACTICE_SKILL_UNIT_MAP,
-  resolveInitialPracticeSkill,
+  analyzeRequestedSkill,
+  buildAccessibleSkillMap,
+  type BlockedReason,
 } from "./start-skill";
+import type { PracticeProgress } from "@/domain/progress/index";
 import type { SkillId } from "@/domain/models/skill";
 import type { Exercise } from "@/domain/models/exercise";
 import type { TheoryNode } from "@/domain/models/theory";
 import type { WorkedExample } from "@/domain/models/worked-example";
 import type { EvaluationResult } from "@/domain/evaluator/index";
+
+/**
+ * Information about a skill the user requested via `?skill=...` that
+ * could not be opened for practice. Surfaced by the page as a clear,
+ * actionable message instead of a silent no-op.
+ */
+export interface BlockedSkillInfo {
+  readonly skillId: string;
+  readonly reason: BlockedReason;
+  /** Populated when reason === "missing-prerequisite". */
+  readonly missingPrerequisite?: SkillId;
+}
 
 /**
  * Encapsulates all state and transitions for the guided practice flow.
@@ -45,6 +61,30 @@ export function usePracticeFlow() {
   const evaluateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const initialSkillConsumedRef = useRef(false);
 
+  // Progress is initialized to EMPTY_PROGRESS so the SSR pre-render
+  // and the client's first hydration render produce identical markup.
+  // We read localStorage inside a useEffect (browser-only) and update
+  // the state, which triggers a re-render with the real data.
+  const [progress, setProgress] = useState<PracticeProgress>(EMPTY_PROGRESS);
+  useEffect(() => {
+    setProgress(loadProgress());
+  }, []);
+
+  // Accessibility model for the select phase. Derived from `progress`
+  // so the FocusSelector reflects the latest accuracy after a practice
+  // attempt (and avoids reading localStorage during render).
+  const accessibleSkills: ReadonlyMap<SkillId, AccessibleSkill> = useMemo(
+    () => buildAccessibleSkillMap(progress),
+    [progress]
+  );
+
+  // Detected blocked-skill message from `?skill=...`. The page renders
+  // this above the FocusSelector so the student understands why the
+  // requested skill did not open.
+  const [blockedSkill, setBlockedSkill] = useState<BlockedSkillInfo | null>(
+    null
+  );
+
   useEffect(() => {
     return () => {
       if (evaluateTimeoutRef.current !== null) {
@@ -66,10 +106,12 @@ export function usePracticeFlow() {
     setExamples([]);
     setExampleIndex(0);
     setFeedbackMappings([]);
+    setBlockedSkill(null);
   }, []);
 
   const handleSkillSelect = useCallback((skillId: SkillId) => {
     setSelectedSkillId(skillId);
+    setBlockedSkill(null);
     const skillExercises = queryBySkill(skillId);
     setExercises(skillExercises);
     setExerciseIndex(0);
@@ -92,14 +134,31 @@ export function usePracticeFlow() {
 
   useEffect(() => {
     if (initialSkillConsumedRef.current || selectedSkillId !== null) return;
+    // Skip until progress is loaded — otherwise we'd analyze against
+    // EMPTY_PROGRESS and wrongly block skills whose prereqs are
+    // mastered in the student's saved data.
+    if (progress === EMPTY_PROGRESS) return;
 
     const requestedSkill = new URLSearchParams(window.location.search).get("skill");
-    const initialSkill = resolveInitialPracticeSkill(requestedSkill);
-    if (!initialSkill) return;
+    if (!requestedSkill) return;
 
-    initialSkillConsumedRef.current = true;
-    handleSkillSelect(initialSkill);
-  }, [handleSkillSelect, selectedSkillId]);
+    const analysis = analyzeRequestedSkill(requestedSkill, progress);
+    if (analysis.kind === "ready") {
+      initialSkillConsumedRef.current = true;
+      handleSkillSelect(analysis.skillId);
+      return;
+    }
+
+    if (analysis.kind === "blocked") {
+      initialSkillConsumedRef.current = true;
+      setBlockedSkill({
+        skillId: analysis.skillId,
+        reason: analysis.reason,
+        missingPrerequisite: analysis.missingPrerequisite,
+      });
+      return;
+    }
+  }, [handleSkillSelect, selectedSkillId, progress]);
 
   const handleNextPhase = useCallback(() => {
     const lastExercise = exerciseIndex >= exercises.length - 1;
@@ -124,9 +183,10 @@ export function usePracticeFlow() {
         const fb = generateFeedback(result.correct, result.errorTag, feedbackMappings);
         setFeedbackMsg(fb.message);
 
-        // Persist attempt
+        // Persist attempt and refresh progress so the FocusSelector
+        // re-derives the accessibility map with the new accuracy.
         if (selectedSkillId) {
-          addAttempt({
+          const updated = addAttempt({
             exerciseId: currentExercise.id,
             skillId: selectedSkillId,
             correct: result.correct,
@@ -134,6 +194,7 @@ export function usePracticeFlow() {
             answeredAt: new Date().toISOString(),
             difficulty: currentExercise.difficulty,
           });
+          setProgress(updated);
         }
 
         setIsEvaluating(false);
@@ -192,6 +253,8 @@ export function usePracticeFlow() {
     examples,
     exampleIndex,
     feedbackMappings,
+    accessibleSkills,
+    blockedSkill,
     resetToSelect,
     handleSkillSelect,
     handleNextPhase,

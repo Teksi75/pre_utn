@@ -1,11 +1,18 @@
 "use client";
 
 import { FocusSelector } from "@/components/practice/FocusSelector";
+import type { AccessibleSkill } from "@/domain/catalog/accessibility";
 import type { SkillId } from "@/domain/models/skill";
 
 interface PracticeSelectPhaseProps {
   selectedFocus: SkillId | null;
   onSelectFocus: (focus: SkillId) => void;
+  /**
+   * Optional accessibility map for PILOT_SKILLS. Forwarded to the
+   * `FocusSelector` so pilot skills can show rich state (mastery
+   * level, missing prerequisites) instead of the binary ready flag.
+   */
+  accessibleSkills?: ReadonlyMap<SkillId, AccessibleSkill>;
 }
 
 /**
@@ -15,11 +22,13 @@ interface PracticeSelectPhaseProps {
 export function PracticeSelectPhase({
   selectedFocus,
   onSelectFocus,
+  accessibleSkills,
 }: PracticeSelectPhaseProps) {
   return (
     <FocusSelector
       onSkillSelect={onSelectFocus}
       selectedSkillId={selectedFocus ?? undefined}
+      accessibleSkills={accessibleSkills}
     />
   );
 }

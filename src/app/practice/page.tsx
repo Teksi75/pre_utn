@@ -10,6 +10,8 @@ import { PracticeRecoveryPhase } from "@/components/practice/PracticeRecoveryPha
 import { BackButton } from "@/components/ui/BackButton";
 import { Button } from "@/components/ui/Button";
 import { usePracticeFlow } from "./usePracticeFlow";
+import { skillLabel } from "@/lib/skill-label";
+import type { SkillId } from "@/domain/models/skill";
 
 const TOTAL_PHASES = 4;
 
@@ -24,10 +26,21 @@ export default function PracticePage() {
 
       {flow.phase === "select" && (
         <ViewTransition enter="slide-up" exit="slide-down" default="none">
-          <PracticeSelectPhase
-            selectedFocus={flow.selectedSkillId}
-            onSelectFocus={flow.handleSkillSelect}
-          />
+          <div className="space-y-4">
+            {flow.blockedSkill && (
+              <BlockedSkillBanner
+                skillId={flow.blockedSkill.skillId}
+                reason={flow.blockedSkill.reason}
+                missingPrerequisite={flow.blockedSkill.missingPrerequisite}
+                onDismiss={flow.resetToSelect}
+              />
+            )}
+            <PracticeSelectPhase
+              selectedFocus={flow.selectedSkillId}
+              onSelectFocus={flow.handleSkillSelect}
+              accessibleSkills={flow.accessibleSkills}
+            />
+          </div>
         </ViewTransition>
       )}
 
@@ -131,6 +144,64 @@ export default function PracticePage() {
           />
         </ViewTransition>
       )}
+    </div>
+  );
+}
+
+interface BlockedSkillBannerProps {
+  readonly skillId: string;
+  readonly reason: "unknown-skill" | "no-content" | "missing-prerequisite";
+  readonly missingPrerequisite?: SkillId;
+  readonly onDismiss: () => void;
+}
+
+/**
+ * Banner shown above the FocusSelector when a `?skill=...` URL
+ * parameter targeted a skill the student cannot practice yet.
+ * Surfaces WHY the skill is blocked and offers a clear way back
+ * to the selector (no silent no-op, no empty state).
+ */
+function BlockedSkillBanner({
+  skillId,
+  reason,
+  missingPrerequisite,
+  onDismiss,
+}: BlockedSkillBannerProps) {
+  let message: string;
+  switch (reason) {
+    case "missing-prerequisite":
+      message = `Para practicar ${skillLabel(skillId as SkillId)}, primero necesitás dominar ${
+        missingPrerequisite ? skillLabel(missingPrerequisite) : "los prerrequisitos"
+      }.`;
+      break;
+    case "no-content":
+      message = `${skillLabel(skillId as SkillId)} aún no está disponible para práctica guiada.`;
+      break;
+    case "unknown-skill":
+    default:
+      message = `La habilidad "${skillId}" no existe o no forma parte del curso.`;
+      break;
+  }
+
+  return (
+    <div
+      role="status"
+      className="rounded-[var(--radius-card)] border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 shadow-[var(--shadow-card)]"
+    >
+      <p className="font-semibold mb-1">Esta habilidad todavía no se puede practicar</p>
+      <p className="mb-3">{message}</p>
+      {reason === "missing-prerequisite" && missingPrerequisite && (
+        <p className="text-xs text-amber-800">
+          Practicá {skillLabel(missingPrerequisite)} desde la lista de abajo para desbloquearla.
+        </p>
+      )}
+      <button
+        type="button"
+        onClick={onDismiss}
+        className="mt-3 text-xs font-semibold text-amber-900 underline hover:no-underline min-h-[44px] inline-flex items-center"
+      >
+        Entendido, volver al selector
+      </button>
     </div>
   );
 }
