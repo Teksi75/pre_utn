@@ -9,9 +9,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary:
-    "bg-brand-900 text-white hover:bg-brand-800 disabled:bg-brand-200 disabled:text-brand-500",
-  secondary: "bg-brand-100 text-brand-700 hover:bg-brand-200",
-  ghost: "text-brand-700 hover:text-brand-900 hover:bg-brand-50",
+    "bg-[var(--color-brand-900)] text-white hover:bg-[var(--color-brand-800)] disabled:bg-[var(--color-brand-200)] disabled:text-[var(--color-brand-500)]",
+  secondary:
+    "bg-[var(--color-brand-100)] text-brand-700 hover:bg-[var(--color-brand-200)]",
+  ghost: "text-brand-700 hover:text-brand-900 hover:bg-[var(--color-brand-50)]",
   danger: "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100",
 };
 
