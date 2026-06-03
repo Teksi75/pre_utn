@@ -2,9 +2,11 @@ import { describe, test, expect } from "vitest";
 import {
   computeAccuracy,
   computeTrend,
+  computeMasteryLevel,
   type PracticeAttempt,
   type PracticeProgress,
 } from "../progress/index";
+import type { SkillId } from "../models/skill";
 
 describe("PracticeAttempt / PracticeProgress", () => {
   const makeAttempt = (overrides: Partial<PracticeAttempt> = {}): PracticeAttempt => ({
@@ -133,6 +135,111 @@ describe("PracticeAttempt / PracticeProgress", () => {
       ];
       const trend = computeTrend(attempts, "mat.u1.reales_operaciones");
       expect(trend).toBe("improving");
+    });
+  });
+
+  describe("computeMasteryLevel", () => {
+    // Helper: build a progress with N attempts for a skill, all correct.
+    // Lets each test independently tune attempts/accuracy/trend.
+    const buildProgress = (
+      skillId: SkillId,
+      correctCount: number,
+      totalCount: number,
+      trend: "improving" | "stable" | "needs-review" = "stable"
+    ): PracticeProgress => {
+      const attempts: PracticeAttempt[] = [];
+      for (let i = 0; i < totalCount; i++) {
+        attempts.push(
+          makeAttempt({
+            skillId,
+            correct: i < correctCount,
+            answeredAt: `2026-01-01T10:${String(i).padStart(2, "0")}:00Z`,
+          })
+        );
+      }
+      const accuracy = totalCount > 0 ? correctCount / totalCount : 0;
+      return {
+        attempts,
+        accuracyBySkill: { [skillId]: accuracy },
+        trendBySkill: { [skillId]: trend },
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      };
+    };
+
+    test("returns 'not-started' when there are no attempts for the skill", () => {
+      const progress: PracticeProgress = {
+        attempts: [],
+        accuracyBySkill: {},
+        trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      };
+      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      expect(level).toBe("not-started");
+    });
+
+    test("returns 'mastered' when accuracy >= 0.8 with 5+ attempts and stable trend", () => {
+      // 5 attempts, 5 correct (1.0 accuracy) — meets mastered threshold
+      const progress = buildProgress("mat.u1.reales_operaciones", 5, 5, "stable");
+      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      expect(level).toBe("mastered");
+    });
+
+    test("returns 'mastered' at the 0.8 / 5-attempts boundary", () => {
+      // 4 correct out of 5 = 0.8 accuracy, 5 attempts, stable → mastered
+      const progress = buildProgress("mat.u1.reales_operaciones", 4, 5, "stable");
+      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      expect(level).toBe("mastered");
+    });
+
+    test("returns 'learning' when accuracy is high but fewer than 5 attempts", () => {
+      // 3 correct out of 3 = 1.0 accuracy, but only 3 attempts → not mastered
+      const progress = buildProgress("mat.u1.reales_operaciones", 3, 3, "stable");
+      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      expect(level).toBe("learning");
+    });
+
+    test("returns 'practicing' when accuracy >= 0.7 and trend is improving", () => {
+      // 7 correct out of 10 = 0.7 accuracy, improving trend
+      const progress = buildProgress("mat.u1.reales_operaciones", 7, 10, "improving");
+      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      expect(level).toBe("practicing");
+    });
+
+    test("returns 'review' when trend is needs-review, regardless of accuracy", () => {
+      // 9 correct out of 10 = 0.9 accuracy, but trend is needs-review
+      const progress = buildProgress("mat.u1.reales_operaciones", 9, 10, "needs-review");
+      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      expect(level).toBe("review");
+    });
+
+    test("returns 'learning' as the default for low accuracy and stable trend", () => {
+      // 3 correct out of 10 = 0.3 accuracy, stable trend
+      const progress = buildProgress("mat.u1.reales_operaciones", 3, 10, "stable");
+      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      expect(level).toBe("learning");
+    });
+
+    test("falls back to 'learning' when accuracy/trend maps are missing entries", () => {
+      // Attempts exist for the skill but accuracy/trend maps are empty —
+      // should not throw and should return 'learning' (or higher)
+      const progress: PracticeProgress = {
+        attempts: [
+          makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: true }),
+        ],
+        accuracyBySkill: {},
+        trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      };
+      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      // Accuracy defaults to 0 → not mastered/practicing; trend defaults to
+      // 'stable' (not 'needs-review') → not review → 'learning'
+      expect(level).toBe("learning");
     });
   });
 });

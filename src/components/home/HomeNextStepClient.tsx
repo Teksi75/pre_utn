@@ -4,14 +4,27 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { isSkillReady } from "../../domain/catalog/readiness";
 import { PILOT_SKILLS } from "../../domain/catalog/pilot-skills";
-import { deriveHomeNextStep, type HomeNextStep } from "../../domain/next-step/index";
+import {
+  deriveHomeNextStep,
+  type HomeNextStep,
+} from "../../domain/next-step/index";
 import { loadProgress } from "../../lib/practice-progress";
+import { SkillRoadmap } from "./SkillRoadmap";
 
+/**
+ * Home hero — Zone 1 ("Tu estado") + Zone 2 ("Tu camino") of the home page.
+ *
+ * The client-side hydration reads progress + readiness, then delegates all
+ * decision logic to `deriveHomeNextStep` in the domain layer. The component
+ * itself only renders the data the domain returns.
+ */
 export function HomeNextStepClient() {
   const [nextStep, setNextStep] = useState<HomeNextStep | null>(null);
 
   useEffect(() => {
     const progress = loadProgress();
+    // `readySkills` is the subset of pilot skills that can actually be
+    // practiced right now — used to drive the next-step recommendation.
     const readySkills = PILOT_SKILLS.filter(
       (skill) => isSkillReady(skill.skillId).ready
     ).map((skill) => ({
@@ -19,12 +32,12 @@ export function HomeNextStepClient() {
       label: skill.label,
     }));
 
-    setNextStep(deriveHomeNextStep(progress, readySkills));
+    setNextStep(deriveHomeNextStep(progress, readySkills, [...PILOT_SKILLS]));
   }, []);
 
   if (!nextStep) {
     return (
-      <div
+      <section
         aria-busy="true"
         aria-live="polite"
         className="rounded-[var(--radius-card)] border border-brand-200 bg-white p-5 shadow-[var(--shadow-card)]"
@@ -35,30 +48,67 @@ export function HomeNextStepClient() {
           <div className="h-4 bg-brand-200 rounded w-full" />
           <div className="h-10 bg-brand-200 rounded-[var(--radius-button)] w-40" />
         </div>
-      </div>
+      </section>
     );
   }
 
   return (
     <section
-      aria-labelledby="next-step-title"
-      className="rounded-[var(--radius-card)] border border-accent-500/30 bg-amber-50 p-5 shadow-[var(--shadow-card)]"
+      aria-labelledby="home-hero-title"
+      className="space-y-4"
     >
-      <p className="text-xs font-semibold uppercase tracking-wide text-accent-600">
-        Próximo paso recomendado
-      </p>
-      <h2 id="next-step-title" className="mt-2 text-[var(--text-xl)] font-bold text-brand-900">
-        {nextStep.title}
-      </h2>
-      <p className="mt-2 text-sm leading-[var(--leading-relaxed)] text-brand-700">
-        {nextStep.description}
-      </p>
-      <Link
-        href={nextStep.href}
-        className="mt-4 inline-flex min-h-[44px] items-center rounded-[var(--radius-button)] bg-brand-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-800 focus-visible:shadow-[var(--ring-focus)]"
+      {/* Zone 1 — Tu estado (MAX visual weight) */}
+      <article
+        data-testid="home-state-card"
+        className="rounded-[var(--radius-card)] border-2 border-[var(--color-brand-300)] bg-[var(--color-brand-50)] p-6 shadow-[var(--shadow-elevated)]"
       >
-        Ir ahora →
-      </Link>
+        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-accent-600)]">
+          Tu estado
+        </p>
+        <h2
+          id="home-hero-title"
+          className="mt-2 text-[var(--text-2xl)] font-bold text-brand-900 tracking-tight"
+        >
+          {nextStep.title}
+        </h2>
+        <p className="mt-2 text-sm leading-[var(--leading-relaxed)] text-brand-700 max-w-2xl">
+          {nextStep.description}
+        </p>
+        <Link
+          href={nextStep.href}
+          className="mt-4 inline-flex min-h-[44px] items-center rounded-[var(--radius-button)] bg-[var(--color-brand-900)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-brand-800)] focus-visible:shadow-[var(--ring-focus)]"
+        >
+          {nextStep.kind === "diagnostic" ? "Hacer diagnóstico →" : "Continuar →"}
+        </Link>
+      </article>
+
+      {/* Zone 2 — Tu camino (MEDIUM visual weight), embedded under the hero */}
+      {nextStep.roadmapSkills.length > 0 && (
+        <article
+          aria-labelledby="home-roadmap-title"
+          className="rounded-[var(--radius-card)] border border-brand-200 bg-white p-5 shadow-[var(--shadow-card)]"
+        >
+          <div className="mb-4 flex items-baseline justify-between gap-3 flex-wrap">
+            <h3
+              id="home-roadmap-title"
+              className="text-sm font-semibold uppercase tracking-wide text-brand-700"
+            >
+              Tu camino
+            </h3>
+            {nextStep.diagnosticSummary && (
+              <span className="text-xs text-brand-500">
+                Diagnóstico: {nextStep.diagnosticSummary.weakSkills} de{" "}
+                {nextStep.diagnosticSummary.totalSkills} habilidades por
+                reforzar
+              </span>
+            )}
+          </div>
+          <SkillRoadmap
+            skills={nextStep.roadmapSkills}
+            nextSkillId={nextStep.skillId}
+          />
+        </article>
+      )}
     </section>
   );
 }

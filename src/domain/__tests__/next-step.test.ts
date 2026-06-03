@@ -209,3 +209,81 @@ describe("deriveHomeNextStep", () => {
     expect(nextStep.href).toBe("/practice?skill=mat.u1.conjuntos_numericos");
   });
 });
+
+describe("deriveHomeNextStep — roadmap & diagnostic summary", () => {
+  it("always returns a roadmap with all 4 pilot skills in order, even with no attempts", () => {
+    const nextStep = deriveHomeNextStep(progress({}), readySkills);
+
+    expect(nextStep.roadmapSkills).toHaveLength(4);
+    expect(nextStep.roadmapSkills.map((s) => s.skillId)).toEqual([
+      "mat.u1.conjuntos_numericos",
+      "mat.u1.reales_operaciones",
+      "mat.u1.potencias_raices",
+      "mat.u1.intervalos",
+    ]);
+    // No attempts yet → all 'not-started'
+    expect(nextStep.roadmapSkills.every((s) => s.masteryLevel === "not-started")).toBe(true);
+  });
+
+  it("classifies each pilot skill's mastery level from progress", () => {
+    const nextStep = deriveHomeNextStep(
+      progress({
+        // 5 correct out of 5 for conjuntos_numericos → mastered
+        attempts: [
+          { exerciseId: "ex-1", skillId: "mat.u1.conjuntos_numericos", correct: true, answeredAt: "2026-06-01T00:00:00.000Z" },
+          { exerciseId: "ex-2", skillId: "mat.u1.conjuntos_numericos", correct: true, answeredAt: "2026-06-01T00:00:01.000Z" },
+          { exerciseId: "ex-3", skillId: "mat.u1.conjuntos_numericos", correct: true, answeredAt: "2026-06-01T00:00:02.000Z" },
+          { exerciseId: "ex-4", skillId: "mat.u1.conjuntos_numericos", correct: true, answeredAt: "2026-06-01T00:00:03.000Z" },
+          { exerciseId: "ex-5", skillId: "mat.u1.conjuntos_numericos", correct: true, answeredAt: "2026-06-01T00:00:04.000Z" },
+        ],
+        accuracyBySkill: { "mat.u1.conjuntos_numericos": 1 },
+        trendBySkill: { "mat.u1.conjuntos_numericos": "stable" },
+      }),
+      readySkills
+    );
+
+    const cn = nextStep.roadmapSkills.find(
+      (s) => s.skillId === "mat.u1.conjuntos_numericos"
+    );
+    expect(cn?.masteryLevel).toBe("mastered");
+    expect(cn?.accuracy).toBe(1);
+
+    // The other three are still untouched
+    const others = nextStep.roadmapSkills.filter(
+      (s) => s.skillId !== "mat.u1.conjuntos_numericos"
+    );
+    expect(others.every((s) => s.masteryLevel === "not-started")).toBe(true);
+  });
+
+  it("returns diagnosticSummary as null when no diagnostic has been completed", () => {
+    const nextStep = deriveHomeNextStep(progress({}), readySkills);
+    expect(nextStep.diagnosticSummary).toBeNull();
+  });
+
+  it("returns diagnosticSummary with weakSkills count when a diagnostic exists", () => {
+    const storedDiagnostic = {
+      completedAt: "2026-06-01T10:00:00.000Z",
+      version: 1 as const,
+      estimates: [
+        { skillId: "mat.u1.conjuntos_numericos" as const, accuracy: 0.4, attempts: 2, provisional: true as const, errorTags: [] },
+        { skillId: "mat.u1.reales_operaciones" as const, accuracy: 0.6, attempts: 2, provisional: true as const, errorTags: [] },
+        { skillId: "mat.u1.potencias_raices" as const, accuracy: 0.9, attempts: 2, provisional: true as const, errorTags: [] },
+      ],
+      suggestions: [
+        { skillId: "mat.u1.conjuntos_numericos" as const, accuracy: 0.4, errorTags: [] },
+        { skillId: "mat.u1.reales_operaciones" as const, accuracy: 0.6, errorTags: [] },
+      ],
+    };
+    const nextStep = deriveHomeNextStep(
+      progress({ diagnosticResult: storedDiagnostic }),
+      readySkills
+    );
+
+    expect(nextStep.diagnosticSummary).not.toBeNull();
+    expect(nextStep.diagnosticSummary?.completedAt).toBe("2026-06-01T10:00:00.000Z");
+    // 2 skills below 0.7 in the stored estimate
+    expect(nextStep.diagnosticSummary?.weakSkills).toBe(2);
+    // 3 unique skills estimated
+    expect(nextStep.diagnosticSummary?.totalSkills).toBe(3);
+  });
+});

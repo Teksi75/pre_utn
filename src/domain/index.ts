@@ -129,8 +129,13 @@ export type {
   PracticeAttempt,
   PracticeProgress,
   Trend,
+  MasteryLevel,
 } from "./progress/index";
-export { computeAccuracy, computeTrend } from "./progress/index";
+export {
+  computeAccuracy,
+  computeTrend,
+  computeMasteryLevel,
+} from "./progress/index";
 
 // ── Readiness ───────────────────────────────────────────────────────────────
 

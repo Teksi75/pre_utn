@@ -43,6 +43,27 @@ export interface PracticeProgress {
 export type Trend = "improving" | "stable" | "needs-review";
 
 /**
+ * Coarse mastery classification used by the home roadmap.
+ * - "not-started" → no attempts yet for the skill
+ * - "learning" → attempts exist but accuracy/trend are below promotion bars
+ * - "practicing" → accuracy >= 0.7 and trend is "improving"
+ * - "review" → trend is "needs-review" — the student is regressing
+ * - "mastered" → accuracy >= 0.8 with 5+ attempts and trend is not "needs-review"
+ */
+export type MasteryLevel =
+  | "not-started"
+  | "learning"
+  | "practicing"
+  | "review"
+  | "mastered";
+
+/** Thresholds used by `computeMasteryLevel`. Pure constants — kept here so
+ *  tests can assert against them if needed. */
+const MASTERY_ACCURACY_THRESHOLD = 0.8;
+const MASTERY_MIN_ATTEMPTS = 5;
+const PRACTICING_ACCURACY_THRESHOLD = 0.7;
+
+/**
  * Compute accuracy for a given skill from a list of attempts.
  * Returns 0 if no matching attempts exist.
  *
@@ -86,4 +107,52 @@ export function computeTrend(
   if (secondCorrect > firstCorrect) return "improving";
   if (secondCorrect < firstCorrect) return "needs-review";
   return "stable";
+}
+
+/**
+ * Compute the coarse mastery level for a single skill from the full
+ * practice progress state. Pure function — no I/O.
+ *
+ * The function reads `accuracyBySkill` and `trendBySkill` as pre-computed
+ * summaries; callers are expected to keep those in sync via `addAttempt`
+ * (or equivalent). Missing entries are treated as 0 / "stable".
+ *
+ * The order of checks matters and is the documented contract:
+ *   1. No attempts → "not-started"
+ *   2. trend === "needs-review" wins over accuracy (a regressing student
+ *      should not be marked "practicing" or "mastered" just because their
+ *      lifetime average is high)
+ *   3. High accuracy + 5+ attempts + non-regressing trend → "mastered"
+ *   4. Decent accuracy + improving trend → "practicing"
+ *   5. Otherwise → "learning"
+ *
+ * @param skillId - The skill to classify
+ * @param progress - Full practice progress (only accuracy/trend maps are read)
+ * @returns MasteryLevel for the given skill
+ */
+export function computeMasteryLevel(
+  skillId: string,
+  progress: PracticeProgress
+): MasteryLevel {
+  const attempts = progress.attempts.filter((a) => a.skillId === skillId);
+  if (attempts.length === 0) return "not-started";
+
+  const accuracy = progress.accuracyBySkill[skillId] ?? 0;
+  const trend = (progress.trendBySkill[skillId] ?? "stable") as Trend;
+
+  // Regression wins over accuracy — a downward trend always surfaces.
+  if (trend === "needs-review") return "review";
+
+  if (
+    accuracy >= MASTERY_ACCURACY_THRESHOLD &&
+    attempts.length >= MASTERY_MIN_ATTEMPTS
+  ) {
+    return "mastered";
+  }
+
+  if (accuracy >= PRACTICING_ACCURACY_THRESHOLD && trend === "improving") {
+    return "practicing";
+  }
+
+  return "learning";
 }
