@@ -61,6 +61,9 @@ describe("practice-progress localStorage adapter", () => {
         ],
         accuracyBySkill: { "mat.u1.reales_operaciones": 1 },
         trendBySkill: { "mat.u1.reales_operaciones": "improving" },
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
       };
       localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(stored));
 
@@ -87,6 +90,83 @@ describe("practice-progress localStorage adapter", () => {
       const result = loadProgress();
       expect(result.attempts).toEqual([]);
     });
+
+    it("returns defaults for new fields when loading old (pre-WU5) data", () => {
+      // Simulate data saved before WU 5: only the three original fields
+      const oldData = {
+        attempts: [
+          {
+            exerciseId: "ex.u1.01",
+            skillId: "mat.u1.reales_operaciones",
+            correct: true,
+            answeredAt: "2024-12-01T00:00:00.000Z",
+          },
+        ],
+        accuracyBySkill: { "mat.u1.reales_operaciones": 1 },
+        trendBySkill: { "mat.u1.reales_operaciones": "stable" },
+      };
+      localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(oldData));
+
+      const result = loadProgress();
+
+      // Original fields preserved
+      expect(result.attempts).toHaveLength(1);
+      expect(result.accuracyBySkill["mat.u1.reales_operaciones"]).toBe(1);
+      expect(result.trendBySkill["mat.u1.reales_operaciones"]).toBe("stable");
+
+      // New fields defaulted
+      expect(result.lastPracticedBySkill).toEqual({});
+      expect(result.diagnosticResult).toBeNull();
+      expect(result.studyPlan).toBeNull();
+    });
+
+    it("preserves stored values for new fields when present", () => {
+      const storedDiagnostic = {
+        completedAt: "2025-06-01T10:00:00.000Z",
+        estimates: [],
+        suggestions: [],
+        version: 1 as const,
+      };
+      const full: PracticeProgress = {
+        attempts: [],
+        accuracyBySkill: {},
+        trendBySkill: {},
+        lastPracticedBySkill: { "mat.u1.reales_operaciones": "2025-06-01" },
+        diagnosticResult: storedDiagnostic,
+        studyPlan: null,
+      };
+      localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(full));
+
+      const result = loadProgress();
+
+      expect(result.lastPracticedBySkill["mat.u1.reales_operaciones"]).toBe(
+        "2025-06-01"
+      );
+      expect(result.diagnosticResult).toEqual(storedDiagnostic);
+      expect(result.studyPlan).toBeNull();
+    });
+
+    it("keeps diagnosticResult and studyPlan across round-trip even with no attempts", () => {
+      const diag = {
+        completedAt: "2025-06-01T10:00:00.000Z",
+        estimates: [],
+        suggestions: [],
+        version: 1 as const,
+      };
+      const initial: PracticeProgress = {
+        attempts: [],
+        accuracyBySkill: {},
+        trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: diag,
+        studyPlan: null,
+      };
+
+      saveProgress(initial);
+      const loaded = loadProgress();
+
+      expect(loaded.diagnosticResult).toEqual(diag);
+    });
   });
 
   describe("saveProgress", () => {
@@ -95,6 +175,9 @@ describe("practice-progress localStorage adapter", () => {
         attempts: [],
         accuracyBySkill: {},
         trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
       };
 
       saveProgress(progress);
@@ -118,6 +201,9 @@ describe("practice-progress localStorage adapter", () => {
         ],
         accuracyBySkill: { "mat.u1.intervalos": 0 },
         trendBySkill: { "mat.u1.intervalos": "needs-review" },
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
       };
 
       saveProgress(progress);
@@ -154,6 +240,9 @@ describe("practice-progress localStorage adapter", () => {
         ],
         accuracyBySkill: { "mat.u1.reales_operaciones": 1 },
         trendBySkill: { "mat.u1.reales_operaciones": "stable" },
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
       };
       saveProgress(existing);
 
@@ -174,6 +263,9 @@ describe("practice-progress localStorage adapter", () => {
         attempts: [],
         accuracyBySkill: {},
         trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
       });
 
       const updated = addAttempt({
@@ -193,6 +285,9 @@ describe("practice-progress localStorage adapter", () => {
         attempts: [],
         accuracyBySkill: {},
         trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
       });
 
       addAttempt({
@@ -204,6 +299,101 @@ describe("practice-progress localStorage adapter", () => {
 
       const loaded = loadProgress();
       expect(loaded.attempts).toHaveLength(1);
+    });
+
+    it("stores difficulty in the persisted attempt", () => {
+      saveProgress({
+        attempts: [],
+        accuracyBySkill: {},
+        trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      });
+
+      addAttempt({
+        exerciseId: "ex.u1.01",
+        skillId: "mat.u1.reales_operaciones",
+        correct: true,
+        answeredAt: "2025-01-01T00:00:00.000Z",
+        difficulty: 4,
+      });
+
+      const loaded = loadProgress();
+      expect(loaded.attempts[0].difficulty).toBe(4);
+    });
+
+    it("updates lastPracticedBySkill with the attempt's answeredAt", () => {
+      saveProgress({
+        attempts: [],
+        accuracyBySkill: {},
+        trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      });
+
+      const updated = addAttempt({
+        exerciseId: "ex.u1.01",
+        skillId: "mat.u1.reales_operaciones",
+        correct: true,
+        answeredAt: "2025-03-15T08:00:00.000Z",
+        difficulty: 2,
+      });
+
+      expect(updated.lastPracticedBySkill["mat.u1.reales_operaciones"]).toBe(
+        "2025-03-15T08:00:00.000Z"
+      );
+    });
+
+    it("overwrites lastPracticedBySkill on subsequent attempts for the same skill", () => {
+      saveProgress({
+        attempts: [],
+        accuracyBySkill: {},
+        trendBySkill: {},
+        lastPracticedBySkill: { "mat.u1.reales_operaciones": "2025-01-01T00:00:00.000Z" },
+        diagnosticResult: null,
+        studyPlan: null,
+      });
+
+      const updated = addAttempt({
+        exerciseId: "ex.u1.02",
+        skillId: "mat.u1.reales_operaciones",
+        correct: false,
+        answeredAt: "2025-02-01T00:00:00.000Z",
+        difficulty: 3,
+      });
+
+      expect(updated.lastPracticedBySkill["mat.u1.reales_operaciones"]).toBe(
+        "2025-02-01T00:00:00.000Z"
+      );
+    });
+
+    it("preserves diagnosticResult and studyPlan when adding an attempt", () => {
+      const diag = {
+        completedAt: "2025-01-01T00:00:00.000Z",
+        estimates: [],
+        suggestions: [],
+        version: 1 as const,
+      };
+      saveProgress({
+        attempts: [],
+        accuracyBySkill: {},
+        trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: diag,
+        studyPlan: null,
+      });
+
+      const updated = addAttempt({
+        exerciseId: "ex.u1.01",
+        skillId: "mat.u1.reales_operaciones",
+        correct: true,
+        answeredAt: "2025-02-01T00:00:00.000Z",
+        difficulty: 1,
+      });
+
+      expect(updated.diagnosticResult).toEqual(diag);
     });
   });
 });

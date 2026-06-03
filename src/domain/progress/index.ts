@@ -4,21 +4,39 @@
  */
 
 import type { SkillId } from "../models/skill";
+import type { Difficulty } from "../models/exercise";
 
-/** A single practice attempt. */
+/**
+ * A single practice attempt.
+ *
+ * `difficulty` is optional for backward compatibility: attempts saved before
+ * WU 5 do not have this field, so loading them must still type-check.
+ * New attempts created via `addAttempt()` always include it.
+ */
 export interface PracticeAttempt {
   readonly exerciseId: string;
   readonly skillId: SkillId;
   readonly correct: boolean;
   readonly errorTag?: string;
   readonly answeredAt: string;
+  readonly difficulty?: Difficulty;
 }
 
-/** Full practice progress state. */
+/**
+ * Full practice progress state.
+ *
+ * The three new fields (lastPracticedBySkill, diagnosticResult, studyPlan)
+ * were added in WU 5 to support future features (skill mastery, difficulty
+ * tracking, study plans). Old persisted data is missing them — `loadProgress`
+ * in `src/lib/practice-progress.ts` provides defaults.
+ */
 export interface PracticeProgress {
   readonly attempts: readonly PracticeAttempt[];
   readonly accuracyBySkill: Record<string, number>;
   readonly trendBySkill: Record<string, "improving" | "stable" | "needs-review">;
+  readonly lastPracticedBySkill: Record<string, string>;
+  readonly diagnosticResult: import("../diagnostic/index").DiagnosticResult | null;
+  readonly studyPlan: import("../diagnostic/index").StudyPlan | null;
 }
 
 /** Trend classification. */

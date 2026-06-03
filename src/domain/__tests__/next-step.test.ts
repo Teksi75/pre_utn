@@ -14,6 +14,9 @@ function progress(overrides: Partial<PracticeProgress>): PracticeProgress {
     attempts: [],
     accuracyBySkill: {},
     trendBySkill: {},
+    lastPracticedBySkill: {},
+    diagnosticResult: null,
+    studyPlan: null,
     ...overrides,
   };
 }

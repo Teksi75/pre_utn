@@ -132,6 +132,7 @@ export function usePracticeFlow() {
             correct: result.correct,
             errorTag: result.errorTag,
             answeredAt: new Date().toISOString(),
+            difficulty: currentExercise.difficulty,
           });
         }
 

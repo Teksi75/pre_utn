@@ -29,6 +29,49 @@ export interface PracticeSuggestion {
   readonly errorTags: readonly string[];
 }
 
+/**
+ * Persisted diagnostic snapshot — what was measured when the user completed
+ * the diagnostic. Wraps the existing SkillEstimate / PracticeSuggestion so
+ * downstream code can stay consistent with the live diagnostic engine.
+ */
+export interface DiagnosticResult {
+  readonly completedAt: string; // ISO timestamp
+  readonly estimates: readonly SkillEstimate[];
+  readonly suggestions: readonly PracticeSuggestion[];
+  readonly version: 1;
+}
+
+/**
+ * Why a skill is queued in the study plan.
+ * - "diagnostic-weak": flagged by the diagnostic
+ * - "prerequisite-blocked": depends on a weak prerequisite
+ * - "not-attempted": never practiced
+ */
+export type SkillPriorityReason =
+  | "diagnostic-weak"
+  | "prerequisite-blocked"
+  | "not-attempted";
+
+/** A single prioritized skill entry in a study plan. */
+export interface SkillPriority {
+  readonly skillId: SkillId;
+  /** 1 = most urgent. */
+  readonly priority: number;
+  readonly reason: SkillPriorityReason;
+  /** Error tags that mark the weak concepts for this skill. */
+  readonly weakConcepts: readonly string[];
+}
+
+/**
+ * Study plan derived from a DiagnosticResult.
+ * Lets the UI plan future practice without re-running the diagnostic.
+ */
+export interface StudyPlan {
+  readonly createdAt: string; // ISO timestamp
+  readonly diagnosticResult: DiagnosticResult;
+  readonly skillPriorities: readonly SkillPriority[];
+}
+
 // ── Constants ────────────────────────────────────────────────────────────────
 
 const WEAK_THRESHOLD = 0.7;

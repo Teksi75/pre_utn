@@ -83,6 +83,10 @@ export type {
   DiagnosticSelection,
   SkillEstimate,
   PracticeSuggestion,
+  DiagnosticResult,
+  SkillPriority,
+  SkillPriorityReason,
+  StudyPlan,
 } from "./diagnostic/index";
 export {
   selectBalancedSet,
