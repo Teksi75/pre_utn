@@ -181,6 +181,7 @@ describe("getAccessibleSkills — accessibility rules", () => {
       accuracyBySkill: {
         "mat.u1.conjuntos_numericos": 0.9,
         "mat.u1.reales_operaciones": 0.85,
+        "mat.u1.potencias_raices": 0.85,
       },
     };
     const result = getAccessibleSkills(progress);
@@ -196,6 +197,7 @@ describe("getAccessibleSkills — accessibility rules", () => {
     expect(accessibleIds).toContain("mat.u1.intervalos");
     expect(accessibleIds).not.toContain("mat.u1.reales_operaciones");
     expect(accessibleIds).not.toContain("mat.u1.potencias_raices");
+    expect(accessibleIds).not.toContain("mat.u1.racionalizacion");
   });
 });
 

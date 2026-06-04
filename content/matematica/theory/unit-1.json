@@ -236,6 +236,118 @@
     ]
   },
   {
+    "id": "theory-racionalizacion",
+    "skillId": "mat.u1.racionalizacion",
+    "concepts": [
+      {
+        "id": "concept-que-es-racionalizar",
+        "title": "¿Qué significa racionalizar?",
+        "body": "Racionalizar un denominador es transformarlo para que NO quede ninguna raíz ni expresión con radicales. La fracción que se obtiene es EQUIVALENTE a la original: representa el mismo número real. Ejemplo: $\\frac{1}{\\sqrt{2}} = \\frac{\\sqrt{2}}{2}$ — el valor numérico es el mismo, pero el denominador pasó de $\\sqrt{2}$ a un entero."
+      },
+      {
+        "id": "concept-fraccion-equivalente",
+        "title": "Fracciones equivalentes",
+        "body": "Dos fracciones $\\frac{a}{b}$ y $\\frac{c}{d}$ son equivalentes cuando $a \\cdot d = b \\cdot c$. Esto significa que representan el mismo número racional. Si multiplicás numerador y denominador de $\\frac{a}{b}$ por el MISMO factor no nulo $\\frac{k}{k}$, obtenés una fracción equivalente. Racionalizar usa esta propiedad: elegís $k$ de manera que el denominador deje de tener raíces."
+      },
+      {
+        "id": "concept-multiplicar-num-y-den",
+        "title": "¿Por qué es válido multiplicar arriba y abajo por lo mismo?",
+        "body": "Multiplicar numerador y denominador por el mismo factor no nulo equivale a multiplicar la fracción por $\\frac{k}{k} = 1$. El valor de la expresión no cambia, porque multiplicar por 1 es la operación neutra. Esto se aplica siempre que el factor sea un número real distinto de cero, y se usa para 'limpiar' el denominador."
+      },
+      {
+        "id": "concept-caso-raiz-cuadrada",
+        "title": "Caso simple: raíz cuadrada en el denominador",
+        "body": "Cuando el denominador es $\\sqrt{a}$ con $a > 0$, multiplicás numerador y denominador por $\\sqrt{a}$. Por la propiedad de raíces: $\\sqrt{a} \\cdot \\sqrt{a} = \\sqrt{a^2} = a$. Así, la raíz desaparece del denominador. Ejemplo: $\\frac{1}{\\sqrt{2}} \\cdot \\frac{\\sqrt{2}}{\\sqrt{2}} = \\frac{\\sqrt{2}}{2}$."
+      },
+      {
+        "id": "concept-coeficiente-en-denominador",
+        "title": "Coeficiente en el denominador: $k\\sqrt{a}$",
+        "body": "Si el denominador es $k\\sqrt{a}$ con $k \\neq 0$, multiplicás por $\\frac{\\sqrt{a}}{\\sqrt{a}}$ igual que antes. El coeficiente $k$ se preserva y sólo desaparece la raíz. Ejemplo: $\\frac{5}{2\\sqrt{3}} \\cdot \\frac{\\sqrt{3}}{\\sqrt{3}} = \\frac{5\\sqrt{3}}{2 \\cdot 3} = \\frac{5\\sqrt{3}}{6}$. No dividas $5$ por $2$ antes de racionalizar: mantené el coeficiente entero hasta simplificar al final."
+      },
+      {
+        "id": "concept-raiz-de-indice-mayor",
+        "title": "Raíces de índice mayor: completar el exponente",
+        "body": "Si el denominador es $\\sqrt[n]{a^m}$ con $m < n$, multiplicás por $\\sqrt[n]{a^{n-m}}$. Así el radicando se convierte en $\\sqrt[n]{a^m \\cdot a^{n-m}} = \\sqrt[n]{a^n} = a$. Ejemplo: $\\frac{3}{\\sqrt[3]{2}} \\cdot \\frac{\\sqrt[3]{2^2}}{\\sqrt[3]{2^2}} = \\frac{3\\sqrt[3]{4}}{2}$."
+      },
+      {
+        "id": "concept-binomio-conjugado",
+        "title": "Caso de binomio con raíz: el conjugado",
+        "body": "Cuando el denominador es un binomio con una raíz, como $\\sqrt{a} \\pm b$, multiplicás por su conjugado $\\sqrt{a} \\mp b$ (cambiás el signo del segundo término). El producto $(\\sqrt{a} + b)(\\sqrt{a} - b) = a - b^2$ es una DIFERENCIA DE CUADRADOS, así que la raíz desaparece. Ejemplo: $\\frac{1}{\\sqrt{5} - 2} \\cdot \\frac{\\sqrt{5} + 2}{\\sqrt{5} + 2} = \\frac{\\sqrt{5} + 2}{5 - 4} = \\sqrt{5} + 2$."
+      },
+      {
+        "id": "concept-diferencia-de-cuadrados",
+        "title": "La identidad $(a+b)(a-b) = a^2 - b^2$",
+        "body": "Esta identidad es la que vuelve útil al conjugado. Aplicada a un binomio con raíz: $(\\sqrt{a} + b)(\\sqrt{a} - b) = (\\sqrt{a})^2 - b^2 = a - b^2$. Como $a$ y $b$ son números positivos, $a - b^2$ es un número real SIN raíz. Por eso el conjugado es el factor racionalizante clásico para denominadores binomios con radicales."
+      },
+      {
+        "id": "concept-binomio-doble-conjugado",
+        "title": "Conjugado con dos raíces: $\\sqrt{a} \\pm \\sqrt{b}$",
+        "body": "Si el denominador es $\\sqrt{a} + \\sqrt{b}$, multiplicás por $\\sqrt{a} - \\sqrt{b}$ (cambio de signo de UNA sola raíz, no de ambas). Aplicando la diferencia de cuadrados: $(\\sqrt{a} + \\sqrt{b})(\\sqrt{a} - \\sqrt{b}) = a - b$, que es un número entero. Ejemplo: $\\frac{2}{\\sqrt{3} + \\sqrt{2}} \\cdot \\frac{\\sqrt{3} - \\sqrt{2}}{\\sqrt{3} - \\sqrt{2}} = \\frac{2(\\sqrt{3} - \\sqrt{2})}{3 - 2} = 2(\\sqrt{3} - \\sqrt{2})$."
+      },
+      {
+        "id": "concept-error-multiplicar-solo-denominador",
+        "title": "Error frecuente: multiplicar sólo el denominador",
+        "body": "Multiplicar SOLO el denominador por un factor cambia el valor de la fracción, y por lo tanto la respuesta deja de ser equivalente. La fracción resultante es distinta y NO es la expresión racionalizada. Regla: si multiplicás abajo por $k$, también multiplicás arriba por el MISMO $k$. La única excepción válida es usar $k = 1$ (no hace nada)."
+      },
+      {
+        "id": "concept-error-exponente-negativo",
+        "title": "Advertencia: no usar exponentes negativos como atajo",
+        "body": "Escribir $\\frac{1}{\\sqrt{2}}$ como $\\sqrt{2}^{-1}$ es algebraicamente correcto, pero NO es racionalizar: el denominador sigue teniendo una raíz, sólo 'se disimula' moviéndola al numerador. Racionalizar significa que el denominador NO contiene ninguna raíz. Reescribir con exponentes negativos no cumple el objetivo del ejercicio."
+      },
+      {
+        "id": "concept-cuando-simplificar",
+        "title": "Cuándo simplificar el resultado",
+        "body": "Después de racionalizar, conviene simplificar: cancelar factores comunes, racionalizar coeficientes y escribir el resultado en su forma más simple. Ejemplo: $\\frac{6\\sqrt{2}}{4} = \\frac{3\\sqrt{2}}{2}$ (se divide numerador y denominador por 2). No se considera racionalizado un resultado como $\\frac{2\\sqrt{6}}{\\sqrt{6}}$."
+      },
+      {
+        "id": "concept-cierre-racionalizacion",
+        "title": "Lo que tenés que dominar antes de practicar",
+        "body": "Antes de pasar a práctica tenés que: identificar el factor racionalizante correcto para cada tipo de denominador (raíz cuadrada, raíz de índice mayor, binomio con raíz), multiplicar numerador y denominador por ESE factor (no por otro), distribuir el producto en el numerador cuando es un binomio, y simplificar el resultado. Atención a los dos errores frecuentes: multiplicar sólo el denominador y 'esconder' la raíz con exponente negativo."
+      }
+    ],
+    "notation": [
+      "$\\frac{1}{\\sqrt{a}} = \\frac{\\sqrt{a}}{a}$ para $a > 0$",
+      "$\\frac{1}{k\\sqrt{a}} = \\frac{\\sqrt{a}}{k \\cdot a}$ para $k \\neq 0$, $a > 0$",
+      "$\\frac{1}{\\sqrt[n]{a^m}} = \\frac{\\sqrt[n]{a^{n-m}}}{a}$ con $n > m$",
+      "$\\frac{1}{\\sqrt{a} \\pm b} = \\frac{\\sqrt{a} \\mp b}{a - b^2}$ con $a > 0$, $b \\neq \\pm\\sqrt{a}$",
+      "$\\frac{1}{\\sqrt{a} \\pm \\sqrt{b}} = \\frac{\\sqrt{a} \\mp \\sqrt{b}}{a - b}$ con $a \\neq b$",
+      "$(a+b)(a-b) = a^2 - b^2$"
+    ],
+    "commonMistakes": [
+      "Multiplicar sólo el denominador por el factor: cambia el valor de la fracción",
+      "Elegir el conjugado con el mismo signo en lugar del opuesto: $(\\sqrt{a}+b)(\\sqrt{a}+b)$ no elimina la raíz",
+      "Invertir los signos al multiplicar: $\\frac{1}{\\sqrt{2}} = \\frac{\\sqrt{2}}{2}$, no $\\frac{-\\sqrt{2}}{-2}$ (¡son lo mismo, pero por la razón correcta!)",
+      "Esconder la raíz con exponente negativo: $\\sqrt{2}^{-1}$ no es racionalizar",
+      "Simplificar coeficientes antes de racionalizar: $\\frac{5}{2\\sqrt{3}} \\neq \\frac{5/2}{\\sqrt{3}}$",
+      "Distribuir mal en el numerador: $2(\\sqrt{3} - \\sqrt{2}) = 2\\sqrt{3} - 2\\sqrt{2}$, no $\\sqrt{3} - 2\\sqrt{2}$",
+      "Olvidar distribuir el numerador al multiplicar por el conjugado: $\\frac{2}{\\sqrt{3}+\\sqrt{2}} \\cdot \\frac{\\sqrt{3}-\\sqrt{2}}{\\sqrt{3}-\\sqrt{2}} = \\frac{2(\\sqrt{3}-\\sqrt{2})}{1}$, no $\\frac{2}{1}$"
+    ],
+    "practicePrompts": [
+      "Elegir el factor racionalizante correcto para un denominador con raíz cuadrada",
+      "Elegir el factor racionalizante correcto para un binomio con raíz (conjugado)",
+      "Racionalizar $\\frac{1}{\\sqrt{2}}$ y simplificar",
+      "Racionalizar $\\frac{5}{2\\sqrt{3}}$ preservando el coeficiente",
+      "Racionalizar $\\frac{3}{\\sqrt[3]{2}}$ completando el exponente",
+      "Racionalizar $\\frac{1}{\\sqrt{5} - 2}$ usando el conjugado",
+      "Racionalizar $\\frac{2}{\\sqrt{3} + \\sqrt{2}}$ distribuyendo el numerador",
+      "Detectar el paso incorrecto en un procedimiento de racionalización"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.2 Racionalización de denominadores",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar el procedimiento de racionalización: equivalencia de fracciones, factor racionalizante, conjugado y simplificación"
+      },
+      {
+        "path": "material_canonico/Matemática/RESOLUCIÓN DE EJERCICIOS SEMINARIO UNIVERSITARIO MATEMÁTICA.pdf",
+        "section": "Ejercicios resueltos de racionalización",
+        "sourceUse": "reinforcement",
+        "pedagogicalIntent": "Reforzar el procedimiento con los casos típicos: raíz simple, coeficiente en el denominador, raíz de índice mayor, binomio con conjugado"
+      }
+    ]
+  },
+  {
     "id": "theory-potencias-raices",
     "skillId": "mat.u1.potencias_raices",
     "concepts": [

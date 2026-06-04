@@ -33,6 +33,86 @@ const TAXONOMY: readonly ErrorTag[] = [
     ],
   },
   {
+    id: "u1_rac_multiplica_solo_denominador",
+    unit: 1,
+    description:
+      "Error al racionalizar: multiplica solo el denominador por el factor racionalizante, dejando el numerador sin modificar. Esto cambia el valor de la fracción y produce un resultado no equivalente.",
+    examples: [
+      "Racionalizar 1/√2 como √2/√4 (multiplica √2 sólo abajo) en vez de multiplicar también arriba",
+      "Para 5/(2√3), multiplicar abajo por √3 y dejar 5 arriba sin distribuir",
+    ],
+  },
+  {
+    id: "u1_rac_factor_incorrecto",
+    unit: 1,
+    description:
+      "Error al racionalizar: elige un factor racionalizante que no cancela la raíz del denominador, o que cancela algo que no debía cancelar (como el coeficiente entero).",
+    examples: [
+      "Multiplicar 1/√2 por 2/2 pensando que '2' es el factor racionalizante",
+      "Para 1/√[3]{2}, multiplicar por √[3]{2} en vez de √[3]{4} (no completa el cubo)",
+    ],
+  },
+  {
+    id: "u1_rac_conjugado_incorrecto",
+    unit: 1,
+    description:
+      "Error al racionalizar binomios: elige un conjugado con el mismo signo en vez del opuesto, o cambia el signo de las dos raíces en lugar de una sola. El producto con mismo signo NO es diferencia de cuadrados.",
+    examples: [
+      "Para 1/(√5 - 2), multiplicar por (√5 - 2)/(√5 - 2) (mismo signo) en vez de (√5 + 2)/(√5 + 2)",
+      "Para 2/(√3 + √2), multiplicar por -(√3 - √2) en vez de (√3 - √2)",
+    ],
+  },
+  {
+    id: "u1_rac_signo_conjugado",
+    unit: 1,
+    description:
+      "Error al racionalizar: invierte los signos del numerador y del denominador de manera inconsistente al multiplicar por el conjugado, perdiendo la equivalencia de la fracción.",
+    examples: [
+      "Racionalizar 1/(√2 - 1) y obtener -(√2 + 1)/-(2 - 1) (cambia signos innecesariamente)",
+      "Aplicar cambio de signo al numerador del conjugado cuando no corresponde",
+    ],
+  },
+  {
+    id: "u1_rac_no_simplifica",
+    unit: 1,
+    description:
+      "Error al racionalizar: obtiene una respuesta con denominador racionalizado pero no simplifica el resultado, dejando factores comunes sin cancelar o raíces anidadas innecesarias.",
+    examples: [
+      "Racionalizar 6/√2 como (6√2)/2 en vez de simplificar a 3√2",
+      "Dejar (5√3)/10 sin simplificar a √3/2",
+    ],
+  },
+  {
+    id: "u1_rac_confunde_raiz_potencia",
+    unit: 1,
+    description:
+      "Error al racionalizar raíces de índice mayor: confunde raíz con potencia y aplica mal la regla de completar el exponente. Trata √[n]{a^m} como a^{m/n} o a^{n/m} sin operar correctamente.",
+    examples: [
+      "Racionalizar 1/√[3]{2} usando √[3]{2} en vez de √[3]{4} porque '2^1 = 2 ya está'",
+      "Pensar que √[3]{2^2} = (√[3]{2})^2 = 2 (no aplica distributiva a la raíz)",
+    ],
+  },
+  {
+    id: "u1_rac_usa_exponente_negativo",
+    unit: 1,
+    description:
+      "Error al racionalizar: reescribe 1/√a como √a^{-1} o a^{-1/2} creyendo que ya racionalizó. El denominador sigue teniendo una raíz, sólo se la 'esconde' en el numerador. Esto NO cumple el objetivo de racionalizar.",
+    examples: [
+      "Racionalizar 1/√2 como (√2)^{-1} o 2^{-1/2}",
+      "Creer que x^{-1} = x y entonces 'el denominador ya no tiene raíz'",
+    ],
+  },
+  {
+    id: "u1_rac_pierde_equivalencia",
+    unit: 1,
+    description:
+      "Error al racionalizar: aplica operaciones que pierden la equivalencia entre la fracción original y la respuesta, típicamente al distribuir o simplificar incorrectamente el numerador luego de multiplicar por el conjugado.",
+    examples: [
+      "Racionalizar 2/(√3 + √2) y obtener √3 - √2 (pierde el factor 2 al distribuir)",
+      "Racionalizar 1/(√5 - 2) y obtener (√5 + 2)/(-1) en vez de √5 + 2",
+    ],
+  },
+  {
     id: "u1_error_intervalo",
     unit: 1,
     description:

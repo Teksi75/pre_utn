@@ -23,6 +23,11 @@ export const PILOT_SKILLS: readonly PilotSkill[] = [
     label: "Potencias y raíces",
   },
   {
+    skillId: "mat.u1.racionalizacion",
+    unitKey: "unit-1",
+    label: "Racionalización de denominadores",
+  },
+  {
     skillId: "mat.u1.intervalos",
     unitKey: "unit-1",
     label: "Intervalos",

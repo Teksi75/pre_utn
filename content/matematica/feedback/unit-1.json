@@ -160,5 +160,53 @@
     "type": "conceptual",
     "message": "Una raiz cuadrada exacta (de cuadrado perfecto) es racional: $\\sqrt{9} = 3$, $\\sqrt{16} = 4$, $\\sqrt{1/4} = 1/2$. Solo las raices NO exactas ($\\sqrt{2}$, $\\sqrt{3}$, $\\sqrt{5}$) son irracionales.",
     "recoveryTarget": "theory-conjuntos-numericos"
+  },
+  {
+    "errorTag": "u1_rac_multiplica_solo_denominador",
+    "type": "corrective",
+    "message": "Multiplicar solo el denominador por el factor racionalizante cambia el valor de la fraccion. Para racionalizar, multiplica numerador y denominador por el MISMO factor: asi multiplicas la fraccion por 1 y se mantiene la equivalencia.",
+    "recoveryTarget": "theory-racionalizacion"
+  },
+  {
+    "errorTag": "u1_rac_factor_incorrecto",
+    "type": "corrective",
+    "message": "El factor racionalizante tiene que cancelar la raiz del denominador. Para una raiz cuadrada simple, es la misma raiz. Para una raiz n-esima $\\sqrt[n]{a^m}$, completa el exponente: $\\sqrt[n]{a^{n-m}}$. El coeficiente entero se preserva.",
+    "recoveryTarget": "theory-racionalizacion"
+  },
+  {
+    "errorTag": "u1_rac_conjugado_incorrecto",
+    "type": "corrective",
+    "message": "El conjugado cambia el signo del SEGUNDO termino: si el denominador es $a - b$, el conjugado es $a + b$. Si son dos raices $a + b$, cambia el signo de UNA sola, no de las dos. Solo asi se aplica la diferencia de cuadrados $(a+b)(a-b)=a^2-b^2$.",
+    "recoveryTarget": "theory-racionalizacion"
+  },
+  {
+    "errorTag": "u1_rac_signo_conjugado",
+    "type": "corrective",
+    "message": "Al multiplicar por el conjugado, mantene los signos del numerador y del denominador consistentes. Multiplicar por el conjugado es multiplicar por 1: no cambia la fraccion, asi que no agregues ni quites signos fuera de ese factor.",
+    "recoveryTarget": "example-racionalizacion-4"
+  },
+  {
+    "errorTag": "u1_rac_no_simplifica",
+    "type": "procedural",
+    "message": "Despues de racionalizar, revisa si el resultado se puede simplificar: cancelar factores comunes entre numerador y denominador. Una respuesta correcta pero sin simplificar puede seguir valiendo, pero en examen se espera la forma reducida.",
+    "recoveryTarget": "example-racionalizacion-2"
+  },
+  {
+    "errorTag": "u1_rac_confunde_raiz_potencia",
+    "type": "conceptual",
+    "message": "Para racionalizar $\\sqrt[n]{a^m}$ con $m < n$, multiplica por $\\sqrt[n]{a^{n-m}}$: asi $m + (n-m) = n$ y la raiz n-esima desaparece. No confundas raiz con potencia: $\\sqrt[3]{a^2} \\neq a^{2/3}$ en este contexto, lo que importa es completar el exponente.",
+    "recoveryTarget": "example-racionalizacion-3"
+  },
+  {
+    "errorTag": "u1_rac_usa_exponente_negativo",
+    "type": "corrective",
+    "message": "Reescribir $\\frac{1}{\\sqrt{a}}$ como $a^{-1/2}$ o $\\sqrt{a}^{-1}$ NO es racionalizar: el denominador sigue teniendo una raiz, solo se la 'esconde'. Racionalizar significa que el denominador no contiene ninguna raiz.",
+    "recoveryTarget": "theory-racionalizacion"
+  },
+  {
+    "errorTag": "u1_rac_pierde_equivalencia",
+    "type": "corrective",
+    "message": "Al multiplicar por el conjugado, distribui el numerador completo. Por ejemplo, $\\frac{2}{\\sqrt{3}+\\sqrt{2}} \\cdot \\frac{\\sqrt{3}-\\sqrt{2}}{\\sqrt{3}-\\sqrt{2}} = \\frac{2(\\sqrt{3}-\\sqrt{2})}{1} = 2\\sqrt{3}-2\\sqrt{2}$: el 2 se distribuye a AMBOS terminos del numerador, no se pierde.",
+    "recoveryTarget": "example-racionalizacion-5"
   }
 ]

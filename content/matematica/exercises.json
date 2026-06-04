@@ -189,12 +189,237 @@
   {
     "id": "ex.u1.racionalizacion.1",
     "skillId": "mat.u1.racionalizacion",
-    "type": "symbolic",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "category": "factor_racionalizante",
+    "tags": ["factor", "raiz_cuadrada"],
+    "prompt": "¿Cuál es el factor racionalizante correcto para $\\dfrac{1}{\\sqrt{2}}$?",
+    "expectedAnswer": "$\\dfrac{\\sqrt{2}}{\\sqrt{2}}$",
+    "options": [
+      "$\\dfrac{\\sqrt{2}}{\\sqrt{2}}$",
+      "$\\dfrac{2}{2}$",
+      "$\\dfrac{\\sqrt{2}}{2}$",
+      "$\\dfrac{-\\sqrt{2}}{-\\sqrt{2}}$"
+    ],
+    "commonErrorTags": ["u1_rac_factor_incorrecto"],
+    "pedagogicalNote": "Para una raíz cuadrada simple, el factor racionalizante es la misma raíz: $\\sqrt{2} \\cdot \\sqrt{2} = 2$. El factor $2/2$ no cancela la raíz, y $\\sqrt{2}/2$ no es un factor sino la respuesta ya racionalizada.",
+    "relatedTheoryIds": ["theory-racionalizacion"],
+    "relatedExampleIds": ["example-racionalizacion-1"]
+  },
+  {
+    "id": "ex.u1.racionalizacion.2",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "factor_racionalizante",
+    "tags": ["factor", "coeficiente"],
+    "prompt": "¿Cuál es el factor racionalizante correcto para $\\dfrac{5}{2\\sqrt{3}}$?",
+    "expectedAnswer": "$\\dfrac{\\sqrt{3}}{\\sqrt{3}}$",
+    "options": [
+      "$\\dfrac{\\sqrt{3}}{\\sqrt{3}}$",
+      "$\\dfrac{2}{2}$",
+      "$\\dfrac{2\\sqrt{3}}{2\\sqrt{3}}$",
+      "$\\dfrac{\\sqrt{6}}{\\sqrt{6}}$"
+    ],
+    "commonErrorTags": ["u1_rac_factor_incorrecto"],
+    "pedagogicalNote": "Hay que cancelar la raíz $\\sqrt{3}$, NO el coeficiente $2$. El factor correcto es $\\sqrt{3}$ arriba y abajo. El factor $2/2$ deja la raíz intacta y $\\sqrt{6}/\\sqrt{6}$ tampoco cancela la raíz original.",
+    "relatedTheoryIds": ["theory-racionalizacion"],
+    "relatedExampleIds": ["example-racionalizacion-2"]
+  },
+  {
+    "id": "ex.u1.racionalizacion.3",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "category": "racionalizacion_simple",
+    "tags": ["raiz_cuadrada", "resultado"],
+    "prompt": "¿Cuál es el resultado de racionalizar $\\dfrac{1}{\\sqrt{2}}$?",
+    "expectedAnswer": "$\\dfrac{\\sqrt{2}}{2}$",
+    "options": [
+      "$\\dfrac{\\sqrt{2}}{2}$",
+      "$\\dfrac{1}{2}$",
+      "$\\dfrac{\\sqrt{2}}{\\sqrt{2}}$",
+      "$2$"
+    ],
+    "commonErrorTags": ["u1_rac_no_simplifica"],
+    "pedagogicalNote": "Multiplicar arriba y abajo por $\\sqrt{2}$ da $\\sqrt{2}/(\\sqrt{2}\\cdot\\sqrt{2}) = \\sqrt{2}/2$. La opción $1/2$ ignora la raíz del numerador y $2$ sería si se hubiera multiplicado incorrectamente.",
+    "relatedTheoryIds": ["theory-racionalizacion"],
+    "relatedExampleIds": ["example-racionalizacion-1"]
+  },
+  {
+    "id": "ex.u1.racionalizacion.4",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "category": "racionalizacion_simple",
+    "tags": ["raiz_cuadrada", "resultado"],
+    "prompt": "¿Cuál es el resultado de racionalizar $\\dfrac{1}{\\sqrt{3}}$?",
+    "expectedAnswer": "$\\dfrac{\\sqrt{3}}{3}$",
+    "options": [
+      "$\\dfrac{\\sqrt{3}}{3}$",
+      "$\\dfrac{1}{3}$",
+      "$\\dfrac{\\sqrt{3}}{\\sqrt{3}}$",
+      "$\\sqrt{3}$"
+    ],
+    "commonErrorTags": ["u1_rac_no_simplifica", "u1_rac_multiplica_solo_denominador"],
+    "pedagogicalNote": "Multiplicar arriba y abajo por $\\sqrt{3}$ da $\\sqrt{3}/3$ (el denominador $\\sqrt{3}\\cdot\\sqrt{3} = 3$). La opción $1/3$ se obtendría si se hubiera multiplicado sólo el denominador.",
+    "relatedTheoryIds": ["theory-racionalizacion"],
+    "relatedExampleIds": ["example-racionalizacion-1"]
+  },
+  {
+    "id": "ex.u1.racionalizacion.5",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "racionalizacion_coeficiente",
+    "tags": ["coeficiente", "resultado"],
+    "prompt": "¿Cuál es el resultado de racionalizar $\\dfrac{5}{2\\sqrt{3}}$?",
+    "expectedAnswer": "$\\dfrac{5\\sqrt{3}}{6}$",
+    "options": [
+      "$\\dfrac{5\\sqrt{3}}{6}$",
+      "$\\dfrac{5\\sqrt{3}}{4}$",
+      "$\\dfrac{5}{6}$",
+      "$\\dfrac{5}{2}\\sqrt{3}$"
+    ],
+    "commonErrorTags": ["u1_rac_no_simplifica", "u1_rac_pierde_equivalencia"],
+    "pedagogicalNote": "Multiplicar arriba y abajo por $\\sqrt{3}$ da numerador $5\\sqrt{3}$ y denominador $2 \\cdot 3 = 6$. El coeficiente $2$ se preserva hasta el final. La opción $\\frac{5}{2}\\sqrt{3}$ es incorrecta porque no racionalizó.",
+    "relatedTheoryIds": ["theory-racionalizacion"],
+    "relatedExampleIds": ["example-racionalizacion-2"]
+  },
+  {
+    "id": "ex.u1.racionalizacion.6",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "racionalizacion_coeficiente",
+    "tags": ["coeficiente", "resultado"],
+    "prompt": "¿Cuál es el resultado de racionalizar $\\dfrac{4}{3\\sqrt{2}}$?",
+    "expectedAnswer": "$\\dfrac{4\\sqrt{2}}{6}$",
+    "options": [
+      "$\\dfrac{4\\sqrt{2}}{6}$",
+      "$\\dfrac{4\\sqrt{2}}{3}$",
+      "$\\dfrac{4}{6}$",
+      "$\\dfrac{2\\sqrt{2}}{3}$"
+    ],
+    "commonErrorTags": ["u1_rac_no_simplifica"],
+    "pedagogicalNote": "Multiplicar arriba y abajo por $\\sqrt{2}$ da numerador $4\\sqrt{2}$ y denominador $3 \\cdot 2 = 6$. Nota: $4\\sqrt{2}/6$ se podría simplificar a $2\\sqrt{2}/3$, pero en este ejercicio se acepta la forma intermedia. La opción $4/6$ ignora la raíz del numerador.",
+    "relatedTheoryIds": ["theory-racionalizacion"],
+    "relatedExampleIds": ["example-racionalizacion-2"]
+  },
+  {
+    "id": "ex.u1.racionalizacion.7",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "conjugado",
+    "tags": ["conjugado", "binomio"],
+    "prompt": "¿Cuál es el conjugado correcto para racionalizar $\\dfrac{1}{\\sqrt{5} - 2}$?",
+    "expectedAnswer": "$\\sqrt{5} + 2$",
+    "options": [
+      "$\\sqrt{5} + 2$",
+      "$\\sqrt{5} - 2$",
+      "$-\\sqrt{5} + 2$",
+      "$-\\sqrt{5} - 2$"
+    ],
+    "commonErrorTags": ["u1_rac_conjugado_incorrecto", "u1_rac_signo_conjugado"],
+    "pedagogicalNote": "El conjugado cambia el signo del segundo término. Para $\\sqrt{5} - 2$, el conjugado es $\\sqrt{5} + 2$. La opción $\\sqrt{5} - 2$ tiene el mismo signo, así que su producto NO es diferencia de cuadrados.",
+    "relatedTheoryIds": ["theory-racionalizacion"],
+    "relatedExampleIds": ["example-racionalizacion-4"]
+  },
+  {
+    "id": "ex.u1.racionalizacion.8",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "conjugado",
+    "tags": ["conjugado", "doble_raiz"],
+    "prompt": "¿Cuál es el conjugado correcto para racionalizar $\\dfrac{2}{\\sqrt{3} + \\sqrt{2}}$?",
+    "expectedAnswer": "$\\sqrt{3} - \\sqrt{2}$",
+    "options": [
+      "$\\sqrt{3} - \\sqrt{2}$",
+      "$\\sqrt{3} + \\sqrt{2}$",
+      "$-\\sqrt{3} - \\sqrt{2}$",
+      "$-\\sqrt{3} + \\sqrt{2}$"
+    ],
+    "commonErrorTags": ["u1_rac_conjugado_incorrecto", "u1_rac_signo_conjugado"],
+    "pedagogicalNote": "Con dos raíces, se cambia el signo de UNA sola. El conjugado de $\\sqrt{3} + \\sqrt{2}$ es $\\sqrt{3} - \\sqrt{2}$. Cambiar el signo de las dos ($-\\sqrt{3} - \\sqrt{2}$) cambia el signo del producto, no la estructura de la diferencia de cuadrados.",
+    "relatedTheoryIds": ["theory-racionalizacion"],
+    "relatedExampleIds": ["example-racionalizacion-5"]
+  },
+  {
+    "id": "ex.u1.racionalizacion.9",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "multiple-choice",
     "difficulty": 3,
-    "prompt": "Racionaliza 1/(√2 - 1)",
-    "expectedAnswer": "√2 + 1",
-    "commonErrorTags": ["u1_signo_racionalizacion"],
-    "pedagogicalNote": "Aplica el conjugado para eliminar la raíz del denominador."
+    "category": "binomio",
+    "tags": ["binomio", "resultado"],
+    "prompt": "¿Cuál es el resultado de racionalizar $\\dfrac{1}{\\sqrt{5} - 2}$?",
+    "expectedAnswer": "$\\sqrt{5} + 2$",
+    "options": [
+      "$\\sqrt{5} + 2$",
+      "$\\sqrt{5} - 2$",
+      "$\\dfrac{\\sqrt{5} + 2}{9}$",
+      "$\\dfrac{1}{5 - 4}$"
+    ],
+    "commonErrorTags": ["u1_rac_conjugado_incorrecto", "u1_rac_no_simplifica"],
+    "pedagogicalNote": "Multiplicar por el conjugado da numerador $1 \\cdot (\\sqrt{5} + 2) = \\sqrt{5} + 2$ y denominador $(\\sqrt{5})^2 - 2^2 = 5 - 4 = 1$. La opción $\\sqrt{5} - 2$ repite el denominador original (no racionalizó).",
+    "relatedTheoryIds": ["theory-racionalizacion"],
+    "relatedExampleIds": ["example-racionalizacion-4"]
+  },
+  {
+    "id": "ex.u1.racionalizacion.10",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "binomio",
+    "tags": ["binomio", "doble_raiz", "resultado"],
+    "prompt": "¿Cuál es el resultado de racionalizar $\\dfrac{2}{\\sqrt{3} + \\sqrt{2}}$?",
+    "expectedAnswer": "$2\\sqrt{3} - 2\\sqrt{2}$",
+    "options": [
+      "$2\\sqrt{3} - 2\\sqrt{2}$",
+      "$\\sqrt{3} - \\sqrt{2}$",
+      "$2(\\sqrt{3} - \\sqrt{2})$",
+      "$\\dfrac{2}{3 - 2}$"
+    ],
+    "commonErrorTags": ["u1_rac_pierde_equivalencia", "u1_rac_no_simplifica"],
+    "pedagogicalNote": "Multiplicar por $\\sqrt{3} - \\sqrt{2}$ da denominador $3 - 2 = 1$ y numerador $2(\\sqrt{3} - \\sqrt{2}) = 2\\sqrt{3} - 2\\sqrt{2}$. La opción $\\sqrt{3} - \\sqrt{2}$ perdió el factor $2$ al no distribuir. La forma $2(\\sqrt{3} - \\sqrt{2})$ también es correcta pero la consigna pide desarrollar.",
+    "relatedTheoryIds": ["theory-racionalizacion"],
+    "relatedExampleIds": ["example-racionalizacion-5"]
+  },
+  {
+    "id": "ex.u1.racionalizacion.11",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "error_deteccion",
+    "tags": ["error", "procedimiento"],
+    "prompt": "Un alumno dice: 'Para racionalizar $\\dfrac{1}{\\sqrt{2}}$, multiplico el denominador por $\\sqrt{2}$ y queda $\\dfrac{1}{2}$'. ¿Qué le decís?",
+    "expectedAnswer": "Multiplicá también el numerador por $\\sqrt{2}$ para mantener la equivalencia",
+    "options": [
+      "Multiplicá también el numerador por $\\sqrt{2}$ para mantener la equivalencia",
+      "El resultado es correcto, no hay nada que corregir",
+      "El factor tiene que ser $2$ en lugar de $\\sqrt{2}$",
+      "La respuesta es $\\sqrt{2}$, no $2$"
+    ],
+    "commonErrorTags": ["u1_rac_multiplica_solo_denominador", "u1_rac_pierde_equivalencia"],
+    "pedagogicalNote": "El error clásico: multiplicar sólo el denominador. Multiplicar $\\sqrt{2}$ abajo sin tocar arriba cambia el valor de la fracción. La respuesta correcta es $\\sqrt{2}/2$ (con el $\\sqrt{2}$ también en el numerador).",
+    "relatedTheoryIds": ["theory-racionalizacion"],
+    "relatedExampleIds": ["example-racionalizacion-1"]
+  },
+  {
+    "id": "ex.u1.racionalizacion.12",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "true-false",
+    "difficulty": 2,
+    "category": "error_deteccion",
+    "tags": ["error", "exponente_negativo"],
+    "prompt": "Verdadero o falso: 'Racionalizar $\\dfrac{1}{\\sqrt{2}}$ es lo mismo que escribirlo como $\\sqrt{2}^{-1}$'",
+    "expectedAnswer": "Falso",
+    "options": ["Verdadero", "Falso"],
+    "commonErrorTags": ["u1_rac_usa_exponente_negativo"],
+    "pedagogicalNote": "$\\sqrt{2}^{-1}$ es algebraicamente equivalente a $1/\\sqrt{2}$, pero NO está racionalizado: el denominador sigue teniendo una raíz, sólo se la 'escondió' en el numerador. Racionalizar significa que el denominador NO contiene raíces.",
+    "relatedTheoryIds": ["theory-racionalizacion"],
+    "relatedExampleIds": ["example-racionalizacion-1"]
   },
   {
     "id": "ex.u1.intervalos.1",

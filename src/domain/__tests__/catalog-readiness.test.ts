@@ -11,8 +11,9 @@ import { PILOT_SKILLS } from "../catalog/pilot-skills";
 const PILOT_SKILL_IDS = [
   "mat.u1.conjuntos_numericos",
   "mat.u1.reales_operaciones",
-  "mat.u1.intervalos",
   "mat.u1.potencias_raices",
+  "mat.u1.racionalizacion",
+  "mat.u1.intervalos",
 ] as const;
 
 describe("getSkillComponents", () => {
@@ -142,7 +143,6 @@ describe("pilot skill readiness integration", () => {
 describe("recommendation safety", () => {
   test("PILOT_SKILLS does not contain downstream not-ready skills", () => {
     const downstreamSkills = [
-      "mat.u1.racionalizacion",
       "mat.u1.logaritmos",
       "mat.u1.exponenciales",
       "mat.u1.complejos",
@@ -155,7 +155,6 @@ describe("recommendation safety", () => {
 
   test("not-ready downstream skills are not recommended via readiness", () => {
     const downstreamSkills = [
-      "mat.u1.racionalizacion",
       "mat.u1.logaritmos",
       "mat.u1.exponenciales",
       "mat.u1.complejos",

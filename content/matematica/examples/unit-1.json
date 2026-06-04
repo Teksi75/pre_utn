@@ -1,5 +1,112 @@
 [
   {
+    "id": "example-racionalizacion-1",
+    "skillId": "mat.u1.racionalizacion",
+    "problem": "Racionalizar el denominador de $\\dfrac{1}{\\sqrt{2}}$",
+    "steps": [
+      { "order": 1, "explanation": "El denominador es $\\sqrt{2}$ y queremos que desaparezca. Por la propiedad de raíces, $\\sqrt{2} \\cdot \\sqrt{2} = 2$ (un entero). Entonces el factor racionalizante es $\\sqrt{2}$." },
+      { "order": 2, "explanation": "Multiplicamos numerador y denominador por $\\sqrt{2}$: $\\dfrac{1}{\\sqrt{2}} \\cdot \\dfrac{\\sqrt{2}}{\\sqrt{2}}$. Esto es válido porque equivale a multiplicar la fracción por $1$." },
+      { "order": 3, "explanation": "En el denominador queda $\\sqrt{2} \\cdot \\sqrt{2} = 2$. En el numerador queda $1 \\cdot \\sqrt{2} = \\sqrt{2}$." },
+      { "order": 4, "explanation": "Resultado: $\\dfrac{\\sqrt{2}}{2}$. El denominador ya no tiene raíz, y el valor numérico es el mismo que $\\dfrac{1}{\\sqrt{2}}$." }
+    ],
+    "finalAnswer": "$\\dfrac{\\sqrt{2}}{2}$",
+    "pedagogicalNote": "Para una raíz cuadrada simple, el factor racionalizante es la misma raíz. La operación es válida porque equivale a multiplicar por $\\sqrt{2}/\\sqrt{2} = 1$.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.2 Racionalización: raíz cuadrada simple",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar el caso más simple de racionalización: denominador con una raíz cuadrada"
+      }
+    ]
+  },
+  {
+    "id": "example-racionalizacion-2",
+    "skillId": "mat.u1.racionalizacion",
+    "problem": "Racionalizar el denominador de $\\dfrac{5}{2\\sqrt{3}}$",
+    "steps": [
+      { "order": 1, "explanation": "El denominador es $2\\sqrt{3}$: tiene un coeficiente $2$ y una raíz $\\sqrt{3}$. El factor racionalizante tiene que cancelar la raíz, no el coeficiente: usamos $\\sqrt{3}$." },
+      { "order": 2, "explanation": "Multiplicamos arriba y abajo por $\\sqrt{3}$: $\\dfrac{5}{2\\sqrt{3}} \\cdot \\dfrac{\\sqrt{3}}{\\sqrt{3}}$." },
+      { "order": 3, "explanation": "En el denominador: $2\\sqrt{3} \\cdot \\sqrt{3} = 2 \\cdot 3 = 6$. En el numerador: $5 \\cdot \\sqrt{3} = 5\\sqrt{3}$." },
+      { "order": 4, "explanation": "Resultado: $\\dfrac{5\\sqrt{3}}{6}$. El coeficiente $2$ se preserva hasta el final, donde $\\sqrt{3} \\cdot \\sqrt{3} = 3$ se combina con él." }
+    ],
+    "finalAnswer": "$\\dfrac{5\\sqrt{3}}{6}$",
+    "pedagogicalNote": "Error frecuente: cancelar el coeficiente 2 con el 5 antes de racionalizar. La simplificación correcta se hace al final, no antes.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.2 Racionalización: coeficiente en el denominador",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Mostrar que el coeficiente se preserva y se combina con el resultado de la raíz al cuadrado"
+      }
+    ]
+  },
+  {
+    "id": "example-racionalizacion-3",
+    "skillId": "mat.u1.racionalizacion",
+    "problem": "Racionalizar el denominador de $\\dfrac{3}{\\sqrt[3]{2}}$",
+    "steps": [
+      { "order": 1, "explanation": "El denominador es $\\sqrt[3]{2} = 2^{1/3}$. Para que la raíz cúbica desaparezca, el radicando tiene que ser un cubo perfecto: necesitamos el exponente $3$." },
+      { "order": 2, "explanation": "El factor racionalizante es $\\sqrt[3]{2^2} = \\sqrt[3]{4}$, porque $\\sqrt[3]{2} \\cdot \\sqrt[3]{2^2} = \\sqrt[3]{2^1 \\cdot 2^2} = \\sqrt[3]{2^3} = 2$." },
+      { "order": 3, "explanation": "Multiplicamos arriba y abajo por $\\sqrt[3]{4}$: $\\dfrac{3}{\\sqrt[3]{2}} \\cdot \\dfrac{\\sqrt[3]{4}}{\\sqrt[3]{4}}$." },
+      { "order": 4, "explanation": "En el denominador: $\\sqrt[3]{2 \\cdot 4} = \\sqrt[3]{8} = 2$. En el numerador: $3 \\cdot \\sqrt[3]{4} = 3\\sqrt[3]{4}$." },
+      { "order": 5, "explanation": "Resultado: $\\dfrac{3\\sqrt[3]{4}}{2}$. La raíz cúbica del denominador se convirtió en un entero." }
+    ],
+    "finalAnswer": "$\\dfrac{3\\sqrt[3]{4}}{2}$",
+    "pedagogicalNote": "Para raíces de índice $n$ con exponente $m < n$, el factor racionalizante completa el exponente hasta $n$ con $\\sqrt[n]{a^{n-m}}$. En este caso $n=3$ y $m=1$, así que completa con $a^{3-1} = a^2$.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.2 Racionalización: raíz de índice mayor",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar a completar el exponente en raíces de índice mayor que 2"
+      }
+    ]
+  },
+  {
+    "id": "example-racionalizacion-4",
+    "skillId": "mat.u1.racionalizacion",
+    "problem": "Racionalizar el denominador de $\\dfrac{1}{\\sqrt{5} - 2}$",
+    "steps": [
+      { "order": 1, "explanation": "El denominador es un binomio con una raíz. La estrategia es usar el conjugado, que invierte el signo del segundo término: $\\sqrt{5} + 2$." },
+      { "order": 2, "explanation": "Multiplicamos arriba y abajo por el conjugado: $\\dfrac{1}{\\sqrt{5} - 2} \\cdot \\dfrac{\\sqrt{5} + 2}{\\sqrt{5} + 2}$." },
+      { "order": 3, "explanation": "En el denominador se aplica la diferencia de cuadrados: $(\\sqrt{5})^2 - 2^2 = 5 - 4 = 1$. En el numerador: $1 \\cdot (\\sqrt{5} + 2) = \\sqrt{5} + 2$." },
+      { "order": 4, "explanation": "Resultado: $\\dfrac{\\sqrt{5} + 2}{1} = \\sqrt{5} + 2$. El denominador pasó de $\\sqrt{5} - 2$ a $1$, un entero." }
+    ],
+    "finalAnswer": "$\\sqrt{5} + 2$",
+    "pedagogicalNote": "Con el conjugado se aplica la identidad $(a+b)(a-b) = a^2 - b^2$. La raíz $\\sqrt{5}$ se eleva al cuadrado y se cancela con la parte entera. No confundir el conjugado: tiene que ser $\\sqrt{5} + 2$ (signo opuesto), no $\\sqrt{5} - 2$ (el mismo signo no sirve).",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.2 Racionalización: binomio con conjugado",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar el uso del conjugado para eliminar la raíz de un binomio en el denominador"
+      }
+    ]
+  },
+  {
+    "id": "example-racionalizacion-5",
+    "skillId": "mat.u1.racionalizacion",
+    "problem": "Racionalizar el denominador de $\\dfrac{2}{\\sqrt{3} + \\sqrt{2}}$",
+    "steps": [
+      { "order": 1, "explanation": "El denominador es la suma de dos raíces: $\\sqrt{3} + \\sqrt{2}$. El factor racionalizante es el conjugado: cambiamos el signo de UNA sola raíz. Resultado: $\\sqrt{3} - \\sqrt{2}$." },
+      { "order": 2, "explanation": "Multiplicamos arriba y abajo por $\\sqrt{3} - \\sqrt{2}$: $\\dfrac{2}{\\sqrt{3} + \\sqrt{2}} \\cdot \\dfrac{\\sqrt{3} - \\sqrt{2}}{\\sqrt{3} - \\sqrt{2}}$." },
+      { "order": 3, "explanation": "En el denominador: $(\\sqrt{3} + \\sqrt{2})(\\sqrt{3} - \\sqrt{2}) = (\\sqrt{3})^2 - (\\sqrt{2})^2 = 3 - 2 = 1$." },
+      { "order": 4, "explanation": "En el numerador: $2(\\sqrt{3} - \\sqrt{2}) = 2\\sqrt{3} - 2\\sqrt{2}$. Hay que DISTRIBUIR el 2, no olvidarlo." },
+      { "order": 5, "explanation": "Resultado: $\\dfrac{2\\sqrt{3} - 2\\sqrt{2}}{1} = 2\\sqrt{3} - 2\\sqrt{2}$." }
+    ],
+    "finalAnswer": "$2\\sqrt{3} - 2\\sqrt{2}$",
+    "pedagogicalNote": "El conjugado con dos raíces se obtiene cambiando el signo de UNA sola de ellas, no de las dos. La distribución en el numerador es clave: $2(\\sqrt{3} - \\sqrt{2})$ NO es igual a $\\sqrt{3} - 2\\sqrt{2}$.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "1.2 Racionalización: binomio con dos raíces",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Aplicar el conjugado a un binomio con dos raíces, distribuyendo correctamente el numerador"
+      }
+    ]
+  },
+  {
     "id": "example-conjuntos-numericos-1",
     "skillId": "mat.u1.conjuntos_numericos",
     "problem": "Clasificar en el conjunto más pequeño posible: $5$, $-3$, $0$, $2/7$, $\\sqrt{2}$, $\\sqrt{9}$",
