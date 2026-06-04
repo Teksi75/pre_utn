@@ -490,12 +490,13 @@
   {
     "id": "ex.u6.ceros_positividad_negatividad.1",
     "skillId": "mat.u6.ceros_positividad_negatividad",
-    "type": "numerical",
+    "type": "multiple-choice",
     "difficulty": 2,
     "prompt": "¿Cuáles son los ceros de f(x) = x² - 4?",
     "expectedAnswer": "x = -2, x = 2",
+    "options": ["x = -2, x = 2", "x = 2", "x = -4, x = 4", "x = 0"],
     "commonErrorTags": [],
-    "pedagogicalNote": "Los ceros son los valores donde f(x) = 0."
+    "pedagogicalNote": "Los ceros son los valores donde f(x) = 0. Factorizando: x² - 4 = (x-2)(x+2), los ceros son x = 2 y x = -2. Distractores: olvidar una raíz (x = 2), confundir con los coeficientes (x = -4, x = 4), o confundir con el vértice (x = 0)."
   },
   {
     "id": "ex.u6.funcion_afin.1",

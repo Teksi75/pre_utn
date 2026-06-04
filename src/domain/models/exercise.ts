@@ -119,6 +119,15 @@ export function validateExercise(
     return err({ field: "expectedAnswer", message: "expectedAnswer is required and must be non-empty" });
   }
 
+  // Validate type-answer shape: numerical exercises must have a single value
+  // (not a multi-value/set/tuple answer like "x = -2, x = 2")
+  if (input.type === "numerical" && input.expectedAnswer.includes(",")) {
+    return err({
+      field: "expectedAnswer",
+      message: `numerical exercise must have a single expected answer, got multi-value: "${input.expectedAnswer}"`,
+    });
+  }
+
   // Validate options for multiple-choice exercises
   if (input.type === "multiple-choice") {
     if (!input.options || input.options.length < 2) {

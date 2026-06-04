@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { RichText } from "@/components/math/RichText";
 import type { Exercise } from "@/domain/models/exercise";
 import {
@@ -13,6 +13,10 @@ import {
   optionsContainerClassName,
   optionsLegendClassName,
 } from "./exercise-layout";
+import {
+  shuffleExerciseOptions,
+  createSeededRandom,
+} from "./exercise-option-shuffle";
 
 interface ExerciseAnswerInputProps {
   readonly exercise: Exercise;
@@ -29,6 +33,15 @@ const TRUE_FALSE_OPTIONS = [
 
 const submitButtonClassName =
   "w-full bg-[var(--color-brand-900)] text-white px-4 py-2.5 text-sm font-medium rounded-[var(--radius-button)] hover:bg-[var(--color-brand-800)] disabled:bg-[var(--color-brand-200)] disabled:text-[var(--color-brand-500)] min-h-[44px] transition-colors duration-[var(--duration-fast)] focus-visible:shadow-[var(--ring-focus)]";
+
+/** Deterministic hash from string to 32-bit integer for seeded shuffle. */
+function hashStringToSeed(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * 31 + str.charCodeAt(i)) | 0;
+  }
+  return hash;
+}
 
 function optionClassName(selected: boolean): string {
   return `flex w-full cursor-pointer items-center gap-3 text-left px-4 py-3 text-sm rounded-[var(--radius-button)] min-h-[44px] transition-colors duration-[var(--duration-fast)] focus-within:shadow-[var(--ring-focus)] border ${
@@ -48,6 +61,19 @@ export function ExerciseAnswerInput({
   const [answer, setAnswer] = useState("");
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Memoize shuffled options per exercise id — deterministic for a given exercise.
+  const shuffledOptions = useMemo(
+    () =>
+      exercise.type === "multiple-choice" && exercise.options
+        ? shuffleExerciseOptions(
+            exercise.options,
+            createSeededRandom(hashStringToSeed(exercise.id))
+          )
+        : null,
+    [exercise.id, exercise.type, exercise.options]
+  );
+
   const canSubmit = canSubmitExerciseAnswer(
     exercise.type,
     answer,
@@ -81,7 +107,7 @@ export function ExerciseAnswerInput({
   }
 
   if (exercise.type === "multiple-choice") {
-    if (!exercise.options || exercise.options.length === 0) {
+    if (!shuffledOptions || shuffledOptions.length === 0) {
       return (
         <div className="rounded-[var(--radius-card)] border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
           Este ejercicio no tiene opciones cargadas todavía.
@@ -95,7 +121,7 @@ export function ExerciseAnswerInput({
           <legend className={optionsLegendClassName()}>
             Seleccioná una opción
           </legend>
-          {exercise.options.map((option) => {
+          {shuffledOptions.map((option) => {
             const selected = selectedOption === option;
             return (
               <label

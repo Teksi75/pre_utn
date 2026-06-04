@@ -3,6 +3,10 @@ import {
   canSubmitExerciseAnswer,
   getSubmittedExerciseAnswer,
 } from "../exercise-answer-state";
+import {
+  shuffleExerciseOptions,
+  createSeededRandom,
+} from "../exercise-option-shuffle";
 
 describe("exercise answer state", () => {
   it("does not allow submitting an empty multiple-choice answer", () => {
@@ -25,5 +29,54 @@ describe("exercise answer state", () => {
     expect(getSubmittedExerciseAnswer("symbolic", "  x > 3  ", null)).toBe(
       "x > 3"
     );
+  });
+
+  it("shuffled option submission returns value, not display index", () => {
+    const OPTIONS = ["x = -2, x = 2", "x = -2", "x = 2", "x = 4"];
+    const correctAnswer = "x = -2, x = 2";
+
+    // Shuffle with a seed — deterministic order
+    const shuffled = shuffleExerciseOptions(OPTIONS, createSeededRandom(42));
+
+    // Simulate: user selects the correct answer from the shuffled display
+    const selectedFromShuffled = shuffled.find((o) => o === correctAnswer);
+    expect(selectedFromShuffled).toBe(correctAnswer);
+
+    // The submitted answer is the VALUE, not a positional index
+    const submitted = getSubmittedExerciseAnswer(
+      "multiple-choice",
+      "",
+      selectedFromShuffled!
+    );
+    expect(submitted).toBe(correctAnswer);
+  });
+
+  it("deterministic shuffle with same seed produces stable order for memoization", () => {
+    const OPTIONS = ["A", "B", "C", "D"];
+    const seed = 77;
+
+    const first = shuffleExerciseOptions(OPTIONS, createSeededRandom(seed));
+    const second = shuffleExerciseOptions(OPTIONS, createSeededRandom(seed));
+
+    // Same seed → same order (stable for memoization key)
+    expect(first).toEqual(second);
+  });
+
+  it("submitted answer matches expected answer regardless of shuffle position", () => {
+    const OPTIONS = ["wrong1", "correct", "wrong2", "wrong3"];
+    const expectedAnswer = "correct";
+    const shuffled = shuffleExerciseOptions(OPTIONS, createSeededRandom(5));
+
+    // Find the correct answer in the shuffled list
+    const correctIndex = shuffled.indexOf(expectedAnswer);
+    expect(correctIndex).toBeGreaterThanOrEqual(0);
+
+    // Selecting by VALUE (not index) gives correct submission
+    const submitted = getSubmittedExerciseAnswer(
+      "multiple-choice",
+      "",
+      shuffled[correctIndex]
+    );
+    expect(submitted).toBe(expectedAnswer);
   });
 });

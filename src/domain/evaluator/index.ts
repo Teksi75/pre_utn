@@ -9,6 +9,7 @@ import { evaluateNumeric } from "./numeric";
 import { evaluateExact } from "./exact";
 import { evaluateBoolean } from "./boolean";
 import { tagError } from "./error-tagging";
+import { isFiniteNumericAnswer } from "../utils/numeric";
 
 /** The result of evaluating a student's answer. */
 export interface EvaluationResult {
@@ -32,6 +33,12 @@ const UNSUPPORTED_TYPE_RESULT: EvaluationResult = {
   feedback: "manual-review",
 };
 
+/** Result returned when a numerical exercise has a non-numeric expected answer. */
+const CONFIGURATION_ERROR_RESULT: EvaluationResult = {
+  correct: false,
+  errorTag: "configuration_error",
+};
+
 /**
  * Evaluate a student's answer against an exercise's expected answer.
  * Dispatches to the appropriate comparison module based on exercise type.
@@ -53,6 +60,10 @@ export function evaluateAnswer(
   let result: EvaluationResult;
   switch (exercise.type) {
     case "numerical":
+      // Config guard: non-numeric expected answer is a content error, not a student error
+      if (!isFiniteNumericAnswer(exercise.expectedAnswer)) {
+        return CONFIGURATION_ERROR_RESULT;
+      }
       result = evaluateNumeric(exercise.expectedAnswer, userAnswer);
       break;
 

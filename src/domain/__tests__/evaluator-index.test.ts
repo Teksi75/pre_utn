@@ -131,6 +131,58 @@ describe("Evaluator dispatcher", () => {
     });
   });
 
+  describe("configuration error for mismatched type-answer shape", () => {
+    test("numerical exercise with non-numeric expected answer returns configuration error", () => {
+      const exercise = makeExercise({
+        type: "numerical",
+        expectedAnswer: "x = -2, x = 2",
+      });
+      const result = evaluateAnswer(exercise, "5");
+      expect(result.correct).toBe(false);
+      expect(result.errorTag).toBe("configuration_error");
+    });
+
+    test("numerical exercise with valid numeric expected answer does NOT return configuration error", () => {
+      const exercise = makeExercise({
+        type: "numerical",
+        expectedAnswer: "42",
+      });
+      const result = evaluateAnswer(exercise, "42");
+      expect(result.correct).toBe(true);
+      expect(result.errorTag).toBeUndefined();
+    });
+
+    test("numerical exercise with non-numeric expected answer returns configuration error even on empty student answer", () => {
+      const exercise = makeExercise({
+        type: "numerical",
+        expectedAnswer: "x = 3, y = 2",
+      });
+      const result = evaluateAnswer(exercise, "");
+      expect(result.correct).toBe(false);
+      expect(result.errorTag).toBe("configuration_error");
+    });
+
+    test("numerical exercise with unicode minus numeric expected answer does NOT return configuration error", () => {
+      const exercise = makeExercise({
+        type: "numerical",
+        expectedAnswer: "−4",
+      });
+      const result = evaluateAnswer(exercise, "-4");
+      expect(result.correct).toBe(true);
+      expect(result.errorTag).toBeUndefined();
+    });
+
+    test("numerical exercise with spaced numeric expected answer does NOT return configuration error", () => {
+      const exercise = makeExercise({
+        type: "numerical",
+        expectedAnswer: "  3.14  ",
+      });
+      const result = evaluateAnswer(exercise, "3.14");
+      expect(result.correct).toBe(true);
+      expect(result.errorTag).toBeUndefined();
+    });
+  });
+
   describe("empty answer", () => {
     test("empty answer is always incorrect", () => {
       const exercise = makeExercise({ type: "numerical", expectedAnswer: "5" });

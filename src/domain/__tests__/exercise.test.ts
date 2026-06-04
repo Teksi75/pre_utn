@@ -213,4 +213,63 @@ describe("Exercise validation", () => {
       }
     });
   });
+
+  describe("type-answer shape validation", () => {
+    test("numerical type with multi-value answer (comma-separated) is rejected", () => {
+      const exercise: Exercise = {
+        ...validExercise,
+        type: "numerical",
+        expectedAnswer: "x = -2, x = 2",
+      };
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error.field).toBe("expectedAnswer");
+      }
+    });
+
+    test("numerical type with system-of-equations answer is rejected", () => {
+      const exercise: Exercise = {
+        ...validExercise,
+        type: "numerical",
+        expectedAnswer: "x = 3, y = 2",
+      };
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error.field).toBe("expectedAnswer");
+      }
+    });
+
+    test("numerical type with valid single numeric answer is accepted", () => {
+      const exercise: Exercise = {
+        ...validExercise,
+        type: "numerical",
+        expectedAnswer: "42",
+      };
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+      expect(result.ok).toBe(true);
+    });
+
+    test("numerical type with decimal numeric answer is accepted", () => {
+      const exercise: Exercise = {
+        ...validExercise,
+        type: "numerical",
+        expectedAnswer: "3.14",
+      };
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+      expect(result.ok).toBe(true);
+    });
+
+    test("multiple-choice with multi-value answer that IS in options is accepted", () => {
+      const exercise: Exercise = {
+        ...validExercise,
+        type: "multiple-choice",
+        expectedAnswer: "x = -2, x = 2",
+        options: ["x = -2, x = 2", "x = 2", "x = -4, x = 4", "x = 0"],
+      };
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+      expect(result.ok).toBe(true);
+    });
+  });
 });

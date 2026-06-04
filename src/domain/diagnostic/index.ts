@@ -4,6 +4,7 @@ import type { SkillId } from "../models/skill";
 import type { PracticeProgress } from "../progress/index";
 import { PILOT_SKILLS } from "../catalog/pilot-skills";
 import { SKILL_DEPENDENCIES } from "../models/skill-catalog";
+import { isFiniteNumericAnswer } from "../utils/numeric";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -90,8 +91,35 @@ function extractUnit(skillId: string): number {
 }
 
 /**
+ * Check whether an exercise can be reliably evaluated.
+ * Unreliable exercises are excluded from diagnostic assessment.
+ *
+ * Reliability rules:
+ * - `numerical` exercises must have a parseable finite numeric expected answer
+ * - `multiple-choice` exercises must have ≥3 options containing the expected answer
+ * - All other types are considered reliable by default
+ */
+export function isExerciseReliable(exercise: Exercise): boolean {
+  if (exercise.type === "numerical") {
+    return isFiniteNumericAnswer(exercise.expectedAnswer);
+  }
+
+  if (exercise.type === "multiple-choice") {
+    if (!exercise.options || exercise.options.length < 3) {
+      return false;
+    }
+    if (!exercise.options.includes(exercise.expectedAnswer)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
  * Select a balanced set of exercises across units.
  * Deterministic: same catalog always produces the same selection.
+ * Excludes exercises that cannot be reliably evaluated.
  */
 export function selectBalancedSet(
   catalog: readonly Exercise[]
@@ -122,7 +150,8 @@ export function selectBalancedSet(
   const selected: Exercise[] = [];
   for (const unit of availableUnits) {
     const exercises = byUnit.get(unit) ?? [];
-    const sorted = [...exercises].sort((a, b) => {
+    const reliable = exercises.filter(isExerciseReliable);
+    const sorted = [...reliable].sort((a, b) => {
       if (a.difficulty !== b.difficulty) return a.difficulty - b.difficulty;
       return a.id.localeCompare(b.id);
     });
@@ -143,6 +172,9 @@ export function estimateSkills(attempts: readonly Attempt[]): SkillEstimate[] {
   const bySkill = new Map<SkillId, { correct: number; total: number; errorTags: Set<string> }>();
 
   for (const attempt of attempts) {
+    // Config-error attempts are unreliable — exclude from accuracy
+    if (attempt.errorTag === "configuration_error") continue;
+
     const existing = bySkill.get(attempt.skillId) ?? {
       correct: 0,
       total: 0,
