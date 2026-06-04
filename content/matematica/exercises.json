@@ -262,12 +262,13 @@
   {
     "id": "ex.u2.polinomios_basico.1",
     "skillId": "mat.u2.polinomios_basico",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 1,
     "prompt": "Simplifica 3x + 2x",
     "expectedAnswer": "5x",
+    "options": ["5x", "6x", "5x²", "6x²"],
     "commonErrorTags": [],
-    "pedagogicalNote": "Combina términos semejantes sumando coeficientes."
+    "pedagogicalNote": "Combina términos semejantes sumando coeficientes: 3x + 2x = (3+2)x = 5x. Error común: multiplicar en lugar de sumar (6x) o elevar al cuadrado."
   },
   {
     "id": "ex.u2.operaciones_polinomios.1",
@@ -292,12 +293,13 @@
   {
     "id": "ex.u2.factorizacion.1",
     "skillId": "mat.u2.factorizacion",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 2,
     "prompt": "Factoriza x² - 5x + 6",
     "expectedAnswer": "(x - 2)(x - 3)",
+    "options": ["(x - 2)(x - 3)", "(x - 2)(x + 3)", "(x + 2)(x - 3)", "(x + 2)(x + 3)"],
     "commonErrorTags": [],
-    "pedagogicalNote": "Busca dos números que sumen -5 y multipliquen 6."
+    "pedagogicalNote": "Busca dos números que sumen -5 y multipliquen 6: -2 y -3. Los distractores representan errores de signo al factorizar."
   },
   {
     "id": "ex.u2.gauss.1",
@@ -323,12 +325,13 @@
   {
     "id": "ex.u3.ecuaciones_cuadraticas.1",
     "skillId": "mat.u3.ecuaciones_cuadraticas",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 2,
     "prompt": "Resuelve x² - 5x + 6 = 0",
     "expectedAnswer": "x = 2, x = 3",
+    "options": ["x = 2, x = 3", "x = -2, x = -3", "x = 2, x = -3", "x = -2, x = 3"],
     "commonErrorTags": [],
-    "pedagogicalNote": "Factoriza o usa fórmula general."
+    "pedagogicalNote": "Factoriza o usa fórmula general. Las raíces son 2 y 3 porque (x-2)(x-3) = x² - 5x + 6. Los distractores representan errores de signo."
   },
   {
     "id": "ex.u3.inecuaciones_lineales.1",
@@ -435,12 +438,13 @@
   {
     "id": "ex.u5.circunferencia_trigonometrica.1",
     "skillId": "mat.u5.circunferencia_trigonometrica",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 2,
     "prompt": "¿En qué cuadrante está el ángulo de 300°?",
     "expectedAnswer": "Cuarto cuadrante",
+    "options": ["Primer cuadrante", "Segundo cuadrante", "Tercer cuadrante", "Cuarto cuadrante"],
     "commonErrorTags": [],
-    "pedagogicalNote": "300° está entre 270° y 360°."
+    "pedagogicalNote": "300° está entre 270° y 360°, lo que corresponde al cuarto cuadrante. Los cuadrantes van: I (0°-90°), II (90°-180°), III (180°-270°), IV (270°-360°)."
   },
   {
     "id": "ex.u5.identidades.1",

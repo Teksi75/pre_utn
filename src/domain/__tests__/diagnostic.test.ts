@@ -4,6 +4,7 @@ import {
   estimateSkills,
   suggestPractice,
 } from "../diagnostic/index";
+import { loadCatalog } from "../catalog/index";
 import type { Exercise } from "../models/exercise";
 import type { Attempt } from "../diagnostic/index";
 
@@ -239,5 +240,81 @@ describe("suggestPractice — weak-area tag aggregation", () => {
   test("returns empty suggestions for empty estimates", () => {
     const suggestions = suggestPractice([]);
     expect(suggestions).toEqual([]);
+  });
+});
+
+// ── Diagnostic set type safety (WU-9 regression) ─────────────────────────
+
+const SAFE_DIAGNOSTIC_TYPES = new Set(["multiple-choice", "true-false", "numerical"]);
+
+describe("selectBalancedSet — diagnostic type safety (WU-9)", () => {
+  test("diagnostic set contains no symbolic or fill-blank exercises from the real catalog", () => {
+    const catalog = loadCatalog();
+    const result = selectBalancedSet(catalog);
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    const ambiguous = result.exercises.filter(
+      (e) => !SAFE_DIAGNOSTIC_TYPES.has(e.type)
+    );
+
+    expect(
+      ambiguous,
+      `Diagnostic set contains ambiguous exercises: ${ambiguous.map((e) => `${e.id} (${e.type})`).join(", ")}`
+    ).toHaveLength(0);
+  });
+
+  test("ex.u2.factorizacion.1 is multiple-choice with correct option in the real catalog", () => {
+    const catalog = loadCatalog();
+    const exercise = catalog.find((e) => e.id === "ex.u2.factorizacion.1");
+
+    expect(exercise).toBeDefined();
+    if (!exercise) return;
+
+    expect(exercise.type).toBe("multiple-choice");
+    expect(exercise.options).toBeDefined();
+    expect(exercise.options!.length).toBeGreaterThanOrEqual(2);
+    expect(exercise.options).toContain(exercise.expectedAnswer);
+    expect(exercise.expectedAnswer).toBe("(x - 2)(x - 3)");
+  });
+
+  test("ex.u3.ecuaciones_cuadraticas.1 is multiple-choice with correct option in the real catalog", () => {
+    const catalog = loadCatalog();
+    const exercise = catalog.find((e) => e.id === "ex.u3.ecuaciones_cuadraticas.1");
+
+    expect(exercise).toBeDefined();
+    if (!exercise) return;
+
+    expect(exercise.type).toBe("multiple-choice");
+    expect(exercise.options).toBeDefined();
+    expect(exercise.options!.length).toBeGreaterThanOrEqual(2);
+    expect(exercise.options).toContain(exercise.expectedAnswer);
+  });
+
+  test("ex.u2.polinomios_basico.1 is multiple-choice with correct option in the real catalog", () => {
+    const catalog = loadCatalog();
+    const exercise = catalog.find((e) => e.id === "ex.u2.polinomios_basico.1");
+
+    expect(exercise).toBeDefined();
+    if (!exercise) return;
+
+    expect(exercise.type).toBe("multiple-choice");
+    expect(exercise.options).toBeDefined();
+    expect(exercise.options!.length).toBeGreaterThanOrEqual(2);
+    expect(exercise.options).toContain(exercise.expectedAnswer);
+  });
+
+  test("ex.u5.circunferencia_trigonometrica.1 is multiple-choice with correct option in the real catalog", () => {
+    const catalog = loadCatalog();
+    const exercise = catalog.find((e) => e.id === "ex.u5.circunferencia_trigonometrica.1");
+
+    expect(exercise).toBeDefined();
+    if (!exercise) return;
+
+    expect(exercise.type).toBe("multiple-choice");
+    expect(exercise.options).toBeDefined();
+    expect(exercise.options!.length).toBeGreaterThanOrEqual(2);
+    expect(exercise.options).toContain(exercise.expectedAnswer);
   });
 });
