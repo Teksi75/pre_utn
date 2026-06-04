@@ -33,3 +33,28 @@ Toda feature debe responder al menos una de estas preguntas:
 - ¿Ayuda al docente a interpretar, intervenir o planificar?
 
 Si la respuesta a ambas es “no”, la feature no entra en el MVP.
+
+## Diseño de ejercicios
+
+No usar respuesta libre para expresiones matemáticas estructuradas. Es frágil para corregir, introduce ambigüedad sintáctica y castiga al alumno por formato en vez de evaluar comprensión matemática.
+
+Está prohibido pedir al alumno que escriba en texto plano:
+
+- raíces;
+- fracciones con raíces;
+- intervalos;
+- conjuntos solución con unión o intersección;
+- números complejos en forma `a+bi`;
+- dos soluciones del tipo `x=-2` o `x=2`;
+- expresiones logarítmicas completas.
+
+Usar en su lugar, según corresponda:
+
+- opciones múltiples renderizadas;
+- input numérico simple;
+- dos inputs numéricos separados;
+- selector de intervalo;
+- selector de parte real/parte imaginaria;
+- chips matemáticos;
+- ordenar pasos;
+- detectar errores.
