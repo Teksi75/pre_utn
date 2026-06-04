@@ -378,11 +378,11 @@
     "options": [
       "$2\\sqrt{3} - 2\\sqrt{2}$",
       "$\\sqrt{3} - \\sqrt{2}$",
-      "$2(\\sqrt{3} - \\sqrt{2})$",
+      "$2\\sqrt{3} + 2\\sqrt{2}$",
       "$\\dfrac{2}{3 - 2}$"
     ],
     "commonErrorTags": ["u1_rac_pierde_equivalencia", "u1_rac_no_simplifica"],
-    "pedagogicalNote": "Multiplicar por $\\sqrt{3} - \\sqrt{2}$ da denominador $3 - 2 = 1$ y numerador $2(\\sqrt{3} - \\sqrt{2}) = 2\\sqrt{3} - 2\\sqrt{2}$. La opción $\\sqrt{3} - \\sqrt{2}$ perdió el factor $2$ al no distribuir. La forma $2(\\sqrt{3} - \\sqrt{2})$ también es correcta pero la consigna pide desarrollar.",
+    "pedagogicalNote": "Multiplicar por $\\sqrt{3} - \\sqrt{2}$ da denominador $3 - 2 = 1$ y numerador $2(\\sqrt{3} - \\sqrt{2}) = 2\\sqrt{3} - 2\\sqrt{2}$. La opción $\\sqrt{3} - \\sqrt{2}$ perdió el factor $2$ al no distribuir. La opción con signo positivo usa el mismo signo del denominador y no aplica el conjugado.",
     "relatedTheoryIds": ["theory-racionalizacion"],
     "relatedExampleIds": ["example-racionalizacion-5"]
   },
@@ -413,11 +413,11 @@
     "difficulty": 2,
     "category": "error_deteccion",
     "tags": ["error", "exponente_negativo"],
-    "prompt": "Verdadero o falso: 'Racionalizar $\\dfrac{1}{\\sqrt{2}}$ es lo mismo que escribirlo como $\\sqrt{2}^{-1}$'",
+    "prompt": "Verdadero o falso: '$\\sqrt{2}^{-1}$ es una forma racionalizada de $\\dfrac{1}{\\sqrt{2}}$'",
     "expectedAnswer": "Falso",
     "options": ["Verdadero", "Falso"],
     "commonErrorTags": ["u1_rac_usa_exponente_negativo"],
-    "pedagogicalNote": "$\\sqrt{2}^{-1}$ es algebraicamente equivalente a $1/\\sqrt{2}$, pero NO está racionalizado: el denominador sigue teniendo una raíz, sólo se la 'escondió' en el numerador. Racionalizar significa que el denominador NO contiene raíces.",
+    "pedagogicalNote": "$\\sqrt{2}^{-1}$ es algebraicamente equivalente a $1/\\sqrt{2}$, pero NO es una forma racionalizada: la raíz no desapareció mediante una fracción equivalente con denominador racional. Racionalizar significa que el denominador NO contiene raíces.",
     "relatedTheoryIds": ["theory-racionalizacion"],
     "relatedExampleIds": ["example-racionalizacion-1"]
   },

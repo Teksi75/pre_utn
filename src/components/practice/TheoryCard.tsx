@@ -56,7 +56,7 @@ export function TheoryCard({ node }: TheoryCardProps) {
             className={`rounded-[var(--radius-card)] border p-4 shadow-sm ${conceptCardClass(concept.id)}`}
           >
             <h3 className={`text-[var(--text-lg)] font-semibold ${conceptTitleClass(concept.id)}`}>
-              {concept.title}
+              <RichText text={concept.title} />
             </h3>
             <div className="mt-1 text-sm text-brand-700 leading-[var(--leading-relaxed)]">
               <RichText text={concept.body} />

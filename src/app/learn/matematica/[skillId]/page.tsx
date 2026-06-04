@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { loadTheoryContent, loadExampleContent } from "@/domain/catalog/content-loaders";
 import { TheoryCard } from "@/components/practice/TheoryCard";
-import { WorkedExampleCard } from "@/components/practice/WorkedExampleCard";
+import { WorkedExamplesSection } from "@/components/practice/WorkedExamplesSection";
 import { DirectionalTransition } from "@/components/ui/DirectionalTransition";
 import type { SkillId } from "@/domain/models/skill";
 
@@ -53,19 +53,7 @@ export default async function LearnSkillPage({ params }: LearnSkillPageProps) {
 
         <TheoryCard node={theoryNode} />
 
-        {/* Worked examples section */}
-        {examples.length > 0 && (
-          <div className="mt-8">
-            <h2 className="text-[var(--text-xl)] font-semibold text-brand-900 mb-4">
-              Ejemplos resueltos
-            </h2>
-            <div className="space-y-4">
-              {examples.map((example) => (
-                <WorkedExampleCard key={example.id} example={example} />
-              ))}
-            </div>
-          </div>
-        )}
+        <WorkedExamplesSection examples={examples} />
 
         <div className="mt-8 flex flex-col sm:flex-row gap-3">
           <Link
