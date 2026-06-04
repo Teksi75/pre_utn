@@ -10,7 +10,7 @@
  *     and the decimal expansion of √2 (a non-repeating non-terminating decimal)
  *   - The {,} decimal comma convention is enforced (no bare "0.75" outside math)
  *   - Difficulty distribution covers d1..d5 with at least 2 at d3, d4, d5
- *   - At least 2 non-multiple-choice types are present across rvi+dec
+ *   - Exercises remain keyboard-safe: no exact-match fill-blank for symbolic math
  *   - Error tags reference valid taxonomy entries (4 new PR#4 tags)
  *   - Per-skill feedback file has the 4 PR#4 design-specified entries
  *
@@ -347,16 +347,18 @@ describe(`PR#4 racionales-vs-irracionales + decimales — ${SKILL_ID}`, () => {
     });
   });
 
-  describe("type variety (behavior 6)", () => {
-    test("PR#4 includes at least 2 distinct non-multiple-choice types across rvi+dec", () => {
-      const types = new Set(pr4Exercises.map((ex) => ex.type));
-      const nonMc = [...types].filter((t) => t !== "multiple-choice");
-      expect(nonMc.length).toBeGreaterThanOrEqual(2);
+  describe("keyboard-safe answer formats (behavior 6)", () => {
+    test("PR#4 has no fill-blank exercises that require LaTeX-only answers", () => {
+      const fillBlank = pr4Exercises.filter((ex) => ex.type === "fill-blank");
+      expect(fillBlank).toEqual([]);
     });
 
-    test("at least 1 decimales exercise is fill-blank", () => {
-      const fillBlank = decExercises.filter((ex) => ex.type === "fill-blank");
-      expect(fillBlank.length).toBeGreaterThanOrEqual(1);
+    test("fraction-to-periodic-decimal exercise is selectable, not typed", () => {
+      const fractionToDecimal = decExercises.find(
+        (ex) => ex.id === "ex.u1.conjuntos_numericos.cn-dec-03"
+      );
+      expect(fractionToDecimal?.type).toBe("multiple-choice");
+      expect(fractionToDecimal?.options).toContain(fractionToDecimal?.expectedAnswer);
     });
 
     test("at least 1 rvi exercise is true-false or fill-blank (non-MC)", () => {
@@ -366,7 +368,7 @@ describe(`PR#4 racionales-vs-irracionales + decimales — ${SKILL_ID}`, () => {
       expect(nonMc.length).toBeGreaterThanOrEqual(1);
     });
 
-    test("every non-MC PR#4 exercise has the required structure for its type", () => {
+    test("every selectable PR#4 exercise has the required structure for its type", () => {
       for (const ex of pr4Exercises) {
         if (ex.type === "true-false") {
           expect(ex.options, `${ex.id} true-false needs options`).toBeDefined();

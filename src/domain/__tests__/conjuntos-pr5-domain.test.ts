@@ -9,7 +9,7 @@
  *     (a) at least one cn-err exercise tagged with the misconception's errorTag
  *     (b) a corresponding feedback entry in both feedback files
  *   - Difficulty distribution across errores-comunes covers 1-5
- *   - At least 2 non-multiple-choice types are present (errors category)
+ *   - Error exercises remain keyboard-safe: no exact-match fill-blank for symbols
  *   - All referenced error tags are in the taxonomy
  *   - Per-skill feedback file has all 8 design keys
  *   - Final bank validation: >= 40 exercises total, ALL 6 categories meet
@@ -204,13 +204,10 @@ describe(`PR#5 errores-comunes + final verify — ${SKILL_ID}`, () => {
     });
   });
 
-  describe("type variety (behavior 5)", () => {
-    // Design: errors-comunes should not be a monolith of multiple-choice.
-    // At least 2 non-MC types (true-false, fill-blank, reasoning, etc.).
-    test("PR#5 includes at least 2 distinct non-multiple-choice types", () => {
-      const types = new Set(pr5ErrExercises.map((ex) => ex.type));
-      const nonMc = [...types].filter((t) => t !== "multiple-choice");
-      expect(nonMc.length).toBeGreaterThanOrEqual(2);
+  describe("keyboard-safe answer formats (behavior 5)", () => {
+    test("PR#5 has no fill-blank exercises that require typed mathematical symbols", () => {
+      const fillBlank = pr5ErrExercises.filter((ex) => ex.type === "fill-blank");
+      expect(fillBlank).toEqual([]);
     });
 
     test("at least 1 cn-err is a true-false exercise", () => {
@@ -218,9 +215,12 @@ describe(`PR#5 errores-comunes + final verify — ${SKILL_ID}`, () => {
       expect(tf.length).toBeGreaterThanOrEqual(1);
     });
 
-    test("at least 1 cn-err is a fill-blank exercise", () => {
-      const fb = pr5ErrExercises.filter((ex) => ex.type === "fill-blank");
-      expect(fb.length).toBeGreaterThanOrEqual(1);
+    test("pertenencia-vs-inclusion notation exercise is selectable, not typed", () => {
+      const notationExercise = pr5ErrExercises.find(
+        (ex) => ex.id === "ex.u1.conjuntos_numericos.cn-err-04"
+      );
+      expect(notationExercise?.type).toBe("multiple-choice");
+      expect(notationExercise?.options).toContain(notationExercise?.expectedAnswer);
     });
 
     test("every cn-err exercise has the required structure for its type", () => {
@@ -238,13 +238,6 @@ describe(`PR#5 errores-comunes + final verify — ${SKILL_ID}`, () => {
           expect(ex.options, `${ex.id} multiple-choice needs options`).toBeDefined();
           expect(ex.options!.length).toBeGreaterThanOrEqual(2);
           expect(ex.options).toContain(ex.expectedAnswer);
-        }
-        if (ex.type === "fill-blank") {
-          // fill-blank exercises: expectedAnswer is a free-text string.
-          expect(
-            ex.expectedAnswer.trim().length,
-            `${ex.id} fill-blank expectedAnswer must be non-empty`
-          ).toBeGreaterThan(0);
         }
       }
     });

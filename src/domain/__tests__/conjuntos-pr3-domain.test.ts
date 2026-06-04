@@ -190,20 +190,15 @@ describe(`PR#3 classification — ${SKILL_ID}`, () => {
     });
   });
 
-  describe("type variety (behavior 6)", () => {
-    test("PR#3 includes at least 2 distinct non-multiple-choice types", () => {
-      // Design constraint: at least 2 other types (fill-blank, true-false,
-      // matching, ordering) besides multiple-choice. This prevents the bank
-      // from being purely MC and supports varied practice.
-      const types = new Set(pr3Exercises.map((ex) => ex.type));
-      const nonMc = [...types].filter((t) => t !== "multiple-choice");
-      expect(nonMc.length).toBeGreaterThanOrEqual(2);
+  describe("keyboard-safe answer formats (behavior 6)", () => {
+    test("PR#3 has no fill-blank exercises that require LaTeX-only answers", () => {
+      const fillBlank = pr3Exercises.filter((ex) => ex.type === "fill-blank");
+      expect(fillBlank).toEqual([]);
     });
 
-    test("every non-MC PR#3 exercise has the required structure for its type", () => {
-      // Triangulation: not just "the types exist" — the non-MC exercises
-      // must have the right structure. fill-blank: a single expectedAnswer
-      // string. true-false: options must be ["Verdadero", "Falso"].
+    test("every selectable PR#3 exercise has the required structure for its type", () => {
+      // Triangulation: selectable exercises must remain answerable without
+      // requiring students to type LaTeX-only notation.
       for (const ex of pr3Exercises) {
         if (ex.type === "true-false") {
           expect(ex.options, `${ex.id} true-false needs options`).toBeDefined();

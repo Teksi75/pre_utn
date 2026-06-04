@@ -372,12 +372,18 @@
   {
     "id": "ex.u1.conjuntos_numericos.cn-cla-08",
     "skillId": "mat.u1.conjuntos_numericos",
-    "type": "fill-blank",
+    "type": "multiple-choice",
     "difficulty": 3,
     "category": "clasificacion",
     "tags": ["clasificacion", "cero", "n_sin_cero", "conjunto_minimo"],
-    "prompt": "Escribí el conjunto MÁS PEQUEÑO al que pertenece el número $0$.",
+    "prompt": "Seleccioná el conjunto MÁS PEQUEÑO al que pertenece el número $0$.",
     "expectedAnswer": "$\\mathbb{Z}$",
+    "options": [
+      "$\\mathbb{Z}$",
+      "$\\mathbb{N}$",
+      "$\\mathbb{Q}$",
+      "$\\mathbb{R}$"
+    ],
     "commonErrorTags": ["u1_n_sin_cero", "u1_entero_no_siempre_natural"],
     "pedagogicalNote": "Por la convención N-sin-cero, $0 \\notin \\mathbb{N}$. Sí pertenece a $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$. El conjunto más pequeño (el primero de la cadena que lo contiene) es $\\mathbb{Z}$.",
     "relatedTheoryIds": ["theory-conjuntos-numericos"],
@@ -386,12 +392,18 @@
   {
     "id": "ex.u1.conjuntos_numericos.cn-cla-09",
     "skillId": "mat.u1.conjuntos_numericos",
-    "type": "fill-blank",
+    "type": "multiple-choice",
     "difficulty": 4,
     "category": "clasificacion",
     "tags": ["clasificacion", "fraccion", "racional", "conjunto_minimo"],
-    "prompt": "Escribí el conjunto MÁS PEQUEÑO al que pertenece $\\frac{2}{5}$.",
+    "prompt": "Seleccioná el conjunto MÁS PEQUEÑO al que pertenece $\\frac{2}{5}$.",
     "expectedAnswer": "$\\mathbb{Q}$",
+    "options": [
+      "$\\mathbb{Q}$",
+      "$\\mathbb{N}$",
+      "$\\mathbb{Z}$",
+      "$\\mathbb{R}$"
+    ],
     "commonErrorTags": ["u1_confunde_racional_irracional", "u1_negativo_puede_ser_racional"],
     "pedagogicalNote": "$\\frac{2}{5}$ es una fracción con numerador y denominador enteros, así que es racional. No es natural (numerador no es entero natural), no es entero (denominador distinto de 1). El conjunto más pequeño es $\\mathbb{Q}$.",
     "relatedTheoryIds": ["theory-conjuntos-numericos"],
@@ -555,14 +567,20 @@
   {
     "id": "ex.u1.conjuntos_numericos.cn-rvi-06",
     "skillId": "mat.u1.conjuntos_numericos",
-    "type": "fill-blank",
+    "type": "multiple-choice",
     "difficulty": 3,
     "category": "racionales-vs-irracionales",
     "tags": ["racional_irracional", "clasificacion", "tabla"],
-    "prompt": "Clasificá los siguientes números como RACIONAL o IRRACIONAL. Escribí una lista de 4 valores separados por coma en el orden dado, usando $\\mathbb{Q}$ para racional e $I$ para irracional. Números: $\\sqrt{9}$, $\\pi$, $0{,}\\overline{3}$, $\\sqrt{2}$.",
-    "expectedAnswer": "$\\mathbb{Q}$, $I$, $\\mathbb{Q}$, $I$",
+    "prompt": "Clasificá los siguientes números como RACIONAL o IRRACIONAL, en el orden dado. Números: $\\sqrt{9}$, $\\pi$, $0{,}\\overline{3}$, $\\sqrt{2}$.",
+    "expectedAnswer": "$\\mathbb{Q}$, $\\mathbb{I}$, $\\mathbb{Q}$, $\\mathbb{I}$",
+    "options": [
+      "$\\mathbb{Q}$, $\\mathbb{I}$, $\\mathbb{Q}$, $\\mathbb{I}$",
+      "$\\mathbb{I}$, $\\mathbb{Q}$, $\\mathbb{Q}$, $\\mathbb{I}$",
+      "$\\mathbb{Q}$, $\\mathbb{I}$, $\\mathbb{I}$, $\\mathbb{Q}$",
+      "$\\mathbb{N}$, $\\mathbb{I}$, $\\mathbb{I}$, $\\mathbb{I}$"
+    ],
     "commonErrorTags": ["u1_toda_raiz_no_es_irracional", "u1_decimal_periodico_es_racional", "u1_raiz_cuadrada_exacta_es_racional"],
-    "pedagogicalNote": "Clasificación correcta: $\\sqrt{9} = 3$ es RACIONAL ($\\mathbb{Q}$); $\\pi$ es IRRACIONAL ($I$); $0{,}\\overline{3} = 1/3$ es RACIONAL (decimal periódico); $\\sqrt{2}$ es IRRACIONAL. La trampa común es asumir que 'toda raíz es irracional' (falso: $\\sqrt{9}$ es racional) o que 'todo decimal infinito es irracional' (falso: los periódicos son racionales).",
+    "pedagogicalNote": "Clasificación correcta: $\\sqrt{9} = 3$ es RACIONAL ($\\mathbb{Q}$); $\\pi$ es IRRACIONAL ($\\mathbb{I}$); $0{,}\\overline{3} = 1/3$ es RACIONAL (decimal periódico); $\\sqrt{2}$ es IRRACIONAL ($\\mathbb{I}$). La trampa común es asumir que 'toda raíz es irracional' (falso: $\\sqrt{9}$ es racional) o que 'todo decimal infinito es irracional' (falso: los periódicos son racionales).",
     "relatedTheoryIds": ["theory-conjuntos-numericos"],
     "relatedExampleIds": ["example-conjuntos-numericos-2", "example-conjuntos-numericos-3"]
   },
@@ -649,12 +667,18 @@
   {
     "id": "ex.u1.conjuntos_numericos.cn-dec-03",
     "skillId": "mat.u1.conjuntos_numericos",
-    "type": "fill-blank",
+    "type": "multiple-choice",
     "difficulty": 2,
     "category": "decimales",
     "tags": ["decimal", "fraccion_a_decimal", "periodico"],
-    "prompt": "Escribí el desarrollo decimal (periódico) de la fracción $\\frac{1}{3}$. Usá la notación con $\\overline{\\phantom{x}}$ para indicar el período.",
+    "prompt": "Seleccioná el desarrollo decimal periódico de la fracción $\\frac{1}{3}$.",
     "expectedAnswer": "$0{,}\\overline{3}$",
+    "options": [
+      "$0{,}\\overline{3}$",
+      "$0{,}3$",
+      "$0{,}13$",
+      "$3{,}\\overline{0}$"
+    ],
     "commonErrorTags": ["u1_decimal_periodico_es_racional", "u1_decimal_no_es_siempre_irracional"],
     "pedagogicalNote": "$\\frac{1}{3} = 0{,}333\\ldots = 0{,}\\overline{3}$. El dígito $3$ se repite infinitamente. Notá que este decimal NO termina: la división de $1$ por $3$ nunca acaba. Pero como es periódico (con un patrón que se repite), es RACIONAL. La notación $\\overline{3}$ indica que el $3$ se repite para siempre.",
     "relatedTheoryIds": ["theory-conjuntos-numericos"],
@@ -778,12 +802,18 @@
   {
     "id": "ex.u1.conjuntos_numericos.cn-err-04",
     "skillId": "mat.u1.conjuntos_numericos",
-    "type": "fill-blank",
+    "type": "multiple-choice",
     "difficulty": 3,
     "category": "errores-comunes",
     "tags": ["error_comun", "pertenencia", "inclusion", "notacion"],
-    "prompt": "Escribí la relación correcta entre $5$ y $\\mathbb{Z}$. Usá $\\in$ o $\\subset$ según corresponda.",
+    "prompt": "Seleccioná la relación correcta entre $5$ y $\\mathbb{Z}$.",
     "expectedAnswer": "$\\in$",
+    "options": [
+      "$\\in$",
+      "$\\subset$",
+      "$=$",
+      "$\\notin$"
+    ],
     "commonErrorTags": ["u1_pertenencia_vs_inclusion"],
     "pedagogicalNote": "La respuesta correcta es $5 \\in \\mathbb{Z}$ (pertenencia), porque $5$ es un ELEMENTO del conjunto $\\mathbb{Z}$. La alternativa $5 \\subset \\mathbb{Z}$ (inclusión) es INCORRECTA porque $5$ NO es un conjunto: es un número. La inclusión ($\\subset$) relaciona dos conjuntos: por ejemplo, $\\mathbb{N} \\subset \\mathbb{Z}$ (cada natural es un entero, y $\\mathbb{N}$ es un subconjunto de $\\mathbb{Z}$). Para que la inclusión tenga sentido, ambos lados deben ser conjuntos. Si el lado izquierdo es un elemento (como $5$), se usa $\\in$, nunca $\\subset$.",
     "relatedTheoryIds": ["theory-conjuntos-numericos"],
