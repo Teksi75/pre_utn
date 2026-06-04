@@ -32,6 +32,11 @@ export const PILOT_SKILLS: readonly PilotSkill[] = [
     unitKey: "unit-1",
     label: "Intervalos",
   },
+  {
+    skillId: "mat.u1.logaritmos",
+    unitKey: "unit-1",
+    label: "Logaritmos",
+  },
 ] as const;
 
 export const PILOT_SKILL_UNIT_MAP: Readonly<Record<string, string>> =

@@ -19,6 +19,13 @@ Skills de Unidad 1 realmente transitables hoy:
 | Números reales y operaciones | Listo |
 | Intervalos | Listo |
 | Potencias y raíces | Listo |
+| Racionalización | Listo |
+| Logaritmos | Listo |
+
+Temas de Unidad 1 que todavía faltan completar como recorrido transitable:
+
+- Valor absoluto
+- Complejos
 
 ## Fuente de verdad
 
@@ -52,10 +59,10 @@ La fuente pedagógica es el material canónico y las specs activas. La fuente t�
 | 0 | Conjuntos numéricos | Listo |
 | 1 | Números reales y operaciones | Listo |
 | 2 | Potencias y raíces | Listo |
-| 3 | Racionalización | Pendiente |
+| 3 | Racionalización | Listo |
 | 4 | Intervalos | Listo |
 | 5 | Valor absoluto | Pendiente |
-| 6 | Logaritmos | Pendiente |
+| 6 | Logaritmos | Listo |
 | 7 | Complejos | Pendiente |
 
 `En construcción` significa que ya existe una parte del recorrido, pero todavía no alcanza readiness completo. `Pendiente` puede incluir ejercicios sueltos o referencias parciales, pero todavía no tiene recorrido pedagógico completo y validado para el alumno.

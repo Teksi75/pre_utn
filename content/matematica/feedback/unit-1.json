@@ -208,5 +208,41 @@
     "type": "corrective",
     "message": "Al multiplicar por el conjugado, distribui el numerador completo. Por ejemplo, $\\frac{2}{\\sqrt{3}+\\sqrt{2}} \\cdot \\frac{\\sqrt{3}-\\sqrt{2}}{\\sqrt{3}-\\sqrt{2}} = \\frac{2(\\sqrt{3}-\\sqrt{2})}{1} = 2\\sqrt{3}-2\\sqrt{2}$: el 2 se distribuye a AMBOS terminos del numerador, no se pierde.",
     "recoveryTarget": "example-racionalizacion-5"
+  },
+  {
+    "errorTag": "u1_log_base_invalida",
+    "type": "conceptual",
+    "message": "La base de un logaritmo debe ser positiva y distinta de 1: $a > 0$ y $a \\neq 1$. Si la base es 1, entonces $1^c = 1$ para todo $c$, así que no se puede resolver $1^c = b$ cuando $b \\neq 1$. Si la base es negativa o cero, la potenciación no se comporta bien con exponentes reales.",
+    "recoveryTarget": "theory-logaritmos"
+  },
+  {
+    "errorTag": "u1_log_argumento_no_positivo",
+    "type": "conceptual",
+    "message": "El argumento de un logaritmo debe ser estrictamente positivo: $b > 0$. No se puede calcular el logaritmo de cero ni de un número negativo. Esto se debe a que $a^c > 0$ para toda base válida $a > 0$ y todo exponente $c$ real, así que $a^c$ nunca puede dar un resultado negativo ni cero.",
+    "recoveryTarget": "theory-logaritmos"
+  },
+  {
+    "errorTag": "u1_log_confunde_base_argumento",
+    "type": "corrective",
+    "message": "En $\\log_a(b)$, la base es $a$ (el subíndice) y el argumento es $b$ (lo que está dentro del paréntesis). No los confundas. La base es el número que se eleva a una potencia; el argumento es el resultado de esa potenciación.",
+    "recoveryTarget": "example-logaritmos-1"
+  },
+  {
+    "errorTag": "u1_log_confunde_resultado_exponente",
+    "type": "corrective",
+    "message": "El resultado de $\\log_a(b)$ es el exponente $c$ tal que $a^c = b$. No confundas el resultado con la base ni con el argumento. Verificá siempre: si $\\log_a(b) = c$, entonces $a^c$ debe ser exactamente igual a $b$.",
+    "recoveryTarget": "example-logaritmos-1"
+  },
+  {
+    "errorTag": "u1_log_conversion_exponencial",
+    "type": "procedural",
+    "message": "Para convertir entre formas: $\\log_a(b) = c \\Leftrightarrow a^c = b$. La base del logaritmo se convierte en la base de la potencia. El resultado del logaritmo se convierte en el exponente. El argumento del logaritmo se convierte en el resultado de la potencia.",
+    "recoveryTarget": "example-logaritmos-2"
+  },
+  {
+    "errorTag": "u1_log_propiedad_aplicada_mal",
+    "type": "procedural",
+    "message": "Propiedades clave de logaritmos: $\\log_a(1) = 0$ (porque $a^0 = 1$), $\\log_a(a) = 1$ (porque $a^1 = a$), $\\log_a(a^n) = n$ (el logaritmo extrae el exponente). Estas propiedades se derivan directamente de la definición.",
+    "recoveryTarget": "theory-logaritmos"
   }
 ]

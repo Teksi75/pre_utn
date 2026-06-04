@@ -12,6 +12,7 @@ const SKILL_UNIT_MAP: Record<string, string> = {
   "mat.u1.intervalos": "unit-1",
   "mat.u1.potencias_raices": "unit-1",
   "mat.u1.racionalizacion": "unit-1",
+  "mat.u1.logaritmos": "unit-1",
 };
 
 interface LearnSkillPageProps {

@@ -340,5 +340,105 @@
         "pedagogicalIntent": "Demostrar la secuencia completa PEMDAS aplicada a una expresión con potencias, raíces y exponente cero"
       }
     ]
+  },
+  {
+    "id": "example-logaritmos-1",
+    "skillId": "mat.u1.logaritmos",
+    "problem": "Calcular $\\log_2(8)$",
+    "steps": [
+      { "order": 1, "explanation": "La pregunta es: ¿a qué exponente hay que elevar $2$ para obtener $8$? Buscamos $c$ tal que $2^c = 8$." },
+      { "order": 2, "explanation": "Probamos: $2^1 = 2$, $2^2 = 4$, $2^3 = 8$. Encontramos que $c = 3$." },
+      { "order": 3, "explanation": "Resultado: $\\log_2(8) = 3$ porque $2^3 = 8$." }
+    ],
+    "finalAnswer": "$\\log_2(8) = 3$",
+    "pedagogicalNote": "El logaritmo es el exponente. Para calcular $\\log_a(b)$, buscamos $c$ tal que $a^c = b$. Si $b$ es una potencia exacta de $a$, el cálculo es directo.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Logaritmos — definición",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar la definición de logaritmo como exponente con un ejemplo directo"
+      }
+    ]
+  },
+  {
+    "id": "example-logaritmos-2",
+    "skillId": "mat.u1.logaritmos",
+    "problem": "Convertir $\\log_5(25) = 2$ a forma exponencial",
+    "steps": [
+      { "order": 1, "explanation": "La equivalencia fundamental es: $\\log_a(b) = c \\Leftrightarrow a^c = b$." },
+      { "order": 2, "explanation": "Identificamos: base $a = 5$, argumento $b = 25$, resultado $c = 2$." },
+      { "order": 3, "explanation": "Sustituimos en la forma exponencial: $5^2 = 25$." }
+    ],
+    "finalAnswer": "$5^2 = 25$",
+    "pedagogicalNote": "Convertir de logarítmica a exponencial: la base se mantiene como base, el resultado del logaritmo se convierte en exponente, y el argumento se convierte en el resultado de la potencia.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Logaritmos — conversión",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar la conversión entre forma logarítmica y exponencial"
+      }
+    ]
+  },
+  {
+    "id": "example-logaritmos-3",
+    "skillId": "mat.u1.logaritmos",
+    "problem": "¿Por qué $\\log_1(5)$ no existe?",
+    "steps": [
+      { "order": 1, "explanation": "Para que $\\log_a(b)$ exista, la base debe cumplir $a > 0$ y $a \\neq 1$." },
+      { "order": 2, "explanation": "En este caso, la base es $a = 1$. Como $a = 1$, la condición $a \\neq 1$ falla." },
+      { "order": 3, "explanation": "Además, si intentamos buscar $c$ tal que $1^c = 5$, no encontramos solución: $1^c = 1$ para todo $c$. No existe exponente que haga que $1$ dé como resultado $5$." }
+    ],
+    "finalAnswer": "$\\log_1(5)$ no existe porque la base no puede ser 1",
+    "pedagogicalNote": "La base $a = 1$ hace que $a^c = 1$ siempre, sin importar el exponente. Por eso no se puede resolver $1^c = b$ para ningún $b \\neq 1$, y el logaritmo en base 1 no existe.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Logaritmos — condiciones de existencia",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar por qué la base 1 no es válida para logaritmos"
+      }
+    ]
+  },
+  {
+    "id": "example-logaritmos-4",
+    "skillId": "mat.u1.logaritmos",
+    "problem": "Calcular $\\log_{10}(1000)$",
+    "steps": [
+      { "order": 1, "explanation": "Buscamos $c$ tal que $10^c = 1000$." },
+      { "order": 2, "explanation": "Evaluamos: $10^1 = 10$, $10^2 = 100$, $10^3 = 1000$. Encontramos $c = 3$." },
+      { "order": 3, "explanation": "Resultado: $\\log_{10}(1000) = 3$." }
+    ],
+    "finalAnswer": "$\\log_{10}(1000) = 3$",
+    "pedagogicalNote": "El logaritmo decimal (base 10) es muy común. Para potencias de 10, el logaritmo es simplemente la cantidad de ceros: $\\log_{10}(10^n) = n$.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Logaritmos — valores simples",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Practicar el cálculo de logaritmos con base 10 y potencias de 10"
+      }
+    ]
+  },
+  {
+    "id": "example-logaritmos-5",
+    "skillId": "mat.u1.logaritmos",
+    "problem": "Un alumno dice: '$\\log_2(8) = 2$ porque $2^2 = 4$'. ¿Qué error cometió?",
+    "steps": [
+      { "order": 1, "explanation": "El alumno confunde el resultado del logaritmo con otro valor. $\\log_2(8)$ busca el exponente $c$ tal que $2^c = 8$." },
+      { "order": 2, "explanation": "El alumno dice que $c = 2$ porque $2^2 = 4$. Pero $4 \\neq 8$, así que $c = 2$ no es correcto." },
+      { "order": 3, "explanation": "El valor correcto es $c = 3$ porque $2^3 = 8$. El error fue confundir el resultado: tomó un exponente que da un resultado distinto al argumento." }
+    ],
+    "finalAnswer": "El error es confundir el resultado: $\\log_2(8) = 3$, no 2, porque $2^3 = 8$",
+    "pedagogicalNote": "Error frecuente: confundir el exponente que da un resultado cercano. Siempre verificá: $a^c$ debe ser exactamente igual a $b$.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Logaritmos — errores comunes",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar a detectar errores en el cálculo de logaritmos"
+      }
+    ]
   }
 ]

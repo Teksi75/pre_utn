@@ -8,6 +8,7 @@ const SKILL_DISPLAY_NAMES: Record<string, string> = {
   "mat.u1.intervalos": "Intervalos",
   "mat.u1.potencias_raices": "Potencias y raíces",
   "mat.u1.racionalizacion": "Racionalización de denominadores",
+  "mat.u1.logaritmos": "Logaritmos",
 };
 
 export default function LearnMatematicaPage() {

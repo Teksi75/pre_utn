@@ -41,6 +41,12 @@ describe("Error Taxonomy", () => {
         "u1_rac_confunde_raiz_potencia",
         "u1_rac_usa_exponente_negativo",
         "u1_rac_pierde_equivalencia",
+        "u1_log_base_invalida",
+        "u1_log_argumento_no_positivo",
+        "u1_log_confunde_base_argumento",
+        "u1_log_confunde_resultado_exponente",
+        "u1_log_conversion_exponencial",
+        "u1_log_propiedad_aplicada_mal",
         "u1_error_intervalo",
         "u1_extremo_inclusion",
         "u1_propiedad_operacion",
@@ -132,6 +138,25 @@ describe("Error Taxonomy", () => {
         "u1_pertenencia_vs_inclusion",
         "u1_inclusion_chain_order",
         "u1_n_sin_cero",
+      ];
+      for (const tagId of newTags) {
+        const found = lookupTag(tagId);
+        expect(found, `Tag ${tagId} should be defined in the taxonomy`).toBeDefined();
+        expect(found!.id).toBe(tagId);
+        expect(found!.unit).toBe(1);
+        expect(found!.description).toBeTruthy();
+        expect(found!.examples.length).toBeGreaterThan(0);
+      }
+    });
+
+    test("each new logaritmos error tag is lookupable", () => {
+      const newTags = [
+        "u1_log_base_invalida",
+        "u1_log_argumento_no_positivo",
+        "u1_log_confunde_base_argumento",
+        "u1_log_confunde_resultado_exponente",
+        "u1_log_conversion_exponencial",
+        "u1_log_propiedad_aplicada_mal",
       ];
       for (const tagId of newTags) {
         const found = lookupTag(tagId);

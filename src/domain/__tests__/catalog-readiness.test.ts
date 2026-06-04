@@ -14,6 +14,7 @@ const PILOT_SKILL_IDS = [
   "mat.u1.potencias_raices",
   "mat.u1.racionalizacion",
   "mat.u1.intervalos",
+  "mat.u1.logaritmos",
 ] as const;
 
 describe("getSkillComponents", () => {
@@ -75,31 +76,31 @@ describe("isSkillReady", () => {
   });
 
   test("returns missing components for non-pilot skill", () => {
-    const result = isSkillReady("mat.u1.logaritmos");
+    const result = isSkillReady("mat.u1.complejos");
     expect(result.ready).toBe(false);
     expect(result.missing.length).toBeGreaterThan(0);
   });
 
   test("non-pilot skill is missing theory", () => {
-    const result = isSkillReady("mat.u1.logaritmos");
+    const result = isSkillReady("mat.u1.complejos");
     expect(result.missing).toContain("theory");
   });
 
   test("non-pilot skill is missing examples", () => {
-    const result = isSkillReady("mat.u1.logaritmos");
+    const result = isSkillReady("mat.u1.complejos");
     expect(result.missing).toContain("examples");
   });
 });
 
 describe("no exercise available scenario", () => {
   test("skill with no exercises reports exercises component as not present", () => {
-    const components = getSkillComponents("mat.u1.logaritmos");
+    const components = getSkillComponents("mat.u1.complejos");
     const exercises = components.find((c) => c.name === "exercises");
     expect(exercises?.present).toBe(false);
   });
 
   test("skill with no exercises is not ready", () => {
-    const result = isSkillReady("mat.u1.logaritmos");
+    const result = isSkillReady("mat.u1.complejos");
     expect(result.ready).toBe(false);
     expect(result.missing).toContain("exercises");
   });
@@ -143,7 +144,6 @@ describe("pilot skill readiness integration", () => {
 describe("recommendation safety", () => {
   test("PILOT_SKILLS does not contain downstream not-ready skills", () => {
     const downstreamSkills = [
-      "mat.u1.logaritmos",
       "mat.u1.exponenciales",
       "mat.u1.complejos",
     ];
@@ -155,7 +155,6 @@ describe("recommendation safety", () => {
 
   test("not-ready downstream skills are not recommended via readiness", () => {
     const downstreamSkills = [
-      "mat.u1.logaritmos",
       "mat.u1.exponenciales",
       "mat.u1.complejos",
     ];

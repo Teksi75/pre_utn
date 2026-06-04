@@ -742,5 +742,151 @@
     "expectedAnswer": "(2, -1)",
     "commonErrorTags": [],
     "pedagogicalNote": "El vértice de una parábola se encuentra con x = -b/(2a)."
+  },
+
+  {
+    "id": "ex.u1.logaritmos.1",
+    "skillId": "mat.u1.logaritmos",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "category": "definicion",
+    "prompt": "¿Qué significa $\\log_2(8) = 3$?",
+    "expectedAnswer": "Que $2^3 = 8$",
+    "options": ["Que $2^3 = 8$", "Que $3^2 = 8$", "Que $2 \\times 3 = 8$", "Que $8^3 = 2$"],
+    "commonErrorTags": ["u1_log_confunde_resultado_exponente"],
+    "pedagogicalNote": "El logaritmo es el exponente. $\\log_a(b) = c$ significa $a^c = b$.",
+    "relatedTheoryIds": ["theory-logaritmos"]
+  },
+  {
+    "id": "ex.u1.logaritmos.2",
+    "skillId": "mat.u1.logaritmos",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "category": "conversion",
+    "prompt": "Convertí a forma exponencial: $\\log_3(81) = 4$",
+    "expectedAnswer": "$3^4 = 81$",
+    "options": ["$3^4 = 81$", "$4^3 = 81$", "$3^{81} = 4$", "$81^3 = 4$"],
+    "commonErrorTags": ["u1_log_conversion_exponencial"],
+    "pedagogicalNote": "Conversión: $\\log_a(b) = c \\Leftrightarrow a^c = b$. La base se mantiene, el resultado se convierte en exponente.",
+    "relatedTheoryIds": ["theory-logaritmos"]
+  },
+  {
+    "id": "ex.u1.logaritmos.3",
+    "skillId": "mat.u1.logaritmos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "conversion",
+    "prompt": "Convertí a forma logarítmica: $5^2 = 25$",
+    "expectedAnswer": "$\\log_5(25) = 2$",
+    "options": ["$\\log_5(25) = 2$", "$\\log_{25}(5) = 2$", "$\\log_2(25) = 5$", "$\\log_5(2) = 25$"],
+    "commonErrorTags": ["u1_log_conversion_exponencial", "u1_log_confunde_base_argumento"],
+    "pedagogicalNote": "De exponencial a logarítmica: la base se mantiene como base, el exponente se convierte en resultado, el resultado se convierte en argumento.",
+    "relatedTheoryIds": ["theory-logaritmos"]
+  },
+  {
+    "id": "ex.u1.logaritmos.4",
+    "skillId": "mat.u1.logaritmos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "existencia",
+    "prompt": "¿Cuál de estos logaritmos NO existe?",
+    "expectedAnswer": "$\\log_1(5)$",
+    "options": ["$\\log_1(5)$", "$\\log_2(8)$", "$\\log_{10}(100)$", "$\\log_3(27)$"],
+    "commonErrorTags": ["u1_log_base_invalida"],
+    "pedagogicalNote": "La base no puede ser 1. Si $a = 1$, entonces $1^c = 1$ para todo $c$, así que no se puede resolver $1^c = 5$.",
+    "relatedTheoryIds": ["theory-logaritmos"]
+  },
+  {
+    "id": "ex.u1.logaritmos.5",
+    "skillId": "mat.u1.logaritmos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "existencia",
+    "prompt": "¿Cuál de estos logaritmos NO existe en los reales?",
+    "expectedAnswer": "$\\log_2(-4)$",
+    "options": ["$\\log_2(-4)$", "$\\log_2(16)$", "$\\log_3(81)$", "$\\log_5(1)$"],
+    "commonErrorTags": ["u1_log_argumento_no_positivo"],
+    "pedagogicalNote": "El argumento debe ser positivo. No se puede calcular el logaritmo de un número negativo ni de cero.",
+    "relatedTheoryIds": ["theory-logaritmos"]
+  },
+  {
+    "id": "ex.u1.logaritmos.6",
+    "skillId": "mat.u1.logaritmos",
+    "type": "numerical",
+    "difficulty": 1,
+    "category": "valor_simple",
+    "prompt": "Calcula $\\log_2(16)$",
+    "expectedAnswer": "4",
+    "commonErrorTags": ["u1_log_confunde_resultado_exponente"],
+    "pedagogicalNote": "Buscamos $c$ tal que $2^c = 16$. Como $2^4 = 16$, el resultado es 4.",
+    "relatedTheoryIds": ["theory-logaritmos"]
+  },
+  {
+    "id": "ex.u1.logaritmos.7",
+    "skillId": "mat.u1.logaritmos",
+    "type": "numerical",
+    "difficulty": 1,
+    "category": "valor_simple",
+    "prompt": "Calcula $\\log_{10}(100)$",
+    "expectedAnswer": "2",
+    "commonErrorTags": ["u1_log_confunde_resultado_exponente"],
+    "pedagogicalNote": "Buscamos $c$ tal que $10^c = 100$. Como $10^2 = 100$, el resultado es 2.",
+    "relatedTheoryIds": ["theory-logaritmos"]
+  },
+  {
+    "id": "ex.u1.logaritmos.8",
+    "skillId": "mat.u1.logaritmos",
+    "type": "numerical",
+    "difficulty": 1,
+    "category": "propiedades_basicas",
+    "prompt": "Calcula $\\log_5(1)$",
+    "expectedAnswer": "0",
+    "commonErrorTags": ["u1_log_propiedad_aplicada_mal"],
+    "pedagogicalNote": "Propiedad clave: $\\log_a(1) = 0$ siempre, porque $a^0 = 1$ para cualquier base válida.",
+    "relatedTheoryIds": ["theory-logaritmos"]
+  },
+  {
+    "id": "ex.u1.logaritmos.9",
+    "skillId": "mat.u1.logaritmos",
+    "type": "numerical",
+    "difficulty": 1,
+    "category": "propiedades_basicas",
+    "prompt": "Calcula $\\log_7(7)$",
+    "expectedAnswer": "1",
+    "commonErrorTags": ["u1_log_propiedad_aplicada_mal"],
+    "pedagogicalNote": "Propiedad clave: $\\log_a(a) = 1$ siempre, porque $a^1 = a$.",
+    "relatedTheoryIds": ["theory-logaritmos"]
+  },
+  {
+    "id": "ex.u1.logaritmos.10",
+    "skillId": "mat.u1.logaritmos",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "error_deteccion",
+
+    "prompt": "Un alumno dice: '$\\log_2(8) = 2$ porque $2^2 = 4$'. ¿Qué error cometió?",
+    "expectedAnswer": "Confundió el resultado: $\\log_2(8) = 3$ porque $2^3 = 8$",
+    "options": [
+      "Confundió el resultado: $\\log_2(8) = 3$ porque $2^3 = 8$",
+      "El resultado es correcto, no hay error",
+      "Debió usar base 8 en vez de base 2",
+      "El logaritmo de 8 no existe en base 2"
+    ],
+    "commonErrorTags": ["u1_log_confunde_resultado_exponente"],
+    "pedagogicalNote": "Error frecuente: tomar un exponente que da un resultado distinto al argumento. Siempre verificá que $a^c$ sea exactamente $b$.",
+    "relatedTheoryIds": ["theory-logaritmos"]
+  },
+  {
+    "id": "ex.u1.logaritmos.11",
+    "skillId": "mat.u1.logaritmos",
+    "type": "true-false",
+    "difficulty": 1,
+    "category": "propiedades_basicas",
+    "prompt": "Verdadero o falso: $\\log_5(1) = 0$",
+    "expectedAnswer": "Verdadero",
+    "options": ["Verdadero", "Falso"],
+    "commonErrorTags": ["u1_log_propiedad_aplicada_mal"],
+    "pedagogicalNote": "Propiedad fundamental: $\\log_a(1) = 0$ para cualquier base válida, porque $a^0 = 1$.",
+    "relatedTheoryIds": ["theory-logaritmos"]
   }
 ]

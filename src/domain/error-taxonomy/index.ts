@@ -112,6 +112,70 @@ const TAXONOMY: readonly ErrorTag[] = [
       "Racionalizar 1/(√5 - 2) y obtener (√5 + 2)/(-1) en vez de √5 + 2",
     ],
   },
+
+  // Unit 1: Logaritmos — error tags backed by the Unit 1 SDD sequence
+  // and regression coverage in src/domain/__tests__/logaritmos-domain.test.ts.
+  {
+    id: "u1_log_base_invalida",
+    unit: 1,
+    description:
+      "Error al evaluar un logaritmo con base inválida: usa base ≤ 0 o base = 1. La base debe ser positiva y distinta de 1: a > 0 ∧ a ≠ 1.",
+    examples: [
+      "Calcular $\\log_{-2}(8)$ como si fuera válido",
+      "Calcular $\\log_{1}(5)$ creyendo que da 0",
+    ],
+  },
+  {
+    id: "u1_log_argumento_no_positivo",
+    unit: 1,
+    description:
+      "Error al evaluar un logaritmo con argumento no positivo: intenta calcular logaritmo de cero o de un número negativo. El argumento debe ser estrictamente positivo: b > 0.",
+    examples: [
+      "Calcular $\\log_{2}(0)$ como si diera 0",
+      "Calcular $\\log_{3}(-9)$ como si diera 2",
+    ],
+  },
+  {
+    id: "u1_log_confunde_base_argumento",
+    unit: 1,
+    description:
+      "Error al identificar la base y el argumento en un logaritmo: confunde cuál es la base y cuál es el argumento, intercambiando sus roles.",
+    examples: [
+      "En $\\log_{2}(8)$, tomar 8 como base y 2 como argumento",
+      "En $\\log_{10}(100)$, confundir y pensar que la base es 100",
+    ],
+  },
+  {
+    id: "u1_log_confunde_resultado_exponente",
+    unit: 1,
+    description:
+      "Error al interpretar el resultado de un logaritmo: confunde el valor del logaritmo con la base o el argumento, en lugar de reconocer que es el exponente al que hay que elevar la base para obtener el argumento.",
+    examples: [
+      "Decir que $\\log_{2}(8) = 2$ porque $2^2 = 4$ en vez de $2^3 = 8$",
+      "Decir que $\\log_{10}(1000) = 100$ en vez de 3",
+    ],
+  },
+  {
+    id: "u1_log_conversion_exponencial",
+    unit: 1,
+    description:
+      "Error al convertir entre forma logarítmica y exponencial: aplica incorrectamente la equivalencia $\\log_a(b) = c \\Leftrightarrow a^c = b$.",
+    examples: [
+      "Convertir $\\log_{2}(8) = 3$ como $2^8 = 3$ en vez de $2^3 = 8$",
+      "Convertir $5^2 = 25$ como $\\log_{5}(2) = 25$ en vez de $\\log_{5}(25) = 2$",
+    ],
+  },
+  {
+    id: "u1_log_propiedad_aplicada_mal",
+    unit: 1,
+    description:
+      "Error al aplicar propiedades básicas de logaritmos: confunde producto con suma, cociente con resta, o potencia con multiplicación de manera incorrecta.",
+    examples: [
+      "Aplicar $\\log(a \\cdot b) = \\log(a) \\cdot \\log(b)$ en vez de $\\log(a) + \\log(b)$",
+      "Aplicar $\\log(a^n) = n \\cdot \\log(a)$ como $\\log(a^n) = \\log(a)^n$",
+    ],
+  },
+
   {
     id: "u1_error_intervalo",
     unit: 1,
