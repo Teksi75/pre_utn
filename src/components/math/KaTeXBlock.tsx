@@ -9,6 +9,10 @@ interface KaTeXBlockProps {
   readonly className?: string;
 }
 
+export function getKaTeXContainerTag(displayMode: boolean): "div" | "span" {
+  return displayMode ? "div" : "span";
+}
+
 /**
  * Renders a single LaTeX expression into a div via KaTeX.
  * Uses ref + useEffect to render client-side only, avoiding SSR issues.
@@ -18,7 +22,7 @@ export function KaTeXBlock({
   displayMode = false,
   className,
 }: KaTeXBlockProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -29,9 +33,23 @@ export function KaTeXBlock({
     });
   }, [expression, displayMode]);
 
+  if (getKaTeXContainerTag(displayMode) === "div") {
+    return (
+      <div
+        ref={(node) => {
+          containerRef.current = node;
+        }}
+        className={className}
+        aria-label={expression}
+      />
+    );
+  }
+
   return (
-    <div
-      ref={containerRef}
+    <span
+      ref={(node) => {
+        containerRef.current = node;
+      }}
       className={className}
       aria-label={expression}
     />

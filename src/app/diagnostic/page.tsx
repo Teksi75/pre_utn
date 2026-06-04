@@ -108,13 +108,17 @@ export default function DiagnosticPage() {
 
   if (phase === "loading") {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-[var(--text-2xl)] font-bold text-brand-900 mb-6">
-          Diagnóstico
-        </h1>
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--color-brand-900)]">
+            Diagnóstico
+          </h1>
+        </div>
         <div className="text-center py-12">
-          <div className="inline-block w-8 h-8 border-3 border-brand-300 border-t-brand-700 rounded-full animate-spin mb-4" />
-          <p className="text-brand-500 text-sm">Preparando diagnóstico...</p>
+          <div className="inline-block w-8 h-8 border-3 border-[var(--color-brand-300)] border-t-[var(--color-brand-700)] rounded-full animate-spin mb-4" />
+          <p className="text-[var(--color-brand-500)] text-sm">
+            Preparando diagnóstico...
+          </p>
         </div>
       </div>
     );
@@ -122,22 +126,22 @@ export default function DiagnosticPage() {
 
   if (phase === "error") {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-[var(--text-2xl)] font-bold text-brand-900 mb-6">
-          Diagnóstico
-        </h1>
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--color-brand-900)]">
+            Diagnóstico
+          </h1>
+          <Link
+            href="/"
+            className="text-sm text-[var(--color-brand-700)] hover:text-[var(--color-brand-900)] font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-[var(--color-brand-100)] transition-colors focus-visible:shadow-[var(--ring-focus)]"
+          >
+            ← Volver al inicio
+          </Link>
+        </div>
         <div role="alert">
           <Card variant="accent" className="p-4 text-sm text-amber-800">
             {errorMessage}
           </Card>
-        </div>
-        <div className="mt-4">
-          <Link
-            href="/"
-            className="text-sm text-brand-700 hover:text-brand-900 font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-brand-100 transition-colors focus-visible:shadow-[var(--ring-focus)]"
-          >
-            ← Volver al inicio
-          </Link>
         </div>
       </div>
     );
@@ -175,7 +179,18 @@ export default function DiagnosticPage() {
     };
 
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--color-brand-900)]">
+            Diagnóstico
+          </h1>
+          <Link
+            href="/"
+            className="text-sm text-[var(--color-brand-700)] hover:text-[var(--color-brand-900)] font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-[var(--color-brand-100)] transition-colors focus-visible:shadow-[var(--ring-focus)]"
+          >
+            ← Inicio
+          </Link>
+        </div>
         <ResultsDisplay
           estimates={estimates}
           suggestions={suggestions}
@@ -188,19 +203,36 @@ export default function DiagnosticPage() {
 
   // phase === "question"
   const currentExercise = exercises[currentIndex];
+  const progressPercent = exercises.length > 0
+    ? Math.round(((currentIndex) / exercises.length) * 100)
+    : 0;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-[var(--text-2xl)] font-bold text-brand-900">
+        <h1 className="text-[var(--text-2xl)] font-bold text-[var(--color-brand-900)]">
           Diagnóstico
         </h1>
         <Link
           href="/"
-          className="text-sm text-brand-700 hover:text-brand-900 font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-brand-100 transition-colors focus-visible:shadow-[var(--ring-focus)]"
+          className="text-sm text-[var(--color-brand-700)] hover:text-[var(--color-brand-900)] font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-[var(--color-brand-100)] transition-colors focus-visible:shadow-[var(--ring-focus)]"
         >
           ← Inicio
         </Link>
+      </div>
+
+      {/* Fine progress bar */}
+      <div className="mb-6" role="progressbar" aria-valuenow={progressPercent} aria-valuemin={0} aria-valuemax={100} aria-label={`Progreso: ${currentIndex + 1} de ${exercises.length}`}>
+        <div className="flex items-center justify-between text-xs text-[var(--color-brand-500)] mb-1.5">
+          <span>Pregunta {currentIndex + 1} de {exercises.length}</span>
+          <span>{progressPercent}%</span>
+        </div>
+        <div className="h-1.5 rounded-full bg-[var(--color-brand-200)] overflow-hidden">
+          <div
+            className="h-full rounded-full bg-[var(--color-accent-500)] transition-[width] duration-[var(--duration-normal)]"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
       </div>
 
       <div aria-live="polite" aria-atomic="false">
@@ -213,7 +245,7 @@ export default function DiagnosticPage() {
             disabled={isEvaluating}
           />
         ) : (
-          <div className="text-center py-8 text-brand-500">
+          <div className="text-center py-8 text-[var(--color-brand-500)]">
             No hay ejercicios disponibles.
           </div>
         )}

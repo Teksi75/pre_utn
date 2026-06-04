@@ -24,8 +24,6 @@ export function HomeNextStepClient() {
 
   useEffect(() => {
     const progress = loadProgress();
-    // `readySkills` is the subset of pilot skills that can actually be
-    // practiced right now — used to drive the next-step recommendation.
     const readySkills = PILOT_SKILLS.filter(
       (skill) => isSkillReady(skill.skillId).ready
     ).map((skill) => ({
@@ -41,13 +39,13 @@ export function HomeNextStepClient() {
       <section
         aria-busy="true"
         aria-live="polite"
-        className="rounded-[var(--radius-card)] border border-brand-200 bg-white p-5 shadow-[var(--shadow-card)]"
+        className="rounded-[var(--radius-card)] border border-[var(--color-brand-200)] bg-white p-5 shadow-[var(--shadow-card)]"
       >
         <div className="animate-pulse space-y-3">
-          <div className="h-3 bg-brand-200 rounded w-1/3" />
-          <div className="h-5 bg-brand-200 rounded w-3/4" />
-          <div className="h-4 bg-brand-200 rounded w-full" />
-          <div className="h-10 bg-brand-200 rounded-[var(--radius-button)] w-40" />
+          <div className="h-3 bg-[var(--color-brand-200)] rounded w-1/3" />
+          <div className="h-5 bg-[var(--color-brand-200)] rounded w-3/4" />
+          <div className="h-4 bg-[var(--color-brand-200)] rounded w-full" />
+          <div className="h-10 bg-[var(--color-brand-200)] rounded-[var(--radius-button)] w-40" />
         </div>
       </section>
     );
@@ -68,11 +66,11 @@ export function HomeNextStepClient() {
         </p>
         <h2
           id="home-hero-title"
-          className="mt-2 text-[var(--text-2xl)] font-bold text-brand-900 tracking-tight"
+          className="mt-2 text-[var(--text-2xl)] font-bold text-[var(--color-brand-900)] tracking-tight"
         >
           {nextStep.title}
         </h2>
-        <p className="mt-2 text-sm leading-[var(--leading-relaxed)] text-brand-700 max-w-2xl">
+        <p className="mt-2 text-sm leading-[var(--leading-relaxed)] text-[var(--color-brand-700)] max-w-2xl">
           {nextStep.description}
         </p>
         <Link
@@ -83,27 +81,24 @@ export function HomeNextStepClient() {
         </Link>
       </article>
 
-      {/* Study plan — sits between Zone 1 (hero) and Zone 2 (roadmap)
-          when the student has generated one. High visual weight on the
-          home page because the plan is the primary entry point for
-          post-diagnostic practice. */}
+      {/* Study plan */}
       <StudyPlanSection />
 
-      {/* Zone 2 — Tu camino (MEDIUM visual weight), embedded under the hero */}
+      {/* Zone 2 — Tu camino (MEDIUM visual weight) */}
       {nextStep.roadmapSkills.length > 0 && (
         <article
           aria-labelledby="home-roadmap-title"
-          className="rounded-[var(--radius-card)] border border-brand-200 bg-white p-5 shadow-[var(--shadow-card)]"
+          className="rounded-[var(--radius-card)] border border-[var(--color-brand-200)] bg-white p-5 shadow-[var(--shadow-card)]"
         >
           <div className="mb-4 flex items-baseline justify-between gap-3 flex-wrap">
             <h3
               id="home-roadmap-title"
-              className="text-sm font-semibold uppercase tracking-wide text-brand-700"
+              className="text-sm font-semibold uppercase tracking-wide text-[var(--color-brand-700)]"
             >
               Tu camino
             </h3>
             {nextStep.diagnosticSummary && (
-              <span className="text-xs text-brand-500">
+              <span className="text-xs text-[var(--color-brand-500)]">
                 Diagnóstico: {nextStep.diagnosticSummary.weakSkills} de{" "}
                 {nextStep.diagnosticSummary.totalSkills} habilidades por
                 reforzar

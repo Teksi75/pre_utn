@@ -21,7 +21,7 @@
       {
         "id": "concept-familia-conjuntos-numericos",
         "title": "4. La familia de conjuntos numéricos",
-        "body": "Idea principal: en Unidad 1 aparecen $\\mathbb{N}$ naturales, $\\mathbb{Z}$ enteros, $\\mathbb{Q}$ racionales, irracionales, $\\mathbb{R}$ reales y $\\mathbb{C}$ complejos. Cada conjunto responde a una necesidad nueva: contar, usar negativos, dividir, medir cantidades no fraccionarias y representar soluciones que no son reales."
+        "body": "Idea principal: en Unidad 1 aparecen $\\mathbb{N}$ naturales, $\\mathbb{Z}$ enteros, $\\mathbb{Q}$ racionales, $\\mathbb{I}$ irracionales, $\\mathbb{R}$ reales y $\\mathbb{C}$ complejos. Cada conjunto responde a una necesidad nueva: contar, usar negativos, dividir, medir cantidades no fraccionarias y representar soluciones que no son reales."
       },
       {
         "id": "concept-atencion-cero-naturales",
@@ -31,7 +31,7 @@
       {
         "id": "concept-mapa-inclusion",
         "title": "6. Mapa de inclusión",
-        "body": "Idea principal: la cadena base es $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$. Los irracionales también pertenecen a $\\mathbb{R}$, pero están separados de $\\mathbb{Q}$: no son racionales. Más adelante se amplía a $\\mathbb{R} \\subset \\mathbb{C}$. Ejemplo: $5 \\in \\mathbb{N}$, entonces también $5 \\in \\mathbb{Z}$, $5 \\in \\mathbb{Q}$ y $5 \\in \\mathbb{R}$."
+        "body": "Idea principal: la cadena base es $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$. Los irracionales se representan como $\\mathbb{I}$, también pertenecen a $\\mathbb{R}$, pero están separados de $\\mathbb{Q}$: $\\mathbb{I} = \\mathbb{R} \\setminus \\mathbb{Q}$. Más adelante se amplía a $\\mathbb{R} \\subset \\mathbb{C}$. Ejemplo: $5 \\in \\mathbb{N}$, entonces también $5 \\in \\mathbb{Z}$, $5 \\in \\mathbb{Q}$ y $5 \\in \\mathbb{R}$."
       },
       {
         "id": "concept-racionales-definicion",
@@ -66,7 +66,7 @@
       {
         "id": "concept-cierre-dominio",
         "title": "13. Lo que tenés que dominar antes de practicar",
-        "body": "Cierre: antes de pasar a práctica tenés que reconocer los símbolos $\\in$, $\\notin$, $\\subset$, $\\cup$, $\\cap$; diferenciar pertenencia de inclusión; ubicar $\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$, irracionales, $\\mathbb{R}$ y $\\mathbb{C}$; clasificar un número por el conjunto más pequeño; y explicar por qué $\\sqrt{-4}$ no pertenece a $\\mathbb{R}$ aunque se estudie más adelante en $\\mathbb{C}$."
+        "body": "Cierre: antes de pasar a práctica tenés que reconocer los símbolos $\\in$, $\\notin$, $\\subset$, $\\cup$, $\\cap$; diferenciar pertenencia de inclusión; ubicar $\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$, $\\mathbb{I}$, $\\mathbb{R}$ y $\\mathbb{C}$; clasificar un número por el conjunto más pequeño; y explicar por qué $\\sqrt{-4}$ no pertenece a $\\mathbb{R}$ aunque se estudie más adelante en $\\mathbb{C}$."
       }
     ],
     "notation": [

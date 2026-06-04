@@ -322,15 +322,15 @@
     "category": "clasificacion",
     "tags": ["clasificacion", "raiz_cuadrada", "irracional"],
     "prompt": "¿A qué conjuntos pertenece $\\sqrt{2}$?",
-    "expectedAnswer": "Solo a $\\mathbb{R}$ (es irracional)",
+    "expectedAnswer": "A $\\mathbb{I}$ y $\\mathbb{R}$",
     "options": [
-      "Solo a $\\mathbb{R}$ (es irracional)",
+      "A $\\mathbb{I}$ y $\\mathbb{R}$",
       "$\\mathbb{Q}$ y $\\mathbb{R}$ (es racional)",
       "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$ (es entero)",
       "A ningún conjunto (no existe)"
     ],
     "commonErrorTags": ["u1_toda_raiz_irracional", "u1_confunde_racional_irracional"],
-    "pedagogicalNote": "$\\sqrt{2}$ no puede escribirse como fracción exacta, así que es irracional. Pertenece a $\\mathbb{R}$ pero NO a $\\mathbb{N}$, $\\mathbb{Z}$ ni $\\mathbb{Q}$. El conjunto más pequeño al que pertenece es $\\mathbb{R}$ (en realidad $\\mathbb{R} \\setminus \\mathbb{Q}$).",
+    "pedagogicalNote": "$\\sqrt{2}$ no puede escribirse como fracción exacta, así que es irracional. Pertenece a $\\mathbb{I}$, el conjunto de irracionales, y también a $\\mathbb{R}$. No pertenece a $\\mathbb{N}$, $\\mathbb{Z}$ ni $\\mathbb{Q}$. Recordá: $\\mathbb{I} = \\mathbb{R} \\setminus \\mathbb{Q}$.",
     "relatedTheoryIds": ["theory-conjuntos-numericos"],
     "relatedExampleIds": ["example-conjuntos-numericos-2"]
   },
@@ -342,15 +342,15 @@
     "category": "clasificacion",
     "tags": ["clasificacion", "pi", "irracional"],
     "prompt": "¿A qué conjuntos pertenece $\\pi$?",
-    "expectedAnswer": "Solo a $\\mathbb{R}$ (es irracional)",
+    "expectedAnswer": "A $\\mathbb{I}$ y $\\mathbb{R}$",
     "options": [
-      "Solo a $\\mathbb{R}$ (es irracional)",
+      "A $\\mathbb{I}$ y $\\mathbb{R}$",
       "$\\mathbb{Q}$ y $\\mathbb{R}$ (es racional)",
       "$\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$ y $\\mathbb{R}$ (es entero)",
       "A $\\mathbb{Z}$ y $\\mathbb{R}$ (es entero)"
     ],
     "commonErrorTags": ["u1_confunde_racional_irracional", "u1_toda_raiz_irracional"],
-    "pedagogicalNote": "$\\pi$ es irracional: su desarrollo decimal $3{,}14159\\ldots$ no se repite y no puede escribirse como fracción exacta. Pertenece a $\\mathbb{R}$ pero NO a $\\mathbb{N}$, $\\mathbb{Z}$ ni $\\mathbb{Q}$.",
+    "pedagogicalNote": "$\\pi$ es irracional: su desarrollo decimal $3{,}14159\\ldots$ no se repite y no puede escribirse como fracción exacta. Pertenece a $\\mathbb{I}$ y también a $\\mathbb{R}$, pero NO a $\\mathbb{N}$, $\\mathbb{Z}$ ni $\\mathbb{Q}$.",
     "relatedTheoryIds": ["theory-conjuntos-numericos"],
     "relatedExampleIds": ["example-conjuntos-numericos-2"]
   },

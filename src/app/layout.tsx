@@ -10,8 +10,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Pre UTN",
-  description: "App de preparación para el ingreso a Ingeniería UTN Mendoza",
+  title: "Ingenium — Preparación independiente para ingreso a Ingeniería",
+  description:
+    "Preuniversitario independiente para ingreso a Ingenierías. Práctica, diagnóstico y plan de estudio personalizado.",
 };
 
 export default function RootLayout({
@@ -33,6 +34,13 @@ export default function RootLayout({
         <main id="main-content" role="main">
           {children}
         </main>
+
+        <footer className="border-t border-[var(--color-brand-200)] py-4 text-center text-xs text-[var(--color-brand-500)]">
+          <p>
+            Programa independiente de preparación preuniversitaria. No afiliado
+            a instituciones universitarias.
+          </p>
+        </footer>
       </body>
     </html>
   );

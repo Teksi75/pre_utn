@@ -8,6 +8,11 @@ import {
   getSubmittedExerciseAnswer,
   isTextAnswerType,
 } from "./exercise-answer-state";
+import {
+  optionLabelClassName,
+  optionsContainerClassName,
+  optionsLegendClassName,
+} from "./exercise-layout";
 
 interface ExerciseAnswerInputProps {
   readonly exercise: Exercise;
@@ -86,8 +91,8 @@ export function ExerciseAnswerInput({
 
     return (
       <form onSubmit={handleSubmit} className="space-y-3" data-testid="answer-form-multiple-choice">
-        <fieldset disabled={disabled} className="space-y-2">
-          <legend className="text-sm font-semibold text-brand-700 mb-2">
+        <fieldset disabled={disabled} className={optionsContainerClassName("multiple-choice")}>
+          <legend className={optionsLegendClassName()}>
             Seleccioná una opción
           </legend>
           {exercise.options.map((option) => {
@@ -95,7 +100,7 @@ export function ExerciseAnswerInput({
             return (
               <label
                 key={option}
-                className={optionClassName(selected)}
+                className={`${optionLabelClassName()} ${optionClassName(selected)}`}
               >
                 <input
                   type="radio"
@@ -106,7 +111,7 @@ export function ExerciseAnswerInput({
                   onChange={() => setSelectedOption(option)}
                   className="h-4 w-4 accent-brand-900"
                 />
-                <span><RichText text={option} /></span>
+                <span className="min-w-0"><RichText text={option} /></span>
               </label>
             );
           })}
@@ -125,8 +130,8 @@ export function ExerciseAnswerInput({
   if (exercise.type === "true-false") {
     return (
       <form onSubmit={handleSubmit} className="space-y-3" data-testid="answer-form-true-false">
-        <fieldset disabled={disabled} className="space-y-2">
-          <legend className="text-sm font-semibold text-brand-700 mb-2">
+        <fieldset disabled={disabled} className={optionsContainerClassName("true-false")}>
+          <legend className={optionsLegendClassName()}>
             Seleccioná verdadero o falso
           </legend>
           {TRUE_FALSE_OPTIONS.map((option) => {

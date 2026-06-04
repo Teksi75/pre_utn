@@ -32,14 +32,14 @@ function priorityBadge(priority: SkillPriority["priority"]): PriorityBadge {
       return {
         label: "Bloqueado",
         className:
-          "text-brand-600 bg-brand-50 border border-brand-200",
+          "text-[var(--color-brand-600)] bg-[var(--color-brand-50)] border border-[var(--color-brand-200)]",
       };
     case 4:
     default:
       return {
         label: "Más adelante",
         className:
-          "text-brand-500 bg-brand-50 border border-brand-200",
+          "text-[var(--color-brand-500)] bg-[var(--color-brand-50)] border border-[var(--color-brand-200)]",
       };
   }
 }
@@ -53,7 +53,7 @@ const MASTERY_LABEL: Record<MasteryLevel, string> = {
 };
 
 const MASTERY_CLASS: Record<MasteryLevel, string> = {
-  "not-started": "text-brand-600 bg-brand-50 border-brand-200",
+  "not-started": "text-[var(--color-brand-600)] bg-[var(--color-brand-50)] border-[var(--color-brand-200)]",
   learning: "text-amber-700 bg-amber-50 border-amber-200",
   practicing: "text-amber-800 bg-amber-100 border-amber-300",
   review: "text-red-700 bg-red-50 border-red-200",
@@ -113,14 +113,14 @@ export function StudyPlanCard({
     >
       <header className="mb-4 flex items-baseline justify-between gap-3 flex-wrap">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-brand-700)]">
             Tu plan de estudio
           </p>
-          <h3 className="mt-1 text-sm font-semibold text-brand-900">
+          <h3 className="mt-1 text-sm font-semibold text-[var(--color-brand-900)]">
             Priorizado según tu diagnóstico
           </h3>
         </div>
-        <span className="text-xs text-brand-500">
+        <span className="text-xs text-[var(--color-brand-500)]">
           Creado el {formatPlanDate(studyPlan.createdAt)}
         </span>
       </header>
@@ -139,7 +139,7 @@ export function StudyPlanCard({
               data-testid="study-plan-row"
               data-skill-id={priority.skillId}
               data-priority={priority.priority}
-              className="rounded-[var(--radius-card)] border border-brand-200 bg-white p-3"
+              className="rounded-[var(--radius-card)] border border-[var(--color-brand-200)] bg-white p-3"
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0 flex-1">
@@ -157,10 +157,10 @@ export function StudyPlanCard({
                       {MASTERY_LABEL[mastery]}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm font-semibold text-brand-900">
+                  <p className="mt-2 text-sm font-semibold text-[var(--color-brand-900)]">
                     {skillLabel}
                   </p>
-                  <p className="mt-0.5 text-xs text-brand-500">
+                  <p className="mt-0.5 text-xs text-[var(--color-brand-500)]">
                     {reasonLabel(priority.reason)}
                   </p>
                   {priority.weakConcepts.length > 0 && (
@@ -188,7 +188,7 @@ export function StudyPlanCard({
                       Practicar →
                     </Link>
                   ) : (
-                    <span className="inline-flex min-h-[44px] items-center justify-center rounded-[var(--radius-button)] border border-dashed border-brand-300 bg-brand-50 px-4 py-2 text-sm text-brand-500">
+                    <span className="inline-flex min-h-[44px] items-center justify-center rounded-[var(--radius-button)] border border-dashed border-[var(--color-brand-300)] bg-[var(--color-brand-50)] px-4 py-2 text-sm text-[var(--color-brand-500)]">
                       Practicar (próximamente)
                     </span>
                   )}
@@ -202,7 +202,7 @@ export function StudyPlanCard({
       <div className="mt-4 flex justify-end">
         <Link
           href="/diagnostic"
-          className="text-sm text-brand-700 hover:text-brand-900 font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-brand-100 transition-colors focus-visible:shadow-[var(--ring-focus)]"
+          className="text-sm text-[var(--color-brand-700)] hover:text-[var(--color-brand-900)] font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-[var(--color-brand-100)] transition-colors focus-visible:shadow-[var(--ring-focus)]"
         >
           Repetir diagnóstico →
         </Link>

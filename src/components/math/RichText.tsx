@@ -10,7 +10,7 @@ interface RichTextProps {
 
 /**
  * Renders text with inline math delimited by `$...$`.
- * Plain text segments are rendered as-is; math segments via KaTeXBlock.
+ * Plain text segments are rendered as-is; math segments render inline via KaTeXBlock.
  */
 export function RichText({ text, className }: RichTextProps) {
   const segments = parseRichTextSegments(text);

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { MathThemePlate } from "@/components/math/MathThemePlate";
 import { getPracticeHrefForSuggestion } from "./practice-link";
 import type { SkillEstimate, PracticeSuggestion } from "@/domain/diagnostic/index";
 
@@ -37,6 +38,7 @@ function accuracyColor(accuracy: number): string {
 
 /**
  * Ranked skill estimates + practice links for weakest skills.
+ * Editorial visual shell with MathThemePlate decorative header.
  */
 export function ResultsDisplay({
   estimates,
@@ -53,26 +55,36 @@ export function ResultsDisplay({
   };
   return (
     <div className="space-y-6">
-      <h2 className="text-[var(--text-xl)] font-bold text-brand-900">
-        Resultados del diagnóstico
-      </h2>
-      <p className="text-xs text-brand-500">
-        Estimaciones provisionales basadas en tus respuestas.
-      </p>
+      {/* Header with decorative plate */}
+      <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-brand-200)] bg-[var(--color-brand-50)] p-5 md:p-6">
+        <MathThemePlate
+          topic="sets"
+          variant="card"
+          className="absolute inset-0 opacity-15 pointer-events-none"
+        />
+        <div className="relative z-10">
+          <h2 className="text-[var(--text-xl)] font-bold text-[var(--color-brand-900)]">
+            Resultados del diagnóstico
+          </h2>
+          <p className="text-xs text-[var(--color-brand-500)] mt-1">
+            Estimaciones provisionales basadas en tus respuestas.
+          </p>
+        </div>
+      </div>
 
       {/* All skill estimates */}
       <div className="space-y-2">
-        <h3 className="text-sm font-semibold text-brand-700">
+        <h3 className="text-sm font-semibold text-[var(--color-brand-700)]">
           Habilidades evaluadas
         </h3>
-        <div className="shadow-[var(--shadow-card)] rounded-[var(--radius-card)] divide-y divide-brand-200 bg-white border border-brand-200">
+        <div className="shadow-[var(--shadow-card)] rounded-[var(--radius-card)] divide-y divide-[var(--color-brand-200)] bg-white border border-[var(--color-brand-200)]">
           {estimates.map((est) => (
             <div key={est.skillId} className="flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 gap-2">
               <div className="min-w-0">
-                <span className="text-sm font-medium text-brand-900">
+                <span className="text-sm font-medium text-[var(--color-brand-900)]">
                   {skillLabel(est.skillId)}
                 </span>
-                <span className="text-xs text-brand-500 ml-2">
+                <span className="text-xs text-[var(--color-brand-500)] ml-2">
                   ({est.attempts} intento{est.attempts !== 1 ? "s" : ""})
                 </span>
               </div>
@@ -91,7 +103,7 @@ export function ResultsDisplay({
             </div>
           ))}
           {estimates.length === 0 && (
-            <div className="px-4 py-3 text-sm text-brand-500">
+            <div className="px-4 py-3 text-sm text-[var(--color-brand-500)]">
               No hay datos para mostrar.
             </div>
           )}
@@ -101,7 +113,7 @@ export function ResultsDisplay({
       {/* Weak-area suggestions */}
       {suggestions.length > 0 && (
         <div className="space-y-2">
-          <h3 className="text-sm font-semibold text-brand-700">
+          <h3 className="text-sm font-semibold text-[var(--color-brand-700)]">
             Áreas para practicar
           </h3>
           <div className="space-y-2">
@@ -133,7 +145,7 @@ export function ResultsDisplay({
                     return (
                       <Link
                         href={practiceHref}
-                        className="text-sm text-brand-700 hover:text-brand-900 font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-brand-100 transition-colors focus-visible:shadow-[var(--ring-focus)]"
+                        className="text-sm text-[var(--color-brand-700)] hover:text-[var(--color-brand-900)] font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-[var(--color-brand-100)] transition-colors focus-visible:shadow-[var(--ring-focus)]"
                       >
                         Practicar →
                       </Link>
@@ -158,19 +170,17 @@ export function ResultsDisplay({
         </div>
       )}
 
-      {/* Create study plan — only offered when there's at least one signal
-          (weak skills flagged OR something to plan around). Hidden once
-          the plan has been created so we don't show the button twice. */}
+      {/* Create study plan */}
       {onCreatePlan && !planCreated && suggestions.length > 0 && (
         <div
-          className="border border-brand-300 bg-brand-50 rounded-[var(--radius-card)] p-4 space-y-3"
+          className="border border-[var(--color-brand-300)] bg-[var(--color-brand-50)] rounded-[var(--radius-card)] p-4 space-y-3"
           data-testid="create-plan-card"
         >
           <div>
-            <p className="text-sm font-semibold text-brand-900">
+            <p className="text-sm font-semibold text-[var(--color-brand-900)]">
               Convertí tu diagnóstico en un plan
             </p>
-            <p className="text-xs text-brand-700 mt-1">
+            <p className="text-xs text-[var(--color-brand-700)] mt-1">
               Vamos a generar un plan priorizado de práctica basado en lo
               que acabás de responder. Lo vas a ver en la página de inicio.
             </p>
@@ -209,7 +219,7 @@ export function ResultsDisplay({
       <div className="flex flex-col sm:flex-row gap-3 pt-2">
         <Link
           href="/"
-          className="flex-1 text-center bg-brand-100 text-brand-700 px-4 py-2.5 text-sm font-medium rounded-[var(--radius-button)] hover:bg-brand-200 min-h-[44px] inline-flex items-center justify-center transition-colors focus-visible:shadow-[var(--ring-focus)]"
+          className="flex-1 text-center bg-[var(--color-brand-100)] text-[var(--color-brand-700)] px-4 py-2.5 text-sm font-medium rounded-[var(--radius-button)] hover:bg-[var(--color-brand-200)] min-h-[44px] inline-flex items-center justify-center transition-colors focus-visible:shadow-[var(--ring-focus)]"
         >
           Volver al inicio
         </Link>
