@@ -24,7 +24,7 @@
   --color-muted: #a8a29e;
 
   /* ── Typography ─────────────────────────────────────────────── */
-  --font-sans: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;

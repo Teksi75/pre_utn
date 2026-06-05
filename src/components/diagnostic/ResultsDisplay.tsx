@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { MathThemePlate } from "@/components/math/MathThemePlate";
+import { MathThemePlate } from "@/components/math-visuals/MathThemePlate";
 import { getPracticeHrefForSuggestion } from "./practice-link";
 import type { SkillEstimate, PracticeSuggestion } from "@/domain/diagnostic/index";
 
@@ -60,7 +60,8 @@ export function ResultsDisplay({
         <MathThemePlate
           topic="sets"
           variant="card"
-          className="absolute inset-0 opacity-15 pointer-events-none"
+          opacity={0.08}
+          className="absolute inset-0"
         />
         <div className="relative z-10">
           <h2 className="text-[var(--text-xl)] font-bold text-[var(--color-brand-900)]">

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { HomeNextStepClient } from "@/components/home/HomeNextStepClient";
-import { MathThemePlate } from "@/components/math/MathThemePlate";
+import { MathThemePlate } from "@/components/math-visuals/MathThemePlate";
 
 /**
  * Home page — editorial layout with hero, camino de aprendizaje, and
@@ -20,7 +20,8 @@ export default function Home() {
         <MathThemePlate
           topic="sets"
           variant="hero"
-          className="absolute inset-0 opacity-30 pointer-events-none"
+          opacity={0.1}
+          className="absolute inset-0"
         />
         <div className="relative z-10">
           <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-accent-600)] mb-2">

@@ -2,24 +2,9 @@
 
 import { ExerciseAnswerInput } from "@/components/exercises/ExerciseAnswerInput";
 import { ExerciseCard } from "@/components/practice/ExerciseCard";
-import { MathThemePlate } from "@/components/math/MathThemePlate";
+import { MathThemePlate } from "@/components/math-visuals/MathThemePlate";
+import { mathThemeForSkill } from "@/components/math-visuals/topic-map";
 import type { Exercise } from "@/domain/models/exercise";
-
-/**
- * Maps exercise skillId prefixes to MathThemePlate topics for
- * decorative visual identity on the diagnostic question screen.
- */
-function skillIdToThemeTopic(skillId: string): string {
-  if (skillId.includes("conjuntos") || skillId.includes("numeros")) return "sets";
-  if (skillId.includes("irracional")) return "irrationals";
-  if (skillId.includes("potencia") || skillId.includes("exponente")) return "powers";
-  if (skillId.includes("raiz") || skillId.includes("radical")) return "roots";
-  if (skillId.includes("intervalo")) return "intervals";
-  if (skillId.includes("valor_absoluto") || skillId.includes("absoluto")) return "absolute";
-  if (skillId.includes("logaritmo")) return "logs";
-  if (skillId.includes("complejo")) return "complex";
-  return "sets";
-}
 
 interface DiagnosticQuestionProps {
   readonly exercise: Exercise;
@@ -41,7 +26,7 @@ export function DiagnosticQuestion({
   onSubmit,
   disabled,
 }: DiagnosticQuestionProps) {
-  const themeTopic = skillIdToThemeTopic(exercise.skillId);
+  const themeTopic = mathThemeForSkill(exercise.skillId);
 
   return (
     <div className="space-y-4">
@@ -50,7 +35,8 @@ export function DiagnosticQuestion({
         <MathThemePlate
           topic={themeTopic}
           variant="background"
-          className="absolute inset-0 opacity-10 pointer-events-none"
+          opacity={0.08}
+          className="absolute inset-0"
         />
 
         {/* Topic badge */}
