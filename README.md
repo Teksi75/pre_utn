@@ -79,6 +79,34 @@ pnpm run build
 
 Abrir `http://localhost:3000` para usar la app en desarrollo.
 
+## Modo QA de contenido
+
+Para revisar una skill sin completar sus prerrequisitos, activar el modo QA de contenido en desarrollo:
+
+```bash
+NEXT_PUBLIC_ENABLE_QA_CONTENT_MODE=true pnpm dev
+```
+
+En PowerShell:
+
+```powershell
+$env:NEXT_PUBLIC_ENABLE_QA_CONTENT_MODE="true"; pnpm dev
+```
+
+También se puede dejar configurado localmente en `.env.local`:
+
+```env
+NEXT_PUBLIC_ENABLE_QA_CONTENT_MODE=true
+```
+
+Con el modo activo, abrir una skill lista por URL directa, por ejemplo:
+
+```text
+http://localhost:3000/practice?skill=mat.u1.valor_absoluto
+```
+
+Este modo es solo para QA/contenido: no desbloquea skills desconocidas o sin readiness, y no cambia el flujo pedagógico normal cuando la variable está apagada.
+
 ## Advertencia de validación
 
 Que `build`, `typecheck` y los tests pasen significa que el sistema no se rompe técnicamente.
