@@ -24,8 +24,8 @@ const VARIANT_CLASSES: Record<MathThemeVariant, string> = {
 };
 
 const DEFAULT_OPACITY: Record<MathThemeVariant, number> = {
-  hero: 0.1,
-  background: 0.08,
+  hero: 0.15,
+  background: 0.18,
   card: 0.12,
 };
 
@@ -85,9 +85,9 @@ export function MathThemePlate({
       <svg
         aria-hidden="true"
         className="h-full w-full"
-        viewBox="0 0 160 112"
+        viewBox="0 0 320 112"
         fill="none"
-        preserveAspectRatio="xMidYMid meet"
+        preserveAspectRatio="xMidYMid slice"
       >
         {renderVisual(topic)}
       </svg>
