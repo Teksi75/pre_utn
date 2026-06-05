@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { MathThemePlate } from "@/components/math-visuals/MathThemePlate";
+import { MathWatermark } from "@/components/math-visuals";
+import { resolveResultsTopic } from "./resolveResultsTopic";
 import { getPracticeHrefForSuggestion } from "./practice-link";
 import type { SkillEstimate, PracticeSuggestion } from "@/domain/diagnostic/index";
 
@@ -53,16 +54,15 @@ export function ResultsDisplay({
     const ok = onCreatePlan();
     if (ok) setPlanCreated(true);
   };
-  return (
-    <div className="relative isolate overflow-hidden rounded-[var(--radius-card)] p-4 md:p-6">
-      <MathThemePlate
-        topic="sets"
-        variant="hero"
-        opacity={0.18}
-        className="absolute -inset-x-24 -top-24 z-0 h-[42rem] w-[calc(100%+12rem)] max-w-none"
-      />
 
-      <div className="relative z-10 space-y-6">
+  // The watermark topic is the MathTheme of the weakest estimated skill.
+  // resolveResultsTopic returns "sets" when there are no estimates, so the
+  // wrapper is always given a valid topic.
+  const resultsTopic = resolveResultsTopic(estimates);
+
+  return (
+    <MathWatermark topic={resultsTopic} variant="hero" opacity={0.15}>
+      <div className="rounded-[var(--radius-card)] p-4 md:p-6 space-y-6">
         {/* Header with decorative plate */}
         <div className="app-glass-accent rounded-[var(--radius-card)] p-5 md:p-6">
           <h2 className="text-[var(--text-xl)] font-bold text-[var(--color-brand-900)]">
@@ -229,6 +229,6 @@ export function ResultsDisplay({
         </Button>
       </div>
     </div>
-    </div>
+    </MathWatermark>
   );
 }
