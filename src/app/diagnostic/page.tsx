@@ -225,7 +225,6 @@ export default function DiagnosticPage() {
       <MathWatermark
         skillId={currentExercise?.skillId}
         variant="hero"
-        opacity={0.15}
       >
         <section className="rounded-[var(--radius-card)] p-4 md:p-6">
           {/* Fine progress bar */}
