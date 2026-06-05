@@ -52,14 +52,14 @@ describe("MathWatermark wrapper", () => {
     expect(wrapper).toContain('"sets"');
   });
 
-  test("defines default opacities per variant: hero 0.15, background 0.18, card 0.12", () => {
+  test("defines default opacities per variant: hero 0.40, background 0.45, card 0.35 (visible against light background)", () => {
     const wrapper = source(wrapperPath);
     const opacityBlock = wrapper.match(/DEFAULT_OPACITY[^}]+\}/);
     expect(opacityBlock).not.toBeNull();
     const block = opacityBlock![0];
-    expect(block).toMatch(/hero:\s*0\.15/);
-    expect(block).toMatch(/background:\s*0\.18/);
-    expect(block).toMatch(/card:\s*0\.12/);
+    expect(block).toMatch(/hero:\s*0\.40/);
+    expect(block).toMatch(/background:\s*0\.45/);
+    expect(block).toMatch(/card:\s*0\.35/);
   });
 
   test("defaults variant to background when omitted", () => {

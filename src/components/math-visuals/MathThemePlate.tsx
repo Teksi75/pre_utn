@@ -24,9 +24,9 @@ const VARIANT_CLASSES: Record<MathThemeVariant, string> = {
 };
 
 const DEFAULT_OPACITY: Record<MathThemeVariant, number> = {
-  hero: 0.15,
-  background: 0.18,
-  card: 0.12,
+  hero: 0.40,
+  background: 0.45,
+  card: 0.35,
 };
 
 const TOPIC_COLOR_CLASSES: Record<MathTheme, string> = {
@@ -87,9 +87,11 @@ export function MathThemePlate({
         className="h-full w-full"
         viewBox="0 0 320 112"
         fill="none"
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio="xMaxYMid slice"
       >
-        {renderVisual(topic)}
+        <g transform="translate(160, 0)">
+          {renderVisual(topic)}
+        </g>
       </svg>
     </div>
   );

@@ -15,9 +15,9 @@ export interface MathWatermarkProps {
 }
 
 const DEFAULT_OPACITY: Record<MathThemeVariant, number> = {
-  hero: 0.15,
-  background: 0.18,
-  card: 0.12,
+  hero: 0.40,
+  background: 0.45,
+  card: 0.35,
 };
 
 const DEFAULT_VARIANT: MathThemeVariant = "background";

@@ -45,26 +45,26 @@ describe("math visual system", () => {
     expect(plate).toContain('aria-hidden="true"');
     expect(plate).toContain("pointer-events-none");
     expect(plate).toContain("viewBox=\"0 0 320 112\"");
-    expect(plate).toContain("preserveAspectRatio=\"xMidYMid slice\"");
+    expect(plate).toContain("preserveAspectRatio=\"xMaxYMid slice\"");
     expect(plate).toContain("opacity ?? DEFAULT_OPACITY[variant]");
   });
 
-  test("MathThemePlate uses 320x112 viewBox with xMidYMid slice for edge-to-edge fill", () => {
+  test("MathThemePlate uses 320x112 viewBox with xMaxYMid slice for right-aligned edge-to-edge fill", () => {
     const plate = source("src/components/math-visuals/MathThemePlate.tsx");
     expect(plate).toContain("viewBox=\"0 0 320 112\"");
-    expect(plate).toContain("preserveAspectRatio=\"xMidYMid slice\"");
+    expect(plate).toContain("preserveAspectRatio=\"xMaxYMid slice\"");
     expect(plate).not.toContain("viewBox=\"0 0 160 112\"");
     expect(plate).not.toContain("preserveAspectRatio=\"xMidYMid meet\"");
   });
 
-  test("MathThemePlate default opacities are 0.15 hero, 0.18 background, 0.12 card", () => {
+  test("MathThemePlate default opacities are 0.40 hero, 0.45 background, 0.35 card", () => {
     const plate = source("src/components/math-visuals/MathThemePlate.tsx");
     const opacityBlock = plate.match(/DEFAULT_OPACITY[^}]+\}/);
     expect(opacityBlock).not.toBeNull();
     const block = opacityBlock![0];
-    expect(block).toMatch(/hero:\s*0\.15/);
-    expect(block).toMatch(/background:\s*0\.18/);
-    expect(block).toMatch(/card:\s*0\.12/);
+    expect(block).toMatch(/hero:\s*0\.40/);
+    expect(block).toMatch(/background:\s*0\.45/);
+    expect(block).toMatch(/card:\s*0\.35/);
   });
 
   test("each visual is implemented as code SVG, not as an external bitmap asset", () => {
