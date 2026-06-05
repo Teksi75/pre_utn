@@ -24,7 +24,7 @@
   --color-muted: #a8a29e;
 
   /* ── Typography ─────────────────────────────────────────────── */
-  --font-sans: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;
@@ -67,6 +67,34 @@
 
   /* ── Focus ring ────────────────────────────────────────────── */
   --ring-focus: 0 0 0 3px rgba(217, 119, 6, 0.35);
+}
+
+/* ── Decorative technical backgrounds ─────────────────────────── */
+.app-watermark {
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.app-glass-surface {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(231, 229, 228, 0.9);
+  box-shadow: 0 1px 3px rgba(28, 25, 23, 0.06), 0 12px 28px rgba(28, 25, 23, 0.04);
+  backdrop-filter: blur(10px);
+}
+
+.app-glass-surface-strong {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(231, 229, 228, 0.95);
+  box-shadow: 0 1px 3px rgba(28, 25, 23, 0.08), 0 8px 20px rgba(28, 25, 23, 0.04);
+  backdrop-filter: blur(12px);
+}
+
+.app-glass-accent {
+  background: rgba(250, 250, 249, 0.82);
+  border: 1px solid rgba(231, 229, 228, 0.9);
+  box-shadow: 0 1px 3px rgba(28, 25, 23, 0.06);
+  backdrop-filter: blur(10px);
 }
 
 @theme inline {

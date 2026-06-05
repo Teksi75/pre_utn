@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { HomeNextStepClient } from "@/components/home/HomeNextStepClient";
-import { MathThemePlate } from "@/components/math/MathThemePlate";
+import { EngineeringHeroVisual } from "@/components/math-visuals/EngineeringHeroVisual";
 
 /**
  * Home page — editorial layout with hero, camino de aprendizaje, and
@@ -16,13 +16,9 @@ export default function Home() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Editorial hero with MathThemePlate background */}
-      <section className="relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-brand-200)] bg-[var(--color-brand-50)] p-6 md:p-8 mb-8">
-        <MathThemePlate
-          topic="sets"
-          variant="hero"
-          className="absolute inset-0 opacity-30 pointer-events-none"
-        />
-        <div className="relative z-10">
+      <section className="relative isolate overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-brand-200)] bg-[var(--color-brand-50)] p-6 md:p-8 mb-8 min-h-44">
+        <EngineeringHeroVisual />
+        <div className="relative z-10 md:max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-accent-600)] mb-2">
             Preparación independiente
           </p>
@@ -54,7 +50,7 @@ export default function Home() {
           <li>
             <Link
               href="/diagnostic"
-              className="flex items-center justify-between gap-3 rounded-[var(--radius-button)] border border-[var(--color-brand-200)] bg-white px-4 py-2.5 text-[var(--color-brand-700)] hover:border-[var(--color-brand-300)] hover:text-[var(--color-brand-900)] hover:bg-[var(--color-brand-100)] transition-colors focus-visible:shadow-[var(--ring-focus)] min-h-[44px]"
+              className="app-glass-surface flex items-center justify-between gap-3 rounded-[var(--radius-button)] px-4 py-2.5 text-[var(--color-brand-700)] hover:border-[var(--color-brand-300)] hover:text-[var(--color-brand-900)] hover:bg-[var(--color-brand-100)] transition-colors focus-visible:shadow-[var(--ring-focus)] min-h-[44px]"
             >
               <span>Hacer diagnóstico</span>
               <span aria-hidden="true" className="text-[var(--color-brand-500)]">
@@ -65,7 +61,7 @@ export default function Home() {
           <li>
             <Link
               href="/practice"
-              className="flex items-center justify-between gap-3 rounded-[var(--radius-button)] border border-[var(--color-brand-200)] bg-white px-4 py-2.5 text-[var(--color-brand-700)] hover:border-[var(--color-brand-300)] hover:text-[var(--color-brand-900)] hover:bg-[var(--color-brand-100)] transition-colors focus-visible:shadow-[var(--ring-focus)] min-h-[44px]"
+              className="app-glass-surface flex items-center justify-between gap-3 rounded-[var(--radius-button)] px-4 py-2.5 text-[var(--color-brand-700)] hover:border-[var(--color-brand-300)] hover:text-[var(--color-brand-900)] hover:bg-[var(--color-brand-100)] transition-colors focus-visible:shadow-[var(--ring-focus)] min-h-[44px]"
             >
               <span>Ir a práctica</span>
               <span aria-hidden="true" className="text-[var(--color-brand-500)]">
@@ -87,7 +83,7 @@ export default function Home() {
         >
           Contexto del curso
         </h2>
-        <div className="rounded-[var(--radius-card)] border border-[var(--color-brand-200)] bg-white p-4 shadow-[var(--shadow-card)]">
+        <div className="app-glass-surface rounded-[var(--radius-card)] p-4">
           <dl className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
             <div className="flex items-center justify-between gap-3 sm:flex-col sm:items-start">
               <dt className="text-[var(--color-brand-600)]">Matemática</dt>

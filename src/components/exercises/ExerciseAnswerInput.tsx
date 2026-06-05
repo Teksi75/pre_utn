@@ -47,7 +47,7 @@ function optionClassName(selected: boolean): string {
   return `flex w-full cursor-pointer items-center gap-3 text-left px-4 py-3 text-sm rounded-[var(--radius-button)] min-h-[44px] transition-colors duration-[var(--duration-fast)] focus-within:shadow-[var(--ring-focus)] border ${
     selected
       ? "bg-[var(--color-brand-900)] text-white border-[var(--color-brand-900)]"
-      : "bg-white text-[var(--color-brand-900)] border-[var(--color-brand-300)] hover:bg-[var(--color-brand-50)]"
+      : "bg-white/90 text-[var(--color-brand-900)] border-[var(--color-brand-300)] backdrop-blur-sm hover:bg-[var(--color-brand-50)]"
   } has-[:disabled]:cursor-not-allowed has-[:disabled]:bg-[var(--color-brand-100)] has-[:disabled]:text-[var(--color-brand-600)] has-[:disabled]:border-[var(--color-brand-200)]`;
 }
 
@@ -210,7 +210,7 @@ export function ExerciseAnswerInput({
             onChange={(e) => setAnswer(e.target.value)}
             disabled={disabled}
             placeholder="Escribí tu respuesta..."
-            className="w-full border border-brand-300 rounded-[var(--radius-button)] px-3 py-2.5 text-sm bg-white text-brand-900 min-h-[44px] disabled:bg-brand-100 disabled:text-brand-600 focus-visible:shadow-[var(--ring-focus)] transition-colors duration-[var(--duration-fast)]"
+            className="w-full border border-brand-300 rounded-[var(--radius-button)] px-3 py-2.5 text-sm bg-white/90 text-brand-900 min-h-[44px] backdrop-blur-sm disabled:bg-brand-100 disabled:text-brand-600 focus-visible:shadow-[var(--ring-focus)] transition-colors duration-[var(--duration-fast)]"
           />
         </div>
         <button

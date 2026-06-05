@@ -39,7 +39,7 @@ export function HomeNextStepClient() {
       <section
         aria-busy="true"
         aria-live="polite"
-        className="rounded-[var(--radius-card)] border border-[var(--color-brand-200)] bg-white p-5 shadow-[var(--shadow-card)]"
+        className="app-glass-surface rounded-[var(--radius-card)] p-5"
       >
         <div className="animate-pulse space-y-3">
           <div className="h-3 bg-[var(--color-brand-200)] rounded w-1/3" />
@@ -59,7 +59,7 @@ export function HomeNextStepClient() {
       {/* Zone 1 — Tu estado (MAX visual weight) */}
       <article
         data-testid="home-state-card"
-        className="rounded-[var(--radius-card)] border-2 border-[var(--color-brand-300)] bg-[var(--color-brand-50)] p-6 shadow-[var(--shadow-elevated)]"
+        className="app-glass-accent rounded-[var(--radius-card)] p-6"
       >
         <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-accent-600)]">
           Tu estado
@@ -88,7 +88,7 @@ export function HomeNextStepClient() {
       {nextStep.roadmapSkills.length > 0 && (
         <article
           aria-labelledby="home-roadmap-title"
-          className="rounded-[var(--radius-card)] border border-[var(--color-brand-200)] bg-white p-5 shadow-[var(--shadow-card)]"
+          className="app-glass-surface rounded-[var(--radius-card)] p-5"
         >
           <div className="mb-4 flex items-baseline justify-between gap-3 flex-wrap">
             <h3

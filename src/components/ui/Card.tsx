@@ -10,7 +10,7 @@ interface CardProps {
 
 const VARIANT_CLASSES: Record<CardVariant, string> = {
   default:
-    "rounded-[var(--radius-card)] border border-brand-200 bg-white p-5 shadow-[var(--shadow-card)]",
+    "app-glass-surface rounded-[var(--radius-card)] p-5",
   accent:
     "rounded-[var(--radius-card)] border border-amber-300 bg-amber-50 p-5 shadow-[var(--shadow-card)]",
   danger:

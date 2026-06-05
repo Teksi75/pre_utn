@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { MathThemePlate } from "@/components/math/MathThemePlate";
+import { MathThemePlate } from "@/components/math-visuals/MathThemePlate";
 import { getPracticeHrefForSuggestion } from "./practice-link";
 import type { SkillEstimate, PracticeSuggestion } from "@/domain/diagnostic/index";
 
@@ -54,15 +54,17 @@ export function ResultsDisplay({
     if (ok) setPlanCreated(true);
   };
   return (
-    <div className="space-y-6">
-      {/* Header with decorative plate */}
-      <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-brand-200)] bg-[var(--color-brand-50)] p-5 md:p-6">
-        <MathThemePlate
-          topic="sets"
-          variant="card"
-          className="absolute inset-0 opacity-15 pointer-events-none"
-        />
-        <div className="relative z-10">
+    <div className="relative isolate overflow-hidden rounded-[var(--radius-card)] p-4 md:p-6">
+      <MathThemePlate
+        topic="sets"
+        variant="hero"
+        opacity={0.18}
+        className="absolute -inset-x-24 -top-24 z-0 h-[42rem] w-[calc(100%+12rem)] max-w-none"
+      />
+
+      <div className="relative z-10 space-y-6">
+        {/* Header with decorative plate */}
+        <div className="app-glass-accent rounded-[var(--radius-card)] p-5 md:p-6">
           <h2 className="text-[var(--text-xl)] font-bold text-[var(--color-brand-900)]">
             Resultados del diagnóstico
           </h2>
@@ -70,14 +72,13 @@ export function ResultsDisplay({
             Estimaciones provisionales basadas en tus respuestas.
           </p>
         </div>
-      </div>
 
       {/* All skill estimates */}
       <div className="space-y-2">
         <h3 className="text-sm font-semibold text-[var(--color-brand-700)]">
           Habilidades evaluadas
         </h3>
-        <div className="shadow-[var(--shadow-card)] rounded-[var(--radius-card)] divide-y divide-[var(--color-brand-200)] bg-white border border-[var(--color-brand-200)]">
+        <div className="app-glass-surface-strong rounded-[var(--radius-card)] divide-y divide-[var(--color-brand-200)]">
           {estimates.map((est) => (
             <div key={est.skillId} className="flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 gap-2">
               <div className="min-w-0">
@@ -120,7 +121,7 @@ export function ResultsDisplay({
             {suggestions.map((s) => (
               <div
                 key={s.skillId}
-                className="border border-amber-200 bg-amber-50 rounded-[var(--radius-card)] p-4"
+                className="rounded-[var(--radius-card)] border border-amber-200 bg-amber-50/90 p-4 backdrop-blur-sm"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
@@ -164,7 +165,7 @@ export function ResultsDisplay({
       )}
 
       {suggestions.length === 0 && estimates.length > 0 && (
-        <div className="bg-green-50 border border-green-200 rounded-[var(--radius-card)] p-4 text-sm text-green-800">
+        <div className="rounded-[var(--radius-card)] border border-green-200 bg-green-50/90 p-4 text-sm text-green-800 backdrop-blur-sm">
           ¡No se detectaron habilidades débiles! Seguí practicando para mantener
           el nivel.
         </div>
@@ -173,7 +174,7 @@ export function ResultsDisplay({
       {/* Create study plan */}
       {onCreatePlan && !planCreated && suggestions.length > 0 && (
         <div
-          className="border border-[var(--color-brand-300)] bg-[var(--color-brand-50)] rounded-[var(--radius-card)] p-4 space-y-3"
+          className="app-glass-accent rounded-[var(--radius-card)] p-4 space-y-3"
           data-testid="create-plan-card"
         >
           <div>
@@ -197,7 +198,7 @@ export function ResultsDisplay({
 
       {planCreated && (
         <div
-          className="bg-green-50 border border-green-200 rounded-[var(--radius-card)] p-4 space-y-2"
+          className="rounded-[var(--radius-card)] border border-green-200 bg-green-50/90 p-4 space-y-2 backdrop-blur-sm"
           data-testid="plan-created-card"
         >
           <p className="text-sm font-semibold text-green-800">
@@ -227,6 +228,7 @@ export function ResultsDisplay({
           Repetir diagnóstico
         </Button>
       </div>
+    </div>
     </div>
   );
 }

@@ -4,6 +4,8 @@ import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { DiagnosticQuestion } from "@/components/diagnostic/DiagnosticQuestion";
 import { ResultsDisplay } from "@/components/diagnostic/ResultsDisplay";
+import { MathThemePlate } from "@/components/math-visuals/MathThemePlate";
+import { mathThemeForSkill } from "@/components/math-visuals/topic-map";
 import { Card } from "@/components/ui/Card";
 import {
   selectBalancedSet,
@@ -206,6 +208,9 @@ export default function DiagnosticPage() {
   const progressPercent = exercises.length > 0
     ? Math.round(((currentIndex) / exercises.length) * 100)
     : 0;
+  const themeTopic = currentExercise
+    ? mathThemeForSkill(currentExercise.skillId)
+    : "sets";
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -221,35 +226,46 @@ export default function DiagnosticPage() {
         </Link>
       </div>
 
-      {/* Fine progress bar */}
-      <div className="mb-6" role="progressbar" aria-valuenow={progressPercent} aria-valuemin={0} aria-valuemax={100} aria-label={`Progreso: ${currentIndex + 1} de ${exercises.length}`}>
-        <div className="flex items-center justify-between text-xs text-[var(--color-brand-500)] mb-1.5">
-          <span>Pregunta {currentIndex + 1} de {exercises.length}</span>
-          <span>{progressPercent}%</span>
-        </div>
-        <div className="h-1.5 rounded-full bg-[var(--color-brand-200)] overflow-hidden">
-          <div
-            className="h-full rounded-full bg-[var(--color-accent-500)] transition-[width] duration-[var(--duration-normal)]"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-      </div>
+      <section className="relative isolate overflow-hidden rounded-[var(--radius-card)] p-4 md:p-6">
+        <MathThemePlate
+          topic={themeTopic}
+          variant="hero"
+          opacity={0.2}
+          className="absolute -inset-x-24 -top-28 z-0 h-[42rem] w-[calc(100%+12rem)] max-w-none"
+        />
 
-      <div aria-live="polite" aria-atomic="false">
-        {currentExercise ? (
-          <DiagnosticQuestion
-            exercise={currentExercise}
-            questionNumber={currentIndex + 1}
-            totalQuestions={exercises.length}
-            onSubmit={handleAnswerSubmit}
-            disabled={isEvaluating}
-          />
-        ) : (
-          <div className="text-center py-8 text-[var(--color-brand-500)]">
-            No hay ejercicios disponibles.
+        <div className="relative z-10">
+          {/* Fine progress bar */}
+          <div className="mb-6" role="progressbar" aria-valuenow={progressPercent} aria-valuemin={0} aria-valuemax={100} aria-label={`Progreso: ${currentIndex + 1} de ${exercises.length}`}>
+            <div className="flex items-center justify-between text-xs text-[var(--color-brand-500)] mb-1.5">
+              <span>Pregunta {currentIndex + 1} de {exercises.length}</span>
+              <span>{progressPercent}%</span>
+            </div>
+            <div className="h-1.5 rounded-full bg-[var(--color-brand-200)] overflow-hidden">
+              <div
+                className="h-full rounded-full bg-[var(--color-accent-500)] transition-[width] duration-[var(--duration-normal)]"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
           </div>
-        )}
-      </div>
+
+          <div aria-live="polite" aria-atomic="false">
+            {currentExercise ? (
+              <DiagnosticQuestion
+                exercise={currentExercise}
+                questionNumber={currentIndex + 1}
+                totalQuestions={exercises.length}
+                onSubmit={handleAnswerSubmit}
+                disabled={isEvaluating}
+              />
+            ) : (
+              <div className="text-center py-8 text-[var(--color-brand-500)]">
+                No hay ejercicios disponibles.
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
