@@ -480,8 +480,94 @@
     "difficulty": 2,
     "prompt": "Calcula | -5 | + | 3 |",
     "expectedAnswer": "8",
-    "commonErrorTags": [],
-    "pedagogicalNote": "El valor absoluto de un número es siempre no negativo."
+    "commonErrorTags": ["u1_abs_signo_incorrecto", "u1_abs_no_negativo"],
+    "pedagogicalNote": "El valor absoluto de un número es siempre no negativo: |−5| = 5, no −5.",
+    "relatedTheoryIds": ["theory-valor-absoluto"],
+    "relatedExampleIds": ["example-valor-absoluto-1"]
+  },
+  {
+    "id": "ex.u1.valor_absoluto.2",
+    "skillId": "mat.u1.valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "¿Cuál es el valor de |−7|?",
+    "expectedAnswer": "7",
+    "options": ["7", "−7", "0", "14"],
+    "commonErrorTags": ["u1_abs_signo_incorrecto", "u1_abs_distancia_no_signo"],
+    "pedagogicalNote": "El valor absoluto de un número negativo es su opuesto positivo: |−7| = 7."
+  },
+  {
+    "id": "ex.u1.valor_absoluto.3",
+    "skillId": "mat.u1.valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "¿Cuál es el valor de |0|?",
+    "expectedAnswer": "0",
+    "options": ["0", "1", " indefinido", "−0"],
+    "commonErrorTags": ["u1_abs_cero"],
+    "pedagogicalNote": "|0| = 0 porque 0 está a 0 unidades de sí mismo."
+  },
+  {
+    "id": "ex.u1.valor_absoluto.4",
+    "skillId": "mat.u1.valor_absoluto",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Calcula la distancia entre −4 y 6 en la recta numérica",
+    "expectedAnswer": "10",
+    "commonErrorTags": ["u1_abs_distancia_entre_reales"],
+    "pedagogicalNote": "La distancia entre a y b es |a − b| = |−4 − 6| = |−10| = 10.",
+    "relatedTheoryIds": ["theory-valor-absoluto"],
+    "relatedExampleIds": ["example-valor-absoluto-2"]
+  },
+  {
+    "id": "ex.u1.valor_absoluto.5",
+    "skillId": "mat.u1.valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "¿Cuáles son las soluciones de |x| = 3?",
+    "expectedAnswer": "x = 3 o x = −3",
+    "options": ["x = 3 o x = −3", "Solo x = 3", "x = 3 o x = 0", "No tiene solución"],
+    "commonErrorTags": ["u1_abs_doble_solucion"],
+    "pedagogicalNote": "La ecuación |x| = a con a > 0 siempre tiene dos soluciones: x = a y x = −a."
+  },
+  {
+    "id": "ex.u1.valor_absoluto.6",
+    "skillId": "mat.u1.valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "¿Es correcto que |−3 + 5| = |−3| + |5|?",
+    "expectedAnswer": "No, porque |−3 + 5| = 2 y |−3| + |5| = 8",
+    "options": [
+      "No, porque |−3 + 5| = 2 y |−3| + |5| = 8",
+      "Sí, porque ambos dan 8",
+      "Sí, porque el valor absoluto se distribuye",
+      "No, porque |−3 + 5| = −2"
+    ],
+    "commonErrorTags": ["u1_abs_distributiva_falsa"],
+    "pedagogicalNote": "El valor absoluto NO se distribuye sobre la suma: |a + b| ≠ |a| + |b| en general."
+  },
+  {
+    "id": "ex.u1.valor_absoluto.7",
+    "skillId": "mat.u1.valor_absoluto",
+    "type": "numerical",
+    "difficulty": 3,
+    "prompt": "Simplifica √((−6)²)",
+    "expectedAnswer": "6",
+    "commonErrorTags": ["u1_abs_sqrt_cuadrado"],
+    "pedagogicalNote": "√(x²) = |x|, entonces √((−6)²) = |−6| = 6, no −6.",
+    "relatedTheoryIds": ["theory-valor-absoluto"],
+    "relatedExampleIds": ["example-valor-absoluto-3"]
+  },
+  {
+    "id": "ex.u1.valor_absoluto.8",
+    "skillId": "mat.u1.valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Si |x| = 0, ¿cuál es la solución?",
+    "expectedAnswer": "Solo x = 0",
+    "options": ["Solo x = 0", "x = 0 o x = −0", "No tiene solución", "Cualquier número real"],
+    "commonErrorTags": ["u1_abs_cero", "u1_abs_doble_solucion"],
+    "pedagogicalNote": "Cuando a = 0, |x| = 0 tiene una única solución: x = 0."
   },
 
   {

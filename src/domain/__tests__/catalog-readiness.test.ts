@@ -14,6 +14,7 @@ const PILOT_SKILL_IDS = [
   "mat.u1.potencias_raices",
   "mat.u1.racionalizacion",
   "mat.u1.intervalos",
+  "mat.u1.valor_absoluto",
   "mat.u1.logaritmos",
 ] as const;
 

@@ -4,16 +4,8 @@ import { loadTheoryContent, loadExampleContent } from "@/domain/catalog/content-
 import { TheoryCard } from "@/components/practice/TheoryCard";
 import { WorkedExamplesSection } from "@/components/practice/WorkedExamplesSection";
 import { DirectionalTransition } from "@/components/ui/DirectionalTransition";
+import { PILOT_SKILL_UNIT_MAP } from "@/domain/catalog/pilot-skills";
 import type { SkillId } from "@/domain/models/skill";
-
-const SKILL_UNIT_MAP: Record<string, string> = {
-  "mat.u1.conjuntos_numericos": "unit-1",
-  "mat.u1.reales_operaciones": "unit-1",
-  "mat.u1.intervalos": "unit-1",
-  "mat.u1.potencias_raices": "unit-1",
-  "mat.u1.racionalizacion": "unit-1",
-  "mat.u1.logaritmos": "unit-1",
-};
 
 interface LearnSkillPageProps {
   params: Promise<{ skillId: string }>;
@@ -22,7 +14,7 @@ interface LearnSkillPageProps {
 export default async function LearnSkillPage({ params }: LearnSkillPageProps) {
   const { skillId } = await params;
   const decodedSkillId = decodeURIComponent(skillId) as SkillId;
-  const unitKey = SKILL_UNIT_MAP[decodedSkillId];
+  const unitKey = PILOT_SKILL_UNIT_MAP[decodedSkillId];
 
   if (!unitKey) {
     notFound();

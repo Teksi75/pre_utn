@@ -73,6 +73,15 @@ describe("Error Taxonomy", () => {
         "u1_toda_raiz_no_es_irracional",
         "u1_decimal_periodico_es_racional",
         "u1_raiz_cuadrada_exacta_es_racional",
+        "u1_abs_signo_incorrecto",
+        "u1_abs_cero",
+        "u1_abs_distancia_no_signo",
+        "u1_abs_no_negativo",
+        "u1_abs_confunde_opuesto",
+        "u1_abs_distancia_entre_reales",
+        "u1_abs_sqrt_cuadrado",
+        "u1_abs_doble_solucion",
+        "u1_abs_distributiva_falsa",
       ]);
       expect(tagsByUnit.get(2)?.map((tag) => tag.id)).toEqual([
         "u2_aislamiento_variable",
@@ -157,6 +166,28 @@ describe("Error Taxonomy", () => {
         "u1_log_confunde_resultado_exponente",
         "u1_log_conversion_exponencial",
         "u1_log_propiedad_aplicada_mal",
+      ];
+      for (const tagId of newTags) {
+        const found = lookupTag(tagId);
+        expect(found, `Tag ${tagId} should be defined in the taxonomy`).toBeDefined();
+        expect(found!.id).toBe(tagId);
+        expect(found!.unit).toBe(1);
+        expect(found!.description).toBeTruthy();
+        expect(found!.examples.length).toBeGreaterThan(0);
+      }
+    });
+
+    test("each valor_absoluto error tag is lookupable", () => {
+      const newTags = [
+        "u1_abs_signo_incorrecto",
+        "u1_abs_cero",
+        "u1_abs_distancia_no_signo",
+        "u1_abs_no_negativo",
+        "u1_abs_confunde_opuesto",
+        "u1_abs_distancia_entre_reales",
+        "u1_abs_sqrt_cuadrado",
+        "u1_abs_doble_solucion",
+        "u1_abs_distributiva_falsa",
       ];
       for (const tagId of newTags) {
         const found = lookupTag(tagId);

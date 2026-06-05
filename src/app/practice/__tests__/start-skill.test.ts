@@ -3,6 +3,7 @@ import {
   resolveInitialPracticeSkill,
   analyzeRequestedSkill,
   buildAccessibleSkillMap,
+  isContentQaModeEnabled,
 } from "../start-skill";
 import type { PracticeProgress } from "../../../domain/progress/index";
 
@@ -36,6 +37,12 @@ describe("resolveInitialPracticeSkill", () => {
   it("accepts conjuntos_numericos from the query string", () => {
     expect(resolveInitialPracticeSkill("mat.u1.conjuntos_numericos")).toBe(
       "mat.u1.conjuntos_numericos"
+    );
+  });
+
+  it("accepts valor_absoluto from the query string when content is ready", () => {
+    expect(resolveInitialPracticeSkill("mat.u1.valor_absoluto")).toBe(
+      "mat.u1.valor_absoluto"
     );
   });
 });
@@ -106,6 +113,32 @@ describe("analyzeRequestedSkill", () => {
     });
   });
 
+  it("returns 'ready' for valor_absoluto when intervalos prerequisite is met", () => {
+    const progress: PracticeProgress = {
+      ...emptyProgress(),
+      accuracyBySkill: {
+        "mat.u1.intervalos": 0.8,
+      },
+    };
+    const result = analyzeRequestedSkill("mat.u1.valor_absoluto", progress);
+    expect(result).toEqual({
+      kind: "ready",
+      skillId: "mat.u1.valor_absoluto",
+    });
+  });
+
+  it("returns 'blocked' with reason 'missing-prerequisite' for valor_absoluto when intervalos is unmet", () => {
+    const result = analyzeRequestedSkill(
+      "mat.u1.valor_absoluto",
+      emptyProgress()
+    );
+    expect(result.kind).toBe("blocked");
+    if (result.kind === "blocked") {
+      expect(result.reason).toBe("missing-prerequisite");
+      expect(result.missingPrerequisite).toBe("mat.u1.intervalos");
+    }
+  });
+
   it("treats prereq accuracy 0.69 as still unmet (below 0.7 threshold)", () => {
     const progress: PracticeProgress = {
       ...emptyProgress(),
@@ -130,6 +163,7 @@ describe("buildAccessibleSkillMap", () => {
     expect(map.has("mat.u1.intervalos")).toBe(true);
     expect(map.has("mat.u1.reales_operaciones")).toBe(true);
     expect(map.has("mat.u1.potencias_raices")).toBe(true);
+    expect(map.has("mat.u1.valor_absoluto")).toBe(true);
   });
 
   it("marks skills with no prereqs as accessible on empty progress", () => {
@@ -142,5 +176,118 @@ describe("buildAccessibleSkillMap", () => {
     const map = buildAccessibleSkillMap(emptyProgress());
     expect(map.get("mat.u1.reales_operaciones")?.accessible).toBe(false);
     expect(map.get("mat.u1.potencias_raices")?.accessible).toBe(false);
+  });
+});
+
+describe("isContentQaModeEnabled", () => {
+  it("returns true when value is exactly 'true'", () => {
+    expect(isContentQaModeEnabled("true")).toBe(true);
+  });
+
+  it("returns false when value is 'True' (case-sensitive)", () => {
+    expect(isContentQaModeEnabled("True")).toBe(false);
+  });
+
+  it("returns false when value is undefined", () => {
+    expect(isContentQaModeEnabled(undefined)).toBe(false);
+  });
+
+  it("returns false when value is an empty string", () => {
+    expect(isContentQaModeEnabled("")).toBe(false);
+  });
+
+  it("returns false when value is '1'", () => {
+    expect(isContentQaModeEnabled("1")).toBe(false);
+  });
+});
+
+describe("analyzeRequestedSkill — QA content mode", () => {
+  it("opens ready valor_absoluto with unmet intervalos when QA mode is enabled", () => {
+    const result = analyzeRequestedSkill(
+      "mat.u1.valor_absoluto",
+      emptyProgress(),
+      { qaContentModeEnabled: true }
+    );
+    expect(result).toEqual({
+      kind: "ready",
+      skillId: "mat.u1.valor_absoluto",
+    });
+  });
+
+  it("still blocks valor_absoluto with unmet intervalos when QA mode is disabled", () => {
+    const result = analyzeRequestedSkill(
+      "mat.u1.valor_absoluto",
+      emptyProgress(),
+      { qaContentModeEnabled: false }
+    );
+    expect(result.kind).toBe("blocked");
+    if (result.kind === "blocked") {
+      expect(result.reason).toBe("missing-prerequisite");
+    }
+  });
+
+  it("still blocks unknown skills even when QA mode is enabled", () => {
+    const result = analyzeRequestedSkill(
+      "mat.u99.inexistente",
+      emptyProgress(),
+      { qaContentModeEnabled: true }
+    );
+    expect(result.kind).toBe("blocked");
+    if (result.kind === "blocked") {
+      expect(result.reason).toBe("unknown-skill");
+    }
+  });
+
+  it("still blocks non-pilot skills even when QA mode is enabled", () => {
+    const result = analyzeRequestedSkill(
+      "mat.u2.factorizacion",
+      emptyProgress(),
+      { qaContentModeEnabled: true }
+    );
+    expect(result.kind).toBe("blocked");
+    if (result.kind === "blocked") {
+      expect(result.reason).toBe("unknown-skill");
+    }
+  });
+
+  it("still blocks content-not-ready skills even when QA mode is enabled", () => {
+    const result = analyzeRequestedSkill(
+      "mat.u2.factorizacion",
+      emptyProgress(),
+      { qaContentModeEnabled: true }
+    );
+    expect(result.kind).toBe("blocked");
+  });
+
+  it("opens potencias_raices with unmet prereq when QA mode is enabled", () => {
+    const result = analyzeRequestedSkill(
+      "mat.u1.potencias_raices",
+      emptyProgress(),
+      { qaContentModeEnabled: true }
+    );
+    expect(result).toEqual({
+      kind: "ready",
+      skillId: "mat.u1.potencias_raices",
+    });
+  });
+
+  it("backward-compatible: no options arg behaves like QA mode disabled", () => {
+    const result = analyzeRequestedSkill(
+      "mat.u1.valor_absoluto",
+      emptyProgress()
+    );
+    expect(result.kind).toBe("blocked");
+    if (result.kind === "blocked") {
+      expect(result.reason).toBe("missing-prerequisite");
+    }
+  });
+});
+
+describe("buildAccessibleSkillMap — QA mode does not affect selector", () => {
+  it("selector still marks unmet prereqs as inaccessible regardless of QA mode", () => {
+    const map = buildAccessibleSkillMap(emptyProgress());
+    expect(map.get("mat.u1.reales_operaciones")?.accessible).toBe(false);
+    expect(map.get("mat.u1.potencias_raices")?.accessible).toBe(false);
+    expect(map.get("mat.u1.valor_absoluto")?.accessible).toBe(false);
   });
 });

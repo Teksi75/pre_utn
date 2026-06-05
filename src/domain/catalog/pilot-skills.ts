@@ -33,6 +33,11 @@ export const PILOT_SKILLS: readonly PilotSkill[] = [
     label: "Intervalos",
   },
   {
+    skillId: "mat.u1.valor_absoluto",
+    unitKey: "unit-1",
+    label: "Valor absoluto",
+  },
+  {
     skillId: "mat.u1.logaritmos",
     unitKey: "unit-1",
     label: "Logaritmos",

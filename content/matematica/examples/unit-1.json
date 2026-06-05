@@ -440,5 +440,107 @@
         "pedagogicalIntent": "Enseñar a detectar errores en el cálculo de logaritmos"
       }
     ]
+  },
+  {
+    "id": "example-valor-absoluto-1",
+    "skillId": "mat.u1.valor_absoluto",
+    "problem": "Calcula $|-5| + |3|$",
+    "steps": [
+      { "order": 1, "explanation": "Primero evaluamos cada valor absoluto por separado. $|-5|$: como $-5 < 0$, aplicamos la definición $|a| = -a$, entonces $|-5| = -(-5) = 5$." },
+      { "order": 2, "explanation": "$|3|$: como $3 \\geq 0$, entonces $|3| = 3$." },
+      { "order": 3, "explanation": "Sumamos los resultados: $5 + 3 = 8$." }
+    ],
+    "finalAnswer": "$8$",
+    "pedagogicalNote": "Recordá: el valor absoluto siempre da un resultado no negativo. Evaluá cada término por separado antes de operar.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Valor absoluto — cálculo numérico básico",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar el cálculo de valor absoluto de números negativos y positivos"
+      }
+    ]
+  },
+  {
+    "id": "example-valor-absoluto-2",
+    "skillId": "mat.u1.valor_absoluto",
+    "problem": "Calcula la distancia entre $-3$ y $5$ en la recta numérica",
+    "steps": [
+      { "order": 1, "explanation": "La distancia entre dos números $a$ y $b$ se calcula como $|a - b|$. En este caso, $a = -3$ y $b = 5$." },
+      { "order": 2, "explanation": "Calculamos $|-3 - 5| = |-8| = 8$." },
+      { "order": 3, "explanation": "Alternativamente: $|5 - (-3)| = |5 + 3| = |8| = 8$. El orden no importa porque $|a - b| = |b - a|$." }
+    ],
+    "finalAnswer": "$8$ unidades",
+    "pedagogicalNote": "La distancia entre dos puntos en la recta numérica es siempre el valor absoluto de su diferencia.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Valor absoluto como distancia",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Mostrar la interpretación geométrica del valor absoluto como distancia"
+      }
+    ]
+  },
+  {
+    "id": "example-valor-absoluto-3",
+    "skillId": "mat.u1.valor_absoluto",
+    "problem": "Simplifica $\\sqrt{(-4)^2}$",
+    "steps": [
+      { "order": 1, "explanation": "Primero calculamos $(-4)^2 = 16$." },
+      { "order": 2, "explanation": "Luego $\\sqrt{16} = 4$." },
+      { "order": 3, "explanation": "Aplicando la propiedad $\\sqrt{x^2} = |x|$: $\\sqrt{(-4)^2} = |-4| = 4$. No es $-4$." }
+    ],
+    "finalAnswer": "$4$",
+    "pedagogicalNote": "Error común: pensar que $\\sqrt{(-4)^2} = -4$. La raíz cuadrada siempre devuelve un valor no negativo.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Valor absoluto y raíz cuadrada",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar la relación $\\sqrt{x^2} = |x|$"
+      }
+    ]
+  },
+  {
+    "id": "example-valor-absoluto-4",
+    "skillId": "mat.u1.valor_absoluto",
+    "problem": "Resuelve $|x| = 5$",
+    "steps": [
+      { "order": 1, "explanation": "La ecuación $|x| = 5$ significa: ¿qué números están a 5 unidades de 0 en la recta numérica?" },
+      { "order": 2, "explanation": "Si $x \\geq 0$, entonces $|x| = x$, así que $x = 5$." },
+      { "order": 3, "explanation": "Si $x < 0$, entonces $|x| = -x$, así que $-x = 5$, es decir $x = -5$." },
+      { "order": 4, "explanation": "Verificación: $|5| = 5$ ✓ y $|-5| = 5$ ✓." }
+    ],
+    "finalAnswer": "$x = 5$ o $x = -5$",
+    "pedagogicalNote": "La ecuación $|x| = a$ con $a > 0$ siempre tiene exactamente dos soluciones: $x = a$ y $x = -a$.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Ecuación |x| = a",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar a resolver ecuaciones de valor absoluto simples con dos soluciones"
+      }
+    ]
+  },
+  {
+    "id": "example-valor-absoluto-5",
+    "skillId": "mat.u1.valor_absoluto",
+    "problem": "¿Es correcto que $|-3 + 7| = |-3| + |7|$?",
+    "steps": [
+      { "order": 1, "explanation": "Calculamos el lado izquierdo: $|-3 + 7| = |4| = 4$." },
+      { "order": 2, "explanation": "Calculamos el lado derecho: $|-3| + |7| = 3 + 7 = 10$." },
+      { "order": 3, "explanation": "Comparación: $4 \\neq 10$. La igualdad NO se cumple. En general, $|a + b| \\neq |a| + |b|$." },
+      { "order": 4, "explanation": "La desigualdad triangular dice: $|a + b| \\leq |a| + |b|$. Solo se iguala cuando $a$ y $b$ tienen el mismo signo." }
+    ],
+    "finalAnswer": "No, $|-3 + 7| = 4 \\neq 10 = |-3| + |7|$",
+    "pedagogicalNote": "Error frecuente: asumir que el valor absoluto se distribuye sobre la suma. La desigualdad triangular es la relación correcta.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Propiedades del valor absoluto — falsa distributividad",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar que |a+b| ≠ |a|+|b| en general y presentar la desigualdad triangular"
+      }
+    ]
   }
 ]

@@ -1,15 +1,11 @@
 import Link from "next/link";
 import { loadTheoryContent } from "@/domain/catalog/content-loaders";
+import { PILOT_SKILLS } from "@/domain/catalog/pilot-skills";
 import { DirectionalTransition } from "@/components/ui/DirectionalTransition";
 
-const SKILL_DISPLAY_NAMES: Record<string, string> = {
-  "mat.u1.conjuntos_numericos": "Conjuntos numéricos",
-  "mat.u1.reales_operaciones": "Números reales y operaciones",
-  "mat.u1.intervalos": "Intervalos",
-  "mat.u1.potencias_raices": "Potencias y raíces",
-  "mat.u1.racionalizacion": "Racionalización de denominadores",
-  "mat.u1.logaritmos": "Logaritmos",
-};
+const SKILL_DISPLAY_NAMES: Readonly<Record<string, string>> = Object.fromEntries(
+  PILOT_SKILLS.map((skill) => [skill.skillId, skill.label])
+);
 
 export default function LearnMatematicaPage() {
   const theoryNodes = loadTheoryContent("unit-1");
@@ -42,7 +38,7 @@ export default function LearnMatematicaPage() {
                 key={node.id}
                 href={`/learn/matematica/${encodeURIComponent(node.skillId)}`}
                 transitionTypes={["nav-forward"]}
-                className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)] transition-shadow duration-[var(--duration-normal)]"
+                className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)]"
               >
                 <span className="text-[var(--text-lg)] font-semibold text-brand-900 group-hover:text-accent-600 transition-colors">
                   {displayName}

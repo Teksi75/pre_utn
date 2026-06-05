@@ -20,11 +20,11 @@ Skills de Unidad 1 realmente transitables hoy:
 | Intervalos | Listo |
 | Potencias y raíces | Listo |
 | Racionalización | Listo |
+| Valor absoluto | Listo |
 | Logaritmos | Listo |
 
 Temas de Unidad 1 que todavía faltan completar como recorrido transitable:
 
-- Valor absoluto
 - Complejos
 
 ## Fuente de verdad
@@ -61,7 +61,7 @@ La fuente pedagógica es el material canónico y las specs activas. La fuente t�
 | 2 | Potencias y raíces | Listo |
 | 3 | Racionalización | Listo |
 | 4 | Intervalos | Listo |
-| 5 | Valor absoluto | Pendiente |
+| 5 | Valor absoluto | Listo |
 | 6 | Logaritmos | Listo |
 | 7 | Complejos | Pendiente |
 

@@ -49,12 +49,27 @@ export type SkillRequestAnalysis =
   | { readonly kind: "blocked"; readonly skillId: string; readonly reason: BlockedReason; readonly missingPrerequisite?: SkillId };
 
 /**
+ * Check whether content QA mode is enabled via the env flag.
+ * Accepts an explicit value for testability; defaults to the runtime env var.
+ */
+export function isContentQaModeEnabled(
+  value: string | undefined = process.env.NEXT_PUBLIC_ENABLE_QA_CONTENT_MODE
+): boolean {
+  return value === "true";
+}
+
+export interface AnalyzeRequestedSkillOptions {
+  readonly qaContentModeEnabled?: boolean;
+}
+
+/**
  * Analyze a `?skill=` query parameter against the student's progress.
  * Pure function — same input → same output.
  */
 export function analyzeRequestedSkill(
   skillParam: string | null,
-  progress: PracticeProgress
+  progress: PracticeProgress,
+  options?: AnalyzeRequestedSkillOptions
 ): SkillRequestAnalysis {
   if (!skillParam) return { kind: "none" };
   if (!PRACTICE_SKILL_UNIT_MAP[skillParam]) {
@@ -65,6 +80,11 @@ export function analyzeRequestedSkill(
   const contentReady = isSkillReady(skillId).ready;
   if (!contentReady) {
     return { kind: "blocked", skillId, reason: "no-content" };
+  }
+
+  // QA content mode: skip prerequisite check for direct URL access
+  if (options?.qaContentModeEnabled) {
+    return { kind: "ready", skillId };
   }
 
   const dep = SKILL_DEPENDENCIES.find((d) => d.skillId === skillId);

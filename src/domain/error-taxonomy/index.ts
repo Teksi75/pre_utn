@@ -440,6 +440,99 @@ const TAXONOMY: readonly ErrorTag[] = [
     ],
   },
 
+  // Unit 1: Valor absoluto — error tags backed by the Unit 1 SDD sequence
+  // and regression coverage in src/domain/__tests__/valor-absoluto-domain.test.ts.
+  {
+    id: "u1_abs_signo_incorrecto",
+    unit: 1,
+    description:
+      "Error al calcular valor absoluto: escribe |−5| = −5 tratando el valor absoluto como identidad, sin cambiar el signo.",
+    examples: [
+      "Calcular |−5| = −5 en vez de 5",
+      "Calcular |−3| = −3 en vez de 3",
+    ],
+  },
+  {
+    id: "u1_abs_cero",
+    unit: 1,
+    description:
+      "Error al evaluar |0|: cree que |0| es indefinido, o que da un valor distinto de 0.",
+    examples: [
+      "Decir que |0| no está definido",
+      "Decir que |0| = 1 en vez de 0",
+    ],
+  },
+  {
+    id: "u1_abs_distancia_no_signo",
+    unit: 1,
+    description:
+      "Error al interpretar el valor absoluto: confunde distancia con signo, tratando |a| como si tuviera dirección.",
+    examples: [
+      "Decir que |−7| = −7 porque 'el signo indica la posición'",
+      "Interpretar |a| como un número con signo en vez de magnitud",
+    ],
+  },
+  {
+    id: "u1_abs_no_negativo",
+    unit: 1,
+    description:
+      "Error de no negatividad: responde con un valor negativo al calcular un valor absoluto, violando que |a| ≥ 0 siempre.",
+    examples: [
+      "Decir que |−4| = −4",
+      "Calcular |−12| y obtener un resultado negativo",
+    ],
+  },
+  {
+    id: "u1_abs_confunde_opuesto",
+    unit: 1,
+    description:
+      "Error al confundir opuesto con valor absoluto: cree que |a| = −a incondicionalmente, sin verificar si a ≥ 0.",
+    examples: [
+      "Calcular |5| = −5 confundiendo con el opuesto",
+      "Aplicar |a| = −a para todo a sin distinguir el caso a ≥ 0",
+    ],
+  },
+  {
+    id: "u1_abs_distancia_entre_reales",
+    unit: 1,
+    description:
+      "Error al calcular |a − b|: invierte el orden de la resta o calcula la distancia incorrectamente.",
+    examples: [
+      "Calcular |3 − 7| como 3 − 7 = −4 en vez de 4",
+      "Calcular |−2 − 5| como −7 en vez de 7",
+    ],
+  },
+  {
+    id: "u1_abs_sqrt_cuadrado",
+    unit: 1,
+    description:
+      "Error al simplificar √(x²): olvida que √(x²) = |x| y simplifica √((−3)²) = −3 en vez de 3.",
+    examples: [
+      "Calcular √((−3)²) = −3 en vez de |−3| = 3",
+      "Simplificar √((−5)²) como −5 en vez de 5",
+    ],
+  },
+  {
+    id: "u1_abs_doble_solucion",
+    unit: 1,
+    description:
+      "Error al resolver |x| = a: escribe solo x = a y olvida la segunda solución x = −a.",
+    examples: [
+      "Resolver |x| = 4 y dar solo x = 4, olvidando x = −4",
+      "Decir que |x| = 7 tiene una única solución x = 7",
+    ],
+  },
+  {
+    id: "u1_abs_distributiva_falsa",
+    unit: 1,
+    description:
+      "Error de falsa distributividad: aplica |a + b| = |a| + |b| como si fuera siempre válida, ignorando la desigualdad triangular.",
+    examples: [
+      "Calcular |−3 + 5| como |−3| + |5| = 8 en vez de 2",
+      "Asumir que |a + b| = |a| + |b| siempre se cumple",
+    ],
+  },
+
   // Unit 2: Equations and systems
   {
     id: "u2_aislamiento_variable",

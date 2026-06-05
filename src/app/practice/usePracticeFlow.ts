@@ -16,6 +16,7 @@ import {
   PRACTICE_SKILL_UNIT_MAP,
   analyzeRequestedSkill,
   buildAccessibleSkillMap,
+  isContentQaModeEnabled,
   type BlockedReason,
 } from "./start-skill";
 import type { PracticeProgress } from "@/domain/progress/index";
@@ -142,7 +143,9 @@ export function usePracticeFlow() {
     const requestedSkill = new URLSearchParams(window.location.search).get("skill");
     if (!requestedSkill) return;
 
-    const analysis = analyzeRequestedSkill(requestedSkill, progress);
+    const analysis = analyzeRequestedSkill(requestedSkill, progress, {
+      qaContentModeEnabled: isContentQaModeEnabled(),
+    });
     if (analysis.kind === "ready") {
       initialSkillConsumedRef.current = true;
       handleSkillSelect(analysis.skillId);

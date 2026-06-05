@@ -244,5 +244,59 @@
     "type": "procedural",
     "message": "Propiedades clave de logaritmos: $\\log_a(1) = 0$ (porque $a^0 = 1$), $\\log_a(a) = 1$ (porque $a^1 = a$), $\\log_a(a^n) = n$ (el logaritmo extrae el exponente). Estas propiedades se derivan directamente de la definición.",
     "recoveryTarget": "theory-logaritmos"
+  },
+  {
+    "errorTag": "u1_abs_signo_incorrecto",
+    "type": "conceptual",
+    "message": "El valor absoluto siempre da un resultado no negativo. $|{-5}| = 5$, no $-5$. La definición dice: si $a < 0$, entonces $|a| = -a$ (el opuesto).",
+    "recoveryTarget": "theory-valor-absoluto"
+  },
+  {
+    "errorTag": "u1_abs_cero",
+    "type": "conceptual",
+    "message": "$|0| = 0$. El cero está a 0 unidades de sí mismo en la recta numérica. No es indefinido ni da otro valor.",
+    "recoveryTarget": "theory-valor-absoluto"
+  },
+  {
+    "errorTag": "u1_abs_distancia_no_signo",
+    "type": "conceptual",
+    "message": "$|a|$ representa la DISTANCIA de $a$ hasta 0, no un número con signo. La distancia es siempre no negativa. $|{-7}| = 7$ porque $-7$ está a 7 unidades de 0.",
+    "recoveryTarget": "theory-valor-absoluto"
+  },
+  {
+    "errorTag": "u1_abs_no_negativo",
+    "type": "conceptual",
+    "message": "Para todo número real $a$, $|a| \\geq 0$. Si tu respuesta es negativa, revisá: el valor absoluto nunca puede ser negativo.",
+    "recoveryTarget": "theory-valor-absoluto"
+  },
+  {
+    "errorTag": "u1_abs_confunde_opuesto",
+    "type": "conceptual",
+    "message": "El opuesto de $a$ es $-a$, pero $|a| = -a$ solo cuando $a < 0$. Cuando $a \\geq 0$, $|a| = a$. No confundás: el valor absoluto quita el signo negativo, no lo pone.",
+    "recoveryTarget": "theory-valor-absoluto"
+  },
+  {
+    "errorTag": "u1_abs_distancia_entre_reales",
+    "type": "procedural",
+    "message": "La distancia entre $a$ y $b$ es $|a - b|$. Calculá primero la resta dentro del valor absoluto, y después evaluá: $|3 - 7| = |{-4}| = 4$.",
+    "recoveryTarget": "example-valor-absoluto-2"
+  },
+  {
+    "errorTag": "u1_abs_sqrt_cuadrado",
+    "type": "conceptual",
+    "message": "$\\sqrt{x^2} = |x|$, no $x$. Entonces $\\sqrt{(-3)^2} = |{-3}| = 3$, no $-3$. La raíz cuadrada siempre devuelve un valor no negativo.",
+    "recoveryTarget": "example-valor-absoluto-3"
+  },
+  {
+    "errorTag": "u1_abs_doble_solucion",
+    "type": "procedural",
+    "message": "Cuando $|x| = a$ con $a > 0$, hay DOS soluciones: $x = a$ y $x = -a$. No olvides la segunda solución. Verificá ambas sustituyendo.",
+    "recoveryTarget": "example-valor-absoluto-4"
+  },
+  {
+    "errorTag": "u1_abs_distributiva_falsa",
+    "type": "conceptual",
+    "message": "$|a + b| \\neq |a| + |b|$ en general. La desigualdad triangular dice $|a + b| \\leq |a| + |b|$. Solo se iguala cuando $a$ y $b$ tienen el mismo signo.",
+    "recoveryTarget": "example-valor-absoluto-5"
   }
 ]

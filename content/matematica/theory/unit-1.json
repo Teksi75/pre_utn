@@ -481,5 +481,80 @@
         "pedagogicalIntent": "Enseñar la definición de logaritmo como inversa de la potenciación, conversión entre formas, condiciones de existencia y propiedades básicas"
       }
     ]
+  },
+  {
+    "id": "theory-valor-absoluto",
+    "skillId": "mat.u1.valor_absoluto",
+    "concepts": [
+      {
+        "id": "concept-abs-definicion-casos",
+        "title": "1. Definición por casos",
+        "body": "Idea principal: el valor absoluto se define por casos. Si $a \\geq 0$, entonces $|a| = a$. Si $a < 0$, entonces $|a| = -a$. Ejemplo: $|5| = 5$ porque $5 \\geq 0$, y $|-3| = -(-3) = 3$ porque $-3 < 0$. La clave es que el valor absoluto siempre devuelve un número no negativo."
+      },
+      {
+        "id": "concept-abs-distancia-cero",
+        "title": "2. Distancia a cero",
+        "body": "Idea principal: $|a|$ representa la distancia de $a$ hasta el origen en la recta numérica. $|5| = 5$ porque 5 está a 5 unidades de 0, y $|-5| = 5$ porque −5 también está a 5 unidades de 0. La distancia nunca es negativa."
+      },
+      {
+        "id": "concept-abs-no_negativo",
+        "title": "3. Resultado siempre no negativo",
+        "body": "Idea principal: para todo número real $a$, se cumple $|a| \\geq 0$. No existe ningún valor absoluto que dé un resultado negativo. Si ves $|a| = -3$, eso es imposible."
+      },
+      {
+        "id": "concept-abs_opuestos",
+        "title": "4. Opuestos",
+        "body": "Idea principal: un número y su opuesto tienen el mismo valor absoluto: $|a| = |-a|$. Ejemplo: $|3| = |-3| = 3$ y $|-7| = |7| = 7$. Esto se explica porque ambos están a la misma distancia de 0."
+      },
+      {
+        "id": "concept-abs_distancia_entre_reales",
+        "title": "5. Distancia entre reales",
+        "body": "Idea principal: $|a - b|$ mide la distancia entre $a$ y $b$ en la recta numérica. Ejemplo: $|3 - 7| = |-4| = 4$ y $|7 - 3| = |4| = 4$. El orden no importa: $|a - b| = |b - a|$."
+      },
+      {
+        "id": "concept-abs_producto_cociente",
+        "title": "6. Propiedades de producto y cociente",
+        "body": "Idea principal: el valor absoluto de un producto es el producto de los valores absolutos: $|a \\cdot b| = |a| \\cdot |b|$. Para el cociente: $|a/b| = |a|/|b|$ cuando $b \\neq 0$. Ejemplo: $|(-3)(4)| = |-12| = 12 = 3 \\cdot 4 = |{-3}| \\cdot |4|$."
+      },
+      {
+        "id": "concept-abs_x_igual_a",
+        "title": "7. Ecuación |x| = a: dos soluciones",
+        "body": "Idea principal: si $a > 0$, la ecuación $|x| = a$ tiene dos soluciones: $x = a$ o $x = -a$. Si $a = 0$, solo $x = 0$. Si $a < 0$, no tiene solución. Ejemplo: $|x| = 4$ da $x = 4$ o $x = -4$."
+      },
+      {
+        "id": "concept-abs_sqrt_cuadrado",
+        "title": "8. Relación con la raíz cuadrada",
+        "body": "Idea principal: $\\sqrt{x^2} = |x|$ para todo real $x$. La raíz cuadrada de un cuadrado siempre devuelve el valor absoluto. Ejemplo: $\\sqrt{(-3)^2} = \\sqrt{9} = 3 = |-3|$, no $-3$."
+      },
+      {
+        "id": "concept-abs_no_distribuye_suma",
+        "title": "9. No distribuye sobre la suma",
+        "body": "Idea principal: en general $|a + b| \\neq |a| + |b|$. La desigualdad triangular dice $|a + b| \\leq |a| + |b|$. Ejemplo: $|{-3} + 5| = |2| = 2$, pero $|{-3}| + |5| = 3 + 5 = 8$. Son diferentes. La igualdad solo se cumple cuando $a$ y $b$ tienen el mismo signo."
+      }
+    ],
+    "practicePrompts": [
+      "Calcula $|-7| + |3|$",
+      "¿Qué valor absoluto tiene −12?",
+      "Resuelve $|x| = 6$: ¿cuáles son las dos soluciones?",
+      "Simplifica $\\sqrt{(-5)^2}$"
+    ],
+    "notation": [
+      "$|a|$ — valor absoluto de $a$",
+      "$|a - b|$ — distancia entre $a$ y $b$"
+    ],
+    "commonMistakes": [
+      "Escribir $|-5| = -5$ en vez de $5$",
+      "Asumir que $|a + b| = |a| + |b|$ siempre",
+      "Olvidar que $\\sqrt{x^2} = |x|$, no $x$",
+      "Resolver $|x| = a$ y dar solo una solución"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Valor absoluto — definición, propiedades y ecuaciones básicas",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar la definición por casos, interpretación geométrica como distancia, propiedades algebraicas y ecuación |x|=a"
+      }
+    ]
   }
 ]
