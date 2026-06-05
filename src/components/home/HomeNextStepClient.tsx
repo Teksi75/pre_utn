@@ -9,6 +9,7 @@ import {
   type HomeNextStep,
 } from "../../domain/next-step/index";
 import { loadProgress } from "../../lib/practice-progress";
+import { MathWatermark } from "../math-visuals";
 import { SkillRoadmap } from "./SkillRoadmap";
 import { StudyPlanSection } from "./StudyPlanSection";
 
@@ -52,65 +53,67 @@ export function HomeNextStepClient() {
   }
 
   return (
-    <section
-      aria-labelledby="home-hero-title"
-      className="space-y-4"
-    >
-      {/* Zone 1 — Tu estado (MAX visual weight) */}
-      <article
-        data-testid="home-state-card"
-        className="app-glass-accent rounded-[var(--radius-card)] p-6"
+    <MathWatermark topic="sets" variant="background">
+      <section
+        aria-labelledby="home-hero-title"
+        className="space-y-4"
       >
-        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-accent-600)]">
-          Tu estado
-        </p>
-        <h2
-          id="home-hero-title"
-          className="mt-2 text-[var(--text-2xl)] font-bold text-[var(--color-brand-900)] tracking-tight"
-        >
-          {nextStep.title}
-        </h2>
-        <p className="mt-2 text-sm leading-[var(--leading-relaxed)] text-[var(--color-brand-700)] max-w-2xl">
-          {nextStep.description}
-        </p>
-        <Link
-          href={nextStep.href}
-          className="mt-4 inline-flex min-h-[44px] items-center rounded-[var(--radius-button)] bg-[var(--color-brand-900)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-brand-800)] focus-visible:shadow-[var(--ring-focus)]"
-        >
-          {nextStep.kind === "diagnostic" ? "Hacer diagnóstico →" : "Continuar →"}
-        </Link>
-      </article>
-
-      {/* Study plan */}
-      <StudyPlanSection />
-
-      {/* Zone 2 — Tu camino (MEDIUM visual weight) */}
-      {nextStep.roadmapSkills.length > 0 && (
+        {/* Zone 1 — Tu estado (MAX visual weight) */}
         <article
-          aria-labelledby="home-roadmap-title"
-          className="app-glass-surface rounded-[var(--radius-card)] p-5"
+          data-testid="home-state-card"
+          className="app-glass-accent rounded-[var(--radius-card)] p-6"
         >
-          <div className="mb-4 flex items-baseline justify-between gap-3 flex-wrap">
-            <h3
-              id="home-roadmap-title"
-              className="text-sm font-semibold uppercase tracking-wide text-[var(--color-brand-700)]"
-            >
-              Tu camino
-            </h3>
-            {nextStep.diagnosticSummary && (
-              <span className="text-xs text-[var(--color-brand-500)]">
-                Diagnóstico: {nextStep.diagnosticSummary.weakSkills} de{" "}
-                {nextStep.diagnosticSummary.totalSkills} habilidades por
-                reforzar
-              </span>
-            )}
-          </div>
-          <SkillRoadmap
-            skills={nextStep.roadmapSkills}
-            nextSkillId={nextStep.skillId}
-          />
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-accent-600)]">
+            Tu estado
+          </p>
+          <h2
+            id="home-hero-title"
+            className="mt-2 text-[var(--text-2xl)] font-bold text-[var(--color-brand-900)] tracking-tight"
+          >
+            {nextStep.title}
+          </h2>
+          <p className="mt-2 text-sm leading-[var(--leading-relaxed)] text-[var(--color-brand-700)] max-w-2xl">
+            {nextStep.description}
+          </p>
+          <Link
+            href={nextStep.href}
+            className="mt-4 inline-flex min-h-[44px] items-center rounded-[var(--radius-button)] bg-[var(--color-brand-900)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-brand-800)] focus-visible:shadow-[var(--ring-focus)]"
+          >
+            {nextStep.kind === "diagnostic" ? "Hacer diagnóstico →" : "Continuar →"}
+          </Link>
         </article>
-      )}
-    </section>
+
+        {/* Study plan */}
+        <StudyPlanSection />
+
+        {/* Zone 2 — Tu camino (MEDIUM visual weight) */}
+        {nextStep.roadmapSkills.length > 0 && (
+          <article
+            aria-labelledby="home-roadmap-title"
+            className="app-glass-surface rounded-[var(--radius-card)] p-5"
+          >
+            <div className="mb-4 flex items-baseline justify-between gap-3 flex-wrap">
+              <h3
+                id="home-roadmap-title"
+                className="text-sm font-semibold uppercase tracking-wide text-[var(--color-brand-700)]"
+              >
+                Tu camino
+              </h3>
+              {nextStep.diagnosticSummary && (
+                <span className="text-xs text-[var(--color-brand-500)]">
+                  Diagnóstico: {nextStep.diagnosticSummary.weakSkills} de{" "}
+                  {nextStep.diagnosticSummary.totalSkills} habilidades por
+                  reforzar
+                </span>
+              )}
+            </div>
+            <SkillRoadmap
+              skills={nextStep.roadmapSkills}
+              nextSkillId={nextStep.skillId}
+            />
+          </article>
+        )}
+      </section>
+    </MathWatermark>
   );
 }

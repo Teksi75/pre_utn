@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { HomeNextStepClient } from "@/components/home/HomeNextStepClient";
+import { MathWatermark } from "@/components/math-visuals";
 import { EngineeringHeroVisual } from "@/components/math-visuals/EngineeringHeroVisual";
+
+// One-line flag flip restores the pre-change EngineeringHeroVisual hero.
+const USE_MATH_THEME_PLATE = true;
 
 /**
  * Home page — editorial layout with hero, camino de aprendizaje, and
@@ -17,7 +21,11 @@ export default function Home() {
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Editorial hero with MathThemePlate background */}
       <section className="relative isolate overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-brand-200)] bg-[var(--color-brand-50)] p-6 md:p-8 mb-8 min-h-44">
-        <EngineeringHeroVisual />
+        {USE_MATH_THEME_PLATE ? (
+          <MathWatermark topic="sets" variant="hero" opacity={0.15} />
+        ) : (
+          <EngineeringHeroVisual />
+        )}
         <div className="relative z-10 md:max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-accent-600)] mb-2">
             Preparación independiente
