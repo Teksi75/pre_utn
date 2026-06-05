@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Editorial hero with MathThemePlate background */}
-      <section className="relative isolate overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-brand-200)] bg-[var(--color-brand-50)] p-6 md:p-8 mb-8 min-h-44">
+      <section className="relative isolate overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-brand-200)] app-glass-surface p-6 md:p-8 mb-8 min-h-44">
         {USE_MATH_THEME_PLATE ? (
           <MathWatermark topic="sets" variant="hero">
             <div className="md:max-w-2xl">
