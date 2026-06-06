@@ -40,20 +40,20 @@ Chain strategy: pending
 
 ## Phase 4: Per-phase practice watermarks
 
-- [ ] **4.1** Thread `skillId?: string` to 5 phase components; pass `skillId={flow.selectedSkillId ?? undefined}` in `src/app/practice/page.tsx`. Verify: typecheck.
-- [ ] **4.2** `PracticeTheoryPhase` — `<MathWatermark skillId={skillId} variant="background" opacity={0.18}>`.
-- [ ] **4.3** `PracticeExamplePhase` — same background variant.
-- [ ] **4.4** `PracticeExercisePhase` — `<MathWatermark skillId={skillId} variant="card" opacity={0.12}>`.
-- [ ] **4.5** `PracticeFeedbackPhase` — same card variant.
-- [ ] **4.6** `PracticeRecoveryPhase` — return to background variant.
+- [x] **4.1** Thread `skillId?: string` to 5 phase components; pass `skillId={flow.selectedSkillId ?? undefined}` in `src/app/practice/page.tsx`. Verify: typecheck.
+- [x] **4.2** `PracticeTheoryPhase` — `<MathWatermark skillId={skillId} variant="background" opacity={0.18}>`.
+- [x] **4.3** `PracticeExamplePhase` — same background variant.
+- [x] **4.4** `PracticeExercisePhase` — `<MathWatermark skillId={skillId} variant="card" opacity={0.12}>`.
+- [x] **4.5** `PracticeFeedbackPhase` — same card variant.
+- [x] **4.6** `PracticeRecoveryPhase` — return to background variant.
 
 ## Phase 5: Verification & cleanup
 
-- [ ] **5.1** `pnpm run test:run` — 686 + wrapper tests pass.
-- [ ] **5.2** `pnpm run typecheck` — clean.
-- [ ] **5.3** `pnpm run build` — pass; 7 routes.
-- [ ] **5.4** Visual at 375/768/1280px on home, learn (3), diagnostic (2), 5 phases. Verify: edge-to-edge, no gaps, no interactive blockage.
-- [ ] **5.5** Fallback round-trip — flip `USE_MATH_THEME_PLATE` to `false`, build, flip back. Verify: pass.
+- [x] **5.1** `pnpm run test:run` — 686 + wrapper tests pass.
+- [x] **5.2** `pnpm run typecheck` — clean.
+- [x] **5.3** `pnpm run build` — pass; 7 routes.
+- [x] **5.4** Visual at 375/768/1280px on home, learn (3), diagnostic (2), 5 phases. Verify: edge-to-edge, no gaps, no interactive blockage.
+- [x] **5.5** Fallback round-trip — flip `USE_MATH_THEME_PLATE` to `false`, build, flip back. Verify: pass.
 
 ## Out of Scope
 

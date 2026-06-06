@@ -48,6 +48,7 @@ export default function PracticePage() {
         <ViewTransition enter="slide-up" exit="slide-down" default="none">
           <PracticeTheoryPhase
             theoryNode={flow.theoryNode}
+            skillId={flow.selectedSkillId ?? undefined}
             onNext={flow.handleNextPhase}
             onBack={flow.resetToSelect}
             step={1}
@@ -78,6 +79,7 @@ export default function PracticePage() {
         <ViewTransition enter="slide-up" exit="slide-down" default="none">
           <PracticeExamplePhase
             example={flow.currentExample}
+            skillId={flow.selectedSkillId ?? undefined}
             hasNextExample={flow.exampleIndex < flow.examples.length - 1}
             onNextExample={flow.handleNextExample}
             onBack={flow.resetToSelect}
@@ -109,6 +111,7 @@ export default function PracticePage() {
         <ViewTransition enter="slide-up" exit="slide-down" default="none">
           <PracticeExercisePhase
             exercise={flow.currentExercise}
+            skillId={flow.selectedSkillId ?? undefined}
             exerciseIndex={flow.exerciseIndex}
             totalExercises={flow.exercises.length}
             isEvaluating={flow.isEvaluating}
@@ -122,6 +125,7 @@ export default function PracticePage() {
         <ViewTransition enter="slide-up" exit="slide-down" default="none">
           <PracticeFeedbackPhase
             exercise={flow.currentExercise}
+            skillId={flow.selectedSkillId ?? undefined}
             evaluation={flow.evaluation}
             feedback={flow.feedbackMsg}
             hasErrorTag={Boolean(flow.evaluation.errorTag)}
@@ -136,6 +140,7 @@ export default function PracticePage() {
         <ViewTransition enter="slide-up" exit="slide-down" default="none">
           <PracticeRecoveryPhase
             errorTag={flow.evaluation.errorTag}
+            skillId={flow.selectedSkillId ?? undefined}
             feedback={flow.feedbackMsg}
             feedbackMappings={flow.feedbackMappings}
             hasNextExercise={flow.exerciseIndex + 1 < flow.exercises.length}
