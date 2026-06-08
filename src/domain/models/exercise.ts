@@ -7,6 +7,7 @@ import type { Result } from "./result";
 import { ok, err } from "./result";
 import type { SkillId } from "./skill";
 import type { IntervalRepresentation } from "../intervals/representation";
+import { isFiniteNumericAnswer } from "../utils/numeric";
 
 /** Exercise ID format: ex.u{1-6}.{skill_slug}.{index} or ex.u{1-6}.{skill_slug}.{slug-id} */
 export type ExerciseId = `ex.u${1 | 2 | 3 | 4 | 5 | 6}.${string}.${string}`;
@@ -81,6 +82,21 @@ const SUPPORTED_TYPES: ReadonlySet<string> = new Set<ExerciseType>([
   "graphical",
 ]);
 
+function hasStructuredNumericalAnswer(value: string): boolean {
+  const normalized = value.trim();
+  const numericTokenCount =
+    normalized.match(/[-−]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?/g)?.length ?? 0;
+
+  return (
+    normalized.includes(",") ||
+    normalized.includes(";") ||
+    normalized.includes("{") ||
+    normalized.includes("}") ||
+    normalized.includes("=") ||
+    numericTokenCount > 1
+  );
+}
+
 /**
  * Validate an exercise object.
  *
@@ -137,12 +153,20 @@ export function validateExercise(
     return err({ field: "expectedAnswer", message: "expectedAnswer is required and must be non-empty" });
   }
 
-  // Validate type-answer shape: numerical exercises must have a single value
-  // (not a multi-value/set/tuple answer like "x = -2, x = 2")
-  if (input.type === "numerical" && input.expectedAnswer.includes(",")) {
+  // Validate type-answer shape: numerical exercises must have a single scalar value
+  // (not a multi-value/set/equation answer like "x = -2, x = 2" or "{1, 2}").
+  // Scientific notation like "1e3" is still scalar and should be accepted.
+  if (input.type === "numerical" && hasStructuredNumericalAnswer(input.expectedAnswer)) {
     return err({
       field: "expectedAnswer",
-      message: `numerical exercise must have a single expected answer, got multi-value: "${input.expectedAnswer}"`,
+      message: `numerical exercise must have a single scalar expected answer, got structured value: "${input.expectedAnswer}"`,
+    });
+  }
+
+  if (input.type === "numerical" && !isFiniteNumericAnswer(input.expectedAnswer)) {
+    return err({
+      field: "expectedAnswer",
+      message: `numerical exercise must have a finite numeric expected answer, got: "${input.expectedAnswer}"`,
     });
   }
 

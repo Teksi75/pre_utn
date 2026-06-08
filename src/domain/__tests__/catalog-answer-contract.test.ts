@@ -11,8 +11,27 @@ import { describe, test, expect } from "vitest";
 import exercisesJson from "../../../content/matematica/exercises.json";
 import type { Exercise, ExerciseType } from "../models/exercise";
 import { getExerciseOptionValue } from "../models/exercise";
+import { isFiniteNumericAnswer } from "../utils/numeric";
 
 const exercises = exercisesJson as unknown as readonly Exercise[];
+
+const MIGRATED_SYMBOLIC_IDS: readonly string[] = [
+  "ex.u2.operaciones_polinomios.1",
+  "ex.u2.gauss.1",
+  "ex.u3.inecuaciones_lineales.1",
+  "ex.u3.recta.1",
+  "ex.u3.sistemas.1",
+  "ex.u4.thales.1",
+  "ex.u5.identidades.1",
+  "ex.u5.ecuaciones_trigonometricas.1",
+  "ex.u6.dominio_imagen.1",
+  "ex.u6.funcion_afin.1",
+  "ex.u6.funcion_cuadratica.1",
+];
+
+function getLiveSymbolicIds(catalog: readonly Exercise[]): string[] {
+  return catalog.filter((exercise) => exercise.type === "symbolic").map((exercise) => exercise.id);
+}
 
 /**
  * Detect multi-value or set-notation answers (e.g. "x = -2, x = 2", "{1, 2}").
@@ -20,7 +39,17 @@ const exercises = exercisesJson as unknown as readonly Exercise[];
  * assignments, or set notation MUST NOT be type `numerical`.
  */
 function hasMultiValuePattern(value: string): boolean {
-  return value.includes(",");
+  const numericTokenCount =
+    value.match(/[-−]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?/g)?.length ?? 0;
+
+  return (
+    value.includes(",") ||
+    value.includes(";") ||
+    value.includes("{") ||
+    value.includes("}") ||
+    value.includes("=") ||
+    numericTokenCount > 1
+  );
 }
 
 /**
@@ -39,6 +68,13 @@ function auditCatalog(
         expectedAnswer: ex.expectedAnswer,
         reason: `numerical expected answer contains multi-value/set notation: "${ex.expectedAnswer}"`,
       });
+    } else if (ex.type === "numerical" && !isFiniteNumericAnswer(ex.expectedAnswer)) {
+      failures.push({
+        id: ex.id,
+        type: ex.type,
+        expectedAnswer: ex.expectedAnswer,
+        reason: `numerical expected answer is not evaluator-compatible finite numeric: "${ex.expectedAnswer}"`,
+      });
     }
 
     if (ex.type === "multiple-choice") {
@@ -48,6 +84,14 @@ function auditCatalog(
           type: ex.type,
           expectedAnswer: ex.expectedAnswer,
           reason: `multiple-choice has fewer than 3 options (got ${ex.options?.length ?? 0})`,
+        });
+      }
+      if (ex.options && new Set(ex.options.map(getExerciseOptionValue)).size !== ex.options.length) {
+        failures.push({
+          id: ex.id,
+          type: ex.type,
+          expectedAnswer: ex.expectedAnswer,
+          reason: `multiple-choice contains duplicate options: ${JSON.stringify(ex.options)}`,
         });
       }
       if (ex.options && !ex.options.map(getExerciseOptionValue).includes(ex.expectedAnswer)) {
@@ -65,6 +109,30 @@ function auditCatalog(
 }
 
 describe("Catalog answer-contract audit", () => {
+  test("audit helper treats scientific notation as a single scalar token", () => {
+    expect(hasMultiValuePattern("1e3")).toBe(false);
+    expect(hasMultiValuePattern("-1e-3")).toBe(false);
+  });
+
+  test("audit helper still flags obvious multi-value numerical forms", () => {
+    expect(hasMultiValuePattern("0° 180°")).toBe(true);
+    expect(hasMultiValuePattern("1, 2")).toBe(true);
+    expect(hasMultiValuePattern("x = 2")).toBe(true);
+  });
+
+  test("live catalog contains no symbolic exercises after migration", () => {
+    expect(getLiveSymbolicIds(exercises)).toEqual([]);
+  });
+
+  test("known migration targets now use supported structured types", () => {
+    const migratedTargets = exercises.filter((exercise) => MIGRATED_SYMBOLIC_IDS.includes(exercise.id));
+
+    expect(migratedTargets).toHaveLength(MIGRATED_SYMBOLIC_IDS.length);
+    for (const exercise of migratedTargets) {
+      expect(["multiple-choice", "numerical", "true-false"]).toContain(exercise.type);
+    }
+  });
+
   test("numerical exercises do not have multi-value/set-notation answers", () => {
     const failures = auditCatalog(exercises);
     const numericalFailures = failures.filter((f) => f.type === "numerical");
@@ -72,11 +140,39 @@ describe("Catalog answer-contract audit", () => {
     expect(numericalFailures).toEqual([]);
   });
 
+  test("live numerical expected answers are evaluator-compatible finite numerics", () => {
+    const failures = auditCatalog(exercises).filter(
+      (failure) =>
+        failure.type === "numerical" &&
+        failure.reason.includes("evaluator-compatible finite numeric")
+    );
+
+    expect(failures).toEqual([]);
+  });
+
   test("multiple-choice exercises have >=3 unique options and expected answer in options", () => {
     const failures = auditCatalog(exercises);
     const mcFailures = failures.filter((f) => f.type === "multiple-choice");
 
     expect(mcFailures).toEqual([]);
+  });
+
+  test("migrated symbolic multiple-choice exercises keep unique pedagogical options", () => {
+    const migratedMultipleChoice = exercises.filter(
+      (exercise) => MIGRATED_SYMBOLIC_IDS.includes(exercise.id) && exercise.type === "multiple-choice"
+    );
+
+    expect(migratedMultipleChoice.length).toBeGreaterThan(0);
+
+    for (const exercise of migratedMultipleChoice) {
+      expect(exercise.options).toBeDefined();
+      if (!exercise.options) {
+        throw new Error(`Migrated multiple-choice exercise ${exercise.id} has no options`);
+      }
+
+      const optionValues = exercise.options.map(getExerciseOptionValue);
+      expect(new Set(optionValues).size).toBe(optionValues.length);
+    }
   });
 
   test("known mismatch exercises pass audit after correction", () => {

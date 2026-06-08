@@ -193,6 +193,16 @@ describe("Exercise content linkage", () => {
   });
 });
 
+describe("Live catalog symbolic migration", () => {
+  test("raw student-facing catalog JSON excludes symbolic exercise types", () => {
+    const symbolicExercises = (exercisesJson as unknown as { id: string; type: string }[]).filter(
+      (exercise) => exercise.type === "symbolic"
+    );
+
+    expect(symbolicExercises).toEqual([]);
+  });
+});
+
 describe("Potencias y raíces exercise catalog", () => {
   const prExercises = (exercisesJson as unknown as Record<string, unknown>[])
     .filter((ex) => (ex.skillId as string) === "mat.u1.potencias_raices");

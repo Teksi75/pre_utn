@@ -241,6 +241,42 @@ describe("Exercise validation", () => {
       }
     });
 
+    test.each([
+      "x = 3; y = 2",
+      "{1, 2}",
+      "x = 4",
+      "0° 180°",
+    ])("numerical type with structured symbolic answer %s is rejected", (expectedAnswer) => {
+      const exercise: Exercise = {
+        ...validExercise,
+        type: "numerical",
+        expectedAnswer,
+      };
+
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error.field).toBe("expectedAnswer");
+      }
+    });
+
+    test("numerical type with non-finite symbolic scalar answer is rejected", () => {
+      const exercise: Exercise = {
+        ...validExercise,
+        type: "numerical",
+        expectedAnswer: "π",
+      };
+
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error.field).toBe("expectedAnswer");
+        expect(result.error.message).toContain("finite numeric");
+      }
+    });
+
     test("numerical type with valid single numeric answer is accepted", () => {
       const exercise: Exercise = {
         ...validExercise,
@@ -260,6 +296,21 @@ describe("Exercise validation", () => {
       const result = validateExercise(exercise, knownSkills, knownErrorTags);
       expect(result.ok).toBe(true);
     });
+
+    test.each(["1e3", "-1e-3"]) (
+      "numerical type with scientific notation answer %s is accepted",
+      (expectedAnswer) => {
+        const exercise: Exercise = {
+          ...validExercise,
+          type: "numerical",
+          expectedAnswer,
+        };
+
+        const result = validateExercise(exercise, knownSkills, knownErrorTags);
+
+        expect(result.ok).toBe(true);
+      }
+    );
 
     test("multiple-choice with multi-value answer that IS in options is accepted", () => {
       const exercise: Exercise = {

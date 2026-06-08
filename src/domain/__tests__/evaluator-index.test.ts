@@ -1,5 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { evaluateAnswer } from "../evaluator/index";
+import { loadCatalog } from "../catalog/index";
 import type { Exercise } from "../models/exercise";
 
 describe("Evaluator dispatcher", () => {
@@ -32,6 +33,17 @@ describe("Evaluator dispatcher", () => {
       const exercise = makeExercise({ type: "numerical", expectedAnswer: "3.14" });
       const result = evaluateAnswer(exercise, "3.1405");
       expect(result.correct).toBe(true);
+    });
+
+    test.each([
+      { expectedAnswer: "1e3", studentAnswer: "1000" },
+      { expectedAnswer: "-1e-3", studentAnswer: "-0.001" },
+    ])("numerical exercise accepts scientific notation expected answer $expectedAnswer", ({ expectedAnswer, studentAnswer }) => {
+      const exercise = makeExercise({ type: "numerical", expectedAnswer });
+      const result = evaluateAnswer(exercise, studentAnswer);
+
+      expect(result.correct).toBe(true);
+      expect(result.errorTag).toBeUndefined();
     });
 
     test("numerical exercise accepts keyboard hyphen for unicode minus expected answer", () => {
@@ -188,6 +200,98 @@ describe("Evaluator dispatcher", () => {
       const exercise = makeExercise({ type: "numerical", expectedAnswer: "5" });
       const result = evaluateAnswer(exercise, "");
       expect(result.correct).toBe(false);
+    });
+  });
+
+  describe("migrated symbolic exercises", () => {
+    const migratedExercises = [
+      {
+        id: "ex.u2.operaciones_polinomios.1",
+        expectedType: "multiple-choice",
+        correctAnswer: "2x² - 5x - 3",
+        wrongAnswer: "2x² - 6x - 3",
+      },
+      {
+        id: "ex.u2.gauss.1",
+        expectedType: "multiple-choice",
+        correctAnswer: "x = 3, y = 2",
+        wrongAnswer: "x = 2, y = 3",
+      },
+      {
+        id: "ex.u3.inecuaciones_lineales.1",
+        expectedType: "multiple-choice",
+        correctAnswer: "x > 2",
+        wrongAnswer: "x < 2",
+      },
+      {
+        id: "ex.u3.recta.1",
+        expectedType: "numerical",
+        correctAnswer: "1",
+        wrongAnswer: "2",
+      },
+      {
+        id: "ex.u3.sistemas.1",
+        expectedType: "multiple-choice",
+        correctAnswer: "x = 3, y = 1",
+        wrongAnswer: "x = 1, y = 3",
+      },
+      {
+        id: "ex.u4.thales.1",
+        expectedType: "multiple-choice",
+        correctAnswer: "Los segmentos correspondientes son proporcionales",
+        wrongAnswer: "Los segmentos correspondientes son congruentes",
+      },
+      {
+        id: "ex.u5.identidades.1",
+        expectedType: "numerical",
+        correctAnswer: "1",
+        wrongAnswer: "0",
+      },
+      {
+        id: "ex.u5.ecuaciones_trigonometricas.1",
+        expectedType: "multiple-choice",
+        correctAnswer: "θ = 0°, 180°",
+        wrongAnswer: "θ = 90°, 270°",
+      },
+      {
+        id: "ex.u6.dominio_imagen.1",
+        expectedType: "multiple-choice",
+        correctAnswer: "Todos los reales excepto 0",
+        wrongAnswer: "Todos los reales",
+      },
+      {
+        id: "ex.u6.funcion_afin.1",
+        expectedType: "numerical",
+        correctAnswer: "2",
+        wrongAnswer: "3",
+      },
+      {
+        id: "ex.u6.funcion_cuadratica.1",
+        expectedType: "multiple-choice",
+        correctAnswer: "(2, -1)",
+        wrongAnswer: "(-2, -1)",
+      },
+    ] as const;
+
+    test.each(migratedExercises)(
+      "$id evaluates correctly after migration to $expectedType",
+      ({ id, expectedType, correctAnswer, wrongAnswer }) => {
+        const exercise = loadCatalog().find((candidate) => candidate.id === id);
+
+        expect(exercise).toBeDefined();
+        expect(exercise?.type).toBe(expectedType);
+        expect(evaluateAnswer(exercise!, correctAnswer).correct).toBe(true);
+        expect(evaluateAnswer(exercise!, wrongAnswer).correct).toBe(false);
+      }
+    );
+
+    test("ex.u5.radianes.1 evaluates as structured multiple-choice after migration", () => {
+      const exercise = loadCatalog().find((candidate) => candidate.id === "ex.u5.radianes.1");
+
+      expect(exercise).toBeDefined();
+      expect(exercise?.type).toBe("multiple-choice");
+      expect(evaluateAnswer(exercise!, "$\\pi$").correct).toBe(true);
+      expect(evaluateAnswer(exercise!, "$\\dfrac{\\pi}{2}$").correct).toBe(false);
     });
   });
 

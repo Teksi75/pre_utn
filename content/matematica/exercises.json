@@ -584,12 +584,13 @@
   {
     "id": "ex.u2.operaciones_polinomios.1",
     "skillId": "mat.u2.operaciones_polinomios",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 2,
     "prompt": "Calcula (2x + 1)(x - 3)",
     "expectedAnswer": "2x² - 5x - 3",
+    "options": ["2x² - 5x - 3", "2x² - 6x - 3", "2x² + 5x - 3", "2x² - x - 3"],
     "commonErrorTags": [],
-    "pedagogicalNote": "Aplica distribución (FOIL) y combina términos semejantes."
+    "pedagogicalNote": "Aplica distribución (FOIL) y combina términos semejantes. Los distractores representan errores al combinar términos medios o al distribuir signos."
   },
   {
     "id": "ex.u2.ruffini_resto.1",
@@ -615,12 +616,13 @@
   {
     "id": "ex.u2.gauss.1",
     "skillId": "mat.u2.gauss",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 3,
     "prompt": "Resuelve el sistema: x + y = 5, x - y = 1",
     "expectedAnswer": "x = 3, y = 2",
+    "options": ["x = 3, y = 2", "x = 2, y = 3", "x = 4, y = 1", "x = 1, y = 4"],
     "commonErrorTags": [],
-    "pedagogicalNote": "Aplica eliminación gaussiana o sustitución."
+    "pedagogicalNote": "Aplica eliminación gaussiana o sustitución. Los distractores reflejan intercambio de valores o suma/resta incorrecta al combinar ecuaciones."
   },
 
   {
@@ -647,17 +649,18 @@
   {
     "id": "ex.u3.inecuaciones_lineales.1",
     "skillId": "mat.u3.inecuaciones_lineales",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 2,
     "prompt": "Resuelve 3x - 2 > 4",
     "expectedAnswer": "x > 2",
+    "options": ["x > 2", "x < 2", "x > 6", "x < 6"],
     "commonErrorTags": ["u3_signo_desigualdad"],
-    "pedagogicalNote": "Recuerda que al multiplicar o dividir por negativo se invierte la desigualdad."
+    "pedagogicalNote": "Aísla la variable correctamente: 3x > 6 y luego x > 2. Los distractores representan errores al no dividir por 3 o al invertir el signo sin motivo."
   },
   {
     "id": "ex.u3.recta.1",
     "skillId": "mat.u3.recta",
-    "type": "symbolic",
+    "type": "numerical",
     "difficulty": 2,
     "prompt": "¿Cuál es la pendiente de la recta que pasa por (0, 2) y (3, 5)?",
     "expectedAnswer": "1",
@@ -667,12 +670,13 @@
   {
     "id": "ex.u3.sistemas.1",
     "skillId": "mat.u3.sistemas",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 3,
     "prompt": "Resuelve el sistema: 2x + y = 7, x - y = 2",
     "expectedAnswer": "x = 3, y = 1",
+    "options": ["x = 3, y = 1", "x = 1, y = 3", "x = 2, y = 3", "x = 3, y = 2"],
     "commonErrorTags": [],
-    "pedagogicalNote": "Usa sustitución o eliminación."
+    "pedagogicalNote": "Usa sustitución o eliminación. Los distractores muestran errores frecuentes al despejar o intercambiar las coordenadas de la solución."
   },
 
   {
@@ -698,12 +702,18 @@
   {
     "id": "ex.u4.thales.1",
     "skillId": "mat.u4.thales",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 3,
     "prompt": "En un triángulo, si una paralela corta dos lados, ¿qué relación establece entre los segmentos?",
     "expectedAnswer": "Los segmentos correspondientes son proporcionales",
+    "options": [
+      "Los segmentos correspondientes son proporcionales",
+      "Los segmentos correspondientes son congruentes",
+      "Los segmentos correspondientes suman 180°",
+      "Los segmentos correspondientes siempre son perpendiculares"
+    ],
     "commonErrorTags": [],
-    "pedagogicalNote": "Teorema de Thales: paralela implica proporcionalidad."
+    "pedagogicalNote": "Teorema de Thales: una paralela a un lado de un triángulo determina segmentos correspondientes proporcionales. Los distractores confunden proporcionalidad con congruencia u otras propiedades geométricas."
   },
   {
     "id": "ex.u4.pitagoras.1",
@@ -739,10 +749,11 @@
   {
     "id": "ex.u5.radianes.1",
     "skillId": "mat.u5.radianes",
-    "type": "numerical",
+    "type": "multiple-choice",
     "difficulty": 2,
     "prompt": "Convierte 180° a radianes",
-    "expectedAnswer": "π",
+    "expectedAnswer": "$\\pi$",
+    "options": ["$\\dfrac{\\pi}{2}$", "$\\pi$", "$\\dfrac{3\\pi}{2}$", "$2\\pi$"],
     "commonErrorTags": [],
     "pedagogicalNote": "180° = π radianes."
   },
@@ -760,7 +771,7 @@
   {
     "id": "ex.u5.identidades.1",
     "skillId": "mat.u5.identidades",
-    "type": "symbolic",
+    "type": "numerical",
     "difficulty": 2,
     "prompt": "Simplifica sin²(θ) + cos²(θ)",
     "expectedAnswer": "1",
@@ -770,12 +781,13 @@
   {
     "id": "ex.u5.ecuaciones_trigonometricas.1",
     "skillId": "mat.u5.ecuaciones_trigonometricas",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 3,
     "prompt": "Resuelve sen(θ) = 0 para 0° ≤ θ < 360°",
     "expectedAnswer": "θ = 0°, 180°",
+    "options": ["θ = 0°, 180°", "θ = 90°, 270°", "θ = 180°", "θ = 0°, 90°, 180°, 270°"],
     "commonErrorTags": [],
-    "pedagogicalNote": "El seno es cero en 0° y 180°."
+    "pedagogicalNote": "El seno es cero en los puntos donde la coordenada vertical vale 0. Los distractores representan confusión con el coseno o con todos los ángulos cuadrantales."
   },
 
   {
@@ -791,12 +803,13 @@
   {
     "id": "ex.u6.dominio_imagen.1",
     "skillId": "mat.u6.dominio_imagen",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 2,
     "prompt": "¿Cuál es el dominio de f(x) = 1/x?",
     "expectedAnswer": "Todos los reales excepto 0",
+    "options": ["Todos los reales excepto 0", "Todos los reales", "x > 0", "Solo x = 0"],
     "commonErrorTags": ["u6_dominio_funcion"],
-    "pedagogicalNote": "No se puede dividir por cero."
+    "pedagogicalNote": "No se puede dividir por cero, por eso x = 0 queda excluido del dominio. Los distractores confunden restricción puntual con intervalos completos o con dominio total."
   },
   {
     "id": "ex.u6.ceros_positividad_negatividad.1",
@@ -812,7 +825,7 @@
   {
     "id": "ex.u6.funcion_afin.1",
     "skillId": "mat.u6.funcion_afin",
-    "type": "symbolic",
+    "type": "numerical",
     "difficulty": 2,
     "prompt": "¿Cuál es la pendiente de f(x) = 2x + 3?",
     "expectedAnswer": "2",
@@ -822,12 +835,13 @@
   {
     "id": "ex.u6.funcion_cuadratica.1",
     "skillId": "mat.u6.funcion_cuadratica",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 3,
     "prompt": "¿Cuál es el vértice de f(x) = x² - 4x + 3?",
     "expectedAnswer": "(2, -1)",
+    "options": ["(2, -1)", "(-2, -1)", "(2, 1)", "(4, 3)"],
     "commonErrorTags": [],
-    "pedagogicalNote": "El vértice de una parábola se encuentra con x = -b/(2a)."
+    "pedagogicalNote": "El vértice se obtiene con x = -b/(2a) y luego evaluando la función. Los distractores representan errores de signo en la abscisa o al calcular la ordenada."
   },
 
   {

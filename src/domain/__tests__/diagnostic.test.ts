@@ -384,25 +384,20 @@ describe("isExerciseReliable — excludes exercises with unreliable evaluation",
 
   test("real catalog exercises are all reliable", () => {
     const catalog = loadCatalog();
-    // ex.u5.radianes.1 is expected to be unreliable: numerical type with
-    // answer "π" which the evaluator cannot parse. This is a known gap
-    // (carried from WU2) — the exercise is correctly filtered out of diagnostics.
-    const KNOWN_UNRELIABLE = new Set(["ex.u5.radianes.1"]);
-    const unreliable = catalog.filter(
-      (e) => !KNOWN_UNRELIABLE.has(e.id) && !isExerciseReliable(e)
-    );
+    const unreliable = catalog.filter((e) => !isExerciseReliable(e));
     expect(
       unreliable,
       `Unexpected unreliable exercises: ${unreliable.map((e) => `${e.id} (${e.type})`).join(", ")}`
     ).toHaveLength(0);
   });
 
-  test("ex.u5.radianes.1 is correctly identified as unreliable (π answer)", () => {
+  test("ex.u5.radianes.1 is reliable after migration to structured multiple-choice", () => {
     const catalog = loadCatalog();
     const exercise = catalog.find((e) => e.id === "ex.u5.radianes.1");
     expect(exercise).toBeDefined();
     if (!exercise) return;
-    expect(isExerciseReliable(exercise)).toBe(false);
+    expect(exercise.type).toBe("multiple-choice");
+    expect(isExerciseReliable(exercise)).toBe(true);
   });
 });
 
@@ -460,7 +455,7 @@ describe("selectBalancedSet — excludes unreliable exercises from diagnostic", 
     }
   });
 
-  test("real catalog diagnostic includes exercises from unit 5 after π filtering", () => {
+  test("real catalog diagnostic includes exercises from unit 5 after the radianes migration", () => {
     const catalog = loadCatalog();
     const result = selectBalancedSet(catalog);
 
@@ -470,8 +465,8 @@ describe("selectBalancedSet — excludes unreliable exercises from diagnostic", 
     const u5Exercises = result.exercises.filter((e) =>
       e.skillId.match(/^mat\.u5\./)
     );
-    // Unit 5 has 4 reliable exercises (after excluding ex.u5.radianes.1)
-    // TARGET_PER_UNIT = 2, so we should have 2 from u5
+    // ex.u5.radianes.1 is now reliable, but deterministic difficulty/id ordering
+    // still picks earlier unit-5 exercises for the balanced diagnostic slice.
     expect(u5Exercises.length).toBeGreaterThanOrEqual(1);
     expect(u5Exercises.every((e) => e.id !== "ex.u5.radianes.1")).toBe(true);
   });
