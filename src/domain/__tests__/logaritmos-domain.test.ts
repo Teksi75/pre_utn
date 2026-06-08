@@ -24,6 +24,7 @@ import { SKILL_DEPENDENCIES, KNOWN_SKILL_IDS } from "../models/skill-catalog";
 import { loadTaxonomy } from "../error-taxonomy/index";
 import { resolveInitialPracticeSkill, analyzeRequestedSkill } from "../../app/practice/start-skill";
 import type { Exercise, ExerciseType } from "../models/exercise";
+import { getExerciseOptionValue } from "../models/exercise";
 import type { PracticeProgress } from "../progress/index";
 
 const SKILL_ID = "mat.u1.logaritmos" as const;
@@ -70,10 +71,10 @@ describe("mat.u1.logaritmos — catalog identity", () => {
     expect(KNOWN_SKILL_IDS.has(SKILL_ID)).toBe(true);
   });
 
-  test("the skill depends on mat.u1.potencias_raices (and only that)", () => {
+  test("the skill depends on mat.u1.valor_absoluto (and only that)", () => {
     const dep = SKILL_DEPENDENCIES.find((d) => d.skillId === SKILL_ID);
     expect(dep).toBeDefined();
-    expect(dep!.prerequisites).toEqual(["mat.u1.potencias_raices"]);
+    expect(dep!.prerequisites).toEqual(["mat.u1.valor_absoluto"]);
   });
 
   test("the skill is registered as a pilot skill", () => {
@@ -347,20 +348,20 @@ describe("mat.u1.logaritmos — route resolution", () => {
     expect(isSkillReady(SKILL_ID).ready).toBe(true);
   });
 
-  test("/practice?skill=mat.u1.logaritmos is blocked until potencias_raices is mastered", () => {
+  test("/practice?skill=mat.u1.logaritmos is blocked until valor_absoluto is mastered", () => {
     expect(resolveInitialPracticeSkill(SKILL_ID)).toBe(SKILL_ID);
     const analysis = analyzeRequestedSkill(SKILL_ID, emptyProgress());
     expect(analysis.kind).toBe("blocked");
     if (analysis.kind === "blocked") {
       expect(analysis.reason).toBe("missing-prerequisite");
-      expect(analysis.missingPrerequisite).toBe("mat.u1.potencias_raices");
+      expect(analysis.missingPrerequisite).toBe("mat.u1.valor_absoluto");
     }
   });
 
-  test("/practice?skill=mat.u1.logaritmos opens once potencias_raices is mastered", () => {
+  test("/practice?skill=mat.u1.logaritmos opens once valor_absoluto is mastered", () => {
     const progress: PracticeProgress = {
       ...emptyProgress(),
-      accuracyBySkill: { "mat.u1.potencias_raices": 0.85 },
+      accuracyBySkill: { "mat.u1.valor_absoluto": 0.85 },
     };
     const analysis = analyzeRequestedSkill(SKILL_ID, progress);
     expect(analysis).toEqual({ kind: "ready", skillId: SKILL_ID });
@@ -389,10 +390,11 @@ describe("mat.u1.logaritmos — math rendering convention", () => {
     for (const exercise of exercises) {
       if (exercise.type !== "multiple-choice" || !exercise.options) continue;
       for (const option of exercise.options) {
+        const optionValue = getExerciseOptionValue(option);
         const rawLogPattern = /(?<![\$\\])log[_{]\d+[}(]/;
         expect(
-          rawLogPattern.test(option),
-          `exercise ${exercise.id} option "${option}" has raw log expression`
+          rawLogPattern.test(optionValue),
+          `exercise ${exercise.id} option "${optionValue}" has raw log expression`
         ).toBe(false);
       }
     }

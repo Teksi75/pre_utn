@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { NumberLineInterval } from "@/components/math/NumberLineInterval";
+import { IntervalNumberLine } from "@/components/practice/IntervalNumberLine";
 import { RichText } from "@/components/math/RichText";
 import type { TheoryNode } from "@/domain/models/theory";
 
@@ -61,6 +62,17 @@ export function TheoryCard({ node }: TheoryCardProps) {
             <div className="mt-1 text-sm text-brand-700 leading-[var(--leading-relaxed)]">
               <RichText text={concept.body} />
             </div>
+            {concept.intervalRepresentations && concept.intervalRepresentations.length > 0 && (
+              <div className="mt-3 space-y-2">
+                {concept.intervalRepresentations.map((rep) => (
+                  <IntervalNumberLine
+                    key={rep.id}
+                    interval={rep}
+                    className="rounded-[var(--radius-card)] border border-brand-200 bg-brand-50 p-3"
+                  />
+                ))}
+              </div>
+            )}
           </section>
         ))}
       </div>

@@ -144,3 +144,25 @@ export type {
   ReadinessResult,
 } from "./readiness/index";
 export { computeReadiness } from "./readiness/index";
+
+// ── Interval Representation ──────────────────────────────────────────────────
+
+export type {
+  IntervalBound,
+  EndpointInclusion,
+  IntervalRepresentation,
+  ValidationError as IntervalRepresentationValidationError,
+} from "./intervals/representation";
+export {
+  validateIntervalRepresentation,
+  isValidIntervalRepresentation,
+  formatIntervalRepresentation,
+  generateAriaLabel,
+} from "./intervals/representation";
+
+export type {
+  TickMark,
+  EndpointState,
+  IntervalSvgLayout,
+} from "./intervals/svg-layout";
+export { computeIntervalSvgLayout } from "./intervals/svg-layout";

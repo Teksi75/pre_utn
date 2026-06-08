@@ -23,6 +23,7 @@ import {
 import { loadTaxonomy } from "../error-taxonomy/index";
 import { parseRichTextSegments } from "../../components/math/rich-text-parser";
 import type { Exercise } from "../models/exercise";
+import { getExerciseOptionValue } from "../models/exercise";
 
 const SKILL_ID = "mat.u1.conjuntos_numericos";
 const PR2_PER_COUNT = 8;
@@ -43,7 +44,7 @@ function exerciseText(ex: Exercise): string {
   // segments. The render-safety regression test (separate file) checks
   // that nothing important is left outside delimiters.
   const parts: string[] = [ex.prompt, ex.expectedAnswer, ex.pedagogicalNote];
-  if (ex.options) parts.push(...ex.options);
+  if (ex.options) parts.push(...ex.options.map(getExerciseOptionValue));
   return parts.map(allSegments).join(" ");
 }
 

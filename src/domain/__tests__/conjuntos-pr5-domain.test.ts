@@ -33,6 +33,7 @@ import {
 import { loadTaxonomy } from "../error-taxonomy/index";
 import { parseRichTextSegments } from "../../components/math/rich-text-parser";
 import type { Exercise } from "../models/exercise";
+import { getExerciseOptionValue } from "../models/exercise";
 import type { FeedbackMapping } from "../feedback/index";
 
 const SKILL_ID = "mat.u1.conjuntos_numericos";
@@ -48,7 +49,7 @@ function allSegments(text: string): string {
 /** Concatenates prompt + expectedAnswer + options + pedagogicalNote as a single searchable string. */
 function exerciseText(ex: Exercise): string {
   const parts: string[] = [ex.prompt, ex.expectedAnswer, ex.pedagogicalNote];
-  if (ex.options) parts.push(...ex.options);
+  if (ex.options) parts.push(...ex.options.map(getExerciseOptionValue));
   return parts.map(allSegments).join(" ");
 }
 
@@ -433,7 +434,7 @@ describe(`PR#5 errores-comunes + final verify — ${SKILL_ID}`, () => {
         }
         if (ex.options) {
           for (const [i, opt] of ex.options.entries()) {
-            for (const seg of plainTextSegments(opt)) {
+            for (const seg of plainTextSegments(getExerciseOptionValue(opt))) {
               if (BARE_ROOT.test(seg)) {
                 offenders.push(`${ex.id}.options[${i}]: bare √ in "${seg.trim()}"`);
               }
@@ -460,7 +461,7 @@ describe(`PR#5 errores-comunes + final verify — ${SKILL_ID}`, () => {
         }
         if (ex.options) {
           for (const [i, opt] of ex.options.entries()) {
-            for (const seg of plainTextSegments(opt)) {
+            for (const seg of plainTextSegments(getExerciseOptionValue(opt))) {
               if (BARE_IN.test(seg)) {
                 offenders.push(`${ex.id}.options[${i}]: bare ∈ in "${seg.trim()}"`);
               }
@@ -487,7 +488,7 @@ describe(`PR#5 errores-comunes + final verify — ${SKILL_ID}`, () => {
         }
         if (ex.options) {
           for (const [i, opt] of ex.options.entries()) {
-            for (const seg of plainTextSegments(opt)) {
+            for (const seg of plainTextSegments(getExerciseOptionValue(opt))) {
               if (BARE_SUBSET.test(seg)) {
                 offenders.push(`${ex.id}.options[${i}]: bare ⊂ in "${seg.trim()}"`);
               }
@@ -514,7 +515,7 @@ describe(`PR#5 errores-comunes + final verify — ${SKILL_ID}`, () => {
         }
         if (ex.options) {
           for (const [i, opt] of ex.options.entries()) {
-            for (const seg of plainTextSegments(opt)) {
+            for (const seg of plainTextSegments(getExerciseOptionValue(opt))) {
               if (BARE_DECIMAL.test(seg)) {
                 offenders.push(`${ex.id}.options[${i}]: bare decimal in "${seg.trim()}"`);
               }
@@ -544,7 +545,7 @@ describe(`PR#5 errores-comunes + final verify — ${SKILL_ID}`, () => {
         }
         if (ex.options) {
           for (const [i, opt] of ex.options.entries()) {
-            for (const seg of plainTextSegments(opt)) {
+            for (const seg of plainTextSegments(getExerciseOptionValue(opt))) {
               if (BARE_FRACTION.test(seg)) {
                 offenders.push(`${ex.id}.options[${i}]: bare fraction in "${seg.trim()}"`);
               }

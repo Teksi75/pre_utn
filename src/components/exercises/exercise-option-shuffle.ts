@@ -5,6 +5,8 @@
  * Accepts an optional random source for testability.
  */
 
+import type { ExerciseOption } from "@/domain/models/exercise";
+
 /** A function returning a number in [0, 1). */
 export type ShuffleRandom = () => number;
 
@@ -26,17 +28,37 @@ export function createSeededRandom(seed: number): ShuffleRandom {
  * Fisher-Yates shuffle with an optional deterministic random source.
  * Returns a new array; does not mutate the input.
  *
- * @param options - The options to shuffle
+ * @param options - The options to shuffle (strings or ExerciseOption objects)
  * @param random - Optional random function (defaults to Math.random)
  */
 export function shuffleExerciseOptions(
-  options: readonly string[],
+  options: readonly ExerciseOption[],
   random: ShuffleRandom = Math.random
-): readonly string[] {
+): readonly ExerciseOption[] {
   const arr = [...options];
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+}
+
+/**
+ * Extract the value from an ExerciseOption.
+ *
+ * @param option - The option to extract value from
+ * @returns The string value
+ */
+export function getOptionValue(option: ExerciseOption): string {
+  return typeof option === "string" ? option : option.value;
+}
+
+/**
+ * Extract the display label from an ExerciseOption.
+ *
+ * @param option - The option to extract label from
+ * @returns The display label
+ */
+export function getOptionLabel(option: ExerciseOption): string {
+  return typeof option === "string" ? option : option.label;
 }

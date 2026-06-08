@@ -96,7 +96,7 @@ Chain strategy: feature-branch-chain
 - [x] 10.2 Run `pnpm run typecheck` — zero errors
 - [x] 10.3 Run `pnpm run build` — builds cleanly
 - [ ] 10.4 GGA — if available, run guided audit
-- [ ] 10.5 Manual smoke: select Unit 1 → skill → theory → example → exercise → submit → feedback → next
+- [x] 10.5 Manual smoke: select Unit 1 → skill → theory → example → exercise → submit → feedback → next
 
 ## Phase 11: Visual Review Fixes
 
@@ -104,15 +104,15 @@ Chain strategy: feature-branch-chain
 - [x] 11.2 Revise worked examples to UTN entrance tone: rigorous notation, non-childlike phrasing, sufficient reasoning — rewrote `content/matematica/examples/unit-1.json` with formal mathematical language.
 - [x] 11.3 Add interaction metadata/options for multiple-choice and interval translation exercises — added optional `options` field to Exercise model, validation requires ≥2 options for multiple-choice, expectedAnswer must be in options; added options to all 4 interval exercises in exercises.json.
 - [x] 11.4 Render practice answer controls by interaction type; interval questions with infinity must not require typing `∞` — updated AnswerForm to render selectable buttons for multiple-choice exercises, free-text input for other types; interval exercises now use button selection so ∞ never needs to be typed.
-- [ ] 11.5 Manual smoke: open theory directly, answer multiple-choice interval item, verify no generic free input appears for that item.
+- [x] 11.5 Manual smoke: open theory directly, answer multiple-choice interval item, verify no generic free input appears for that item.
 
 ## Phase 12: Interval Graphics Engine
 
-- [ ] 12.1 Add a structured interval representation model covering notation, condition, bounds, endpoint inclusion, and unbounded infinity sides.
-- [ ] 12.2 Add reusable number-line rendering with open/closed endpoints, bounded segments, rays/arrows, and infinity labels; do not use static copied images.
-- [ ] 12.3 Integrate interval graphics into Unit 1 interval theory/worked examples and practice options/feedback where representation translation is taught.
-- [ ] 12.4 Add textual fallback or aria labels that include notation, condition, endpoint inclusion, and ray direction.
-- [ ] 12.5 Verify with tests plus `pnpm run test`, `pnpm run typecheck`, and `pnpm run build`.
+- [x] 12.1 Add a structured interval representation model covering notation, condition, bounds, endpoint inclusion, and unbounded infinity sides.
+- [x] 12.2 Add reusable number-line rendering with open/closed endpoints, bounded segments, rays/arrows, and infinity labels; do not use static copied images.
+- [x] 12.3 Integrate interval graphics into Unit 1 interval theory/worked examples and practice options/feedback where representation translation is taught.
+- [x] 12.4 Add textual fallback or aria labels that include notation, condition, endpoint inclusion, and ray direction.
+- [x] 12.5 Verify with tests plus `pnpm run test`, `pnpm run typecheck`, and `pnpm run build`.
 
 ## Phase 13: Diagnostic-to-practice loop
 

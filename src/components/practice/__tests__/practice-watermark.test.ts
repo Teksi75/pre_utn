@@ -20,7 +20,7 @@ describe("practice phase MathWatermark integration", () => {
   test("threads selectedSkillId from the practice page into every decorated phase", () => {
     const page = source("src/app/practice/page.tsx");
     expect(page).toContain("skillId={flow.selectedSkillId ?? undefined}");
-    expect(page.match(/skillId=\{flow\.selectedSkillId \?\? undefined\}/g)).toHaveLength(5);
+    expect(page.match(/skillId=\{flow\.selectedSkillId \?\? undefined\}/g)).toHaveLength(6);
   });
 
   test("each decorated practice phase declares a skillId prop and renders MathWatermark", () => {

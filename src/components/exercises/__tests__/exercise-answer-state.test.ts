@@ -6,6 +6,7 @@ import {
 import {
   shuffleExerciseOptions,
   createSeededRandom,
+  getOptionValue,
 } from "../exercise-option-shuffle";
 
 describe("exercise answer state", () => {
@@ -39,14 +40,14 @@ describe("exercise answer state", () => {
     const shuffled = shuffleExerciseOptions(OPTIONS, createSeededRandom(42));
 
     // Simulate: user selects the correct answer from the shuffled display
-    const selectedFromShuffled = shuffled.find((o) => o === correctAnswer);
-    expect(selectedFromShuffled).toBe(correctAnswer);
+    const selectedFromShuffled = shuffled.find((o) => getOptionValue(o) === correctAnswer);
+    expect(selectedFromShuffled).toBeDefined();
 
     // The submitted answer is the VALUE, not a positional index
     const submitted = getSubmittedExerciseAnswer(
       "multiple-choice",
       "",
-      selectedFromShuffled!
+      getOptionValue(selectedFromShuffled!)
     );
     expect(submitted).toBe(correctAnswer);
   });
@@ -68,14 +69,14 @@ describe("exercise answer state", () => {
     const shuffled = shuffleExerciseOptions(OPTIONS, createSeededRandom(5));
 
     // Find the correct answer in the shuffled list
-    const correctIndex = shuffled.indexOf(expectedAnswer);
-    expect(correctIndex).toBeGreaterThanOrEqual(0);
+    const correctOption = shuffled.find((o) => getOptionValue(o) === expectedAnswer);
+    expect(correctOption).toBeDefined();
 
     // Selecting by VALUE (not index) gives correct submission
     const submitted = getSubmittedExerciseAnswer(
       "multiple-choice",
       "",
-      shuffled[correctIndex]
+      getOptionValue(correctOption!)
     );
     expect(submitted).toBe(expectedAnswer);
   });

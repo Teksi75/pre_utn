@@ -10,7 +10,8 @@ export type PracticePhase =
   | "example"
   | "exercise"
   | "feedback"
-  | "recovery";
+  | "recovery"
+  | "complete";
 
 /**
  * Determine the next phase based on current state.
@@ -41,10 +42,13 @@ export function nextPhase(
     case "feedback":
       // If there was a tagged error, show recovery guidance
       if (errorTag) return "recovery";
-      // Otherwise go to next exercise or back to select
-      return lastExercise ? "select" : "exercise";
+      // Otherwise go to next exercise or completion screen
+      return lastExercise ? "complete" : "exercise";
 
     case "recovery":
-      return lastExercise ? "select" : "exercise";
+      return lastExercise ? "complete" : "exercise";
+
+    case "complete":
+      return "select";
   }
 }

@@ -29,20 +29,24 @@ describe("practice phase machine", () => {
       );
     });
 
-    it("transitions from feedback to select when no recovery and no more exercises", () => {
-      expect(nextPhase("feedback", null, true)).toBe("select");
+    it("transitions from feedback to complete when no recovery and no more exercises", () => {
+      expect(nextPhase("feedback", null, true)).toBe("complete");
     });
 
     it("transitions from feedback to exercise when no recovery and more exercises remain", () => {
       expect(nextPhase("feedback", null, false)).toBe("exercise");
     });
 
-    it("transitions from recovery to select when no more exercises", () => {
-      expect(nextPhase("recovery", null, true)).toBe("select");
+    it("transitions from recovery to complete when no more exercises", () => {
+      expect(nextPhase("recovery", null, true)).toBe("complete");
     });
 
     it("transitions from recovery to exercise when more exercises remain", () => {
       expect(nextPhase("recovery", null, false)).toBe("exercise");
+    });
+
+    it("transitions from complete to select", () => {
+      expect(nextPhase("complete", null, false)).toBe("select");
     });
   });
 
@@ -55,8 +59,9 @@ describe("practice phase machine", () => {
         "exercise",
         "feedback",
         "recovery",
+        "complete",
       ];
-      expect(phases).toHaveLength(6);
+      expect(phases).toHaveLength(7);
     });
   });
 });

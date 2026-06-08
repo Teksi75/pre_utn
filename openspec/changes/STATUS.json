@@ -12,10 +12,10 @@
     },
     "unit-1-pedagogical-slice": {
       "status": "in-progress",
-      "branch": null,
-      "currentPhase": "Phase 12 (Interval Graphics Engine)",
-      "pendingPhases": ["12", "10.4", "10.5", "11.5"],
-      "summary": "90% complete. Missing: interval graphics engine + manual smoke tests."
+      "branch": "sdd/unit-1-interval-graphics",
+      "currentPhase": "Phase 12 (Interval Graphics Engine) — COMPLETE",
+      "pendingPhases": ["10.4", "10.5", "11.5"],
+      "summary": "Phase 12 complete: interval model, SVG renderer, integration into theory/examples/exercises. 947 tests passing. Pending: GGA + manual smoke tests."
     },
     "fix-conjuntos-numericos-practice-diversity": {
       "status": "done",
@@ -42,6 +42,6 @@
       "summary": "Exploration artifact exists. No implementation planned yet."
     }
   },
-  "activeBranches": [],
-  "lastAudit": "2026-06-08T09:45:00-03:00"
+  "activeBranches": ["sdd/unit-1-interval-graphics"],
+  "lastAudit": "2026-06-08T11:20:00-03:00"
 }

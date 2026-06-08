@@ -28,6 +28,7 @@ import {
 import { loadTaxonomy } from "../error-taxonomy/index";
 import { parseRichTextSegments } from "../../components/math/rich-text-parser";
 import type { Exercise } from "../models/exercise";
+import { getExerciseOptionValue } from "../models/exercise";
 
 const SKILL_ID = "mat.u1.conjuntos_numericos";
 const PR4_RVI_COUNT = 8;
@@ -43,7 +44,7 @@ function allSegments(text: string): string {
 /** Concatenates prompt + expectedAnswer + options + pedagogicalNote as a single searchable string. */
 function exerciseText(ex: Exercise): string {
   const parts: string[] = [ex.prompt, ex.expectedAnswer, ex.pedagogicalNote];
-  if (ex.options) parts.push(...ex.options);
+  if (ex.options) parts.push(...ex.options.map(getExerciseOptionValue));
   return parts.map(allSegments).join(" ");
 }
 
@@ -280,7 +281,8 @@ describe(`PR#4 racionales-vs-irracionales + decimales — ${SKILL_ID}`, () => {
         }
         if (ex.options) {
           for (const [i, opt] of ex.options.entries()) {
-            for (const seg of plainTextSegments(opt)) {
+            const optValue = getExerciseOptionValue(opt);
+            for (const seg of plainTextSegments(optValue)) {
               if (BARE_DECIMAL_PATTERN.test(seg)) {
                 offenders.push(`${ex.id}.options[${i}]: bare decimal in "${seg.trim()}"`);
               }

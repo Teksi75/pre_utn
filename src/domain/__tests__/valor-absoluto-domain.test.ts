@@ -56,13 +56,12 @@ describe("valor_absoluto — pilot order and prerequisites", () => {
     expect(dep!.prerequisites).toContain("mat.u1.intervalos");
   });
 
-  test("logaritmos does NOT list valor_absoluto as prerequisite", () => {
+  test("logaritmos lists valor_absoluto as prerequisite", () => {
     const logDep = SKILL_DEPENDENCIES.find(
       (d) => d.skillId === "mat.u1.logaritmos"
     );
-    if (logDep) {
-      expect(logDep.prerequisites).not.toContain(SKILL_ID);
-    }
+    expect(logDep).toBeDefined();
+    expect(logDep!.prerequisites).toContain(SKILL_ID);
   });
 
   test("PILOT_SKILL_UNIT_MAP maps valor_absoluto to unit-1", () => {

@@ -11,61 +11,66 @@
       {
         "id": "concept-lenguaje-basico-conjuntos",
         "title": "2. Lenguaje básico de conjuntos",
-        "body": "Idea principal: un conjunto reúne elementos. Si $5$ está en $\\mathbb{N}$, se escribe $5 \\in \\mathbb{N}$; si $-3$ no está en $\\mathbb{N}$, se escribe $-3 \\notin \\mathbb{N}$. Inclusión: $A \\subset B$ significa que todo elemento de $A$ también pertenece a $B$. También se usan $\\varnothing$ para el conjunto vacío y $U$ para el conjunto universal cuando se fija un universo de trabajo."
+        "body": "Idea principal: un conjunto reúne elementos. Para decir que un número **está dentro** de un conjunto usamos el símbolo $\\in$ (pertenencia). Ejemplo: $5 \\in \\mathbb{N}$ se lee \"5 pertenece a los naturales\". Si un número **no está** en un conjunto, usamos $\\notin$: $-3 \\notin \\mathbb{N}$ se lee \"−3 no pertenece a los naturales\". Para decir que un conjunto **está contenido** en otro usamos $\\subset$ (inclusión): $\\mathbb{N} \\subset \\mathbb{Z}$ significa que todo natural es también entero. La diferencia clave: $\\in$ relaciona un **número** con un **conjunto**, mientras que $\\subset$ relaciona un **conjunto** con otro **conjunto**. Otros símbolos útiles: $\\varnothing$ para el conjunto vacío y $U$ para el conjunto universal."
+      },
+      {
+        "id": "concept-pertenencia-vs-inclusion",
+        "title": "3. Pertenencia ($\\in$) vs. Inclusión ($\\subset$): una distinción clave",
+        "body": "Idea principal: confundir $\\in$ con $\\subset$ es uno de los errores más frecuentes. Regla práctica: si a la izquierda del símbolo hay un **número** (como $5$, $-3$, $\\sqrt{2}$), usá $\\in$ o $\\notin$. Si a la izquierda hay un **conjunto** (como $\\mathbb{N}$, $\\mathbb{Z}$, $\\{1,2\\}$), usá $\\subset$ o $\\not\\subset$. Ejemplos correctos: $5 \\in \\mathbb{Z}$ (el número 5 pertenece a los enteros), $\\mathbb{N} \\subset \\mathbb{Z}$ (los naturales están contenidos en los enteros), $-3 \\in \\mathbb{Z}$ (−3 es un entero), $\\{5\\} \\subset \\mathbb{Z}$ (el conjunto que contiene al 5 es subconjunto de los enteros). Ejemplos incorrectos: $5 \\subset \\mathbb{Z}$ (5 no es un conjunto, no podés usar $\\subset$), $\\mathbb{N} \\in \\mathbb{Z}$ (los naturales no son un elemento de los enteros, son un subconjunto). Truco: si podés poner llaves alrededor del lado izquierdo ($\\{5\\}$), entonces el símbolo correcto es $\\subset$; si no tiene sentido poner llaves, es $\\in$."
       },
       {
         "id": "concept-operaciones-conjuntos",
-        "title": "3. Operaciones entre conjuntos",
+        "title": "4. Operaciones entre conjuntos",
         "body": "Idea principal: los conjuntos también se combinan. Unión: $A \\cup B$ reúne lo que está en $A$ o en $B$. Intersección: $A \\cap B$ reúne lo común. Diferencia: $A - B$ toma lo que está en $A$ pero no en $B$. Complemento: $A^c$ reúne lo que no está en $A$ dentro del universo $U$. Ejemplo: si $A=\\{1,2,3\\}$ y $B=\\{3,4\\}$, entonces $A \\cup B=\\{1,2,3,4\\}$ y $A \\cap B=\\{3\\}$."
       },
       {
         "id": "concept-familia-conjuntos-numericos",
-        "title": "4. La familia de conjuntos numéricos",
+        "title": "5. La familia de conjuntos numéricos",
         "body": "Idea principal: en Unidad 1 aparecen $\\mathbb{N}$ naturales, $\\mathbb{Z}$ enteros, $\\mathbb{Q}$ racionales, $\\mathbb{I}$ irracionales, $\\mathbb{R}$ reales y $\\mathbb{C}$ complejos. Cada conjunto responde a una necesidad nueva: contar, usar negativos, dividir, medir cantidades no fraccionarias y representar soluciones que no son reales."
       },
       {
         "id": "concept-atencion-cero-naturales",
-        "title": "5. Atención: ¿el cero pertenece a los naturales?",
+        "title": "6. Atención: ¿el cero pertenece a los naturales?",
         "body": "Idea principal: depende de la convención. En muchos textos se usa $\\mathbb{N}=\\{1,2,3,\\dots\\}$; en otros se usa $\\mathbb{N}_0=\\{0,1,2,3,\\dots\\}$. En esta app trabajamos con naturales incluyendo al cero cuando se indique $\\mathbb{N}=\\{0,1,2,3,\\dots\\}$. Advertencia: si un ejercicio o docente usa otra convención, debe explicitarla."
       },
       {
         "id": "concept-mapa-inclusion",
-        "title": "6. Mapa de inclusión",
+        "title": "7. Mapa de inclusión",
         "body": "Idea principal: la cadena base es $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$. Los irracionales se representan como $\\mathbb{I}$, también pertenecen a $\\mathbb{R}$, pero están separados de $\\mathbb{Q}$: $\\mathbb{I} = \\mathbb{R} \\setminus \\mathbb{Q}$. Más adelante se amplía a $\\mathbb{R} \\subset \\mathbb{C}$. Ejemplo: $5 \\in \\mathbb{N}$, entonces también $5 \\in \\mathbb{Z}$, $5 \\in \\mathbb{Q}$ y $5 \\in \\mathbb{R}$."
       },
       {
         "id": "concept-racionales-definicion",
-        "title": "7. Racionales",
+        "title": "8. Racionales",
         "body": "Idea principal: un racional puede escribirse como fracción de enteros: $\\mathbb{Q}=\\{a/b : a,b \\in \\mathbb{Z}, b \\neq 0\\}$. Ejemplos: $2/5$, $-4=-4/1$, $0{,}75=3/4$ y $0{,}333\\dots=1/3$ son racionales. Advertencia: que un número tenga coma no lo vuelve irracional."
       },
       {
         "id": "concept-irracionales-definicion",
-        "title": "8. Irracionales",
+        "title": "9. Irracionales",
         "body": "Idea principal: un irracional no puede escribirse como fracción de enteros y su decimal es infinito no periódico. Ejemplos: $\\sqrt{2}$ y $\\pi$. Atención: no toda raíz es irracional; $\\sqrt{4}=2$ y $2$ es natural, entero, racional y real."
       },
       {
         "id": "concept-reales-union",
-        "title": "9. Reales",
+        "title": "10. Reales",
         "body": "Idea principal: los reales reúnen racionales e irracionales. Se puede pensar $\\mathbb{R}=\\mathbb{Q} \\cup$ irracionales, con $\\mathbb{Q}$ y los irracionales separados dentro de $\\mathbb{R}$. Ejemplo: $2/5 \\in \\mathbb{R}$ y $\\sqrt{2} \\in \\mathbb{R}$, aunque uno sea racional y el otro irracional."
       },
       {
         "id": "concept-complejos-basicos",
-        "title": "10. Complejos básicos",
+        "title": "11. Complejos básicos",
         "body": "Idea principal: $\\mathbb{R} \\subset \\mathbb{C}$. Los complejos aparecen cuando se necesita representar raíces de números negativos. Se introduce la idea de $i$ con $i^2=-1$, pero en esta skill no se opera con complejos ni se desarrolla la forma $a+bi$. Eso queda para una skill posterior."
       },
       {
         "id": "concept-tabla-clasificacion",
-        "title": "11. Tabla comparativa de clasificación",
+        "title": "12. Tabla comparativa de clasificación",
         "body": "Idea principal: clasificar es buscar el conjunto más pequeño y recordar que también pertenece a los conjuntos que lo contienen. $5$: natural, entero, racional y real. $-3$: entero, racional y real. $2/5$: racional y real. $0{,}75=3/4$: racional y real. $0{,}333\\dots=1/3$: racional y real. $\\sqrt{2}$: irracional y real. $\\pi$: irracional y real."
       },
       {
         "id": "concept-error-comun-correccion",
-        "title": "12. Error común: ideas que hay que corregir",
+        "title": "13. Error común: ideas que hay que corregir",
         "body": "Todo decimal es irracional: falso; $0{,}75=3/4$. Toda raíz es irracional: falso; $\\sqrt{4}=2$. Un racional no es real: falso; $\\mathbb{Q} \\subset \\mathbb{R}$. Los conjuntos numéricos son grupos separados: falso; hay inclusión. El cero siempre pertenece a $\\mathbb{N}$: falso; depende de la convención. Un número negativo no puede ser racional: falso; $-3=-3/1 \\in \\mathbb{Q}$."
       },
       {
         "id": "concept-cierre-dominio",
-        "title": "13. Lo que tenés que dominar antes de practicar",
+        "title": "14. Lo que tenés que dominar antes de practicar",
         "body": "Cierre: antes de pasar a práctica tenés que reconocer los símbolos $\\in$, $\\notin$, $\\subset$, $\\cup$, $\\cap$; diferenciar pertenencia de inclusión; ubicar $\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$, $\\mathbb{I}$, $\\mathbb{R}$ y $\\mathbb{C}$; clasificar un número por el conjunto más pequeño; y explicar por qué $\\sqrt{-4}$ no pertenece a $\\mathbb{R}$ aunque se estudie más adelante en $\\mathbb{C}$."
       }
     ],
@@ -73,6 +78,7 @@
       "$\\mathbb{N}$ naturales",
       "$\\mathbb{Z}$ enteros",
       "$\\mathbb{Q}$ racionales",
+      "$\\mathbb{I}$ irracionales",
       "$\\mathbb{R}$ reales",
       "$\\mathbb{C}$ complejos",
       "$\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R} \\subset \\mathbb{C}$"

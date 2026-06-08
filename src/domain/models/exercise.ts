@@ -6,9 +6,27 @@
 import type { Result } from "./result";
 import { ok, err } from "./result";
 import type { SkillId } from "./skill";
+import type { IntervalRepresentation } from "../intervals/representation";
 
 /** Exercise ID format: ex.u{1-6}.{skill_slug}.{index} or ex.u{1-6}.{skill_slug}.{slug-id} */
 export type ExerciseId = `ex.u${1 | 2 | 3 | 4 | 5 | 6}.${string}.${string}`;
+
+/** An exercise option with optional interval representation for graphical exercises. */
+export type ExerciseOption = string | {
+  readonly value: string;
+  readonly label: string;
+  readonly intervalRepresentation?: IntervalRepresentation;
+};
+
+/**
+ * Extract the string value from an ExerciseOption.
+ *
+ * @param option - The option to extract value from
+ * @returns The string value
+ */
+export function getExerciseOptionValue(option: ExerciseOption): string {
+  return typeof option === "string" ? option : option.value;
+}
 
 /** The 9 supported exercise types. */
 export type ExerciseType =
@@ -36,7 +54,7 @@ export interface Exercise {
   readonly commonErrorTags: readonly string[];
   readonly pedagogicalNote: string;
   /** Selectable choices for multiple-choice exercises. Required when type is "multiple-choice". */
-  readonly options?: readonly string[];
+  readonly options?: readonly ExerciseOption[];
   /** Practice category for bank organization (e.g. "clasificacion", "pertenencia"). */
   readonly category?: string;
   /** Semantic tags for filtering and pedagogical tracing. */
@@ -133,7 +151,8 @@ export function validateExercise(
     if (!input.options || input.options.length < 2) {
       return err({ field: "options", message: "multiple-choice exercises require at least 2 options" });
     }
-    if (!input.options.includes(input.expectedAnswer)) {
+    const optionValues = input.options.map(opt => typeof opt === "string" ? opt : opt.value);
+    if (!optionValues.includes(input.expectedAnswer)) {
       return err({ field: "expectedAnswer", message: "expectedAnswer must be one of the options for multiple-choice exercises" });
     }
   }

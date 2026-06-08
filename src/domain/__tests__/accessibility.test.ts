@@ -183,6 +183,7 @@ describe("getAccessibleSkills — accessibility rules", () => {
         "mat.u1.reales_operaciones": 0.85,
         "mat.u1.potencias_raices": 0.85,
         "mat.u1.intervalos": 0.85,
+        "mat.u1.valor_absoluto": 0.85,
       },
     };
     const result = getAccessibleSkills(progress);

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { RichText } from "@/components/math/RichText";
+import { IntervalNumberLine } from "@/components/practice/IntervalNumberLine";
 import type { WorkedExample } from "@/domain/models/worked-example";
 
 interface WorkedExampleCardProps {
@@ -43,16 +44,26 @@ export function WorkedExampleCard({ example }: WorkedExampleCardProps) {
       >
         <div className="mt-3 space-y-2">
           {sortedSteps.map((step) => (
-            <div
-              key={step.order}
-              className="flex gap-3 text-sm text-brand-700"
-            >
-              <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-brand-100 text-brand-600 text-xs font-medium">
-                {step.order}
-              </span>
-              <div className="leading-[var(--leading-relaxed)]">
-                <RichText text={step.explanation} />
+            <div key={step.order}>
+              <div className="flex gap-3 text-sm text-brand-700">
+                <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-brand-100 text-brand-600 text-xs font-medium">
+                  {step.order}
+                </span>
+                <div className="leading-[var(--leading-relaxed)]">
+                  <RichText text={step.explanation} />
+                </div>
               </div>
+              {step.intervalRepresentations && step.intervalRepresentations.length > 0 && (
+                <div className="ml-9 mt-2 space-y-2">
+                  {step.intervalRepresentations.map((rep) => (
+                    <IntervalNumberLine
+                      key={rep.id}
+                      interval={rep}
+                      className="rounded-[var(--radius-card)] border border-brand-200 bg-brand-50 p-3"
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
