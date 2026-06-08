@@ -2,6 +2,7 @@
 
 import { BackButton } from "@/components/ui/BackButton";
 import { Button } from "@/components/ui/Button";
+import { MathWatermark } from "@/components/math-visuals/MathWatermark";
 import { ExerciseCard } from "@/components/practice/ExerciseCard";
 import { FeedbackDisplay } from "@/components/practice/FeedbackDisplay";
 import type { Exercise } from "@/domain/models/exercise";
@@ -9,6 +10,7 @@ import type { EvaluationResult } from "@/domain/evaluator/index";
 
 interface PracticeFeedbackPhaseProps {
   exercise: Exercise;
+  skillId?: string;
   evaluation: EvaluationResult;
   feedback: string;
   hasErrorTag: boolean;
@@ -24,6 +26,7 @@ interface PracticeFeedbackPhaseProps {
  */
 export function PracticeFeedbackPhase({
   exercise,
+  skillId,
   evaluation,
   feedback,
   hasErrorTag,
@@ -38,20 +41,22 @@ export function PracticeFeedbackPhase({
       : "Volver a selección";
 
   return (
-    <div className="space-y-4" aria-live="polite" aria-atomic="false">
-      <BackButton onClick={onBack} />
+    <MathWatermark skillId={skillId} variant="card" opacity={0.12}>
+      <div className="space-y-4" aria-live="polite" aria-atomic="false">
+        <BackButton onClick={onBack} />
 
-      <ExerciseCard exercise={exercise} />
+        <ExerciseCard exercise={exercise} />
 
-      <FeedbackDisplay
-        correct={evaluation.correct}
-        errorTag={evaluation.errorTag}
-        feedback={feedback}
-      />
+        <FeedbackDisplay
+          correct={evaluation.correct}
+          errorTag={evaluation.errorTag}
+          feedback={feedback}
+        />
 
-      <Button variant="secondary" onClick={onContinue} className="w-full">
-        {continueLabel}
-      </Button>
-    </div>
+        <Button variant="secondary" onClick={onContinue} className="w-full">
+          {continueLabel}
+        </Button>
+      </div>
+    </MathWatermark>
   );
 }
