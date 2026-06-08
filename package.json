@@ -8,7 +8,8 @@
     "start": "next start",
     "test": "vitest",
     "test:run": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "audit:branches": "bash scripts/audit-branches.sh"
   },
   "dependencies": {
     "katex": "^0.17.0",

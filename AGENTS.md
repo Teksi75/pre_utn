@@ -58,3 +58,38 @@ Usar en su lugar, según corresponda:
 - chips matemáticos;
 - ordenar pasos;
 - detectar errores.
+
+## Gestión de ramas SDD (multi-PC)
+
+Este proyecto se desarrolla desde **múltiples máquinas**. Engram no es portable entre PCs, por lo que el estado de los cambios SDD debe vivir **en el repositorio**.
+
+### Fuente de verdad: `openspec/changes/STATUS.json`
+
+Este archivo es el **registro portable** del estado de todos los cambios SDD. Debe actualizarse cuando:
+
+1. Un cambio se crea → agregar entrada con `status: "in-progress"` y `branch`
+2. Un cambio se mergea → actualizar a `status: "done"`, `mergedTo: "main"`, `branch: null`
+3. Un cambio se abandona → actualizar a `status: "abandoned"` con motivo
+
+### Auditoría de ramas zombie
+
+```bash
+pnpm run audit:branches        # Solo reporte
+pnpm run audit:branches --fix  # Reporte + eliminación interactiva
+```
+
+El script `scripts/audit-branches.sh` detecta:
+- **Zombies**: ramas que existen pero no están en STATUS.json
+- **Stale**: entradas en STATUS.json cuya rama ya no existe
+- **Drift**: ramas con >20 commits de divergencia vs main
+
+### Política de limpieza
+
+Al completar un change SDD:
+
+1. Merge a main (con `--no-ff` para preservar contexto)
+2. Actualizar `STATUS.json`: `status: "done"`, `branch: null`
+3. Eliminar la rama feature local y remota
+4. Commit del STATUS.json actualizado
+
+**Regla**: nunca dejar ramas feature sin registrar en STATUS.json. Si una rama existe, debe tener entrada correspondiente o ser eliminada.

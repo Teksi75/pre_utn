@@ -1,0 +1,47 @@
+{
+  "$schema": "SDD Change Registry — single source of truth for active changes",
+  "$note": "This file is the portable state that syncs across machines. Update it when a change transitions phases. The audit script reads this to detect zombie branches.",
+  "changes": {
+    "apply-math-watermark-globally": {
+      "status": "done",
+      "branch": null,
+      "completedAt": "2026-06-08",
+      "mergedTo": "main",
+      "mergeCommit": "pending-push",
+      "summary": "MathWatermark applied to all 8 screens + 5 practice phases. Phase 1-5 complete."
+    },
+    "unit-1-pedagogical-slice": {
+      "status": "in-progress",
+      "branch": null,
+      "currentPhase": "Phase 12 (Interval Graphics Engine)",
+      "pendingPhases": ["12", "10.4", "10.5", "11.5"],
+      "summary": "90% complete. Missing: interval graphics engine + manual smoke tests."
+    },
+    "fix-conjuntos-numericos-practice-diversity": {
+      "status": "done",
+      "branch": null,
+      "completedAt": "2026-06-04",
+      "mergedTo": "main",
+      "summary": "Replaced 4 duplicate exercises. 44 exercises across 6 categories."
+    },
+    "editorial-math-visual-direction": {
+      "status": "done",
+      "branch": null,
+      "completedAt": "2026-06-04",
+      "mergedTo": "main",
+      "summary": "Rebrand to Ingenium, editorial tokens, MathThemePlate, page shells."
+    },
+    "canonical-math-pedagogy-map": {
+      "status": "exploration-only",
+      "branch": null,
+      "summary": "Exploration artifact exists. No implementation planned yet."
+    },
+    "pedagogical-model-audit": {
+      "status": "exploration-only",
+      "branch": null,
+      "summary": "Exploration artifact exists. No implementation planned yet."
+    }
+  },
+  "activeBranches": [],
+  "lastAudit": "2026-06-08T09:45:00-03:00"
+}
