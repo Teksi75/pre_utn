@@ -27,6 +27,7 @@ import {
 import { loadTaxonomy } from "../error-taxonomy/index";
 import { parseRichTextSegments } from "../../components/math/rich-text-parser";
 import type { Exercise } from "../models/exercise";
+import { getExerciseOptionValue } from "../models/exercise";
 
 const SKILL_ID = "mat.u1.conjuntos_numericos";
 const PR3_CLA_COUNT = 12;
@@ -41,7 +42,7 @@ function allSegments(text: string): string {
 /** Concatenates prompt + expectedAnswer + options + pedagogicalNote as a single searchable string. */
 function exerciseText(ex: Exercise): string {
   const parts: string[] = [ex.prompt, ex.expectedAnswer, ex.pedagogicalNote];
-  if (ex.options) parts.push(...ex.options);
+  if (ex.options) parts.push(...ex.options.map(getExerciseOptionValue));
   return parts.map(allSegments).join(" ");
 }
 

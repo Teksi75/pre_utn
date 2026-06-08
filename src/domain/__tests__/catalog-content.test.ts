@@ -256,7 +256,7 @@ describe("Potencias y raíces exercise catalog", () => {
     const mcExercises = prExercises.filter((ex) => ex.type === "multiple-choice");
     for (const ex of mcExercises) {
       expect(Array.isArray(ex.options)).toBe(true);
-      expect((ex.options as string[]).length).toBeGreaterThanOrEqual(2);
+      expect((ex.options as unknown[]).length).toBeGreaterThanOrEqual(2);
     }
   });
 

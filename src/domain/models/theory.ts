@@ -7,6 +7,7 @@ import type { Result } from "./result";
 import { ok, err } from "./result";
 import type { SkillId } from "./skill";
 import type { IntervalModel } from "../intervals/index";
+import type { IntervalRepresentation } from "../intervals/representation";
 
 /** Source use classification for canonical material. */
 export type SourceUse = "adapted" | "reinforcement" | "reference";
@@ -24,6 +25,8 @@ export interface ConceptBlock {
   readonly id: string;
   readonly title: string;
   readonly body: string;
+  /** Optional interval representations for visual examples. */
+  readonly intervalRepresentations?: readonly IntervalRepresentation[];
 }
 
 /** Optional visual interval representation attached to theory nodes. */

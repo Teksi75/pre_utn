@@ -108,11 +108,11 @@ Chain strategy: feature-branch-chain
 
 ## Phase 12: Interval Graphics Engine
 
-- [ ] 12.1 Add a structured interval representation model covering notation, condition, bounds, endpoint inclusion, and unbounded infinity sides.
-- [ ] 12.2 Add reusable number-line rendering with open/closed endpoints, bounded segments, rays/arrows, and infinity labels; do not use static copied images.
-- [ ] 12.3 Integrate interval graphics into Unit 1 interval theory/worked examples and practice options/feedback where representation translation is taught.
-- [ ] 12.4 Add textual fallback or aria labels that include notation, condition, endpoint inclusion, and ray direction.
-- [ ] 12.5 Verify with tests plus `pnpm run test`, `pnpm run typecheck`, and `pnpm run build`.
+- [x] 12.1 Add a structured interval representation model covering notation, condition, bounds, endpoint inclusion, and unbounded infinity sides.
+- [x] 12.2 Add reusable number-line rendering with open/closed endpoints, bounded segments, rays/arrows, and infinity labels; do not use static copied images.
+- [x] 12.3 Integrate interval graphics into Unit 1 interval theory/worked examples and practice options/feedback where representation translation is taught.
+- [x] 12.4 Add textual fallback or aria labels that include notation, condition, endpoint inclusion, and ray direction.
+- [x] 12.5 Verify with tests plus `pnpm run test`, `pnpm run typecheck`, and `pnpm run build`.
 
 ## Phase 13: Diagnostic-to-practice loop
 

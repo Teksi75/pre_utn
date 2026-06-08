@@ -24,6 +24,7 @@ import { SKILL_DEPENDENCIES, KNOWN_SKILL_IDS } from "../models/skill-catalog";
 import { loadTaxonomy } from "../error-taxonomy/index";
 import { resolveInitialPracticeSkill, analyzeRequestedSkill } from "../../app/practice/start-skill";
 import type { Exercise, ExerciseType } from "../models/exercise";
+import { getExerciseOptionValue } from "../models/exercise";
 import type { PracticeProgress } from "../progress/index";
 
 const SKILL_ID = "mat.u1.logaritmos" as const;
@@ -389,10 +390,11 @@ describe("mat.u1.logaritmos — math rendering convention", () => {
     for (const exercise of exercises) {
       if (exercise.type !== "multiple-choice" || !exercise.options) continue;
       for (const option of exercise.options) {
+        const optionValue = getExerciseOptionValue(option);
         const rawLogPattern = /(?<![\$\\])log[_{]\d+[}(]/;
         expect(
-          rawLogPattern.test(option),
-          `exercise ${exercise.id} option "${option}" has raw log expression`
+          rawLogPattern.test(optionValue),
+          `exercise ${exercise.id} option "${optionValue}" has raw log expression`
         ).toBe(false);
       }
     }

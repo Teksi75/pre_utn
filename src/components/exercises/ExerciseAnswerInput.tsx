@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { RichText } from "@/components/math/RichText";
-import type { Exercise } from "@/domain/models/exercise";
+import { IntervalNumberLine } from "@/components/practice/IntervalNumberLine";
+import type { Exercise, ExerciseOption } from "@/domain/models/exercise";
 import {
   canSubmitExerciseAnswer,
   getSubmittedExerciseAnswer,
@@ -16,6 +17,8 @@ import {
 import {
   shuffleExerciseOptions,
   createSeededRandom,
+  getOptionValue,
+  getOptionLabel,
 } from "./exercise-option-shuffle";
 
 interface ExerciseAnswerInputProps {
@@ -122,22 +125,33 @@ export function ExerciseAnswerInput({
             Seleccioná una opción
           </legend>
           {shuffledOptions.map((option) => {
-            const selected = selectedOption === option;
+            const value = getOptionValue(option);
+            const label = getOptionLabel(option);
+            const selected = selectedOption === value;
+            const intervalRep = typeof option === "object" ? option.intervalRepresentation : undefined;
             return (
               <label
-                key={option}
+                key={value}
                 className={`${optionLabelClassName()} ${optionClassName(selected)}`}
               >
                 <input
                   type="radio"
                   name={`${inputId}-${exercise.id}`}
-                  value={option}
+                  value={value}
                   checked={selected}
                   disabled={disabled}
-                  onChange={() => setSelectedOption(option)}
+                  onChange={() => setSelectedOption(value)}
                   className="h-4 w-4 accent-brand-900"
                 />
-                <span className="min-w-0"><RichText text={option} /></span>
+                <div className="min-w-0">
+                  <RichText text={label} />
+                  {intervalRep && (
+                    <IntervalNumberLine
+                      interval={intervalRep}
+                      className="mt-2 rounded-[var(--radius-card)] border border-brand-200 bg-brand-50 p-2"
+                    />
+                  )}
+                </div>
               </label>
             );
           })}

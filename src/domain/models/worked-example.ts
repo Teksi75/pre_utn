@@ -7,6 +7,7 @@ import type { Result } from "./result";
 import { ok, err } from "./result";
 import type { SkillId } from "./skill";
 import type { CanonicalTrace } from "./theory";
+import type { IntervalRepresentation } from "../intervals/representation";
 
 export type { CanonicalTrace } from "./theory";
 
@@ -14,6 +15,8 @@ export type { CanonicalTrace } from "./theory";
 export interface SolutionStep {
   readonly order: number;
   readonly explanation: string;
+  /** Optional interval representations for visual examples. */
+  readonly intervalRepresentations?: readonly IntervalRepresentation[];
 }
 
 /** A worked example — a complete step-by-step solution for a skill. */

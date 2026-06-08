@@ -10,6 +10,7 @@
 import { describe, test, expect } from "vitest";
 import exercisesJson from "../../../content/matematica/exercises.json";
 import type { Exercise, ExerciseType } from "../models/exercise";
+import { getExerciseOptionValue } from "../models/exercise";
 
 const exercises = exercisesJson as unknown as readonly Exercise[];
 
@@ -49,7 +50,7 @@ function auditCatalog(
           reason: `multiple-choice has fewer than 3 options (got ${ex.options?.length ?? 0})`,
         });
       }
-      if (ex.options && !ex.options.includes(ex.expectedAnswer)) {
+      if (ex.options && !ex.options.map(getExerciseOptionValue).includes(ex.expectedAnswer)) {
         failures.push({
           id: ex.id,
           type: ex.type,
