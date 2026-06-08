@@ -107,7 +107,7 @@
       "$\\mathbb{Z}$",
       "$\\mathbb{N}$",
       "$\\mathbb{Q}$ (no entero)",
-      "$\\mathbb{R} \\setminus \\mathbb{Q}$"
+      "$\\mathbb{I}$ (irracionales)"
     ],
     "commonErrorTags": ["u1_confunde_natural_entero"],
     "pedagogicalNote": "$-\\sqrt{16} = -4$. Es un entero negativo. No pertenece a $\\mathbb{N}$ (por convención N-sin-cero: los naturales son positivos). El conjunto más pequeño es $\\mathbb{Z}$.",
@@ -302,9 +302,9 @@
     "category": "clasificacion",
     "tags": ["clasificacion", "raiz_cuadrada", "irracional", "conjunto_minimo"],
     "prompt": "¿Cuál es el conjunto MÁS PEQUEÑO al que pertenece $\\sqrt{2}$?",
-    "expectedAnswer": "$\\mathbb{R} \\setminus \\mathbb{Q}$ (irracionales)",
+    "expectedAnswer": "$\\mathbb{I}$ (irracionales)",
     "options": [
-      "$\\mathbb{R} \\setminus \\mathbb{Q}$ (irracionales)",
+      "$\\mathbb{I}$ (irracionales)",
       "$\\mathbb{Q}$",
       "$\\mathbb{Z}$",
       "$\\mathbb{N}$"
@@ -422,7 +422,7 @@
       "$\\mathbb{Q}$",
       "$\\mathbb{Z}$",
       "$\\mathbb{N}$",
-      "$\\mathbb{R} \\setminus \\mathbb{Q}$ (irracionales)"
+      "$\\mathbb{I}$ (irracionales)"
     ],
     "commonErrorTags": ["u1_negativo_puede_ser_racional", "u1_confunde_racional_irracional"],
     "pedagogicalNote": "$-0{,}5 = -\\frac{1}{2}$ es una fracción exacta de enteros, así que es RACIONAL. No es entero (tiene parte decimal), no es natural (es negativo). El conjunto más pequeño es $\\mathbb{Q}$. La trampa es pensar que los decimales negativos no son racionales o que son irracionales.",

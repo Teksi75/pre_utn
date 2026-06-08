@@ -149,6 +149,16 @@ export default function PracticePage() {
           />
         </ViewTransition>
       )}
+
+      {flow.phase === "complete" && (
+        <ViewTransition enter="slide-up" exit="slide-down" default="none">
+          <PracticeCompletePhase
+            skillId={flow.selectedSkillId ?? undefined}
+            totalExercises={flow.exercises.length}
+            onBackToSelector={flow.resetToSelect}
+          />
+        </ViewTransition>
+      )}
     </div>
   );
 }
@@ -207,6 +217,64 @@ function BlockedSkillBanner({
       >
         Entendido, volver al selector
       </button>
+    </div>
+  );
+}
+
+interface PracticeCompletePhaseProps {
+  readonly skillId: string | undefined;
+  readonly totalExercises: number;
+  readonly onBackToSelector: () => void;
+}
+
+/**
+ * Completion screen shown when the student finishes all exercises.
+ * Provides clear next steps: review, practice another skill, or go home.
+ */
+function PracticeCompletePhase({
+  skillId,
+  totalExercises,
+  onBackToSelector,
+}: PracticeCompletePhaseProps) {
+  const skillName = skillId ? skillLabel(skillId as SkillId) : "esta habilidad";
+
+  return (
+    <div className="space-y-6 text-center py-8">
+      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-600">
+        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+
+      <div className="space-y-2">
+        <h2 className="text-[var(--text-xl)] font-bold text-brand-900">
+          ¡Completaste la práctica!
+        </h2>
+        <p className="text-sm text-brand-600">
+          Resolviste los {totalExercises} ejercicios de <strong>{skillName}</strong>.
+        </p>
+      </div>
+
+      <div className="rounded-[var(--radius-card)] border border-brand-200 bg-brand-50 p-4 text-left space-y-3">
+        <p className="text-sm font-semibold text-brand-800">¿Qué podés hacer ahora?</p>
+        <ul className="text-sm text-brand-700 space-y-2">
+          <li>• <strong>Repasar la teoría</strong> si sentiste que algo no quedó claro</li>
+          <li>• <strong>Practicar otra habilidad</strong> para seguir avanzando</li>
+          <li>• <strong>Volver al inicio</strong> y revisar tu progreso general</li>
+        </ul>
+      </div>
+
+      <div className="flex flex-col gap-3 pt-4">
+        <Button variant="primary" onClick={onBackToSelector} className="w-full">
+          Elegir otra habilidad
+        </Button>
+        <a
+          href="/"
+          className="min-h-[44px] inline-flex items-center justify-center rounded-[var(--radius-button)] border border-brand-300 bg-white px-4 py-2 text-sm font-semibold text-brand-700 shadow-sm transition-colors hover:border-brand-400 hover:bg-brand-50 focus-visible:shadow-[var(--ring-focus)]"
+        >
+          Volver al inicio
+        </a>
+      </div>
     </div>
   );
 }

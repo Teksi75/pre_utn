@@ -503,7 +503,7 @@
     "difficulty": 1,
     "prompt": "¿Cuál es el valor de |0|?",
     "expectedAnswer": "0",
-    "options": ["0", "1", " indefinido", "−0"],
+    "options": ["0", "1", "indefinido", "−0"],
     "commonErrorTags": ["u1_abs_cero"],
     "pedagogicalNote": "|0| = 0 porque 0 está a 0 unidades de sí mismo."
   },

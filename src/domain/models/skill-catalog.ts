@@ -107,7 +107,7 @@ export const SKILL_DEPENDENCIES: readonly SkillDependency[] = [
   { skillId: "mat.u1.potencias_raices", prerequisites: ["mat.u1.reales_operaciones"] },
   { skillId: "mat.u1.racionalizacion", prerequisites: ["mat.u1.potencias_raices"] },
   { skillId: "mat.u1.valor_absoluto", prerequisites: ["mat.u1.intervalos"] },
-  { skillId: "mat.u1.logaritmos", prerequisites: ["mat.u1.potencias_raices"] },
+  { skillId: "mat.u1.logaritmos", prerequisites: ["mat.u1.valor_absoluto"] },
   { skillId: "mat.u1.complejos", prerequisites: ["mat.u1.reales_operaciones"] },
 
   { skillId: "mat.u2.operaciones_polinomios", prerequisites: ["mat.u2.polinomios_basico"] },
