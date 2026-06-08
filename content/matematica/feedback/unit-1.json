@@ -298,5 +298,53 @@
     "type": "conceptual",
     "message": "$|a + b| \\neq |a| + |b|$ en general. La desigualdad triangular dice $|a + b| \\leq |a| + |b|$. Solo se iguala cuando $a$ y $b$ tienen el mismo signo.",
     "recoveryTarget": "example-valor-absoluto-5"
+  },
+  {
+    "errorTag": "u1_complejo_i_definicion",
+    "type": "conceptual",
+    "message": "$i$ NO es un número real. Es la unidad imaginaria, definida por la propiedad $i^2 = -1$. A diferencia de los números reales, $i$ no está en la recta numérica. Los números complejos amplían a los reales justamente para representar cantidades como $i$ que no pertenecen a $\\mathbb{R}$.",
+    "recoveryTarget": "theory-complejos"
+  },
+  {
+    "errorTag": "u1_complejo_partes_confusion",
+    "type": "corrective",
+    "message": "Para $z = a+bi$, $\\operatorname{Re}(z) = a$ (el coeficiente sin $i$) y $\\operatorname{Im}(z) = b$ (solo el coeficiente, sin la $i$). Ejemplo: si $z = 3-7i$, entonces $\\operatorname{Re}(z)=3$ y $\\operatorname{Im}(z)=-7$, no $-7i$. La parte imaginaria es un número real.",
+    "recoveryTarget": "theory-complejos"
+  },
+  {
+    "errorTag": "u1_complejo_suma_real",
+    "type": "corrective",
+    "message": "Al sumar complejos, combiná las partes reales entre sí y las partes imaginarias entre sí POR SEPARADO: $(a+bi)+(c+di)=(a+c)+(b+d)i$. No sumes la parte real de uno con la imaginaria del otro. Ejemplo: $(3+2i)+(5-4i)=8-2i$, no $8+6i$ ni $10i$.",
+    "recoveryTarget": "example-complejos-1"
+  },
+  {
+    "errorTag": "u1_complejo_i_cuadrado_signo",
+    "type": "corrective",
+    "message": "Recordá: $i^2 = -1$, no $1$ ni $i$. Al multiplicar complejos, después de aplicar distributiva, REEMPLAZÁ $i^2$ por $-1$. Ejemplo: $(1+2i)(1-2i) = 1 - 4i^2 = 1 - 4(-1) = 5$. Si usaras $i^2=1$, obtendrías $1-4=-3$, que es incorrecto.",
+    "recoveryTarget": "example-complejos-2"
+  },
+  {
+    "errorTag": "u1_complejo_conjugado_signo",
+    "type": "corrective",
+    "message": "El conjugado de $z = a+bi$ es $\\overline{z} = a-bi$. SOLO cambia el signo de la parte imaginaria; la parte real queda IGUAL. No cambies el signo de la parte real ni de ambos. Ejemplo: el conjugado de $3+4i$ es $3-4i$, no $-3+4i$ ni $-3-4i$.",
+    "recoveryTarget": "example-complejos-3"
+  },
+  {
+    "errorTag": "u1_complejo_division_sin_conjugado",
+    "type": "procedural",
+    "message": "Para dividir $\\frac{a+bi}{c+di}$, MULTIPLICÁ numerador y denominador por el conjugado del denominador ($c-di$). Esto convierte el denominador en $c^2+d^2$, un número real. Sin este paso, la división no está resuelta. Ejemplo: $\\frac{1}{1+i} \\cdot \\frac{1-i}{1-i} = \\frac{1-i}{2}$.",
+    "recoveryTarget": "example-complejos-4"
+  },
+  {
+    "errorTag": "u1_complejo_potencia_ciclo",
+    "type": "procedural",
+    "message": "Las potencias de $i$ siguen un CICLO de 4: $i^1=i$, $i^2=-1$, $i^3=-i$, $i^4=1$, y DESPUÉS SE REPITE. Para $i^n$, dividí $n$ por 4 y usá el resto: resto 0 → 1, resto 1 → $i$, resto 2 → $-1$, resto 3 → $-i$. Ejemplo: $i^{10}$: $10 \\div 4 = 2$ resto $2$, así que $i^{10} = i^2 = -1$.",
+    "recoveryTarget": "example-complejos-5"
+  },
+  {
+    "errorTag": "u1_complejo_igualdad_parcial",
+    "type": "conceptual",
+    "message": "Dos números complejos son iguales SOLO cuando coinciden AMBAS partes: $a+bi = c+di$ si y solo si $a=c$ Y $b=d$. No alcanza con que una parte coincida. Ejemplo: $2+3i \\neq 2+4i$ (reales iguales, imaginarias distintas). Verificá siempre las dos partes.",
+    "recoveryTarget": "theory-complejos"
   }
 ]

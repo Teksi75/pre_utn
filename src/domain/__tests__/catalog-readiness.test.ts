@@ -76,40 +76,41 @@ describe("isSkillReady", () => {
     expect(result.missing).toEqual([]);
   });
 
-  test("returns missing components for non-pilot skill", () => {
+  test("complexos is not yet ready (exercises + feedback linkage pending in PR 3)", () => {
     const result = isSkillReady("mat.u1.complejos");
     expect(result.ready).toBe(false);
-    expect(result.missing.length).toBeGreaterThan(0);
-  });
-
-  test("non-pilot skill is missing theory", () => {
-    const result = isSkillReady("mat.u1.complejos");
-    expect(result.missing).toContain("theory");
-  });
-
-  test("non-pilot skill is missing examples", () => {
-    const result = isSkillReady("mat.u1.complejos");
-    expect(result.missing).toContain("examples");
+    expect(result.missing).toContain("exercises");
+    // feedback requires exercise error-tag references to activate
+    expect(result.missing).toContain("feedback");
   });
 });
 
-describe("no exercise available scenario", () => {
-  test("skill with no exercises reports exercises component as not present", () => {
+describe("complexos component readiness (PR 2 — theory and examples present)", () => {
+  test("mat.u1.complejos has theory content present", () => {
     const components = getSkillComponents("mat.u1.complejos");
-    const exercises = components.find((c) => c.name === "exercises");
-    expect(exercises?.present).toBe(false);
+    const theory = components.find((c) => c.name === "theory");
+    expect(theory?.present).toBe(true);
   });
 
-  test("skill with no exercises is not ready", () => {
+  test("mat.u1.complejos has examples content present", () => {
+    const components = getSkillComponents("mat.u1.complejos");
+    const examples = components.find((c) => c.name === "examples");
+    expect(examples?.present).toBe(true);
+  });
+
+  test("mat.u1.complejos feedback is not yet linked (exercises pending)", () => {
+    const components = getSkillComponents("mat.u1.complejos");
+    const feedback = components.find((c) => c.name === "feedback");
+    // Feedback mappings exist in JSON but readiness cannot detect them
+    // without at least one exercise referencing the error tags (PR 3).
+    expect(feedback?.present).toBe(false);
+  });
+
+  test("mat.u1.complejos is not yet ready: missing exercises and feedback linkage", () => {
     const result = isSkillReady("mat.u1.complejos");
     expect(result.ready).toBe(false);
     expect(result.missing).toContain("exercises");
-  });
-
-  test("skill with no exercises and no feedback reports both missing", () => {
-    const result = isSkillReady("mat.u1.complejos");
-    expect(result.ready).toBe(false);
-    expect(result.missing).toContain("exercises");
+    expect(result.missing).toContain("feedback");
   });
 });
 
@@ -157,7 +158,6 @@ describe("recommendation safety", () => {
   test("not-ready downstream skills are not recommended via readiness", () => {
     const downstreamSkills = [
       "mat.u1.exponenciales",
-      "mat.u1.complejos",
     ];
     for (const skillId of downstreamSkills) {
       const result = isSkillReady(skillId);

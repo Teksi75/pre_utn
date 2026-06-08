@@ -127,14 +127,14 @@ describe("mat.u1.complejos — readiness", () => {
 // ── 1.3 Theory and examples ───────────────────────────────────────────────
 
 describe("mat.u1.complejos — theory and examples", () => {
-  test.todo("a theory node exists for the skill with the expected id", () => {
+  test("a theory node exists for the skill with the expected id", () => {
     const nodes = loadTheoryContent("unit-1");
     const node = nodes.find((n) => n.skillId === SKILL_ID);
     expect(node).toBeDefined();
     expect(node!.id).toBe("theory-complejos");
   });
 
-  test.todo("the theory node covers the core complex number concepts", () => {
+  test("the theory node covers the core complex number concepts", () => {
     const nodes = loadTheoryContent("unit-1");
     const node = nodes.find((n) => n.skillId === SKILL_ID);
     expect(node).toBeDefined();
@@ -151,7 +151,7 @@ describe("mat.u1.complejos — theory and examples", () => {
     expect(titles).toContain("concept-potencias-i");
   });
 
-  test.todo("the theory node validates as a TheoryNode with sufficient depth", () => {
+  test("the theory node validates as a TheoryNode with sufficient depth", () => {
     const nodes = loadTheoryContent("unit-1");
     const node = nodes.find((n) => n.skillId === SKILL_ID);
     expect(node).toBeDefined();
@@ -162,7 +162,7 @@ describe("mat.u1.complejos — theory and examples", () => {
     expect(node!.canonicalTrace.length).toBeGreaterThanOrEqual(1);
   });
 
-  test.todo("the theory node does NOT mention polar form or Unit 5 depth", () => {
+  test("the theory node does NOT mention polar form or Unit 5 depth", () => {
     const nodes = loadTheoryContent("unit-1");
     const node = nodes.find((n) => n.skillId === SKILL_ID);
     expect(node).toBeDefined();
@@ -173,7 +173,7 @@ describe("mat.u1.complejos — theory and examples", () => {
     expect(allText).not.toContain("trigonométrica");
   });
 
-  test.todo("at least 5 worked examples exist for the skill", () => {
+  test("at least 5 worked examples exist for the skill", () => {
     const examples = loadExampleContent("unit-1").filter(
       (e) => e.skillId === SKILL_ID
     );
@@ -358,7 +358,7 @@ describe("mat.u1.complejos — feedback coverage", () => {
     }
   });
 
-  test.todo("every new complex number error tag has a feedback mapping", () => {
+  test("every new complex number error tag has a feedback mapping", () => {
     const feedback = loadFeedbackContent("unit-1");
     const tags = new Set(feedback.map((f) => f.errorTag));
     for (const tag of COMPLEJOS_ERROR_TAGS) {
@@ -366,7 +366,7 @@ describe("mat.u1.complejos — feedback coverage", () => {
     }
   });
 
-  test.todo("every feedback mapping for the new tags has a valid type and points to recovery", () => {
+  test("every feedback mapping for the new tags has a valid type and points to recovery", () => {
     const feedback = loadFeedbackContent("unit-1");
     const validTypes = new Set(["corrective", "conceptual", "procedural"]);
     for (const tag of COMPLEJOS_ERROR_TAGS) {
@@ -378,7 +378,7 @@ describe("mat.u1.complejos — feedback coverage", () => {
     }
   });
 
-  test.todo("at least one feedback mapping recovers to theory-complejos", () => {
+  test("at least one feedback mapping recovers to theory-complejos", () => {
     const feedback = loadFeedbackContent("unit-1");
     const recoveringToTheory = feedback.filter(
       (f) =>
@@ -389,7 +389,7 @@ describe("mat.u1.complejos — feedback coverage", () => {
     expect(recoveringToTheory.length).toBeGreaterThanOrEqual(1);
   });
 
-  test.todo("each error tag feedback explains the specific misconception pedagogically", () => {
+  test("each error tag feedback explains the specific misconception pedagogically", () => {
     const feedback = loadFeedbackContent("unit-1");
     const feedbackMap = new Map(feedback.map((f) => [f.errorTag, f]));
     // i_definicion should explain why i is not a real number
