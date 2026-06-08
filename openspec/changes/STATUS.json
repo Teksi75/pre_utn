@@ -7,7 +7,7 @@
       "branch": null,
       "completedAt": "2026-06-08",
       "mergedTo": "main",
-      "mergeCommit": "pending-push",
+      "mergeCommit": "be11184",
       "summary": "MathWatermark applied to all 8 screens + 5 practice phases. Phase 1-5 complete."
     },
     "unit-1-pedagogical-slice": {
@@ -15,6 +15,7 @@
       "branch": null,
       "completedAt": "2026-06-08",
       "mergedTo": "main",
+      "mergeCommit": "9716118",
       "summary": "Complete: domain contracts, content JSON, UI cards, guided phase machine, progress storage, interval graphics engine, diagnostic-to-practice loop, home dashboard, interval visual model, exercise answer controls."
     },
     "fix-conjuntos-numericos-practice-diversity": {
