@@ -25,6 +25,13 @@ import type { Exercise } from "@/domain/models/exercise";
 import type { TheoryNode } from "@/domain/models/theory";
 import type { WorkedExample } from "@/domain/models/worked-example";
 import type { EvaluationResult } from "@/domain/evaluator/index";
+import {
+  createPreviousExerciseSnapshot,
+  type PreviousExerciseSnapshot,
+  type ExerciseDraftState,
+} from "./previous-snapshot";
+
+export { type PreviousExerciseSnapshot, type ExerciseDraftState } from "./previous-snapshot";
 
 /**
  * Information about a skill the user requested via `?skill=...` that
@@ -59,6 +66,12 @@ export function usePracticeFlow() {
   const [feedbackMappings, setFeedbackMappings] = useState<
     readonly FeedbackMapping[]
   >([]);
+  const [previousSnapshot, setPreviousSnapshot] =
+    useState<PreviousExerciseSnapshot | null>(null);
+  const [isViewingPreviousExercise, setIsViewingPreviousExercise] =
+    useState(false);
+  const [currentAnswerDraft, setCurrentAnswerDraft] =
+    useState<ExerciseDraftState>({ answer: "", selectedOption: null });
   const evaluateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const initialSkillConsumedRef = useRef(false);
 
@@ -108,11 +121,17 @@ export function usePracticeFlow() {
     setExampleIndex(0);
     setFeedbackMappings([]);
     setBlockedSkill(null);
+    setPreviousSnapshot(null);
+    setIsViewingPreviousExercise(false);
+    setCurrentAnswerDraft({ answer: "", selectedOption: null });
   }, []);
 
   const handleSkillSelect = useCallback((skillId: SkillId) => {
     setSelectedSkillId(skillId);
     setBlockedSkill(null);
+    setPreviousSnapshot(null);
+    setIsViewingPreviousExercise(false);
+    setCurrentAnswerDraft({ answer: "", selectedOption: null });
     const skillExercises = queryBySkill(skillId);
     setExercises(skillExercises);
     setExerciseIndex(0);
@@ -186,6 +205,17 @@ export function usePracticeFlow() {
         const fb = generateFeedback(result.correct, result.errorTag, feedbackMappings);
         setFeedbackMsg(fb.message);
 
+        // Capture a session-scoped read-only snapshot of THIS submission
+        // before the answer string is discarded and the phase advances.
+        setPreviousSnapshot(
+          createPreviousExerciseSnapshot(
+            currentExercise,
+            answer,
+            result,
+            fb.message,
+          ),
+        );
+
         // Persist attempt and refresh progress so the FocusSelector
         // re-derives the accessibility map with the new accuracy.
         if (selectedSkillId) {
@@ -215,10 +245,20 @@ export function usePracticeFlow() {
       setEvaluation(null);
       setFeedbackMsg("");
       setPhase("exercise");
+      // Clear draft for the new exercise
+      setCurrentAnswerDraft({ answer: "", selectedOption: null });
     } else {
       resetToSelect();
     }
   }, [exerciseIndex, exercises, resetToSelect]);
+
+  const viewPreviousExercise = useCallback(() => {
+    setIsViewingPreviousExercise(true);
+  }, []);
+
+  const returnToCurrentExercise = useCallback(() => {
+    setIsViewingPreviousExercise(false);
+  }, []);
 
   const handleContinueAfterFeedback = useCallback(() => {
     if (evaluation?.errorTag) {
@@ -258,6 +298,10 @@ export function usePracticeFlow() {
     feedbackMappings,
     accessibleSkills,
     blockedSkill,
+    previousSnapshot,
+    isViewingPreviousExercise,
+    currentAnswerDraft,
+    setCurrentAnswerDraft,
     resetToSelect,
     handleSkillSelect,
     handleNextPhase,
@@ -265,5 +309,7 @@ export function usePracticeFlow() {
     handleNextExample,
     handleContinueAfterFeedback,
     handleContinueAfterRecovery,
+    viewPreviousExercise,
+    returnToCurrentExercise,
   };
 }

@@ -27,6 +27,12 @@ interface ExerciseAnswerInputProps {
   readonly onSubmit: (answer: string) => void;
   readonly autoFocus?: boolean;
   readonly inputId?: string;
+  /** Controlled draft: the current text answer (for text-input types). */
+  readonly draftAnswer?: string;
+  /** Controlled draft: the currently selected option value (for selectable types). */
+  readonly draftSelectedOption?: string | null;
+  /** Called when the user changes the text answer or selects a different option. */
+  readonly onDraftChange?: (answer: string, selectedOption: string | null) => void;
 }
 
 const TRUE_FALSE_OPTIONS = [
@@ -60,10 +66,37 @@ export function ExerciseAnswerInput({
   onSubmit,
   autoFocus = true,
   inputId = "exercise-answer",
+  draftAnswer,
+  draftSelectedOption,
+  onDraftChange,
 }: ExerciseAnswerInputProps) {
-  const [answer, setAnswer] = useState("");
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [internalAnswer, setInternalAnswer] = useState("");
+  const [internalSelectedOption, setInternalSelectedOption] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const isControlled = onDraftChange !== undefined;
+
+  // Use controlled values when the parent owns draft state; otherwise keep local state.
+  const answer = isControlled ? (draftAnswer ?? "") : internalAnswer;
+  const selectedOption = isControlled
+    ? (draftSelectedOption ?? null)
+    : internalSelectedOption;
+
+  function setAnswer(value: string) {
+    if (isControlled) {
+      onDraftChange!(value, selectedOption);
+    } else {
+      setInternalAnswer(value);
+    }
+  }
+
+  function setSelectedOptionValue(value: string) {
+    if (isControlled) {
+      onDraftChange!(answer, value);
+    } else {
+      setInternalSelectedOption(value);
+    }
+  }
 
   // Memoize shuffled options per exercise id — deterministic for a given exercise.
   const shuffledOptions = useMemo(
@@ -90,9 +123,11 @@ export function ExerciseAnswerInput({
   }, [autoFocus, disabled, exercise.id, exercise.type]);
 
   useEffect(() => {
-    setAnswer("");
-    setSelectedOption(null);
-  }, [exercise.id]);
+    if (!isControlled) {
+      setInternalAnswer("");
+      setInternalSelectedOption(null);
+    }
+  }, [exercise.id, isControlled]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -105,8 +140,12 @@ export function ExerciseAnswerInput({
     if (!submittedAnswer) return;
 
     onSubmit(submittedAnswer);
-    setAnswer("");
-    setSelectedOption(null);
+    if (isControlled) {
+      onDraftChange!("", null);
+    } else {
+      setInternalAnswer("");
+      setInternalSelectedOption(null);
+    }
   }
 
   if (exercise.type === "multiple-choice") {
@@ -140,7 +179,7 @@ export function ExerciseAnswerInput({
                   value={value}
                   checked={selected}
                   disabled={disabled}
-                  onChange={() => setSelectedOption(value)}
+                  onChange={() => setSelectedOptionValue(value)}
                   className="h-4 w-4 accent-brand-900"
                 />
                 <div className="min-w-0">
@@ -187,7 +226,7 @@ export function ExerciseAnswerInput({
                   value={option.value}
                   checked={selected}
                   disabled={disabled}
-                  onChange={() => setSelectedOption(option.value)}
+                  onChange={() => setSelectedOptionValue(option.value)}
                   className="h-4 w-4 accent-brand-900"
                 />
                 <span>{option.label}</span>

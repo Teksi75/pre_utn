@@ -117,6 +117,15 @@ export default function PracticePage() {
             isEvaluating={flow.isEvaluating}
             onSubmit={flow.handleAnswerSubmit}
             onBack={flow.resetToSelect}
+            previousSnapshot={flow.previousSnapshot}
+            isViewingPreviousExercise={flow.isViewingPreviousExercise}
+            onViewPrevious={flow.viewPreviousExercise}
+            onReturnToCurrent={flow.returnToCurrentExercise}
+            draftAnswer={flow.currentAnswerDraft.answer}
+            draftSelectedOption={flow.currentAnswerDraft.selectedOption}
+            onDraftChange={(answer, selectedOption) =>
+              flow.setCurrentAnswerDraft({ answer, selectedOption })
+            }
           />
         </ViewTransition>
       )}
