@@ -144,9 +144,9 @@ describe("pilot skill readiness integration", () => {
 
 describe("recommendation safety", () => {
   test("PILOT_SKILLS does not contain downstream not-ready skills", () => {
+    // mat.u1.complejos is now a pilot skill (PR 1 add-complex-numbers-skill)
     const downstreamSkills = [
       "mat.u1.exponenciales",
-      "mat.u1.complejos",
     ];
     const pilotSkillIds = PILOT_SKILLS.map((s) => s.skillId);
     for (const downstream of downstreamSkills) {

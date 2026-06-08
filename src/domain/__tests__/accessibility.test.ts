@@ -184,10 +184,15 @@ describe("getAccessibleSkills — accessibility rules", () => {
         "mat.u1.potencias_raices": 0.85,
         "mat.u1.intervalos": 0.85,
         "mat.u1.valor_absoluto": 0.85,
+        "mat.u1.logaritmos": 0.85,
       },
     };
+    // Skills without content (like mat.u1.complejos, which is pilot-registered
+    // but not yet content-ready in PR 1) are excluded from this check.
+    const notYetReady: Set<string> = new Set(["mat.u1.complejos"]);
     const result = getAccessibleSkills(progress);
     for (const skill of result) {
+      if (notYetReady.has(skill.skillId)) continue;
       expect(skill.accessible).toBe(true);
     }
   });
