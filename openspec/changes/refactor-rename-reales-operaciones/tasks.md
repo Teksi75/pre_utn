@@ -26,13 +26,14 @@
 - [ ] Verificar que `ALL_SKILLS` y `KNOWN_SKILL_IDS` se actualizan automáticamente (si son derivados).
 - [ ] Commit: `refactor(domain): update skill-catalog with new ID and dependencies`.
 
-### T3. Rename en contenido (3 archivos JSON)
+### T3. Rename en contenido (3 archivos JSON + feedback + IDs internos)
 
-- [ ] `content/matematica/theory/unit-1.json`: cambiar `skillId` en el nodo de teoría.
-- [ ] `content/matematica/examples/unit-1.json`: cambiar `skillId` en los 2 ejemplos.
-- [ ] `content/matematica/exercises.json`: cambiar `id` (4 matches con `.1`, `.2`, `.3`, `.4`) y `skillId` (4 matches).
-- [ ] Verificar byte-identical del contenido pedagógico (prompts, options, expectedAnswer, commonErrorTags) — verificado por `git diff` que solo muestre cambios en `id` y `skillId`.
-- [ ] Commit: `refactor(content): update theory, examples, and exercises with new skill ID`.
+- [ ] `content/matematica/theory/unit-1.json`: cambiar `id: "theory-reales-operaciones"` → `id: "theory-propiedades-operaciones-reales"` (1 match) y `skillId` (1 match).
+- [ ] `content/matematica/examples/unit-1.json`: cambiar `id: "example-reales-operaciones-1"` y `-2` → `id: "example-propiedades-operaciones-reales-1"` y `-2` (2 matches) y `skillId` (2 matches).
+- [ ] `content/matematica/exercises.json`: cambiar `id` (4 matches con `.1`, `.2`, `.3`, `.4`) y `skillId` (4 matches). También cambiar `relatedTheoryIds` (4 matches de `theory-reales-operaciones`) y `relatedExampleIds` (6 matches de `example-reales-operaciones-*`).
+- [ ] `content/matematica/feedback/unit-1.json`: cambiar `recoveryTarget` (3 matches: 2 a `theory-reales-operaciones`, 1 a `example-reales-operaciones-2`).
+- [ ] Verificar byte-identical del contenido pedagógico (prompts, options, expectedAnswer, commonErrorTags) — verificado por `git diff` que solo muestre cambios en `id`, `skillId`, `relatedTheoryIds`, `relatedExampleIds`, `recoveryTarget`.
+- [ ] Commit: `refactor(content): update theory, examples, exercises, and feedback with new IDs`.
 
 ### T4. Rename en tests de dominio (13 archivos)
 
