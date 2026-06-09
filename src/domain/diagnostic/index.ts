@@ -2,6 +2,7 @@ import type { Exercise } from "../models/exercise";
 import type { ExerciseId } from "../models/exercise";
 import type { SkillId } from "../models/skill";
 import type { PracticeProgress } from "../progress/index";
+import { getExerciseOptionValue } from "../models/exercise";
 import { PILOT_SKILLS } from "../catalog/pilot-skills";
 import { SKILL_DEPENDENCIES } from "../models/skill-catalog";
 import { isFiniteNumericAnswer } from "../utils/numeric";
@@ -108,7 +109,7 @@ export function isExerciseReliable(exercise: Exercise): boolean {
     if (!exercise.options || exercise.options.length < 3) {
       return false;
     }
-    if (!exercise.options.includes(exercise.expectedAnswer)) {
+    if (!exercise.options.map(getExerciseOptionValue).includes(exercise.expectedAnswer)) {
       return false;
     }
   }

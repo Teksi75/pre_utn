@@ -249,6 +249,14 @@ describe("Exercise Catalog", () => {
       }
     });
 
+    test("student-facing catalog excludes symbolic exercise types", () => {
+      const catalog = loadCatalog();
+
+      for (const exercise of catalog) {
+        expect(exercise.type).not.toBe("symbolic");
+      }
+    });
+
     test("prompt is non-empty", () => {
       const catalog = loadCatalog();
       for (const exercise of catalog) {
