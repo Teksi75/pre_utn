@@ -43,15 +43,14 @@
       "summary": "Exploration artifact exists. No implementation planned yet."
     },
     "add-complex-numbers-skill": {
-      "status": "in-progress",
-      "branch": "feat/complex-numbers-exercises",
-      "summary": "Stacked SDD change for activating mat.u1.complejos as a pilot skill. PR1 scaffold and PR2 content are committed; PR3 exercise bank is ready for verification/commit."
+      "status": "done",
+      "branch": null,
+      "completedAt": "2026-06-09",
+      "mergedTo": "main",
+      "mergeCommit": "b420a43",
+      "summary": "Activated mat.u1.complejos as a pilot skill with taxonomy, theory, examples, feedback, 12 structured exercises, full verification, and archived SDD specs."
     }
   },
-  "activeBranches": [
-    "feat/complex-numbers",
-    "feat/complex-numbers-content",
-    "feat/complex-numbers-exercises"
-  ],
-  "lastAudit": "2026-06-08T11:30:00-03:00"
+  "activeBranches": [],
+  "lastAudit": "2026-06-09T00:50:00-03:00"
 }
