@@ -33,7 +33,7 @@ describe("Exercise Catalog", () => {
       const catalog = loadCatalog();
       const knownSkillIds = new Set([
         "mat.u1.conjuntos_numericos",
-        "mat.u1.reales_operaciones",
+        "mat.u1.propiedades_operaciones_reales",
         "mat.u1.potencias_raices",
         "mat.u1.racionalizacion",
         "mat.u1.intervalos",
@@ -117,13 +117,13 @@ describe("Exercise Catalog", () => {
 
     test("detects prerequisite cycles in skill dependencies", () => {
       const cyclicDependencies: readonly SkillDependency[] = [
-        { skillId: "mat.u1.reales_operaciones", prerequisites: ["mat.u1.potencias_raices"] },
+        { skillId: "mat.u1.propiedades_operaciones_reales", prerequisites: ["mat.u1.potencias_raices"] },
         { skillId: "mat.u1.potencias_raices", prerequisites: ["mat.u1.racionalizacion"] },
-        { skillId: "mat.u1.racionalizacion", prerequisites: ["mat.u1.reales_operaciones"] },
+        { skillId: "mat.u1.racionalizacion", prerequisites: ["mat.u1.propiedades_operaciones_reales"] },
       ];
 
       expect(detectPrerequisiteCycles(cyclicDependencies)).toEqual([
-        ["mat.u1.reales_operaciones", "mat.u1.potencias_raices", "mat.u1.racionalizacion", "mat.u1.reales_operaciones"],
+        ["mat.u1.propiedades_operaciones_reales", "mat.u1.potencias_raices", "mat.u1.racionalizacion", "mat.u1.propiedades_operaciones_reales"],
       ]);
     });
 
@@ -167,10 +167,10 @@ describe("Exercise Catalog", () => {
   describe("queryBySkill", () => {
     test("returns exercises for a specific skill", () => {
       const catalog = loadCatalog();
-      const skillExercises = queryBySkill("mat.u1.reales_operaciones");
+      const skillExercises = queryBySkill("mat.u1.propiedades_operaciones_reales");
       expect(skillExercises.length).toBeGreaterThanOrEqual(1);
       for (const exercise of skillExercises) {
-        expect(exercise.skillId).toBe("mat.u1.reales_operaciones");
+        expect(exercise.skillId).toBe("mat.u1.propiedades_operaciones_reales");
       }
     });
 

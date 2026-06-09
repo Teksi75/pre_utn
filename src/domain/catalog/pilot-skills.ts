@@ -13,9 +13,9 @@ export const PILOT_SKILLS: readonly PilotSkill[] = [
     label: "Conjuntos numéricos",
   },
   {
-    skillId: "mat.u1.reales_operaciones",
+    skillId: "mat.u1.propiedades_operaciones_reales",
     unitKey: "unit-1",
-    label: "Números reales y operaciones",
+    label: "Propiedades Operaciones de Números reales",
   },
   {
     skillId: "mat.u1.potencias_raices",
@@ -49,7 +49,18 @@ export const PILOT_SKILLS: readonly PilotSkill[] = [
   },
 ] as const;
 
-export const PILOT_SKILL_UNIT_MAP: Readonly<Record<string, string>> =
+/**
+ * Map from skillId to unitKey for quick lookup.
+ *
+ * The value type is intentionally `string | undefined` (not `string`) to
+ * allow consumers to handle unknown skills without runtime exceptions.
+ * Consumers receive `skillId` from URL params (`?skill=...`) which are not
+ * pre-validated as `SkillId`, so the lookup must tolerate arbitrary keys.
+ *
+ * For strictly-typed lookups, use `Object.hasOwn(PILOT_SKILL_UNIT_MAP, skillId)`
+ * or `skillId in PILOT_SKILL_UNIT_MAP` as a type guard.
+ */
+export const PILOT_SKILL_UNIT_MAP: Readonly<Record<string, string | undefined>> =
   Object.fromEntries(
     PILOT_SKILLS.map((skill) => [skill.skillId, skill.unitKey])
   );

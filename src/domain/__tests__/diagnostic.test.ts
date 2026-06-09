@@ -12,8 +12,8 @@ import type { Attempt } from "../diagnostic/index";
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 const makeExercise = (overrides: Partial<Exercise> = {}): Exercise => ({
-  id: "ex.u1.reales_operaciones.1",
-  skillId: "mat.u1.reales_operaciones",
+  id: "ex.u1.propiedades_operaciones_reales.1",
+  skillId: "mat.u1.propiedades_operaciones_reales",
   type: "numerical",
   difficulty: 2,
   prompt: "Calcula 5",
@@ -24,15 +24,15 @@ const makeExercise = (overrides: Partial<Exercise> = {}): Exercise => ({
 });
 
 const makeAttempt = (overrides: Partial<Attempt> = {}): Attempt => ({
-  exerciseId: "ex.u1.reales_operaciones.1",
-  skillId: "mat.u1.reales_operaciones",
+  exerciseId: "ex.u1.propiedades_operaciones_reales.1",
+  skillId: "mat.u1.propiedades_operaciones_reales",
   correct: true,
   ...overrides,
 });
 
 // Build a catalog with exercises across multiple units
 const buildMultiUnitCatalog = (): Exercise[] => [
-  makeExercise({ id: "ex.u1.reales_operaciones.1", skillId: "mat.u1.reales_operaciones" }),
+  makeExercise({ id: "ex.u1.propiedades_operaciones_reales.1", skillId: "mat.u1.propiedades_operaciones_reales" }),
   makeExercise({ id: "ex.u1.potencias_raices.1", skillId: "mat.u1.potencias_raices" }),
   makeExercise({ id: "ex.u2.polinomios_basico.1", skillId: "mat.u2.polinomios_basico" }),
   makeExercise({ id: "ex.u2.factorizacion.1", skillId: "mat.u2.factorizacion" }),
@@ -98,7 +98,7 @@ describe("selectBalancedSet — insufficient catalog report", () => {
   test("reports missing coverage when catalog is too small", () => {
     // Only 2 exercises, both from unit 1 — not enough for balanced selection
     const catalog = [
-      makeExercise({ id: "ex.u1.reales_operaciones.1", skillId: "mat.u1.reales_operaciones" }),
+      makeExercise({ id: "ex.u1.propiedades_operaciones_reales.1", skillId: "mat.u1.propiedades_operaciones_reales" }),
       makeExercise({ id: "ex.u1.potencias_raices.1", skillId: "mat.u1.potencias_raices" }),
     ];
     const result = selectBalancedSet(catalog);
@@ -121,7 +121,7 @@ describe("selectBalancedSet — insufficient catalog report", () => {
   test("returns ok when exactly 3 units are missing", () => {
     // Units 1,2,3 present → missing u4,u5,u6 (3 missing) → ok
     const catalog = [
-      makeExercise({ id: "ex.u1.reales_operaciones.1", skillId: "mat.u1.reales_operaciones" }),
+      makeExercise({ id: "ex.u1.propiedades_operaciones_reales.1", skillId: "mat.u1.propiedades_operaciones_reales" }),
       makeExercise({ id: "ex.u2.polinomios_basico.1", skillId: "mat.u2.polinomios_basico" }),
       makeExercise({ id: "ex.u3.ecuaciones_lineales.1", skillId: "mat.u3.ecuaciones_lineales" }),
     ];
@@ -132,7 +132,7 @@ describe("selectBalancedSet — insufficient catalog report", () => {
   test("returns ok=false when exactly 4 units are missing", () => {
     // Units 1,2 present → missing u3,u4,u5,u6 (4 missing) → not ok
     const catalog = [
-      makeExercise({ id: "ex.u1.reales_operaciones.1", skillId: "mat.u1.reales_operaciones" }),
+      makeExercise({ id: "ex.u1.propiedades_operaciones_reales.1", skillId: "mat.u1.propiedades_operaciones_reales" }),
       makeExercise({ id: "ex.u2.polinomios_basico.1", skillId: "mat.u2.polinomios_basico" }),
     ];
     const result = selectBalancedSet(catalog);
@@ -150,7 +150,7 @@ describe("estimateSkills — provisional accuracy ranking", () => {
   test("lower-accuracy skill is ranked as weaker", () => {
     const attempts: Attempt[] = [
       // Skill A: 1 correct out of 1 (100%)
-      makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: true }),
+      makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: true }),
       // Skill B: 1 correct out of 2 (50%)
       makeAttempt({ skillId: "mat.u2.polinomios_basico", correct: true }),
       makeAttempt({ skillId: "mat.u2.polinomios_basico", correct: false }),
@@ -160,7 +160,7 @@ describe("estimateSkills — provisional accuracy ranking", () => {
 
     expect(estimates.length).toBe(2);
 
-    const skillA = estimates.find((e) => e.skillId === "mat.u1.reales_operaciones");
+    const skillA = estimates.find((e) => e.skillId === "mat.u1.propiedades_operaciones_reales");
     const skillB = estimates.find((e) => e.skillId === "mat.u2.polinomios_basico");
 
     expect(skillA).toBeDefined();
@@ -174,7 +174,7 @@ describe("estimateSkills — provisional accuracy ranking", () => {
 
   test("estimates are marked as provisional", () => {
     const attempts: Attempt[] = [
-      makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: true }),
+      makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: true }),
     ];
 
     const estimates = estimateSkills(attempts);
@@ -184,9 +184,9 @@ describe("estimateSkills — provisional accuracy ranking", () => {
 
   test("attempts count matches the number of attempts per skill", () => {
     const attempts: Attempt[] = [
-      makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: true }),
-      makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: false }),
-      makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: true }),
+      makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: true }),
+      makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: false }),
+      makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: true }),
     ];
 
     const estimates = estimateSkills(attempts);
@@ -206,7 +206,7 @@ describe("estimateSkills — provisional accuracy ranking", () => {
 describe("suggestPractice — weak-area tag aggregation", () => {
   test("suggestions include practice targets for weakest skills", () => {
     const estimates = [
-      { skillId: "mat.u1.reales_operaciones" as const, accuracy: 1, attempts: 3, provisional: true as const, errorTags: [] },
+      { skillId: "mat.u1.propiedades_operaciones_reales" as const, accuracy: 1, attempts: 3, provisional: true as const, errorTags: [] },
       { skillId: "mat.u2.polinomios_basico" as const, accuracy: 0.3, attempts: 3, provisional: true as const, errorTags: [] },
     ];
 
@@ -215,7 +215,7 @@ describe("suggestPractice — weak-area tag aggregation", () => {
     // Should suggest practice for the weaker skill
     expect(suggestions.some((s) => s.skillId === "mat.u2.polinomios_basico")).toBe(true);
     // Should NOT suggest practice for the strong skill
-    expect(suggestions.some((s) => s.skillId === "mat.u1.reales_operaciones")).toBe(false);
+    expect(suggestions.some((s) => s.skillId === "mat.u1.propiedades_operaciones_reales")).toBe(false);
   });
 
   test("suggestions include observed error tags when available", () => {
@@ -230,7 +230,7 @@ describe("suggestPractice — weak-area tag aggregation", () => {
 
   test("returns empty suggestions when all skills are strong", () => {
     const estimates = [
-      { skillId: "mat.u1.reales_operaciones" as const, accuracy: 1, attempts: 3, provisional: true as const, errorTags: [] },
+      { skillId: "mat.u1.propiedades_operaciones_reales" as const, accuracy: 1, attempts: 3, provisional: true as const, errorTags: [] },
       { skillId: "mat.u2.polinomios_basico" as const, accuracy: 0.95, attempts: 3, provisional: true as const, errorTags: [] },
     ];
 
@@ -408,7 +408,7 @@ describe("selectBalancedSet — excludes unreliable exercises from diagnostic", 
     // Build a catalog where one exercise per unit is valid,
     // but unit 7 has a config-error exercise that should be filtered out.
     const catalog = [
-      makeExercise({ id: "ex.u1.reales_operaciones.1", skillId: "mat.u1.reales_operaciones" }),
+      makeExercise({ id: "ex.u1.propiedades_operaciones_reales.1", skillId: "mat.u1.propiedades_operaciones_reales" }),
       makeExercise({ id: "ex.u1.potencias_raices.1", skillId: "mat.u1.potencias_raices" }),
       makeExercise({ id: "ex.u2.polinomios_basico.1", skillId: "mat.u2.polinomios_basico" }),
       makeExercise({ id: "ex.u2.factorizacion.1", skillId: "mat.u2.factorizacion" }),
@@ -486,12 +486,12 @@ describe("selectBalancedSet — excludes unreliable exercises from diagnostic", 
 describe("estimateSkills — excludes config-error attempts from accuracy", () => {
   test("config-error attempt does not count as incorrect", () => {
     const attempts: Attempt[] = [
-      makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: true }),
-      makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: false, errorTag: "configuration_error" }),
+      makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: true }),
+      makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: false, errorTag: "configuration_error" }),
     ];
 
     const estimates = estimateSkills(attempts);
-    const skill = estimates.find((e) => e.skillId === "mat.u1.reales_operaciones");
+    const skill = estimates.find((e) => e.skillId === "mat.u1.propiedades_operaciones_reales");
 
     expect(skill).toBeDefined();
     if (!skill) return;

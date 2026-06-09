@@ -10,7 +10,7 @@ import { PILOT_SKILLS } from "../catalog/pilot-skills";
 
 const PILOT_SKILL_IDS = [
   "mat.u1.conjuntos_numericos",
-  "mat.u1.reales_operaciones",
+  "mat.u1.propiedades_operaciones_reales",
   "mat.u1.potencias_raices",
   "mat.u1.racionalizacion",
   "mat.u1.intervalos",
@@ -21,36 +21,36 @@ const PILOT_SKILL_IDS = [
 
 describe("getSkillComponents", () => {
   test("returns 5 component statuses for a pilot skill", () => {
-    const components = getSkillComponents("mat.u1.reales_operaciones");
+    const components = getSkillComponents("mat.u1.propiedades_operaciones_reales");
     expect(components).toHaveLength(5);
   });
 
   test("theory component is present when theory content exists", () => {
-    const components = getSkillComponents("mat.u1.reales_operaciones");
+    const components = getSkillComponents("mat.u1.propiedades_operaciones_reales");
     const theory = components.find((c) => c.name === "theory");
     expect(theory?.present).toBe(true);
   });
 
   test("examples component is present when example content exists", () => {
-    const components = getSkillComponents("mat.u1.reales_operaciones");
+    const components = getSkillComponents("mat.u1.propiedades_operaciones_reales");
     const examples = components.find((c) => c.name === "examples");
     expect(examples?.present).toBe(true);
   });
 
   test("exercises component is present when exercises exist", () => {
-    const components = getSkillComponents("mat.u1.reales_operaciones");
+    const components = getSkillComponents("mat.u1.propiedades_operaciones_reales");
     const exercises = components.find((c) => c.name === "exercises");
     expect(exercises?.present).toBe(true);
   });
 
   test("feedback component is present when feedback mappings exist", () => {
-    const components = getSkillComponents("mat.u1.reales_operaciones");
+    const components = getSkillComponents("mat.u1.propiedades_operaciones_reales");
     const feedback = components.find((c) => c.name === "feedback");
     expect(feedback?.present).toBe(true);
   });
 
   test("evaluation component is present (always true for pilot)", () => {
-    const components = getSkillComponents("mat.u1.reales_operaciones");
+    const components = getSkillComponents("mat.u1.propiedades_operaciones_reales");
     const evaluation = components.find((c) => c.name === "evaluation");
     expect(evaluation?.present).toBe(true);
   });

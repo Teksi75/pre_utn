@@ -171,8 +171,8 @@
     ]
   },
   {
-    "id": "example-reales-operaciones-1",
-    "skillId": "mat.u1.reales_operaciones",
+    "id": "example-propiedades-operaciones-reales-1",
+    "skillId": "mat.u1.propiedades_operaciones_reales",
     "problem": "Calcular: $2 + 3 \\times 4 - 1$",
     "steps": [
       { "order": 1, "explanation": "Se identifican las operaciones presentes: suma, multiplicación y resta. Según la jerarquía de operaciones, la multiplicación tiene prioridad sobre la suma y la resta." },
@@ -192,8 +192,8 @@
     ]
   },
   {
-    "id": "example-reales-operaciones-2",
-    "skillId": "mat.u1.reales_operaciones",
+    "id": "example-propiedades-operaciones-reales-2",
+    "skillId": "mat.u1.propiedades_operaciones_reales",
     "problem": "Simplificar: $-(2 + 3) + 4 \\times (1 - 3)$",
     "steps": [
       { "order": 1, "explanation": "Se resuelven primero las expresiones dentro de paréntesis: $(2 + 3) = 5$ y $(1 - 3) = -2$. La expresión queda $-5 + 4 \\times (-2)$." },

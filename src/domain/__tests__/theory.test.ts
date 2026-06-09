@@ -24,8 +24,8 @@ describe("TheoryNode", () => {
   });
 
   const makeNode = (overrides: Partial<TheoryNode> = {}): TheoryNode => ({
-    id: "theory-reales-operaciones",
-    skillId: "mat.u1.reales_operaciones",
+    id: "theory-propiedades-operaciones-reales",
+    skillId: "mat.u1.propiedades_operaciones_reales",
     concepts: [makeConcept()],
     notation: ["a + b", "a × b"],
     commonMistakes: ["Sumar antes que multiplicar"],

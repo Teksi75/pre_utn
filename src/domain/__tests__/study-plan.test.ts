@@ -122,7 +122,7 @@ describe("createStudyPlan", () => {
     // also weak → prereqs NOT met → priority 3). The not-attempted
     // skills also appear in the plan with priorities 2 and 4.
     const result = diagnostic([
-      ["mat.u1.reales_operaciones", 0.3, ["u1_error_signos"]],
+      ["mat.u1.propiedades_operaciones_reales", 0.3, ["u1_error_signos"]],
       ["mat.u1.conjuntos_numericos", 0.4, ["u1_orden_operaciones"]],
     ]);
 
@@ -137,7 +137,7 @@ describe("createStudyPlan", () => {
     }
 
     const conj = priorities.find((p) => p.skillId === "mat.u1.conjuntos_numericos");
-    const real = priorities.find((p) => p.skillId === "mat.u1.reales_operaciones");
+    const real = priorities.find((p) => p.skillId === "mat.u1.propiedades_operaciones_reales");
     expect(conj?.priority).toBe(1);
     expect(real?.priority).toBe(3);
   });
@@ -146,7 +146,7 @@ describe("createStudyPlan", () => {
     // potencias_raices has prereq reales_operaciones, which is weak in
     // the diagnostic. So potencias_raices' prereqs are NOT met → 3.
     const result = diagnostic([
-      ["mat.u1.reales_operaciones", 0.3, ["u1_error_signos"]],
+      ["mat.u1.propiedades_operaciones_reales", 0.3, ["u1_error_signos"]],
       ["mat.u1.potencias_raices", 0.3, ["u1_potencia_signo"]],
     ]);
 
@@ -220,12 +220,12 @@ describe("createStudyPlan", () => {
     // prereq IS met. So potencias_raices → priority 1, not 3.
     const result = diagnostic([
       ["mat.u1.conjuntos_numericos", 0.3, ["u1_orden_operaciones"]],
-      ["mat.u1.reales_operaciones", 0.3, ["u1_error_signos"]],
+      ["mat.u1.propiedades_operaciones_reales", 0.3, ["u1_error_signos"]],
       ["mat.u1.potencias_raices", 0.3, ["u1_potencia_signo"]],
     ]);
 
     const progress = emptyProgress({
-      accuracyBySkill: { "mat.u1.reales_operaciones": 0.8 },
+      accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 0.8 },
     });
 
     const plan = createStudyPlan(result, progress);
@@ -241,7 +241,7 @@ describe("createStudyPlan", () => {
     // not in suggestions) AND a weak estimate for potencias_raices.
     // → prereq of potencias_raices IS met → priority 1.
     const result = diagnostic([
-      ["mat.u1.reales_operaciones", 0.85, []],
+      ["mat.u1.propiedades_operaciones_reales", 0.85, []],
       ["mat.u1.potencias_raices", 0.3, ["u1_potencia_signo"]],
     ]);
 

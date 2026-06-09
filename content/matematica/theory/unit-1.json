@@ -111,8 +111,8 @@
     ]
   },
   {
-    "id": "theory-reales-operaciones",
-    "skillId": "mat.u1.reales_operaciones",
+    "id": "theory-propiedades-operaciones-reales",
+    "skillId": "mat.u1.propiedades_operaciones_reales",
     "concepts": [
       {
         "id": "concept-cerradura",

@@ -4,7 +4,7 @@ import type { SkillId } from "../models/skill";
 
 describe("Exercise options field", () => {
   const knownSkills = new Set<SkillId>([
-    "mat.u1.reales_operaciones",
+    "mat.u1.propiedades_operaciones_reales",
     "mat.u1.intervalos",
   ]);
 
@@ -85,8 +85,8 @@ describe("Exercise options field", () => {
     test("numerical without options passes", () => {
       const exercise: Exercise = {
         ...baseExercise,
-        id: "ex.u1.reales_operaciones.1" as Exercise["id"],
-        skillId: "mat.u1.reales_operaciones",
+        id: "ex.u1.propiedades_operaciones_reales.1" as Exercise["id"],
+        skillId: "mat.u1.propiedades_operaciones_reales",
         type: "numerical",
         prompt: "Calcula 2 + 3 × 4",
         expectedAnswer: "14",
@@ -99,8 +99,8 @@ describe("Exercise options field", () => {
     test("numerical with options also passes (options ignored)", () => {
       const exercise: Exercise = {
         ...baseExercise,
-        id: "ex.u1.reales_operaciones.1" as Exercise["id"],
-        skillId: "mat.u1.reales_operaciones",
+        id: "ex.u1.propiedades_operaciones_reales.1" as Exercise["id"],
+        skillId: "mat.u1.propiedades_operaciones_reales",
         type: "numerical",
         prompt: "Calcula 2 + 3 × 4",
         expectedAnswer: "14",

@@ -12,8 +12,8 @@ describe("computeReadiness", () => {
 
   describe("ready skill", () => {
     test("returns ready=true when all components present", () => {
-      const result = computeReadiness("mat.u1.reales_operaciones", ALL_PRESENT);
-      expect(result.skillId).toBe("mat.u1.reales_operaciones");
+      const result = computeReadiness("mat.u1.propiedades_operaciones_reales", ALL_PRESENT);
+      expect(result.skillId).toBe("mat.u1.propiedades_operaciones_reales");
       expect(result.ready).toBe(true);
       expect(result.missing).toEqual([]);
     });
@@ -24,7 +24,7 @@ describe("computeReadiness", () => {
       const components = ALL_PRESENT.map((c) =>
         c.name === "theory" ? { ...c, present: false } : c
       );
-      const result = computeReadiness("mat.u1.reales_operaciones", components);
+      const result = computeReadiness("mat.u1.propiedades_operaciones_reales", components);
       expect(result.ready).toBe(false);
       expect(result.missing).toContain("theory");
     });
@@ -33,7 +33,7 @@ describe("computeReadiness", () => {
       const components = ALL_PRESENT.map((c) =>
         c.name === "examples" ? { ...c, present: false } : c
       );
-      const result = computeReadiness("mat.u1.reales_operaciones", components);
+      const result = computeReadiness("mat.u1.propiedades_operaciones_reales", components);
       expect(result.ready).toBe(false);
       expect(result.missing).toContain("examples");
     });
@@ -42,7 +42,7 @@ describe("computeReadiness", () => {
       const components = ALL_PRESENT.map((c) =>
         c.name === "exercises" ? { ...c, present: false } : c
       );
-      const result = computeReadiness("mat.u1.reales_operaciones", components);
+      const result = computeReadiness("mat.u1.propiedades_operaciones_reales", components);
       expect(result.ready).toBe(false);
       expect(result.missing).toContain("exercises");
     });
@@ -51,7 +51,7 @@ describe("computeReadiness", () => {
       const components = ALL_PRESENT.map((c) =>
         c.name === "feedback" ? { ...c, present: false } : c
       );
-      const result = computeReadiness("mat.u1.reales_operaciones", components);
+      const result = computeReadiness("mat.u1.propiedades_operaciones_reales", components);
       expect(result.ready).toBe(false);
       expect(result.missing).toContain("feedback");
     });
@@ -60,7 +60,7 @@ describe("computeReadiness", () => {
       const components = ALL_PRESENT.map((c) =>
         c.name === "evaluation" ? { ...c, present: false } : c
       );
-      const result = computeReadiness("mat.u1.reales_operaciones", components);
+      const result = computeReadiness("mat.u1.propiedades_operaciones_reales", components);
       expect(result.ready).toBe(false);
       expect(result.missing).toContain("evaluation");
     });
@@ -71,7 +71,7 @@ describe("computeReadiness", () => {
           ? { ...c, present: false }
           : c
       );
-      const result = computeReadiness("mat.u1.reales_operaciones", components);
+      const result = computeReadiness("mat.u1.propiedades_operaciones_reales", components);
       expect(result.ready).toBe(false);
       expect(result.missing).toEqual(
         expect.arrayContaining(["theory", "examples"])
@@ -82,7 +82,7 @@ describe("computeReadiness", () => {
 
   describe("empty components", () => {
     test("returns ready=false with all components missing", () => {
-      const result = computeReadiness("mat.u1.reales_operaciones", []);
+      const result = computeReadiness("mat.u1.propiedades_operaciones_reales", []);
       expect(result.ready).toBe(false);
       expect(result.missing).toEqual(
         expect.arrayContaining(["theory", "examples", "exercises", "feedback", "evaluation"])
