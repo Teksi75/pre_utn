@@ -23,7 +23,7 @@ describe("WorkedExample", () => {
 
   const makeExample = (overrides: Partial<WorkedExample> = {}): WorkedExample => ({
     id: "example-reales-1",
-    skillId: "mat.u1.reales_operaciones",
+    skillId: "mat.u1.propiedades_operaciones_reales",
     problem: "Calcula 2 + 3 × 4",
     steps: [makeStep(), makeStep({ order: 2, explanation: "Multiplicamos primero: 3 × 4 = 12" })],
     finalAnswer: "14",

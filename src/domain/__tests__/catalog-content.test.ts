@@ -34,7 +34,7 @@ describe("Theory content loading", () => {
     const nodes = loadTheoryContent("unit-1");
     const skillIds = nodes.map((n) => n.skillId);
     expect(skillIds).toContain("mat.u1.conjuntos_numericos");
-    expect(skillIds).toContain("mat.u1.reales_operaciones");
+    expect(skillIds).toContain("mat.u1.propiedades_operaciones_reales");
     expect(skillIds).toContain("mat.u1.intervalos");
     expect(skillIds).toContain("mat.u1.potencias_raices");
   });
@@ -95,7 +95,7 @@ describe("Example content loading", () => {
     const examples = loadExampleContent("unit-1");
     const skillIds = examples.map((e) => e.skillId);
     expect(skillIds).toContain("mat.u1.conjuntos_numericos");
-    expect(skillIds).toContain("mat.u1.reales_operaciones");
+    expect(skillIds).toContain("mat.u1.propiedades_operaciones_reales");
     expect(skillIds).toContain("mat.u1.intervalos");
     expect(skillIds).toContain("mat.u1.potencias_raices");
   });
@@ -103,7 +103,7 @@ describe("Example content loading", () => {
   test("each skill has at least 2 examples", () => {
     const examples = loadExampleContent("unit-1");
     const conjuntos = examples.filter((e) => e.skillId === "mat.u1.conjuntos_numericos");
-    const reales = examples.filter((e) => e.skillId === "mat.u1.reales_operaciones");
+    const reales = examples.filter((e) => e.skillId === "mat.u1.propiedades_operaciones_reales");
     const intervalos = examples.filter((e) => e.skillId === "mat.u1.intervalos");
     const potencias = examples.filter((e) => e.skillId === "mat.u1.potencias_raices");
     expect(conjuntos.length).toBeGreaterThanOrEqual(2);

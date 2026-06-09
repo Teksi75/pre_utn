@@ -4,7 +4,7 @@ import type { SkillId } from "../models/skill";
 
 describe("Exercise validation", () => {
   const knownSkills = new Set<SkillId>([
-    "mat.u1.reales_operaciones",
+    "mat.u1.propiedades_operaciones_reales",
     "mat.u1.potencias_raices",
     "mat.u2.polinomios_basico",
   ]);
@@ -15,8 +15,8 @@ describe("Exercise validation", () => {
   ]);
 
   const validExercise: Exercise = {
-    id: "ex.u1.reales_operaciones.1",
-    skillId: "mat.u1.reales_operaciones",
+    id: "ex.u1.propiedades_operaciones_reales.1",
+    skillId: "mat.u1.propiedades_operaciones_reales",
     type: "numerical",
     difficulty: 2,
     prompt: "Calcula 3 + 5 × 2",
@@ -30,8 +30,8 @@ describe("Exercise validation", () => {
       const result = validateExercise(validExercise, knownSkills, knownErrorTags);
       expect(result.ok).toBe(true);
       if (result.ok) {
-        expect(result.value.id).toBe("ex.u1.reales_operaciones.1");
-        expect(result.value.skillId).toBe("mat.u1.reales_operaciones");
+        expect(result.value.id).toBe("ex.u1.propiedades_operaciones_reales.1");
+        expect(result.value.skillId).toBe("mat.u1.propiedades_operaciones_reales");
       }
     });
   });
@@ -53,7 +53,7 @@ describe("Exercise validation", () => {
       test(`type "${exerciseType}" is accepted`, () => {
         const exercise: Exercise = {
           ...validExercise,
-          id: `ex.u1.reales_operaciones.${index + 1}` as Exercise["id"],
+          id: `ex.u1.propiedades_operaciones_reales.${index + 1}` as Exercise["id"],
           type: exerciseType,
           ...(exerciseType === "multiple-choice"
             ? { options: ["13", "10", "16", "11"] }
@@ -153,7 +153,7 @@ describe("Exercise validation", () => {
     });
 
     test("existing numeric final segment is accepted", () => {
-      const exercise: Exercise = { ...validExercise, id: "ex.u1.reales_operaciones.1" as Exercise["id"] };
+      const exercise: Exercise = { ...validExercise, id: "ex.u1.propiedades_operaciones_reales.1" as Exercise["id"] };
       const result = validateExercise(exercise, knownSkills, knownErrorTags);
       expect(result.ok).toBe(true);
     });

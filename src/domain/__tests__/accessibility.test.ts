@@ -117,7 +117,7 @@ describe("getAccessibleSkills — accessibility rules", () => {
 
   test("reales_operaciones is NOT accessible when conjuntos_numericos prereq has no progress", () => {
     const result = getAccessibleSkills(emptyProgress());
-    const reales = result.find((s) => s.skillId === "mat.u1.reales_operaciones");
+    const reales = result.find((s) => s.skillId === "mat.u1.propiedades_operaciones_reales");
     expect(reales?.accessible).toBe(false);
     expect(reales?.missingPrerequisites).toContain("mat.u1.conjuntos_numericos");
   });
@@ -126,7 +126,7 @@ describe("getAccessibleSkills — accessibility rules", () => {
     const result = getAccessibleSkills(emptyProgress());
     const potencias = result.find((s) => s.skillId === "mat.u1.potencias_raices");
     expect(potencias?.accessible).toBe(false);
-    expect(potencias?.missingPrerequisites).toContain("mat.u1.reales_operaciones");
+    expect(potencias?.missingPrerequisites).toContain("mat.u1.propiedades_operaciones_reales");
   });
 
   test("reales_operaciones is NOT accessible when prereq accuracy is only 0.5 (partial)", () => {
@@ -135,7 +135,7 @@ describe("getAccessibleSkills — accessibility rules", () => {
       accuracyBySkill: { "mat.u1.conjuntos_numericos": 0.5 },
     };
     const result = getAccessibleSkills(progress);
-    const reales = result.find((s) => s.skillId === "mat.u1.reales_operaciones");
+    const reales = result.find((s) => s.skillId === "mat.u1.propiedades_operaciones_reales");
     expect(reales?.accessible).toBe(false);
     expect(reales?.missingPrerequisites).toContain("mat.u1.conjuntos_numericos");
   });
@@ -146,7 +146,7 @@ describe("getAccessibleSkills — accessibility rules", () => {
       accuracyBySkill: { "mat.u1.conjuntos_numericos": 0.69 },
     };
     const result = getAccessibleSkills(progress);
-    const reales = result.find((s) => s.skillId === "mat.u1.reales_operaciones");
+    const reales = result.find((s) => s.skillId === "mat.u1.propiedades_operaciones_reales");
     expect(reales?.accessible).toBe(false);
   });
 
@@ -156,7 +156,7 @@ describe("getAccessibleSkills — accessibility rules", () => {
       accuracyBySkill: { "mat.u1.conjuntos_numericos": 0.7 },
     };
     const result = getAccessibleSkills(progress);
-    const reales = result.find((s) => s.skillId === "mat.u1.reales_operaciones");
+    const reales = result.find((s) => s.skillId === "mat.u1.propiedades_operaciones_reales");
     expect(reales?.accessible).toBe(true);
     expect(reales?.missingPrerequisites).toEqual([]);
   });
@@ -166,7 +166,7 @@ describe("getAccessibleSkills — accessibility rules", () => {
       ...emptyProgress(),
       accuracyBySkill: {
         "mat.u1.conjuntos_numericos": 0.9,
-        "mat.u1.reales_operaciones": 0.85,
+        "mat.u1.propiedades_operaciones_reales": 0.85,
       },
     };
     const result = getAccessibleSkills(progress);
@@ -180,7 +180,7 @@ describe("getAccessibleSkills — accessibility rules", () => {
       ...emptyProgress(),
       accuracyBySkill: {
         "mat.u1.conjuntos_numericos": 0.9,
-        "mat.u1.reales_operaciones": 0.85,
+        "mat.u1.propiedades_operaciones_reales": 0.85,
         "mat.u1.potencias_raices": 0.85,
         "mat.u1.intervalos": 0.85,
         "mat.u1.valor_absoluto": 0.85,
@@ -202,7 +202,7 @@ describe("getAccessibleSkills — accessibility rules", () => {
     const accessibleIds = result.filter((s) => s.accessible).map((s) => s.skillId);
     expect(accessibleIds).toContain("mat.u1.conjuntos_numericos");
     expect(accessibleIds).toContain("mat.u1.intervalos");
-    expect(accessibleIds).not.toContain("mat.u1.reales_operaciones");
+    expect(accessibleIds).not.toContain("mat.u1.propiedades_operaciones_reales");
     expect(accessibleIds).not.toContain("mat.u1.potencias_raices");
     expect(accessibleIds).not.toContain("mat.u1.racionalizacion");
   });

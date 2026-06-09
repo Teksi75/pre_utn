@@ -27,9 +27,9 @@ describe("Skill validation", () => {
       const skill: Skill = {
         ...validSkill,
         id: "mat.u1.potencias_raices",
-        prerequisites: ["mat.u1.reales_operaciones"],
+        prerequisites: ["mat.u1.propiedades_operaciones_reales"],
       };
-      const known = new Set<SkillId>(["mat.u1.reales_operaciones"]);
+      const known = new Set<SkillId>(["mat.u1.propiedades_operaciones_reales"]);
       const result = validateSkill(skill, known);
       expect(result.ok).toBe(true);
     });

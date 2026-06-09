@@ -75,10 +75,10 @@ describe("mat.u1.complejos — catalog identity", () => {
     expect(KNOWN_SKILL_IDS.has(SKILL_ID)).toBe(true);
   });
 
-  test("the skill depends on mat.u1.reales_operaciones (and only that)", () => {
+  test("the skill depends on mat.u1.propiedades_operaciones_reales (and only that)", () => {
     const dep = SKILL_DEPENDENCIES.find((d) => d.skillId === SKILL_ID);
     expect(dep).toBeDefined();
-    expect(dep!.prerequisites).toEqual(["mat.u1.reales_operaciones"]);
+    expect(dep!.prerequisites).toEqual(["mat.u1.propiedades_operaciones_reales"]);
   });
 
   test("the skill is registered as a pilot skill", () => {
@@ -421,14 +421,14 @@ describe("mat.u1.complejos — route resolution", () => {
     expect(analysis.kind).toBe("blocked");
     if (analysis.kind === "blocked") {
       expect(analysis.reason).toBe("missing-prerequisite");
-      expect(analysis.missingPrerequisite).toBe("mat.u1.reales_operaciones");
+      expect(analysis.missingPrerequisite).toBe("mat.u1.propiedades_operaciones_reales");
     }
   });
 
   test("/practice?skill=mat.u1.complejos opens once reales_operaciones is mastered", () => {
     const progress: PracticeProgress = {
       ...emptyProgress(),
-      accuracyBySkill: { "mat.u1.reales_operaciones": 0.85 },
+      accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 0.85 },
     };
     const analysis = analyzeRequestedSkill(SKILL_ID, progress);
     expect(analysis).toEqual({ kind: "ready", skillId: SKILL_ID });

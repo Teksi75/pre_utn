@@ -4,8 +4,8 @@ import type { Exercise } from "../models/exercise";
 
 describe("Error tagging — tagError()", () => {
   const makeExercise = (overrides: Partial<Exercise> = {}): Exercise => ({
-    id: "ex.u1.reales_operaciones.1",
-    skillId: "mat.u1.reales_operaciones",
+    id: "ex.u1.propiedades_operaciones_reales.1",
+    skillId: "mat.u1.propiedades_operaciones_reales",
     type: "numerical",
     difficulty: 2,
     prompt: "Calcula 5",

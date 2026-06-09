@@ -4,7 +4,7 @@ import type { PracticeProgress } from "../progress/index";
 
 const readySkills: readonly ReadySkill[] = [
   { skillId: "mat.u1.conjuntos_numericos", label: "Conjuntos numéricos" },
-  { skillId: "mat.u1.reales_operaciones", label: "Números reales y operaciones" },
+  { skillId: "mat.u1.propiedades_operaciones_reales", label: "Números reales y operaciones" },
   { skillId: "mat.u1.potencias_raices", label: "Potencias y raíces" },
   { skillId: "mat.u1.intervalos", label: "Intervalos" },
 ];
@@ -84,18 +84,18 @@ describe("deriveHomeNextStep", () => {
           },
           {
             exerciseId: "ex-3",
-            skillId: "mat.u1.reales_operaciones",
+            skillId: "mat.u1.propiedades_operaciones_reales",
             correct: true,
             answeredAt: "2026-06-01T00:00:00.000Z",
           },
         ],
         accuracyBySkill: {
           "mat.u1.conjuntos_numericos": 1,
-          "mat.u1.reales_operaciones": 1,
+          "mat.u1.propiedades_operaciones_reales": 1,
         },
         trendBySkill: {
           "mat.u1.conjuntos_numericos": "stable",
-          "mat.u1.reales_operaciones": "stable",
+          "mat.u1.propiedades_operaciones_reales": "stable",
         },
       }),
       readySkills
@@ -117,7 +117,7 @@ describe("deriveHomeNextStep", () => {
           },
           {
             exerciseId: "ex-1",
-            skillId: "mat.u1.reales_operaciones",
+            skillId: "mat.u1.propiedades_operaciones_reales",
             correct: true,
             answeredAt: "2026-06-01T00:00:00.000Z",
           },
@@ -130,12 +130,12 @@ describe("deriveHomeNextStep", () => {
         ],
         accuracyBySkill: {
           "mat.u1.conjuntos_numericos": 1,
-          "mat.u1.reales_operaciones": 1,
+          "mat.u1.propiedades_operaciones_reales": 1,
           "mat.u1.intervalos": 0.5,
         },
         trendBySkill: {
           "mat.u1.conjuntos_numericos": "stable",
-          "mat.u1.reales_operaciones": "stable",
+          "mat.u1.propiedades_operaciones_reales": "stable",
           "mat.u1.intervalos": "needs-review",
         },
       }),
@@ -152,13 +152,13 @@ describe("deriveHomeNextStep", () => {
         attempts: [
           {
             exerciseId: "ex-1",
-            skillId: "mat.u1.reales_operaciones",
+            skillId: "mat.u1.propiedades_operaciones_reales",
             correct: true,
             answeredAt: "2026-06-01T00:00:00.000Z",
           },
         ],
-        accuracyBySkill: { "mat.u1.reales_operaciones": 1 },
-        trendBySkill: { "mat.u1.reales_operaciones": "stable" },
+        accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 1 },
+        trendBySkill: { "mat.u1.propiedades_operaciones_reales": "stable" },
       }),
       readySkills
     );
@@ -185,7 +185,7 @@ describe("deriveHomeNextStep", () => {
     );
 
     expect(nextStep.kind).toBe("practice");
-    expect(nextStep.href).toBe("/practice?skill=mat.u1.reales_operaciones");
+    expect(nextStep.href).toBe("/practice?skill=mat.u1.propiedades_operaciones_reales");
   });
 
   it("recovers conjuntos_numericos when accuracy is low or trend is needs-review", () => {
@@ -217,7 +217,7 @@ describe("deriveHomeNextStep — roadmap & diagnostic summary", () => {
     expect(nextStep.roadmapSkills).toHaveLength(4);
     expect(nextStep.roadmapSkills.map((s) => s.skillId)).toEqual([
       "mat.u1.conjuntos_numericos",
-      "mat.u1.reales_operaciones",
+      "mat.u1.propiedades_operaciones_reales",
       "mat.u1.potencias_raices",
       "mat.u1.intervalos",
     ]);
@@ -266,12 +266,12 @@ describe("deriveHomeNextStep — roadmap & diagnostic summary", () => {
       version: 1 as const,
       estimates: [
         { skillId: "mat.u1.conjuntos_numericos" as const, accuracy: 0.4, attempts: 2, provisional: true as const, errorTags: [] },
-        { skillId: "mat.u1.reales_operaciones" as const, accuracy: 0.6, attempts: 2, provisional: true as const, errorTags: [] },
+        { skillId: "mat.u1.propiedades_operaciones_reales" as const, accuracy: 0.6, attempts: 2, provisional: true as const, errorTags: [] },
         { skillId: "mat.u1.potencias_raices" as const, accuracy: 0.9, attempts: 2, provisional: true as const, errorTags: [] },
       ],
       suggestions: [
         { skillId: "mat.u1.conjuntos_numericos" as const, accuracy: 0.4, errorTags: [] },
-        { skillId: "mat.u1.reales_operaciones" as const, accuracy: 0.6, errorTags: [] },
+        { skillId: "mat.u1.propiedades_operaciones_reales" as const, accuracy: 0.6, errorTags: [] },
       ],
     };
     const nextStep = deriveHomeNextStep(

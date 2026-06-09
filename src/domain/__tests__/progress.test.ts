@@ -10,8 +10,8 @@ import type { SkillId } from "../models/skill";
 
 describe("PracticeAttempt / PracticeProgress", () => {
   const makeAttempt = (overrides: Partial<PracticeAttempt> = {}): PracticeAttempt => ({
-    exerciseId: "ex.u1.reales_operaciones.1",
-    skillId: "mat.u1.reales_operaciones",
+    exerciseId: "ex.u1.propiedades_operaciones_reales.1",
+    skillId: "mat.u1.propiedades_operaciones_reales",
     correct: true,
     answeredAt: "2026-01-15T10:00:00Z",
     ...overrides,
@@ -24,7 +24,7 @@ describe("PracticeAttempt / PracticeProgress", () => {
         makeAttempt({ correct: true }),
         makeAttempt({ correct: true }),
       ];
-      const accuracy = computeAccuracy(attempts, "mat.u1.reales_operaciones");
+      const accuracy = computeAccuracy(attempts, "mat.u1.propiedades_operaciones_reales");
       expect(accuracy).toBe(1.0);
     });
 
@@ -33,7 +33,7 @@ describe("PracticeAttempt / PracticeProgress", () => {
         makeAttempt({ correct: false }),
         makeAttempt({ correct: false }),
       ];
-      const accuracy = computeAccuracy(attempts, "mat.u1.reales_operaciones");
+      const accuracy = computeAccuracy(attempts, "mat.u1.propiedades_operaciones_reales");
       expect(accuracy).toBe(0.0);
     });
 
@@ -44,17 +44,17 @@ describe("PracticeAttempt / PracticeProgress", () => {
         makeAttempt({ correct: true }),
         makeAttempt({ correct: false }),
       ];
-      const accuracy = computeAccuracy(attempts, "mat.u1.reales_operaciones");
+      const accuracy = computeAccuracy(attempts, "mat.u1.propiedades_operaciones_reales");
       expect(accuracy).toBe(0.5);
     });
 
     test("filters by skillId", () => {
       const attempts = [
-        makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: true }),
+        makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: true }),
         makeAttempt({ skillId: "mat.u1.intervalos", correct: false }),
-        makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: false }),
+        makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: false }),
       ];
-      const accuracy = computeAccuracy(attempts, "mat.u1.reales_operaciones");
+      const accuracy = computeAccuracy(attempts, "mat.u1.propiedades_operaciones_reales");
       expect(accuracy).toBe(0.5);
     });
 
@@ -62,7 +62,7 @@ describe("PracticeAttempt / PracticeProgress", () => {
       const attempts = [
         makeAttempt({ skillId: "mat.u1.intervalos", correct: true }),
       ];
-      const accuracy = computeAccuracy(attempts, "mat.u1.reales_operaciones");
+      const accuracy = computeAccuracy(attempts, "mat.u1.propiedades_operaciones_reales");
       expect(accuracy).toBe(0);
     });
   });
@@ -80,7 +80,7 @@ describe("PracticeAttempt / PracticeProgress", () => {
         makeAttempt({ correct: true }),
         makeAttempt({ correct: true }),
       ];
-      const trend = computeTrend(attempts, "mat.u1.reales_operaciones");
+      const trend = computeTrend(attempts, "mat.u1.propiedades_operaciones_reales");
       expect(trend).toBe("improving");
     });
 
@@ -91,7 +91,7 @@ describe("PracticeAttempt / PracticeProgress", () => {
         makeAttempt({ correct: true }),
         makeAttempt({ correct: true }),
       ];
-      const trend = computeTrend(attempts, "mat.u1.reales_operaciones");
+      const trend = computeTrend(attempts, "mat.u1.propiedades_operaciones_reales");
       expect(trend).toBe("stable");
     });
 
@@ -106,7 +106,7 @@ describe("PracticeAttempt / PracticeProgress", () => {
         makeAttempt({ correct: false }),
         makeAttempt({ correct: false }),
       ];
-      const trend = computeTrend(attempts, "mat.u1.reales_operaciones");
+      const trend = computeTrend(attempts, "mat.u1.propiedades_operaciones_reales");
       expect(trend).toBe("needs-review");
     });
 
@@ -115,25 +115,25 @@ describe("PracticeAttempt / PracticeProgress", () => {
         makeAttempt({ correct: true }),
         makeAttempt({ correct: false }),
       ];
-      const trend = computeTrend(attempts, "mat.u1.reales_operaciones");
+      const trend = computeTrend(attempts, "mat.u1.propiedades_operaciones_reales");
       expect(trend).toBe("stable");
     });
 
     test("filters by skillId", () => {
       const attempts: PracticeAttempt[] = [
-        makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: false }),
-        makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: false }),
-        makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: false }),
-        makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: false }),
-        makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: true }),
-        makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: true }),
-        makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: true }),
-        makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: true }),
+        makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: false }),
+        makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: false }),
+        makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: false }),
+        makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: false }),
+        makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: true }),
+        makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: true }),
+        makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: true }),
+        makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: true }),
         // Other skill attempts — should not affect trend
         makeAttempt({ skillId: "mat.u1.intervalos", correct: true }),
         makeAttempt({ skillId: "mat.u1.intervalos", correct: true }),
       ];
-      const trend = computeTrend(attempts, "mat.u1.reales_operaciones");
+      const trend = computeTrend(attempts, "mat.u1.propiedades_operaciones_reales");
       expect(trend).toBe("improving");
     });
   });
@@ -177,49 +177,49 @@ describe("PracticeAttempt / PracticeProgress", () => {
         diagnosticResult: null,
         studyPlan: null,
       };
-      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      const level = computeMasteryLevel("mat.u1.propiedades_operaciones_reales", progress);
       expect(level).toBe("not-started");
     });
 
     test("returns 'mastered' when accuracy >= 0.8 with 5+ attempts and stable trend", () => {
       // 5 attempts, 5 correct (1.0 accuracy) — meets mastered threshold
-      const progress = buildProgress("mat.u1.reales_operaciones", 5, 5, "stable");
-      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      const progress = buildProgress("mat.u1.propiedades_operaciones_reales", 5, 5, "stable");
+      const level = computeMasteryLevel("mat.u1.propiedades_operaciones_reales", progress);
       expect(level).toBe("mastered");
     });
 
     test("returns 'mastered' at the 0.8 / 5-attempts boundary", () => {
       // 4 correct out of 5 = 0.8 accuracy, 5 attempts, stable → mastered
-      const progress = buildProgress("mat.u1.reales_operaciones", 4, 5, "stable");
-      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      const progress = buildProgress("mat.u1.propiedades_operaciones_reales", 4, 5, "stable");
+      const level = computeMasteryLevel("mat.u1.propiedades_operaciones_reales", progress);
       expect(level).toBe("mastered");
     });
 
     test("returns 'learning' when accuracy is high but fewer than 5 attempts", () => {
       // 3 correct out of 3 = 1.0 accuracy, but only 3 attempts → not mastered
-      const progress = buildProgress("mat.u1.reales_operaciones", 3, 3, "stable");
-      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      const progress = buildProgress("mat.u1.propiedades_operaciones_reales", 3, 3, "stable");
+      const level = computeMasteryLevel("mat.u1.propiedades_operaciones_reales", progress);
       expect(level).toBe("learning");
     });
 
     test("returns 'practicing' when accuracy >= 0.7 and trend is improving", () => {
       // 7 correct out of 10 = 0.7 accuracy, improving trend
-      const progress = buildProgress("mat.u1.reales_operaciones", 7, 10, "improving");
-      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      const progress = buildProgress("mat.u1.propiedades_operaciones_reales", 7, 10, "improving");
+      const level = computeMasteryLevel("mat.u1.propiedades_operaciones_reales", progress);
       expect(level).toBe("practicing");
     });
 
     test("returns 'review' when trend is needs-review, regardless of accuracy", () => {
       // 9 correct out of 10 = 0.9 accuracy, but trend is needs-review
-      const progress = buildProgress("mat.u1.reales_operaciones", 9, 10, "needs-review");
-      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      const progress = buildProgress("mat.u1.propiedades_operaciones_reales", 9, 10, "needs-review");
+      const level = computeMasteryLevel("mat.u1.propiedades_operaciones_reales", progress);
       expect(level).toBe("review");
     });
 
     test("returns 'learning' as the default for low accuracy and stable trend", () => {
       // 3 correct out of 10 = 0.3 accuracy, stable trend
-      const progress = buildProgress("mat.u1.reales_operaciones", 3, 10, "stable");
-      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      const progress = buildProgress("mat.u1.propiedades_operaciones_reales", 3, 10, "stable");
+      const level = computeMasteryLevel("mat.u1.propiedades_operaciones_reales", progress);
       expect(level).toBe("learning");
     });
 
@@ -228,7 +228,7 @@ describe("PracticeAttempt / PracticeProgress", () => {
       // should not throw and should return 'learning' (or higher)
       const progress: PracticeProgress = {
         attempts: [
-          makeAttempt({ skillId: "mat.u1.reales_operaciones", correct: true }),
+          makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: true }),
         ],
         accuracyBySkill: {},
         trendBySkill: {},
@@ -236,7 +236,7 @@ describe("PracticeAttempt / PracticeProgress", () => {
         diagnosticResult: null,
         studyPlan: null,
       };
-      const level = computeMasteryLevel("mat.u1.reales_operaciones", progress);
+      const level = computeMasteryLevel("mat.u1.propiedades_operaciones_reales", progress);
       // Accuracy defaults to 0 → not mastered/practicing; trend defaults to
       // 'stable' (not 'needs-review') → not review → 'learning'
       expect(level).toBe("learning");
