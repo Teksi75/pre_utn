@@ -65,52 +65,52 @@
     "relatedExampleIds": ["example-conjuntos-numericos-3"]
   },
   {
-    "id": "ex.u1.reales_operaciones.1",
-    "skillId": "mat.u1.reales_operaciones",
+    "id": "ex.u1.propiedades_operaciones_reales.1",
+    "skillId": "mat.u1.propiedades_operaciones_reales",
     "type": "numerical",
     "difficulty": 1,
     "prompt": "Calcula 2 + 3 × 4",
     "expectedAnswer": "14",
     "commonErrorTags": ["u1_orden_operaciones"],
     "pedagogicalNote": "Verifica el orden de operaciones: multiplicaciones antes que sumas.",
-    "relatedTheoryIds": ["theory-reales-operaciones"],
-    "relatedExampleIds": ["example-reales-operaciones-1"]
+    "relatedTheoryIds": ["theory-propiedades-operaciones-reales"],
+    "relatedExampleIds": ["example-propiedades-operaciones-reales-1"]
   },
   {
-    "id": "ex.u1.reales_operaciones.2",
-    "skillId": "mat.u1.reales_operaciones",
+    "id": "ex.u1.propiedades_operaciones_reales.2",
+    "skillId": "mat.u1.propiedades_operaciones_reales",
     "type": "numerical",
     "difficulty": 2,
     "prompt": "Calcula 5 − 3 × (2 + 1)",
     "expectedAnswer": "−4",
     "commonErrorTags": ["u1_orden_operaciones", "u1_propiedad_operacion"],
     "pedagogicalNote": "Primero resolvé dentro de paréntesis, luego multiplicación, y finalmente resta.",
-    "relatedTheoryIds": ["theory-reales-operaciones"],
-    "relatedExampleIds": ["example-reales-operaciones-1"]
+    "relatedTheoryIds": ["theory-propiedades-operaciones-reales"],
+    "relatedExampleIds": ["example-propiedades-operaciones-reales-1"]
   },
   {
-    "id": "ex.u1.reales_operaciones.3",
-    "skillId": "mat.u1.reales_operaciones",
+    "id": "ex.u1.propiedades_operaciones_reales.3",
+    "skillId": "mat.u1.propiedades_operaciones_reales",
     "type": "numerical",
     "difficulty": 2,
     "prompt": "Simplifica: −(4 − 7) + 2 × 3",
     "expectedAnswer": "9",
     "commonErrorTags": ["u1_agrupacion_signo", "u1_orden_operaciones"],
     "pedagogicalNote": "Cuidado con el signo menos fuera del paréntesis: distribuilo a todos los términos dentro.",
-    "relatedTheoryIds": ["theory-reales-operaciones"],
-    "relatedExampleIds": ["example-reales-operaciones-2"]
+    "relatedTheoryIds": ["theory-propiedades-operaciones-reales"],
+    "relatedExampleIds": ["example-propiedades-operaciones-reales-2"]
   },
   {
-    "id": "ex.u1.reales_operaciones.4",
-    "skillId": "mat.u1.reales_operaciones",
+    "id": "ex.u1.propiedades_operaciones_reales.4",
+    "skillId": "mat.u1.propiedades_operaciones_reales",
     "type": "numerical",
     "difficulty": 3,
     "prompt": "Calcula 3 × (−2 + 5) − 4 ÷ 2",
     "expectedAnswer": "7",
     "commonErrorTags": ["u1_propiedad_operacion", "u1_orden_operaciones"],
     "pedagogicalNote": "Aplicá paréntesis primero, luego multiplicación y división de izquierda a derecha, y finalmente resta.",
-    "relatedTheoryIds": ["theory-reales-operaciones"],
-    "relatedExampleIds": ["example-reales-operaciones-1", "example-reales-operaciones-2"]
+    "relatedTheoryIds": ["theory-propiedades-operaciones-reales"],
+    "relatedExampleIds": ["example-propiedades-operaciones-reales-1", "example-propiedades-operaciones-reales-2"]
   },
   {
     "id": "ex.u1.potencias_raices.1",

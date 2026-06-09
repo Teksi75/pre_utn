@@ -33,19 +33,19 @@
     "errorTag": "u1_orden_operaciones",
     "type": "corrective",
     "message": "Revisá el orden de operaciones: multiplicá y dividí antes de sumar y restar. Recordá PEMDAS.",
-    "recoveryTarget": "theory-reales-operaciones"
+    "recoveryTarget": "theory-propiedades-operaciones-reales"
   },
   {
     "errorTag": "u1_propiedad_operacion",
     "type": "conceptual",
     "message": "La propiedad distributiva dice: a × (b + c) = a × b + a × c. Verificá que estás distribuyendo el factor a TODOS los términos del paréntesis.",
-    "recoveryTarget": "theory-reales-operaciones"
+    "recoveryTarget": "theory-propiedades-operaciones-reales"
   },
   {
     "errorTag": "u1_agrupacion_signo",
     "type": "corrective",
     "message": "Cuidado con los signos al reorganizar términos. El signo de cada término lo acompaña cuando se mueve.",
-    "recoveryTarget": "example-reales-operaciones-2"
+    "recoveryTarget": "example-propiedades-operaciones-reales-2"
   },
   {
     "errorTag": "u1_error_intervalo",
