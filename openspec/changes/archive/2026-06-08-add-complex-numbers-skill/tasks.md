@@ -32,12 +32,12 @@ Chain strategy: stacked-to-main
 
 ## Phase 2: Content Pipeline (PR 2)
 
-- [ ] 2.1 Update `src/domain/__tests__/catalog-readiness.test.ts`: add `mat.u1.complejos` to `PILOT_SKILL_IDS`, replace lines 79–113 negative assertions with positive readiness, remove `mat.u1.complejos` from downstream not-ready arrays (lines 147–155).
-- [ ] 2.2 Add theory node to `content/matematica/theory/unit-1.json` with `skillId: "mat.u1.complejos"` and 9 concepts: imaginary unit i, standard form a+bi, Re/Im parts, equality, addition/subtraction, multiplication (distributive + i²=−1), conjugate, division, powers of i cycle. No polar/Unit 5 content.
-- [ ] 2.3 Add ≥ 5 worked examples to `content/matematica/examples/unit-1.json` with `skillId: "mat.u1.complejos"`: add/sub, multiplication, conjugate, division, powers of i.
-- [ ] 2.4 Add 8 feedback mappings to `content/matematica/feedback/unit-1.json`, one per `u1_complejo_*` tag, each explaining the specific misconception and guiding toward correct reasoning.
+- [x] 2.1 Update `src/domain/__tests__/catalog-readiness.test.ts`: add `mat.u1.complejos` to `PILOT_SKILL_IDS`, replace lines 79–113 negative assertions with positive readiness, remove `mat.u1.complejos` from downstream not-ready arrays (lines 147–155).
+- [x] 2.2 Add theory node to `content/matematica/theory/unit-1.json` with `skillId: "mat.u1.complejos"` and 9 concepts: imaginary unit i, standard form a+bi, Re/Im parts, equality, addition/subtraction, multiplication (distributive + i²=−1), conjugate, division, powers of i cycle. No polar/Unit 5 content.
+- [x] 2.3 Add ≥ 5 worked examples to `content/matematica/examples/unit-1.json` with `skillId: "mat.u1.complejos"`: add/sub, multiplication, conjugate, division, powers of i.
+- [x] 2.4 Add 8 feedback mappings to `content/matematica/feedback/unit-1.json`, one per `u1_complejo_*` tag, each explaining the specific misconception and guiding toward correct reasoning.
 
 ## Phase 3: Exercise Bank and Verification (PR 3)
 
-- [ ] 3.1 Add 10–14 exercises to `content/matematica/exercises.json` with `skillId: "mat.u1.complejos"`, IDs `ex.u1.complejos.N`, difficulty 1–4, types `multiple-choice` / `true-false` / `numerical`. Numerical exercises ask Re(z) or Im(z) separately. No free-form `a+bi`. Each exercise links `commonErrorTags` to covered `u1_complejo_*` tags only.
-- [ ] 3.2 Run `pnpm run test && pnpm run typecheck && pnpm run build`. Verify `isSkillReady("mat.u1.complejos")` returns `{ ready: true, missing: [] }`, all exercises use permitted types, all referenced error tags have feedback, `mat.u5.complejos_forma_polar` prerequisite resolves.
+- [x] 3.1 Add 10–14 exercises to `content/matematica/exercises.json` with `skillId: "mat.u1.complejos"`, IDs `ex.u1.complejos.N`, difficulty 1–4, types `multiple-choice` / `true-false` / `numerical`. Numerical exercises ask Re(z) or Im(z) separately. No free-form `a+bi`. Each exercise links `commonErrorTags` to covered `u1_complejo_*` tags only.
+- [x] 3.2 Run `pnpm run test && pnpm run typecheck && pnpm run build`. Verify `isSkillReady("mat.u1.complejos")` returns `{ ready: true, missing: [] }`, all exercises use permitted types, all referenced error tags have feedback, `mat.u5.complejos_forma_polar` prerequisite resolves.

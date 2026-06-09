@@ -16,6 +16,7 @@ const PILOT_SKILL_IDS = [
   "mat.u1.intervalos",
   "mat.u1.valor_absoluto",
   "mat.u1.logaritmos",
+  "mat.u1.complejos",
 ] as const;
 
 describe("getSkillComponents", () => {
@@ -76,40 +77,38 @@ describe("isSkillReady", () => {
     expect(result.missing).toEqual([]);
   });
 
-  test("returns missing components for non-pilot skill", () => {
+  test("complejos está ready: ejercicios y feedback linkage completos (PR 3)", () => {
     const result = isSkillReady("mat.u1.complejos");
-    expect(result.ready).toBe(false);
-    expect(result.missing.length).toBeGreaterThan(0);
-  });
-
-  test("non-pilot skill is missing theory", () => {
-    const result = isSkillReady("mat.u1.complejos");
-    expect(result.missing).toContain("theory");
-  });
-
-  test("non-pilot skill is missing examples", () => {
-    const result = isSkillReady("mat.u1.complejos");
-    expect(result.missing).toContain("examples");
+    expect(result.ready).toBe(true);
+    expect(result.missing).toEqual([]);
   });
 });
 
-describe("no exercise available scenario", () => {
-  test("skill with no exercises reports exercises component as not present", () => {
+describe("complejos component readiness (PR 3 — all components present)", () => {
+  test("mat.u1.complejos has theory content present", () => {
     const components = getSkillComponents("mat.u1.complejos");
-    const exercises = components.find((c) => c.name === "exercises");
-    expect(exercises?.present).toBe(false);
+    const theory = components.find((c) => c.name === "theory");
+    expect(theory?.present).toBe(true);
   });
 
-  test("skill with no exercises is not ready", () => {
-    const result = isSkillReady("mat.u1.complejos");
-    expect(result.ready).toBe(false);
-    expect(result.missing).toContain("exercises");
+  test("mat.u1.complejos has examples content present", () => {
+    const components = getSkillComponents("mat.u1.complejos");
+    const examples = components.find((c) => c.name === "examples");
+    expect(examples?.present).toBe(true);
   });
 
-  test("skill with no exercises and no feedback reports both missing", () => {
+  test("mat.u1.complejos feedback está vinculado (exercises con error tags activan linkage)", () => {
+    const components = getSkillComponents("mat.u1.complejos");
+    const feedback = components.find((c) => c.name === "feedback");
+    // Feedback mappings exist in JSON and are now activated by
+    // exercise error-tag references (PR 3).
+    expect(feedback?.present).toBe(true);
+  });
+
+  test("mat.u1.complejos está completamente ready", () => {
     const result = isSkillReady("mat.u1.complejos");
-    expect(result.ready).toBe(false);
-    expect(result.missing).toContain("exercises");
+    expect(result.ready).toBe(true);
+    expect(result.missing).toEqual([]);
   });
 });
 
@@ -157,7 +156,6 @@ describe("recommendation safety", () => {
   test("not-ready downstream skills are not recommended via readiness", () => {
     const downstreamSkills = [
       "mat.u1.exponenciales",
-      "mat.u1.complejos",
     ];
     for (const skillId of downstreamSkills) {
       const result = isSkillReady(skillId);
