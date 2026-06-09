@@ -4,7 +4,7 @@ import type { PracticeProgress } from "../progress/index";
 
 const readySkills: readonly ReadySkill[] = [
   { skillId: "mat.u1.conjuntos_numericos", label: "Conjuntos numéricos" },
-  { skillId: "mat.u1.propiedades_operaciones_reales", label: "Números reales y operaciones" },
+  { skillId: "mat.u1.propiedades_operaciones_reales", label: "Propiedades Operaciones de Números reales" },
   { skillId: "mat.u1.potencias_raices", label: "Potencias y raíces" },
   { skillId: "mat.u1.intervalos", label: "Intervalos" },
 ];
