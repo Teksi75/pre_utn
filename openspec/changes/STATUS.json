@@ -49,8 +49,14 @@
       "mergedTo": "main",
       "mergeCommit": "b420a43",
       "summary": "Activated mat.u1.complejos as a pilot skill with taxonomy, theory, examples, feedback, 12 structured exercises, full verification, and archived SDD specs."
+    },
+    "setup-gga-gate": {
+      "status": "in-progress",
+      "branch": "setup-gga-gate",
+      "startedAt": "2026-06-09",
+      "summary": "Install GGA (gentleman-guardian-angel), update .gga to opencode:deepseek-v4-flash, register pre-commit hook, add multi-PC install docs and manual smoke checklist."
     }
   },
-  "activeBranches": [],
+  "activeBranches": ["setup-gga-gate"],
   "lastAudit": "2026-06-09T00:50:00-03:00"
 }
