@@ -25,7 +25,7 @@ Skills de Unidad 1 realmente transitables hoy:
 
 Temas de Unidad 1 que todavía faltan completar como recorrido transitable:
 
-- Complejos
+- (ninguno — las 8 skills están en estado "Listo")
 
 ## Fuente de verdad
 
@@ -63,7 +63,7 @@ La fuente pedagógica es el material canónico y las specs activas. La fuente t�
 | 4 | Intervalos | Listo |
 | 5 | Valor absoluto | Listo |
 | 6 | Logaritmos | Listo |
-| 7 | Complejos | Pendiente |
+| 7 | Complejos | Listo |
 
 `En construcción` significa que ya existe una parte del recorrido, pero todavía no alcanza readiness completo. `Pendiente` puede incluir ejercicios sueltos o referencias parciales, pero todavía no tiene recorrido pedagógico completo y validado para el alumno.
 
