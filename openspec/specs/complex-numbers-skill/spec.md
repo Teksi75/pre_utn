@@ -8,7 +8,7 @@ Content and behavioral contract for making `mat.u1.complejos` traversable: theor
 
 ### Requirement: Skill Order and Prerequisites
 
-`mat.u1.complejos` MUST appear in PILOT_SKILLS as the 8th entry, after `mat.u1.logaritmos`. Its prerequisite SHALL be `mat.u1.reales_operaciones`. `mat.u5.complejos_forma_polar` MUST list `mat.u1.complejos` as prerequisite.
+`mat.u1.complejos` MUST appear in PILOT_SKILLS as the 8th entry, after `mat.u1.logaritmos`. Its prerequisite SHALL be `mat.u1.propiedades_operaciones_reales`. `mat.u5.complejos_forma_polar` MUST list `mat.u1.complejos` as prerequisite.
 
 #### Scenario: correct insertion order
 
