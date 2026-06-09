@@ -1,0 +1,5 @@
+* text=auto
+
+# Bash scripts must keep LF line endings so they run correctly on Linux,
+# WSL, Git Bash, and Windows environments that invoke `bash` directly.
+*.sh text eol=lf

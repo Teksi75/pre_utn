@@ -33,6 +33,53 @@ if [[ ! -f "$STATUS_FILE" ]]; then
   exit 1
 fi
 
+if ! command -v jq >/dev/null 2>&1 && ! command -v node >/dev/null 2>&1; then
+  echo -e "${RED}ERROR: audit requires either jq or node to read STATUS.json${NC}"
+  exit 1
+fi
+
+json_read() {
+  local query="$1"
+
+  if command -v jq >/dev/null 2>&1; then
+    jq -r "$query" "$STATUS_FILE"
+    return
+  fi
+
+  node -e '
+    const fs = require("fs");
+    const status = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+    const query = process.argv[2];
+
+    if (query === "registeredBranches") {
+      for (const change of Object.values(status.changes ?? {})) {
+        if (change.branch != null) console.log(change.branch);
+      }
+    } else if (query === "activeBranches") {
+      for (const branch of status.activeBranches ?? []) console.log(branch);
+    } else if (query === "changeCount") {
+      console.log(Object.keys(status.changes ?? {}).length);
+    } else if (query.startsWith("statusCount:")) {
+      const expected = query.slice("statusCount:".length);
+      const count = Object.values(status.changes ?? {}).filter((change) => change.status === expected).length;
+      console.log(count);
+    } else if (query === "lastAudit") {
+      console.log(status.lastAudit ?? "");
+    }
+  ' "$STATUS_FILE" "$query"
+}
+
+count_nonempty_lines() {
+  local value="$1"
+
+  if [[ -z "$value" ]]; then
+    echo 0
+    return
+  fi
+
+  printf '%s\n' "$value" | grep -c '.'
+}
+
 # Ensure we have latest remote info
 echo -e "${BLUE}Fetching remote...${NC}"
 git fetch --prune --quiet 2>/dev/null || true
@@ -44,8 +91,8 @@ echo "════════════════════════�
 echo ""
 
 # Extract registered branches from STATUS.json
-REGISTERED_BRANCHES=$(jq -r '.changes | to_entries[] | select(.value.branch != null) | .value.branch' "$STATUS_FILE" 2>/dev/null || echo "")
-ACTIVE_BRANCHES=$(jq -r '.activeBranches[]?' "$STATUS_FILE" 2>/dev/null || echo "")
+REGISTERED_BRANCHES=$(json_read registeredBranches 2>/dev/null || echo "")
+ACTIVE_BRANCHES=$(json_read activeBranches 2>/dev/null || echo "")
 ALL_REGISTERED=$(echo -e "${REGISTERED_BRANCHES}\n${ACTIVE_BRANCHES}" | sort -u | grep -v '^$' || true)
 
 # Get all local branches (excluding main)
@@ -93,12 +140,8 @@ echo "────────────────────────�
 STALE_FOUND=false
 for branch in $ALL_REGISTERED; do
   if ! echo "$ALL_BRANCHES" | grep -qxF "$branch"; then
-    # Check if it was intentionally null (no branch needed)
-    IS_NULL=$(jq -r --arg b "$branch" '.changes | to_entries[] | select(.value.branch == $b) | .value.branch' "$STATUS_FILE" 2>/dev/null || echo "")
-    if [[ -n "$IS_NULL" ]]; then
-      STALE_FOUND=true
-      echo -e "  ${YELLOW}⚠${NC} ${branch} — registered but not found locally/remotely"
-    fi
+    STALE_FOUND=true
+    echo -e "  ${YELLOW}⚠${NC} ${branch} — registered but not found locally/remotely"
   fi
 done
 
@@ -134,15 +177,15 @@ echo "════════════════════════�
 echo "  SUMMARY"
 echo "═══════════════════════════════════════════════════════════════"
 
-CHANGE_COUNT=$(jq '.changes | length' "$STATUS_FILE")
-DONE_COUNT=$(jq '[.changes | to_entries[] | select(.value.status == "done")] | length' "$STATUS_FILE")
-WIP_COUNT=$(jq '[.changes | to_entries[] | select(.value.status == "in-progress")] | length' "$STATUS_FILE")
-EXPLORATION_COUNT=$(jq '[.changes | to_entries[] | select(.value.status == "exploration-only")] | length' "$STATUS_FILE")
+CHANGE_COUNT=$(json_read changeCount)
+DONE_COUNT=$(json_read statusCount:done)
+WIP_COUNT=$(json_read statusCount:in-progress)
+EXPLORATION_COUNT=$(json_read statusCount:exploration-only)
 
 echo "  Changes in STATUS.json: ${CHANGE_COUNT}"
 echo "    Done: ${DONE_COUNT}  |  In-progress: ${WIP_COUNT}  |  Exploration: ${EXPLORATION_COUNT}"
-echo "  Local branches: $(echo "$LOCAL_BRANCHES" | grep -c '.' || echo 0)"
-echo "  Remote branches: $(echo "$REMOTE_BRANCHES" | grep -c '.' || echo 0)"
+echo "  Local branches: $(count_nonempty_lines "$LOCAL_BRANCHES")"
+echo "  Remote branches: $(count_nonempty_lines "$REMOTE_BRANCHES")"
 
 # ─── FIX MODE ───────────────────────────────────────────────────────────────
 if [[ "$FIX_MODE" == "true" ]] && [[ -n "$ZOMBIES" ]]; then
@@ -172,6 +215,6 @@ if [[ "$FIX_MODE" == "true" ]] && [[ -n "$ZOMBIES" ]]; then
 fi
 
 echo ""
-echo -e "${BLUE}Last audit: $(jq -r '.lastAudit' "$STATUS_FILE")${NC}"
+echo -e "${BLUE}Last audit: $(json_read lastAudit)${NC}"
 echo -e "${BLUE}Run with --fix to auto-delete zombies after confirmation${NC}"
 echo ""
