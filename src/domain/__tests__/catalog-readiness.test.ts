@@ -16,6 +16,7 @@ const PILOT_SKILL_IDS = [
   "mat.u1.intervalos",
   "mat.u1.valor_absoluto",
   "mat.u1.logaritmos",
+  "mat.u1.complejos",
 ] as const;
 
 describe("getSkillComponents", () => {
@@ -76,16 +77,14 @@ describe("isSkillReady", () => {
     expect(result.missing).toEqual([]);
   });
 
-  test("complexos is not yet ready (exercises + feedback linkage pending in PR 3)", () => {
+  test("complejos está ready: ejercicios y feedback linkage completos (PR 3)", () => {
     const result = isSkillReady("mat.u1.complejos");
-    expect(result.ready).toBe(false);
-    expect(result.missing).toContain("exercises");
-    // feedback requires exercise error-tag references to activate
-    expect(result.missing).toContain("feedback");
+    expect(result.ready).toBe(true);
+    expect(result.missing).toEqual([]);
   });
 });
 
-describe("complexos component readiness (PR 2 — theory and examples present)", () => {
+describe("complejos component readiness (PR 3 — all components present)", () => {
   test("mat.u1.complejos has theory content present", () => {
     const components = getSkillComponents("mat.u1.complejos");
     const theory = components.find((c) => c.name === "theory");
@@ -98,19 +97,18 @@ describe("complexos component readiness (PR 2 — theory and examples present)",
     expect(examples?.present).toBe(true);
   });
 
-  test("mat.u1.complejos feedback is not yet linked (exercises pending)", () => {
+  test("mat.u1.complejos feedback está vinculado (exercises con error tags activan linkage)", () => {
     const components = getSkillComponents("mat.u1.complejos");
     const feedback = components.find((c) => c.name === "feedback");
-    // Feedback mappings exist in JSON but readiness cannot detect them
-    // without at least one exercise referencing the error tags (PR 3).
-    expect(feedback?.present).toBe(false);
+    // Feedback mappings exist in JSON and are now activated by
+    // exercise error-tag references (PR 3).
+    expect(feedback?.present).toBe(true);
   });
 
-  test("mat.u1.complejos is not yet ready: missing exercises and feedback linkage", () => {
+  test("mat.u1.complejos está completamente ready", () => {
     const result = isSkillReady("mat.u1.complejos");
-    expect(result.ready).toBe(false);
-    expect(result.missing).toContain("exercises");
-    expect(result.missing).toContain("feedback");
+    expect(result.ready).toBe(true);
+    expect(result.missing).toEqual([]);
   });
 });
 

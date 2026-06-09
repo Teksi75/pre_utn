@@ -39,5 +39,5 @@ Chain strategy: stacked-to-main
 
 ## Phase 3: Exercise Bank and Verification (PR 3)
 
-- [ ] 3.1 Add 10–14 exercises to `content/matematica/exercises.json` with `skillId: "mat.u1.complejos"`, IDs `ex.u1.complejos.N`, difficulty 1–4, types `multiple-choice` / `true-false` / `numerical`. Numerical exercises ask Re(z) or Im(z) separately. No free-form `a+bi`. Each exercise links `commonErrorTags` to covered `u1_complejo_*` tags only.
-- [ ] 3.2 Run `pnpm run test && pnpm run typecheck && pnpm run build`. Verify `isSkillReady("mat.u1.complejos")` returns `{ ready: true, missing: [] }`, all exercises use permitted types, all referenced error tags have feedback, `mat.u5.complejos_forma_polar` prerequisite resolves.
+- [x] 3.1 Add 10–14 exercises to `content/matematica/exercises.json` with `skillId: "mat.u1.complejos"`, IDs `ex.u1.complejos.N`, difficulty 1–4, types `multiple-choice` / `true-false` / `numerical`. Numerical exercises ask Re(z) or Im(z) separately. No free-form `a+bi`. Each exercise links `commonErrorTags` to covered `u1_complejo_*` tags only.
+- [x] 3.2 Run `pnpm run test && pnpm run typecheck && pnpm run build`. Verify `isSkillReady("mat.u1.complejos")` returns `{ ready: true, missing: [] }`, all exercises use permitted types, all referenced error tags have feedback, `mat.u5.complejos_forma_polar` prerequisite resolves.

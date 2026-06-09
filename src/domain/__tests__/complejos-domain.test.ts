@@ -109,13 +109,13 @@ describe("mat.u1.complejos — catalog identity", () => {
 // ── 1.2 Readiness ─────────────────────────────────────────────────────────
 
 describe("mat.u1.complejos — readiness", () => {
-  test.todo("isSkillReady reports ready=true for the skill", () => {
+  test("isSkillReady reports ready=true for the skill", () => {
     const result = isSkillReady(SKILL_ID);
     expect(result.ready).toBe(true);
     expect(result.missing).toEqual([]);
   });
 
-  test.todo("getSkillComponents reports all 5 components present", () => {
+  test("getSkillComponents reports all 5 components present", () => {
     const components = getSkillComponents(SKILL_ID);
     expect(components).toHaveLength(5);
     for (const component of components) {
@@ -190,7 +190,7 @@ describe("mat.u1.complejos — theory and examples", () => {
 describe("mat.u1.complejos — exercises", () => {
   const exercises = queryBySkill(SKILL_ID);
 
-  test.todo("the skill has at least 10 exercises", () => {
+  test("the skill has at least 10 exercises", () => {
     expect(exercises.length).toBeGreaterThanOrEqual(10);
   });
 
@@ -225,7 +225,7 @@ describe("mat.u1.complejos — exercises", () => {
     }
   });
 
-  test.todo("every exercise references the complex numbers theory node", () => {
+  test("every exercise references the complex numbers theory node", () => {
     const links = exercises.map((e) => ({
       id: e.id,
       relatedTheoryIds: (e as unknown as { relatedTheoryIds?: readonly string[] })
@@ -241,7 +241,7 @@ describe("mat.u1.complejos — exercises", () => {
     }
   });
 
-  test.todo("every exercise has at least one error tag", () => {
+  test("every exercise has at least one error tag", () => {
     for (const exercise of exercises) {
       expect(
         exercise.commonErrorTags.length,
@@ -250,7 +250,7 @@ describe("mat.u1.complejos — exercises", () => {
     }
   });
 
-  test.todo("every error tag references a real taxonomy entry", () => {
+  test("every error tag references a real taxonomy entry", () => {
     const taxonomyIds = new Set<string>(loadTaxonomy().map((t) => t.id));
     for (const exercise of exercises) {
       for (const tag of exercise.commonErrorTags) {
@@ -262,7 +262,7 @@ describe("mat.u1.complejos — exercises", () => {
     }
   });
 
-  test.todo("every exercise error tag is a u1_complejo_* tag", () => {
+  test("every exercise error tag is a u1_complejo_* tag", () => {
     for (const exercise of exercises) {
       for (const tag of exercise.commonErrorTags) {
         expect(
@@ -273,7 +273,7 @@ describe("mat.u1.complejos — exercises", () => {
     }
   });
 
-  test.todo("every multiple-choice exercise has >=3 options and expectedAnswer in options", () => {
+  test("every multiple-choice exercise has >=3 options and expectedAnswer in options", () => {
     for (const exercise of exercises) {
       if (exercise.type !== "multiple-choice") continue;
       expect(exercise.options).toBeDefined();
@@ -282,7 +282,7 @@ describe("mat.u1.complejos — exercises", () => {
     }
   });
 
-  test.todo("every true-false exercise uses the standard Verdadero/Falso options", () => {
+  test("every true-false exercise uses the standard Verdadero/Falso options", () => {
     const tfExercises = exercises.filter((e) => e.type === "true-false");
     if (tfExercises.length === 0) return; // some skills may not have TF, skip gracefully
     for (const exercise of tfExercises) {
@@ -293,7 +293,7 @@ describe("mat.u1.complejos — exercises", () => {
     }
   });
 
-  test.todo("numerical exercises ask one scalar at a time (no multi-value or free-form)", () => {
+  test("numerical exercises ask one scalar at a time (no multi-value or free-form)", () => {
     const numExercises = exercises.filter((e) => e.type === "numerical");
     for (const exercise of numExercises) {
       expect(
@@ -309,7 +309,7 @@ describe("mat.u1.complejos — exercises", () => {
     }
   });
 
-  test.todo("every exercise validates against the domain validator", () => {
+  test("every exercise validates against the domain validator", () => {
     const taxonomy = loadTaxonomy();
     const knownErrorTagIds = new Set<string>(taxonomy.map((t) => t.id));
     for (const raw of loadCatalog()) {
@@ -337,12 +337,12 @@ describe("mat.u1.complejos — difficulty graduation", () => {
     }
   });
 
-  test.todo("at least one exercise has difficulty 1 (entry level)", () => {
+  test("at least one exercise has difficulty 1 (entry level)", () => {
     const easy = exercises.filter((e) => e.difficulty === 1);
     expect(easy.length).toBeGreaterThanOrEqual(1);
   });
 
-  test.todo("at least one exercise has difficulty 4 (challenging)", () => {
+  test("at least one exercise has difficulty 4 (challenging)", () => {
     const hard = exercises.filter((e) => e.difficulty === 4);
     expect(hard.length).toBeGreaterThanOrEqual(1);
   });
@@ -408,14 +408,14 @@ describe("mat.u1.complejos — feedback coverage", () => {
 // ── 1.6 Route resolution ──────────────────────────────────────────────────
 
 describe("mat.u1.complejos — route resolution", () => {
-  test.todo("/learn/matematica/mat.u1.complejos resolves to a content-ready skill", () => {
+  test("/learn/matematica/mat.u1.complejos resolves to a content-ready skill", () => {
     const nodes = loadTheoryContent("unit-1");
     const node = nodes.find((n) => n.skillId === SKILL_ID);
     expect(node).toBeDefined();
     expect(isSkillReady(SKILL_ID).ready).toBe(true);
   });
 
-  test.todo("/practice?skill=mat.u1.complejos is blocked until reales_operaciones is mastered", () => {
+  test("/practice?skill=mat.u1.complejos is blocked until reales_operaciones is mastered", () => {
     expect(resolveInitialPracticeSkill(SKILL_ID)).toBe(SKILL_ID);
     const analysis = analyzeRequestedSkill(SKILL_ID, emptyProgress());
     expect(analysis.kind).toBe("blocked");
@@ -425,7 +425,7 @@ describe("mat.u1.complejos — route resolution", () => {
     }
   });
 
-  test.todo("/practice?skill=mat.u1.complejos opens once reales_operaciones is mastered", () => {
+  test("/practice?skill=mat.u1.complejos opens once reales_operaciones is mastered", () => {
     const progress: PracticeProgress = {
       ...emptyProgress(),
       accuracyBySkill: { "mat.u1.reales_operaciones": 0.85 },
@@ -469,7 +469,7 @@ describe("mat.u1.complejos — error taxonomy structure", () => {
 // ── 1.8 Math rendering convention ─────────────────────────────────────────
 
 describe("mat.u1.complejos — math rendering convention", () => {
-  test.todo("all exercise prompts use $...$ KaTeX delimiters for math expressions", () => {
+  test("all exercise prompts use $...$ KaTeX delimiters for math expressions", () => {
     const exercises = queryBySkill(SKILL_ID);
     for (const exercise of exercises) {
       const prompt = exercise.prompt;
@@ -486,7 +486,7 @@ describe("mat.u1.complejos — math rendering convention", () => {
     }
   });
 
-  test.todo("all MC options with math use $...$ KaTeX delimiters", () => {
+  test("all MC options with math use $...$ KaTeX delimiters", () => {
     const exercises = queryBySkill(SKILL_ID);
     for (const exercise of exercises) {
       if (exercise.type !== "multiple-choice" || !exercise.options) continue;
