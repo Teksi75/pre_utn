@@ -92,7 +92,7 @@ describe("analyzeRequestedSkill", () => {
     expect(result.kind).toBe("blocked");
     if (result.kind === "blocked") {
       expect(result.reason).toBe("missing-prerequisite");
-      expect(result.missingPrerequisite).toBe("mat.u1.reales_operaciones");
+      expect(result.missingPrerequisite).toBe("mat.u1.propiedades_operaciones_reales");
     }
   });
 
@@ -100,7 +100,7 @@ describe("analyzeRequestedSkill", () => {
     const progress: PracticeProgress = {
       ...emptyProgress(),
       accuracyBySkill: {
-        "mat.u1.reales_operaciones": 0.85,
+        "mat.u1.propiedades_operaciones_reales": 0.85,
       },
     };
     const result = analyzeRequestedSkill(
@@ -142,7 +142,7 @@ describe("analyzeRequestedSkill", () => {
   it("treats prereq accuracy 0.69 as still unmet (below 0.7 threshold)", () => {
     const progress: PracticeProgress = {
       ...emptyProgress(),
-      accuracyBySkill: { "mat.u1.reales_operaciones": 0.69 },
+      accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 0.69 },
     };
     const result = analyzeRequestedSkill(
       "mat.u1.potencias_raices",
@@ -161,7 +161,7 @@ describe("buildAccessibleSkillMap", () => {
     expect(map.size).toBeGreaterThan(0);
     expect(map.has("mat.u1.conjuntos_numericos")).toBe(true);
     expect(map.has("mat.u1.intervalos")).toBe(true);
-    expect(map.has("mat.u1.reales_operaciones")).toBe(true);
+    expect(map.has("mat.u1.propiedades_operaciones_reales")).toBe(true);
     expect(map.has("mat.u1.potencias_raices")).toBe(true);
     expect(map.has("mat.u1.valor_absoluto")).toBe(true);
   });
@@ -174,7 +174,7 @@ describe("buildAccessibleSkillMap", () => {
 
   it("marks skills with unmet prereqs as not accessible on empty progress", () => {
     const map = buildAccessibleSkillMap(emptyProgress());
-    expect(map.get("mat.u1.reales_operaciones")?.accessible).toBe(false);
+    expect(map.get("mat.u1.propiedades_operaciones_reales")?.accessible).toBe(false);
     expect(map.get("mat.u1.potencias_raices")?.accessible).toBe(false);
   });
 });
@@ -286,7 +286,7 @@ describe("analyzeRequestedSkill — QA content mode", () => {
 describe("buildAccessibleSkillMap — QA mode does not affect selector", () => {
   it("selector still marks unmet prereqs as inaccessible regardless of QA mode", () => {
     const map = buildAccessibleSkillMap(emptyProgress());
-    expect(map.get("mat.u1.reales_operaciones")?.accessible).toBe(false);
+    expect(map.get("mat.u1.propiedades_operaciones_reales")?.accessible).toBe(false);
     expect(map.get("mat.u1.potencias_raices")?.accessible).toBe(false);
     expect(map.get("mat.u1.valor_absoluto")?.accessible).toBe(false);
   });

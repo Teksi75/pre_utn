@@ -3,8 +3,8 @@ import { getPracticeHrefForSuggestion } from "../practice-link";
 
 describe("getPracticeHrefForSuggestion", () => {
   it("returns a direct practice URL for ready guided-practice skills", () => {
-    expect(getPracticeHrefForSuggestion("mat.u1.reales_operaciones")).toBe(
-      "/practice?skill=mat.u1.reales_operaciones"
+    expect(getPracticeHrefForSuggestion("mat.u1.propiedades_operaciones_reales")).toBe(
+      "/practice?skill=mat.u1.propiedades_operaciones_reales"
     );
   });
 

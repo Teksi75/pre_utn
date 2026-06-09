@@ -54,13 +54,13 @@ describe("practice-progress localStorage adapter", () => {
         attempts: [
           {
             exerciseId: "ex.u1.test",
-            skillId: "mat.u1.reales_operaciones",
+            skillId: "mat.u1.propiedades_operaciones_reales",
             correct: true,
             answeredAt: "2025-01-01T00:00:00.000Z",
           },
         ],
-        accuracyBySkill: { "mat.u1.reales_operaciones": 1 },
-        trendBySkill: { "mat.u1.reales_operaciones": "improving" },
+        accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 1 },
+        trendBySkill: { "mat.u1.propiedades_operaciones_reales": "improving" },
         lastPracticedBySkill: {},
         diagnosticResult: null,
         studyPlan: null,
@@ -69,8 +69,8 @@ describe("practice-progress localStorage adapter", () => {
 
       const result = loadProgress();
       expect(result.attempts).toHaveLength(1);
-      expect(result.attempts[0].skillId).toBe("mat.u1.reales_operaciones");
-      expect(result.accuracyBySkill["mat.u1.reales_operaciones"]).toBe(1);
+      expect(result.attempts[0].skillId).toBe("mat.u1.propiedades_operaciones_reales");
+      expect(result.accuracyBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(1);
     });
 
     it("returns empty progress when stored data is invalid JSON", () => {
@@ -97,13 +97,13 @@ describe("practice-progress localStorage adapter", () => {
         attempts: [
           {
             exerciseId: "ex.u1.01",
-            skillId: "mat.u1.reales_operaciones",
+            skillId: "mat.u1.propiedades_operaciones_reales",
             correct: true,
             answeredAt: "2024-12-01T00:00:00.000Z",
           },
         ],
-        accuracyBySkill: { "mat.u1.reales_operaciones": 1 },
-        trendBySkill: { "mat.u1.reales_operaciones": "stable" },
+        accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 1 },
+        trendBySkill: { "mat.u1.propiedades_operaciones_reales": "stable" },
       };
       localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(oldData));
 
@@ -111,8 +111,8 @@ describe("practice-progress localStorage adapter", () => {
 
       // Original fields preserved
       expect(result.attempts).toHaveLength(1);
-      expect(result.accuracyBySkill["mat.u1.reales_operaciones"]).toBe(1);
-      expect(result.trendBySkill["mat.u1.reales_operaciones"]).toBe("stable");
+      expect(result.accuracyBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(1);
+      expect(result.trendBySkill["mat.u1.propiedades_operaciones_reales"]).toBe("stable");
 
       // New fields defaulted
       expect(result.lastPracticedBySkill).toEqual({});
@@ -131,7 +131,7 @@ describe("practice-progress localStorage adapter", () => {
         attempts: [],
         accuracyBySkill: {},
         trendBySkill: {},
-        lastPracticedBySkill: { "mat.u1.reales_operaciones": "2025-06-01" },
+        lastPracticedBySkill: { "mat.u1.propiedades_operaciones_reales": "2025-06-01" },
         diagnosticResult: storedDiagnostic,
         studyPlan: null,
       };
@@ -139,7 +139,7 @@ describe("practice-progress localStorage adapter", () => {
 
       const result = loadProgress();
 
-      expect(result.lastPracticedBySkill["mat.u1.reales_operaciones"]).toBe(
+      expect(result.lastPracticedBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(
         "2025-06-01"
       );
       expect(result.diagnosticResult).toEqual(storedDiagnostic);
@@ -233,13 +233,13 @@ describe("practice-progress localStorage adapter", () => {
         attempts: [
           {
             exerciseId: "ex.u1.01",
-            skillId: "mat.u1.reales_operaciones",
+            skillId: "mat.u1.propiedades_operaciones_reales",
             correct: true,
             answeredAt: "2025-01-01T00:00:00.000Z",
           },
         ],
-        accuracyBySkill: { "mat.u1.reales_operaciones": 1 },
-        trendBySkill: { "mat.u1.reales_operaciones": "stable" },
+        accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 1 },
+        trendBySkill: { "mat.u1.propiedades_operaciones_reales": "stable" },
         lastPracticedBySkill: {},
         diagnosticResult: null,
         studyPlan: null,
@@ -248,14 +248,14 @@ describe("practice-progress localStorage adapter", () => {
 
       const updated = addAttempt({
         exerciseId: "ex.u1.02",
-        skillId: "mat.u1.reales_operaciones",
+        skillId: "mat.u1.propiedades_operaciones_reales",
         correct: false,
         errorTag: "u1_orden_operaciones",
         answeredAt: "2025-01-01T01:00:00.000Z",
       });
 
       expect(updated.attempts).toHaveLength(2);
-      expect(updated.accuracyBySkill["mat.u1.reales_operaciones"]).toBe(0.5);
+      expect(updated.accuracyBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(0.5);
     });
 
     it("creates new skill entry when first attempt for that skill", () => {
@@ -292,7 +292,7 @@ describe("practice-progress localStorage adapter", () => {
 
       addAttempt({
         exerciseId: "ex.u1.01",
-        skillId: "mat.u1.reales_operaciones",
+        skillId: "mat.u1.propiedades_operaciones_reales",
         correct: true,
         answeredAt: "2025-01-01T00:00:00.000Z",
       });
@@ -313,7 +313,7 @@ describe("practice-progress localStorage adapter", () => {
 
       addAttempt({
         exerciseId: "ex.u1.01",
-        skillId: "mat.u1.reales_operaciones",
+        skillId: "mat.u1.propiedades_operaciones_reales",
         correct: true,
         answeredAt: "2025-01-01T00:00:00.000Z",
         difficulty: 4,
@@ -335,13 +335,13 @@ describe("practice-progress localStorage adapter", () => {
 
       const updated = addAttempt({
         exerciseId: "ex.u1.01",
-        skillId: "mat.u1.reales_operaciones",
+        skillId: "mat.u1.propiedades_operaciones_reales",
         correct: true,
         answeredAt: "2025-03-15T08:00:00.000Z",
         difficulty: 2,
       });
 
-      expect(updated.lastPracticedBySkill["mat.u1.reales_operaciones"]).toBe(
+      expect(updated.lastPracticedBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(
         "2025-03-15T08:00:00.000Z"
       );
     });
@@ -351,20 +351,20 @@ describe("practice-progress localStorage adapter", () => {
         attempts: [],
         accuracyBySkill: {},
         trendBySkill: {},
-        lastPracticedBySkill: { "mat.u1.reales_operaciones": "2025-01-01T00:00:00.000Z" },
+        lastPracticedBySkill: { "mat.u1.propiedades_operaciones_reales": "2025-01-01T00:00:00.000Z" },
         diagnosticResult: null,
         studyPlan: null,
       });
 
       const updated = addAttempt({
         exerciseId: "ex.u1.02",
-        skillId: "mat.u1.reales_operaciones",
+        skillId: "mat.u1.propiedades_operaciones_reales",
         correct: false,
         answeredAt: "2025-02-01T00:00:00.000Z",
         difficulty: 3,
       });
 
-      expect(updated.lastPracticedBySkill["mat.u1.reales_operaciones"]).toBe(
+      expect(updated.lastPracticedBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(
         "2025-02-01T00:00:00.000Z"
       );
     });
@@ -387,7 +387,7 @@ describe("practice-progress localStorage adapter", () => {
 
       const updated = addAttempt({
         exerciseId: "ex.u1.01",
-        skillId: "mat.u1.reales_operaciones",
+        skillId: "mat.u1.propiedades_operaciones_reales",
         correct: true,
         answeredAt: "2025-02-01T00:00:00.000Z",
         difficulty: 1,
