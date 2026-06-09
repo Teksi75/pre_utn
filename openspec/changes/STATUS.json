@@ -51,12 +51,13 @@
       "summary": "Activated mat.u1.complejos as a pilot skill with taxonomy, theory, examples, feedback, 12 structured exercises, full verification, and archived SDD specs."
     },
     "setup-gga-gate": {
-      "status": "in-progress",
-      "branch": "setup-gga-gate",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-06-09",
-      "summary": "Install GGA (gentleman-guardian-angel), update .gga to opencode:deepseek-v4-flash, register pre-commit hook, add multi-PC install docs and manual smoke checklist."
+      "completedAt": "2026-06-09",
+      "summary": "GGA gate installed and verified: binary installed, pre-commit hook active, multi-PC docs created, provider overridden to openai/gpt-5.4-mini (deepseek unreachable). Branch is local-only, pending merge to main."
     }
   },
-  "activeBranches": ["setup-gga-gate"],
-  "lastAudit": "2026-06-09T00:50:00-03:00"
+  "activeBranches": [],
+  "lastAudit": "2026-06-09T21:00:00-03:00"
 }
