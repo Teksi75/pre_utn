@@ -49,8 +49,13 @@
       "mergedTo": "main",
       "mergeCommit": "b420a43",
       "summary": "Activated mat.u1.complejos as a pilot skill with taxonomy, theory, examples, feedback, 12 structured exercises, full verification, and archived SDD specs."
+    },
+    "refactor-rename-reales-operaciones": {
+      "status": "in-progress",
+      "branch": "refactor/rename-reales-operaciones",
+      "summary": "Rename mat.u1.reales_operaciones -> mat.u1.propiedades_operaciones_reales to align with canonical PDF (cap. 13 'Propiedades Operaciones de Numeros reales'). Pure rename, no content change."
     }
   },
-  "activeBranches": [],
-  "lastAudit": "2026-06-09T00:50:00-03:00"
+  "activeBranches": ["refactor/rename-reales-operaciones"],
+  "lastAudit": "2026-06-09T17:57:00-03:00"
 }

@@ -9,7 +9,7 @@ import type { SkillId } from "../../domain/models/skill";
  * OpenSpec: `unit-1-pedagogical-slice`, Phase 13.
  * TDD coverage: `src/app/practice/__tests__/start-skill.test.ts`.
  */
-export const PRACTICE_SKILL_UNIT_MAP: Readonly<Record<string, string>> = {
+export const PRACTICE_SKILL_UNIT_MAP: Readonly<Record<string, string | undefined>> = {
   ...PILOT_SKILL_UNIT_MAP,
 };
 

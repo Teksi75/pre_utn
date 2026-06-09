@@ -1,5 +1,5 @@
 /**
- * Skill catalog — 44 mathematics skills from spec 06.
+ * Skill catalog — 45 mathematics skills from spec 06.
  * Each skill ID follows mat.u{1-6}.{slug} format.
  * This file is a constant-only module with no logic.
  */
@@ -10,7 +10,7 @@ import type { SkillId } from "./skill";
 
 export const UNIT_1_SKILLS: readonly SkillId[] = [
   "mat.u1.conjuntos_numericos",
-  "mat.u1.reales_operaciones",
+  "mat.u1.propiedades_operaciones_reales",
   "mat.u1.potencias_raices",
   "mat.u1.racionalizacion",
   "mat.u1.intervalos",
@@ -103,12 +103,12 @@ export interface SkillDependency {
 }
 
 export const SKILL_DEPENDENCIES: readonly SkillDependency[] = [
-  { skillId: "mat.u1.reales_operaciones", prerequisites: ["mat.u1.conjuntos_numericos"] },
-  { skillId: "mat.u1.potencias_raices", prerequisites: ["mat.u1.reales_operaciones"] },
+  { skillId: "mat.u1.propiedades_operaciones_reales", prerequisites: ["mat.u1.conjuntos_numericos"] },
+  { skillId: "mat.u1.potencias_raices", prerequisites: ["mat.u1.propiedades_operaciones_reales"] },
   { skillId: "mat.u1.racionalizacion", prerequisites: ["mat.u1.potencias_raices"] },
   { skillId: "mat.u1.valor_absoluto", prerequisites: ["mat.u1.intervalos"] },
   { skillId: "mat.u1.logaritmos", prerequisites: ["mat.u1.valor_absoluto"] },
-  { skillId: "mat.u1.complejos", prerequisites: ["mat.u1.reales_operaciones"] },
+  { skillId: "mat.u1.complejos", prerequisites: ["mat.u1.propiedades_operaciones_reales"] },
 
   { skillId: "mat.u2.operaciones_polinomios", prerequisites: ["mat.u2.polinomios_basico"] },
   { skillId: "mat.u2.ruffini_resto", prerequisites: ["mat.u2.operaciones_polinomios"] },
