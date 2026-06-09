@@ -113,6 +113,89 @@ const TAXONOMY: readonly ErrorTag[] = [
     ],
   },
 
+  // Unit 1: Números complejos — error tags backed by the Unit 1 SDD sequence
+  // and regression coverage in src/domain/__tests__/complejos-domain.test.ts.
+  {
+    id: "u1_complejo_i_definicion",
+    unit: 1,
+    description:
+      "Confusión sobre la naturaleza del número imaginario i: trata a i como un número real o cree que √(-1) es un número real. i no es un número real; i se define mediante la relación i² = -1, y los números que lo incluyen pertenecen a los complejos.",
+    examples: [
+      "Decir que $i$ es un número real 'porque √(−1) existe en ℝ'",
+      "Afirmar que $i = −1$ (confunde $i$ con su cuadrado)",
+    ],
+  },
+  {
+    id: "u1_complejo_partes_confusion",
+    unit: 1,
+    description:
+      "Confusión entre la parte real y la parte imaginaria de un complejo: invierte Re(z) con Im(z). En a+bi, la parte real es a y la parte imaginaria es b (el coeficiente de i, sin la unidad). No es a+bi con Re=b.",
+    examples: [
+      "Decir que Re(2+3i) = 3 en vez de 2",
+      "Afirmar que Im(4−5i) = 5 (olvida el signo del coeficiente de i)",
+    ],
+  },
+  {
+    id: "u1_complejo_suma_real",
+    unit: 1,
+    description:
+      "Suma de complejos ignorando la componente imaginaria: trata la suma como si solo importaran las partes reales. La suma se hace componente a componente: (a+bi)+(c+di) = (a+c)+(b+d)i.",
+    examples: [
+      "Calcular (2+3i)+(4+5i) = 6 en vez de 6+8i (ignora las partes imaginarias)",
+      "Calcular (1+2i)+(3−4i) = 4 en vez de 4−2i",
+    ],
+  },
+  {
+    id: "u1_complejo_i_cuadrado_signo",
+    unit: 1,
+    description:
+      "Error en el signo de i²: olvida que i² = −1 y usa i² = 1 o i² = i al multiplicar complejos. Esto cambia el signo del término y produce un resultado incorrecto.",
+    examples: [
+      "En (2+3i)(1+i), calcular 3i·i = 3 en vez de 3·(−1) = −3",
+      "Simplificar i² como i (trata el exponente como factor en vez de potencia)",
+    ],
+  },
+  {
+    id: "u1_complejo_conjugado_signo",
+    unit: 1,
+    description:
+      "Error en el signo del conjugado: escribe el conjugado de a+bi como a+bi (sin cambio) o como −a−bi (cambia ambos signos). El conjugado solo cambia el signo de la parte imaginaria: conj(a+bi) = a−bi.",
+    examples: [
+      "Escribir conj(3+4i) = 3+4i en vez de 3−4i",
+      "Escribir conj(2−5i) = −2+5i en vez de 2+5i",
+    ],
+  },
+  {
+    id: "u1_complejo_division_sin_conjugado",
+    unit: 1,
+    description:
+      "División de complejos sin multiplicar por el conjugado: intenta dividir directamente las partes reales e imaginarias sin racionalizar el denominador. La división requiere multiplicar numerador y denominador por el conjugado del denominador.",
+    examples: [
+      "Calcular (1+i)/(2+i) como 1/2 + (1/1)i = 0.5 + i",
+      "Dividir 3/(1−i) como 3/1 − 3/i sin usar el conjugado",
+    ],
+  },
+  {
+    id: "u1_complejo_potencia_ciclo",
+    unit: 1,
+    description:
+      "Error al aplicar el ciclo de potencias de i: no reconoce el patrón cíclico i¹=i, i²=−1, i³=−i, i⁴=1 y su repetición. Calcula iⁿ sin reducir el exponente módulo 4.",
+    examples: [
+      "Calcular i⁵ = 1 en vez de i (porque 5 mod 4 = 1 → i¹ = i)",
+      "Decir que i¹⁰ = i² = −1 en vez de i¹⁰ = i² = −1 correcto, o errar en: i⁷ = −1 en vez de −i",
+    ],
+  },
+  {
+    id: "u1_complejo_igualdad_parcial",
+    unit: 1,
+    description:
+      "Considera dos complejos iguales si solo coinciden en la parte real o solo en la imaginaria. La igualdad de complejos requiere que ambas partes coincidan: a+bi = c+di ⟺ a=c ∧ b=d.",
+    examples: [
+      "Decir que 2+5i = 2+3i 'porque la parte real es 2 en ambas'",
+      "Afirmar que 4+7i = 1+7i 'porque la parte imaginaria es igual'",
+    ],
+  },
+
   // Unit 1: Logaritmos — error tags backed by the Unit 1 SDD sequence
   // and regression coverage in src/domain/__tests__/logaritmos-domain.test.ts.
   {
