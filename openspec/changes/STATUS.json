@@ -59,9 +59,19 @@
       "summary": "Rename mat.u1.reales_operaciones -> mat.u1.propiedades_operaciones_reales to align with canonical PDF (cap. 13 'Propiedades Operaciones de Numeros reales'). Pure rename across 30 files (~210 replacements). Also fixed 3 pre-existing drift issues required by GGA: skill-catalog header count (44->45), PILOT_SKILL_UNIT_MAP type signature, and new pilot-skills.test.ts guard against reverts."
     },
     "feat-practice-attempt-timing-and-retry": {
-      "status": "in-progress",
+      "status": "done",
       "branch": null,
       "startedAt": "2026-06-10",
+      "completedAt": "2026-06-10",
+      "mergedTo": "main",
+      "mergeCommit": "6bedff1",
+      "delivery": "chained-prs-stacked-to-main (single PR per scope, then merged to main)",
+      "sizeException": {
+        "approved": true,
+        "approvedBy": "user",
+        "approvedAt": "2026-06-10",
+        "reason": "Total A4 diff (PR1: 569 + PR2: 672 = 1241 lines) exceeded 400-line budget. User needed single PR for cross-PC closure."
+      },
       "pr1": {
         "branch": "feat/practice-attempt-timing-and-retry-domain",
         "status": "merged",
@@ -71,13 +81,14 @@
       },
       "pr2": {
         "branch": "feat/practice-attempt-timing-and-retry-ui",
-        "status": "in-progress",
-        "startedAt": "2026-06-10T14:00:00-03:00",
-        "summary": "PR2 — UI + Hook: replace bridge with real timer (performance.now()) and attemptIndexByExerciseId map, add retry button + warm legend in PracticeFeedbackPhase, wire page.tsx."
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "6bedff1",
+        "summary": "PR2 — UI + Hook: replaced bridge with real performance.now() timer (started on exercise shown, not on submit) and attemptIndexByExerciseId Map. Added PracticeFeedbackPhase retry button (cap 3) and warm legend. handleRetryExercise resets form. Page.tsx wired. 48 new tests (29 hook + 19 component). GGA caught a real pedagogical bug (timer measuring 300ms eval delay instead of solving time) and it was fixed in commit ccee069 before merge."
       },
-      "summary": "Chained PRs (stacked-to-main). PR1 merged. PR2 pending. Change global remains in-progress until both PRs are merged."
+      "summary": "Resolves H-22 from Unidad 1 r2 audit. Unlocks PedagogyEvent (deferred). Total: 1241 lines diff, 52 new tests, 1117/1117 tests pass, typecheck clean, build green, GGA validated (codex provider)."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-09T18:30:00-03:00"
+  "lastAudit": "2026-06-10T15:35:00-03:00"
 }
