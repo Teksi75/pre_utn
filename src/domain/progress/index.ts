@@ -12,6 +12,14 @@ import type { Difficulty } from "../models/exercise";
  * `difficulty` is optional for backward compatibility: attempts saved before
  * WU 5 do not have this field, so loading them must still type-check.
  * New attempts created via `addAttempt()` always include it.
+ *
+ * `timeMs` is the elapsed time in milliseconds for this single attempt
+ * (measured via `performance.now()`). Required; legacy data without it is
+ * normalized to 0 by `loadProgress`. Must be >= 0.
+ *
+ * `attemptIndex` is the 1-indexed retry count for this exercise within the
+ * current browser session. Required; legacy data without it is normalized
+ * to 1 by `loadProgress`. Must be >= 1.
  */
 export interface PracticeAttempt {
   readonly exerciseId: string;
@@ -20,6 +28,8 @@ export interface PracticeAttempt {
   readonly errorTag?: string;
   readonly answeredAt: string;
   readonly difficulty?: Difficulty;
+  readonly timeMs: number;
+  readonly attemptIndex: number;
 }
 
 /**

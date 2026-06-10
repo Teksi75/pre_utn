@@ -14,7 +14,27 @@ describe("PracticeAttempt / PracticeProgress", () => {
     skillId: "mat.u1.propiedades_operaciones_reales",
     correct: true,
     answeredAt: "2026-01-15T10:00:00Z",
+    timeMs: 0,
+    attemptIndex: 1,
     ...overrides,
+  });
+
+  describe("PracticeAttempt model", () => {
+    test("has required timeMs field with default 0", () => {
+      const attempt = makeAttempt();
+      expect(attempt.timeMs).toBe(0);
+    });
+
+    test("has required attemptIndex field with default 1", () => {
+      const attempt = makeAttempt();
+      expect(attempt.attemptIndex).toBe(1);
+    });
+
+    test("allows overriding timeMs and attemptIndex", () => {
+      const attempt = makeAttempt({ timeMs: 45000, attemptIndex: 3 });
+      expect(attempt.timeMs).toBe(45000);
+      expect(attempt.attemptIndex).toBe(3);
+    });
   });
 
   describe("computeAccuracy", () => {
