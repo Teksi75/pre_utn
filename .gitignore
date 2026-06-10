@@ -31,9 +31,6 @@ pnpm-debug.log*
 .atl/
 .gga-tmp/
 
-# Canonical reference material stays local until storage policy is decided
-material_canonico/
-
 # Package manager guardrails
 package-lock.json
 yarn.lock
