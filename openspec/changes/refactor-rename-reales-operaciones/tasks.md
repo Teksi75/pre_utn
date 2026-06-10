@@ -56,9 +56,9 @@
 
 ### T8. Commit final + push
 
-- [ ] Verificar que `openspec/changes/STATUS.json` no necesita actualización (este change NO entra en `STATUS.json` hasta el merge, según convención multi-PC).
-- [ ] Push de la rama a origin (si hay remoto) o quedarse local.
-- [ ] Avisar al usuario para revisión.
+- [x] Verificar que `openspec/changes/STATUS.json` no necesita actualización — change ya mergeado, STATUS.json ya actualizado en commit 5d19b50.
+- [x] Commit de limpieza post-merge: `fix(domain): remove last reales_operaciones literal from pilot-skills test` (45ed7d0).
+- [x] Ready for verification review.
 
 ## Strict TDD
 
