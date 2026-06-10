@@ -10,6 +10,7 @@ import { evaluateExact } from "./exact";
 import { evaluateBoolean } from "./boolean";
 import { tagError } from "./error-tagging";
 import { isFiniteNumericAnswer } from "../utils/numeric";
+import { areEquivalent } from "./polynomial-evaluator";
 
 /** The result of evaluating a student's answer. */
 export interface EvaluationResult {
@@ -58,6 +59,23 @@ export function evaluateAnswer(
 
   // Dispatch to type-specific evaluator
   let result: EvaluationResult;
+
+  // Polynomial evaluator guard: U2 symbolic exercises resolve equivalence
+  // via expansion and coefficient comparison, not exact string match.
+  if (exercise.type === "symbolic" && /^mat\.u2\./.test(exercise.skillId)) {
+    const equiv = areEquivalent(exercise.expectedAnswer, userAnswer);
+    result = { correct: equiv };
+    // Polynomial evaluator result — skip type switch
+    // Fall through to error tagging if incorrect
+    if (!result.correct) {
+      const errorTag = tagError(exercise, userAnswer);
+      if (errorTag) {
+        return { ...result, errorTag };
+      }
+    }
+    return result;
+  }
+
   switch (exercise.type) {
     case "numerical":
       // Config guard: non-numeric expected answer is a content error, not a student error
