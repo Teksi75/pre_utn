@@ -105,3 +105,92 @@ The catalog MUST correct known type-answer mismatches for at least these exercis
 - GIVEN the corrected catalog
 - WHEN the catalog audit runs
 - THEN `ex.u6.ceros_positividad_negatividad.1`, `ex.u3.ecuaciones_cuadraticas.1`, and `ex.u2.gauss.1` all pass validation
+
+### Requirement: Unit 2 Exercise Coverage
+
+The catalog MUST include 12 new exercises for Unit 2, distributed evenly across 3 skills in the slice:
+
+| Skill | Count | Exercises |
+|-------|-------|-----------|
+| `mat.u2.polinomios_basico` | 4 | ex.u2.polinomios_basico.{2-5} |
+| `mat.u2.operaciones_polinomios` | 4 | ex.u2.operaciones_polinomios.{2-5} |
+| `mat.u2.ruffini_resto` | 4 | ex.u2.ruffini_resto.{2-5} |
+
+Each skill MUST include exactly: 2 multiple-choice (conceptual recognition) + 1 numerical (direct evaluation) + 1 symbolic (multi-step with structured input).
+
+#### Scenario: U2-CAT-001 — Coverage by skill
+
+- GIVEN the loaded catalog with U2 exercises
+- WHEN exercises are queried by skill
+- THEN each slice skill has exactly 4 new exercises
+
+#### Scenario: U2-CAT-002 — Type distribution
+
+- GIVEN the 12 new U2 exercises
+- WHEN grouped by type
+- THEN there are 6 multiple-choice, 3 numerical, and 3 symbolic
+
+### Requirement: Unit 2 Input Type Restriction
+
+No U2 exercise MUST use free text for polynomial expressions. Polynomial answers MUST use: rendered multiple-choice options, simple numerical input, separate numerical inputs, or math chips.
+
+#### Scenario: U2-CAT-003 — No free text for polynomials
+
+- GIVEN any U2 exercise with a polynomial answer
+- WHEN its type is inspected
+- THEN the type is NOT `free-response` nor `symbolic` with free-text polynomial expectedAnswer
+
+### Requirement: Unit 2 Exercise Concepts
+
+The 12 new exercises MUST cover the following concepts:
+
+| ID | Concept | Difficulty | Type | Expected error tags |
+|----|---------|------------|------|---------------------|
+| ex.u2.polinomios_basico.2 | Identify polynomial degree | 1 | multiple-choice | u2_grado_incorrecto |
+| ex.u2.polinomios_basico.3 | Classify monomial/binomial/trinomial | 1 | multiple-choice | u2_termino_faltante |
+| ex.u2.polinomios_basico.4 | Evaluate P(3) for P(x) = 2x² - 5x + 1 | 2 | numerical | u2_signo_operacion |
+| ex.u2.polinomios_basico.5 | Complete polynomial with zero coefficients | 3 | symbolic | u2_termino_faltante |
+| ex.u2.operaciones_polinomios.2 | Sum of two polynomials | 1 | multiple-choice | u2_signo_operacion, u2_termino_semejante |
+| ex.u2.operaciones_polinomios.3 | Subtraction of polynomials (distribute sign) | 2 | multiple-choice | u2_signo_operacion |
+| ex.u2.operaciones_polinomios.4 | Product (x-a)(x-b) → expanded form | 3 | numerical | u2_signo_operacion, u2_termino_semejante |
+| ex.u2.operaciones_polinomios.5 | Combined operation: sum + product | 4 | symbolic | u2_signo_operacion, u2_termino_semejante |
+| ex.u2.ruffini_resto.2 | Remainder via remainder theorem, divisor (x-3) | 2 | numerical | u2_ruffini_signo_a |
+| ex.u2.ruffini_resto.3 | Quotient and remainder via Ruffini | 3 | symbolic | u2_ruffini_signo_a, u2_termino_faltante |
+| ex.u2.ruffini_resto.4 | Verify if a value is a root via remainder theorem | 3 | multiple-choice | u2_ruffini_signo_a |
+| ex.u2.ruffini_resto.5 | Reconstruct polynomial from roots | 4 | symbolic | u2_signo_operacion, u2_ruffini_signo_a |
+
+#### Scenario: U2-CAT-004 — All concepts have exercises
+
+- GIVEN the U2 concept table
+- WHEN each ID is searched in the catalog
+- THEN a valid exercise exists with the stated concept, difficulty, type, and error tags
+
+### Requirement: Unit 2 Difficulty Progression
+
+Within each skill, exercises MUST have increasing difficulty (1 → 4). Each exercise MUST be solvable in under 90 seconds.
+
+#### Scenario: U2-CAT-005 — Difficulty progression
+
+- GIVEN the exercises of a U2 skill ordered by ID
+- WHEN their difficulties are inspected
+- THEN the sequence is monotonically increasing
+
+### Requirement: Unit 2 Exercise Validation
+
+Each new exercise MUST comply with: stable ID `ex.u2.<skill>.N` (N starting at 2, since .1 exists), canonical PDF reference (page/chapter in `pedagogicalNote`), at least one error tag from the `u2_*` set.
+
+#### Scenario: U2-CAT-006 — New exercise validation
+
+- GIVEN a new U2 exercise
+- WHEN validated against the schema
+- THEN it has stable ID, canonical reference, and non-empty commonErrorTags
+
+### Requirement: Relocation of ex.u2.gauss.1
+
+The exercise `ex.u2.gauss.1` (currently Gaussian elimination of systems) MUST change its `skillId` from `mat.u2.gauss` to `mat.u3.sistemas`. The ID `ex.u2.gauss.1` remains as a placeholder for a future Gauss theorem for factorization exercise.
+
+#### Scenario: U2-CAT-007 — Gauss relocated
+
+- GIVEN the updated catalog
+- WHEN `ex.u2.gauss.1` is looked up
+- THEN its skillId is `mat.u3.sistemas`
