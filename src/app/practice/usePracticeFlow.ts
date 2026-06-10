@@ -21,7 +21,7 @@ import {
 } from "./start-skill";
 import type { PracticeProgress } from "@/domain/progress/index";
 import type { SkillId } from "@/domain/models/skill";
-import type { Exercise } from "@/domain/models/exercise";
+import type { ExerciseId, Exercise } from "@/domain/models/exercise";
 import type { TheoryNode } from "@/domain/models/theory";
 import type { WorkedExample } from "@/domain/models/worked-example";
 import type { EvaluationResult } from "@/domain/evaluator/index";
@@ -32,6 +32,32 @@ import {
 } from "./previous-snapshot";
 
 export { type PreviousExerciseSnapshot, type ExerciseDraftState } from "./previous-snapshot";
+
+/** Maximum retry attempts per exercise within a single browser session. */
+const MAX_RETRY_ATTEMPTS = 3;
+
+/**
+ * Resolve the next attempt index for an exercise. Increments the existing
+ * counter or starts at 1 if the exercise has never been attempted yet.
+ * Pure function — no side effects.
+ */
+export function resolveNextAttemptIndex(
+  currentMap: ReadonlyMap<string, number>,
+  exerciseId: string,
+): number {
+  return (currentMap.get(exerciseId) ?? 0) + 1;
+}
+
+/**
+ * Whether the student can still retry this exercise within the current session.
+ * Pure function — no side effects.
+ */
+export function canRetryExercise(
+  attemptIndex: number,
+  maxAttempts: number = MAX_RETRY_ATTEMPTS,
+): boolean {
+  return attemptIndex < maxAttempts;
+}
 
 /**
  * Information about a skill the user requested via `?skill=...` that
@@ -84,6 +110,26 @@ export function usePracticeFlow() {
     setProgress(loadProgress());
   }, []);
 
+  // ---------------------------------------------------------------
+  // Retry state — session-scoped, resets on page refresh
+  // ---------------------------------------------------------------
+
+  /**
+   * Tracks the current attempt index per exercise within this browser
+   * session. 1 = first try, 2 = first retry, etc. Resets on page
+   * refresh (React state, not persisted to localStorage).
+   */
+  const [attemptIndexByExerciseId, setAttemptIndexByExerciseId] = useState<
+    Map<ExerciseId, number>
+  >(new Map());
+
+  /**
+   * Monotonic timestamp captured at answer-submit time via
+   * `performance.now()`. Used to compute elapsed time when the
+   * evaluation completes (async via setTimeout).
+   */
+  const exerciseStartTimeRef = useRef<number | null>(null);
+
   // Accessibility model for the select phase. Derived from `progress`
   // so the FocusSelector reflects the latest accuracy after a practice
   // attempt (and avoids reading localStorage during render).
@@ -124,6 +170,9 @@ export function usePracticeFlow() {
     setPreviousSnapshot(null);
     setIsViewingPreviousExercise(false);
     setCurrentAnswerDraft({ answer: "", selectedOption: null });
+    // Reset retry state — new practice session, fresh attempt counters
+    setAttemptIndexByExerciseId(new Map());
+    exerciseStartTimeRef.current = null;
   }, []);
 
   const handleSkillSelect = useCallback((skillId: SkillId) => {
@@ -132,6 +181,9 @@ export function usePracticeFlow() {
     setPreviousSnapshot(null);
     setIsViewingPreviousExercise(false);
     setCurrentAnswerDraft({ answer: "", selectedOption: null });
+    // Reset retry state for the new skill
+    setAttemptIndexByExerciseId(new Map());
+    exerciseStartTimeRef.current = null;
     const skillExercises = queryBySkill(skillId);
     setExercises(skillExercises);
     setExerciseIndex(0);
@@ -193,6 +245,7 @@ export function usePracticeFlow() {
     (answer: string) => {
       if (!currentExercise) return;
       setIsEvaluating(true);
+
       if (evaluateTimeoutRef.current !== null) {
         clearTimeout(evaluateTimeoutRef.current);
       }
@@ -216,6 +269,18 @@ export function usePracticeFlow() {
           ),
         );
 
+        // Compute elapsed time from the monotonic start timestamp
+        const elapsedMs =
+          exerciseStartTimeRef.current !== null
+            ? performance.now() - exerciseStartTimeRef.current
+            : 0;
+
+        // Compute attempt index: increment the per-exercise counter
+        const nextIdx = resolveNextAttemptIndex(
+          attemptIndexByExerciseId,
+          currentExercise.id,
+        );
+
         // Persist attempt and refresh progress so the FocusSelector
         // re-derives the accessibility map with the new accuracy.
         if (selectedSkillId) {
@@ -226,19 +291,24 @@ export function usePracticeFlow() {
             errorTag: result.errorTag,
             answeredAt: new Date().toISOString(),
             difficulty: currentExercise.difficulty,
-            // PR1 bridge: PR2 will replace these with real values from useAttemptTimer and attemptIndexByExerciseId map.
-            timeMs: 0,
-            attemptIndex: 1,
-            // TODO(PR2): populate from performance.now() and attemptIndexByExerciseId
+            timeMs: elapsedMs,
+            attemptIndex: nextIdx,
           });
           setProgress(updated);
         }
+
+        // Update the attempt index map for this exercise
+        setAttemptIndexByExerciseId((prev) => {
+          const next = new Map(prev);
+          next.set(currentExercise.id, nextIdx);
+          return next;
+        });
 
         setIsEvaluating(false);
         setPhase("feedback");
       }, 300);
     },
-    [currentExercise, feedbackMappings, selectedSkillId]
+    [currentExercise, feedbackMappings, selectedSkillId, attemptIndexByExerciseId]
   );
 
   const handleNextExercise = useCallback(() => {
@@ -251,6 +321,8 @@ export function usePracticeFlow() {
       setPhase("exercise");
       // Clear draft for the new exercise
       setCurrentAnswerDraft({ answer: "", selectedOption: null });
+      // Start the solving timer when the exercise is shown
+      exerciseStartTimeRef.current = performance.now();
     } else {
       resetToSelect();
     }
@@ -283,8 +355,28 @@ export function usePracticeFlow() {
       setCurrentExample(examples[nextIdx]);
     } else {
       setPhase("exercise");
+      exerciseStartTimeRef.current = performance.now();
     }
   }, [exampleIndex, examples]);
+
+  // ---------------------------------------------------------------
+  // Retry handler — returns to exercise phase with same exercise
+  // ---------------------------------------------------------------
+
+  /**
+   * Retry the current exercise. Resets evaluation, feedback, and answer
+   * draft, then transitions back to the exercise phase with the same
+   * currentExercise. The attemptIndex counter is NOT incremented here —
+   * it increments in handleAnswerSubmit when the student submits again.
+   */
+  const handleRetryExercise = useCallback(() => {
+    setEvaluation(null);
+    setFeedbackMsg("");
+    setCurrentAnswerDraft({ answer: "", selectedOption: null });
+    setPhase("exercise");
+    // Reset the timer for the new attempt
+    exerciseStartTimeRef.current = performance.now();
+  }, []);
 
   return {
     phase,
@@ -306,11 +398,13 @@ export function usePracticeFlow() {
     isViewingPreviousExercise,
     currentAnswerDraft,
     setCurrentAnswerDraft,
+    attemptIndexByExerciseId,
     resetToSelect,
     handleSkillSelect,
     handleNextPhase,
     handleAnswerSubmit,
     handleNextExample,
+    handleRetryExercise,
     handleContinueAfterFeedback,
     handleContinueAfterRecovery,
     viewPreviousExercise,

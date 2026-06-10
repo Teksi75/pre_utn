@@ -9,7 +9,7 @@ import { PracticeFeedbackPhase } from "@/components/practice/PracticeFeedbackPha
 import { PracticeRecoveryPhase } from "@/components/practice/PracticeRecoveryPhase";
 import { BackButton } from "@/components/ui/BackButton";
 import { Button } from "@/components/ui/Button";
-import { usePracticeFlow } from "./usePracticeFlow";
+import { usePracticeFlow, canRetryExercise } from "./usePracticeFlow";
 import { skillLabel } from "@/lib/skill-label";
 import type { SkillId } from "@/domain/models/skill";
 
@@ -145,6 +145,23 @@ export default function PracticePage() {
             isViewingPreviousExercise={flow.isViewingPreviousExercise}
             onViewPrevious={flow.viewPreviousExercise}
             onReturnToCurrent={flow.returnToCurrentExercise}
+            onRetry={flow.handleRetryExercise}
+            attemptIndex={
+              flow.currentExercise
+                ? (flow.attemptIndexByExerciseId.get(
+                    flow.currentExercise.id,
+                  ) ?? 1)
+                : 1
+            }
+            canRetry={
+              flow.currentExercise
+                ? canRetryExercise(
+                    (flow.attemptIndexByExerciseId.get(
+                      flow.currentExercise.id,
+                    ) ?? 0) + 1,
+                  )
+                : true
+            }
           />
         </ViewTransition>
       )}
