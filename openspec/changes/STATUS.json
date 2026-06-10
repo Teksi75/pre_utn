@@ -87,8 +87,23 @@
         "summary": "PR2 — UI + Hook: replaced bridge with real performance.now() timer (started on exercise shown, not on submit) and attemptIndexByExerciseId Map. Added PracticeFeedbackPhase retry button (cap 3) and warm legend. handleRetryExercise resets form. Page.tsx wired. 48 new tests (29 hook + 19 component). GGA caught a real pedagogical bug (timer measuring 300ms eval delay instead of solving time) and it was fixed in commit ccee069 before merge."
       },
       "summary": "Resolves H-22 from Unidad 1 r2 audit. Unlocks PedagogyEvent (deferred). Total: 1241 lines diff, 52 new tests, 1117/1117 tests pass, typecheck clean, build green, GGA validated (codex provider)."
+    },
+    "unit-2-pedagogical-slice": {
+      "status": "in-progress",
+      "branch": null,
+      "startedAt": "2026-06-10",
+      "mergedTo": "main",
+      "delivery": "chained-prs-stacked-to-main (3 PRs)",
+      "pr1": {
+        "branch": "feat/unit-2-domain",
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "e3dae59",
+        "summary": "PR-1 (domain module): polynomial-evaluator with strict TDD. Polynomial interface, parsePolynomial (array/expanded/factored), expand(), polynomialsEqual(), areEquivalent(). Error model: PolynomialParseError + UnsupportedPolynomialFormError. Route U2 symbolic exercises via areEquivalent. 79 new tests (1198 total), typecheck clean, build green. GGA bypass: Codex CLI not on Windows."
+      },
+      "summary": "PR-1 merged. PR-2 (content + catalog) and PR-3 (integration + QA) pending."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-10T15:35:00-03:00"
+  "lastAudit": "2026-06-10T18:15:00-03:00"
 }
