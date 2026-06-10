@@ -269,6 +269,8 @@ describe("createStudyPlan", () => {
         correct: false,
         errorTag: "u1_orden_operaciones",
         answeredAt: "2025-06-01T10:00:00.000Z",
+        timeMs: 5000,
+        attemptIndex: 1,
       },
       {
         exerciseId: "ex.u1.cn.03",
@@ -276,6 +278,8 @@ describe("createStudyPlan", () => {
         correct: false,
         errorTag: "u1_tipo_conjunto",
         answeredAt: "2025-06-01T10:05:00.000Z",
+        timeMs: 5000,
+        attemptIndex: 1,
       },
     ];
 

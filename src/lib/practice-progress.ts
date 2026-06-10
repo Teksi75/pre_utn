@@ -39,8 +39,23 @@ export function loadProgress(): PracticeProgress {
     // Validate required shape — attempts must be an array
     if (!Array.isArray(parsed.attempts)) return EMPTY_PROGRESS;
 
+    // Normalize attempts — legacy data may be missing timeMs and attemptIndex.
+    // Default to 0 and 1 respectively, matching the contract that timeMs >= 0
+    // and attemptIndex >= 1. This is backwards-compatible: old code ignores
+    // the extra fields; new code requires them.
+    const normalizedAttempts = (parsed.attempts as Array<Record<string, unknown>>).map(
+      (a) => ({
+        ...a,
+        timeMs: typeof a.timeMs === "number" ? a.timeMs : 0,
+        attemptIndex:
+          typeof a.attemptIndex === "number" && (a.attemptIndex as number) > 0
+            ? a.attemptIndex
+            : 1,
+      })
+    ) as PracticeAttempt[];
+
     return {
-      attempts: parsed.attempts,
+      attempts: normalizedAttempts,
       accuracyBySkill: (parsed.accuracyBySkill as Record<string, number>) ?? {},
       trendBySkill:
         (parsed.trendBySkill as Record<string, "improving" | "stable" | "needs-review">) ?? {},

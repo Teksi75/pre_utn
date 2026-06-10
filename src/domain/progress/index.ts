@@ -12,6 +12,14 @@ import type { Difficulty } from "../models/exercise";
  * `difficulty` is optional for backward compatibility: attempts saved before
  * WU 5 do not have this field, so loading them must still type-check.
  * New attempts created via `addAttempt()` always include it.
+ *
+ * `timeMs` is the elapsed time in milliseconds for this single attempt
+ * (measured via `performance.now()`). Required; legacy data without it is
+ * normalized to 0 by `loadProgress`. Must be >= 0.
+ *
+ * `attemptIndex` is the 1-indexed retry count for this exercise within the
+ * current browser session. Required; legacy data without it is normalized
+ * to 1 by `loadProgress`. Must be >= 1.
  */
 export interface PracticeAttempt {
   readonly exerciseId: string;
@@ -20,6 +28,8 @@ export interface PracticeAttempt {
   readonly errorTag?: string;
   readonly answeredAt: string;
   readonly difficulty?: Difficulty;
+  readonly timeMs: number;
+  readonly attemptIndex: number;
 }
 
 /**
@@ -57,15 +67,42 @@ export type MasteryLevel =
   | "review"
   | "mastered";
 
-/** Thresholds used by `computeMasteryLevel`. Pure constants — kept here so
- *  tests can assert against them if needed. */
+/** Thresholds used by `computeMasteryLevel`. `MASTERY_MIN_ATTEMPTS` counts
+ *  unique exercises (after deduplication by last attempt per exerciseId),
+ *  not total submits. Retries on the same exercise do not inflate the count. */
 const MASTERY_ACCURACY_THRESHOLD = 0.8;
 const MASTERY_MIN_ATTEMPTS = 5;
 const PRACTICING_ACCURACY_THRESHOLD = 0.7;
 
 /**
+ * Keep only the last attempt (highest attemptIndex) per exerciseId.
+ * Used by computeAccuracy, computeTrend, and computeMasteryLevel to
+ * deduplicate retries — accuracy should measure comprehension
+ * (did the student eventually understand?), not persistence
+ * (how many times did they try?).
+ *
+ * @param attempts - All practice attempts for a skill
+ * @returns Deduplicated attempts (one per exerciseId)
+ */
+export function deduplicateByLastAttempt(
+  attempts: readonly PracticeAttempt[]
+): PracticeAttempt[] {
+  const byExercise = new Map<string, PracticeAttempt>();
+  for (const a of attempts) {
+    const existing = byExercise.get(a.exerciseId);
+    if (!existing || a.attemptIndex > existing.attemptIndex) {
+      byExercise.set(a.exerciseId, a);
+    }
+  }
+  return [...byExercise.values()];
+}
+
+/**
  * Compute accuracy for a given skill from a list of attempts.
- * Returns 0 if no matching attempts exist.
+ * Deduplicates by last attempt per exerciseId (accuracy measures
+ * comprehension, not persistence). Excludes attempts with invalid
+ * timing (< 100ms or > 10min) as those indicate timer bugs or
+ * abandoned tabs.
  *
  * @param attempts - All practice attempts
  * @param skillId - Skill to filter by
@@ -75,7 +112,9 @@ export function computeAccuracy(
   attempts: readonly PracticeAttempt[],
   skillId: SkillId
 ): number {
-  const filtered = attempts.filter((a) => a.skillId === skillId);
+  const filtered = deduplicateByLastAttempt(
+    attempts.filter((a) => a.skillId === skillId)
+  ).filter((a) => a.timeMs >= 100 && a.timeMs <= 600_000);
   if (filtered.length === 0) return 0;
   const correct = filtered.filter((a) => a.correct).length;
   return correct / filtered.length;
@@ -83,8 +122,9 @@ export function computeAccuracy(
 
 /**
  * Compute trend for a given skill from a list of attempts.
- * Compares accuracy of the second half vs first half.
- * Returns 'stable' for fewer than 4 attempts.
+ * Compares accuracy of the second half vs first half after
+ * deduplicating by last attempt per exerciseId. Returns 'stable'
+ * for fewer than 4 unique valid attempts.
  *
  * @param attempts - All practice attempts (should be ordered chronologically)
  * @param skillId - Skill to filter by
@@ -94,7 +134,9 @@ export function computeTrend(
   attempts: readonly PracticeAttempt[],
   skillId: SkillId
 ): Trend {
-  const filtered = attempts.filter((a) => a.skillId === skillId);
+  const filtered = deduplicateByLastAttempt(
+    attempts.filter((a) => a.skillId === skillId)
+  ).filter((a) => a.timeMs >= 100 && a.timeMs <= 600_000);
   if (filtered.length < 4) return "stable";
 
   const mid = Math.floor(filtered.length / 2);
@@ -134,7 +176,9 @@ export function computeMasteryLevel(
   skillId: string,
   progress: PracticeProgress
 ): MasteryLevel {
-  const attempts = progress.attempts.filter((a) => a.skillId === skillId);
+  const attempts = deduplicateByLastAttempt(
+    progress.attempts.filter((a) => a.skillId === skillId)
+  );
   if (attempts.length === 0) return "not-started";
 
   const accuracy = progress.accuracyBySkill[skillId] ?? 0;

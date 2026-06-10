@@ -44,6 +44,8 @@ function progressWithAttempts(
       skillId,
       correct: i < correctCount,
       answeredAt: `2026-01-01T10:${String(i).padStart(2, "0")}:00Z`,
+      timeMs: 5000,
+      attemptIndex: 1,
     });
   }
   const accuracy = totalCount > 0 ? correctCount / totalCount : 0;
