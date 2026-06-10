@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { PolynomialParseError, UnsupportedPolynomialFormError } from "../evaluator/polynomial-types";
-import { parsePolynomial } from "../evaluator/polynomial-evaluator";
+import { parsePolynomial, expand, polynomialsEqual, areEquivalent } from "../evaluator/polynomial-evaluator";
 import type { Polynomial } from "../evaluator/polynomial-types";
 
 describe("Polynomial type", () => {
@@ -287,5 +287,104 @@ describe("parsePolynomial — error model (U2-POLY-006, U2-POLY-007)", () => {
       const err = e as UnsupportedPolynomialFormError;
       expect(err.formType).toBeTruthy();
     }
+  });
+});
+
+// ============================================================================
+// Task 1.5: expand to canonical coefficient form
+// ============================================================================
+
+describe("expand — canonical form (U2-POLY-004)", () => {
+  test("expand is idempotent on already-expanded polynomial", () => {
+    const poly = parsePolynomial("2x^2 - 5x + 1");
+    const expanded = expand(poly);
+
+    expect(expanded.coefficients).toEqual([2, -5, 1]);
+  });
+
+  test("expand normalizes factored polynomial", () => {
+    const poly = parsePolynomial("(x-2)(x-3)");
+    const expanded = expand(poly);
+
+    expect(expanded.coefficients).toEqual([1, -5, 6]);
+  });
+
+  test("expand on constant polynomial returns itself", () => {
+    const poly = parsePolynomial("42");
+    const expanded = expand(poly);
+
+    expect(expanded.coefficients).toEqual([42]);
+  });
+
+  test("expand strips leading zeros", () => {
+    const poly = parsePolynomial([0, 1, 0]);
+    const expanded = expand(poly);
+
+    expect(expanded.coefficients).toEqual([1, 0]);
+  });
+
+  test("double expand is idempotent", () => {
+    const poly = parsePolynomial("(x-2)(x+3)");
+    const once = expand(poly);
+    const twice = expand(once);
+
+    expect(twice.coefficients).toEqual(once.coefficients);
+  });
+});
+
+// ============================================================================
+// Task 1.6: polynomialsEqual + areEquivalent
+// ============================================================================
+
+describe("polynomialsEqual (U2-POLY-010)", () => {
+  test("identical polynomials are equal", () => {
+    const a = parsePolynomial("2x^2 - 5x + 1");
+    const b = parsePolynomial("2x^2 - 5x + 1");
+
+    expect(polynomialsEqual(a, b)).toBe(true);
+  });
+
+  test("polynomials with different coefficients are not equal", () => {
+    const a = parsePolynomial("x^2 + x - 6");
+    const b = parsePolynomial("x^2 + x + 6");
+
+    expect(polynomialsEqual(a, b)).toBe(false);
+  });
+
+  test("polynomials with different degrees are not equal", () => {
+    const a = parsePolynomial("x^2 + 1");
+    const b = parsePolynomial("x^3 + 1");
+
+    expect(polynomialsEqual(a, b)).toBe(false);
+  });
+
+  test("polynomials equal regardless of leading zeros (normalized)", () => {
+    const a = parsePolynomial([1, 2, 3]);
+    const b = parsePolynomial([0, 1, 2, 3]); // normalized to [1, 2, 3]
+
+    expect(polynomialsEqual(a, b)).toBe(true);
+  });
+});
+
+describe("areEquivalent — string-based equivalence (U2-POLY-004, U2-POLY-005)", () => {
+  test("(x-2)(x+3) is equivalent to x^2 + x - 6", () => {
+    expect(areEquivalent("(x-2)(x+3)", "x^2 + x - 6")).toBe(true);
+  });
+
+  test("x^2 + x - 6 is NOT equivalent to x^2 + x + 6", () => {
+    expect(areEquivalent("x^2 + x - 6", "x^2 + x + 6")).toBe(false);
+  });
+
+  test("factored form is equivalent regardless of factor order", () => {
+    expect(areEquivalent("(x-2)(x+3)", "(x+3)(x-2)")).toBe(true);
+  });
+
+  test("coefficient array is equivalent to expanded string", () => {
+    // [1, -5, 6] is x² - 5x + 6
+    expect(areEquivalent([1, -5, 6], "x^2 - 5x + 6")).toBe(true);
+  });
+
+  test("non-equivalent polynomials return false", () => {
+    expect(areEquivalent("x^2", "x")).toBe(false);
   });
 });

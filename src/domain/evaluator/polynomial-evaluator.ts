@@ -349,3 +349,58 @@ export function parsePolynomial(input: string | readonly number[]): Polynomial {
   // Expanded form
   return parseExpanded(trimmed, trimmed);
 }
+
+/**
+ * Expand a polynomial to canonical coefficient form.
+ * Returns a new Polynomial with normalized coefficients (stripped leading zeros).
+ * Idempotent: expand(expand(p)) === expand(p).
+ *
+ * @param p - The polynomial to expand
+ * @returns A normalized Polynomial
+ */
+export function expand(p: Polynomial): Polynomial {
+  // Already in canonical form — just re-normalize
+  return fromCoefficients(p.coefficients, p.variable);
+}
+
+/**
+ * Compare two Polynomial objects for equality by their coefficient arrays.
+ * Leading-zero-stripped polynomials with identical coefficient arrays are equal.
+ *
+ * @param a - First polynomial
+ * @param b - Second polynomial
+ * @returns true if both polynomials have the same normalized coefficients
+ */
+export function polynomialsEqual(a: Polynomial, b: Polynomial): boolean {
+  const ac = stripLeadingZeros(a.coefficients);
+  const bc = stripLeadingZeros(b.coefficients);
+
+  if (ac.length !== bc.length) {
+    return false;
+  }
+
+  for (let i = 0; i < ac.length; i++) {
+    if (ac[i] !== bc[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Determine whether two polynomial inputs (strings or coefficient arrays)
+ * represent equivalent polynomials by normalizing both to canonical form.
+ *
+ * @param a - First input (string or coefficient array)
+ * @param b - Second input (string or coefficient array)
+ * @returns true if both inputs represent equivalent polynomials
+ */
+export function areEquivalent(
+  a: string | readonly number[],
+  b: string | readonly number[]
+): boolean {
+  const pa = parsePolynomial(a);
+  const pb = parsePolynomial(b);
+  return polynomialsEqual(pa, pb);
+}
