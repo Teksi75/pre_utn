@@ -8,6 +8,7 @@
  */
 
 import type { Exercise } from "../models/exercise";
+import { getExerciseOptionValue } from "../models/exercise";
 
 /** Tags that represent sign-related misconceptions. */
 const SIGN_ERROR_TAGS = new Set([
@@ -343,7 +344,7 @@ function isU2RuffiniSignoAError(exercise: Exercise, userAnswer: string): boolean
 
   // The student answer should be in the options list (a declared distractor)
   const options = exercise.options ?? [];
-  return options.some((opt) => opt.trim() === student);
+  return options.some((opt) => getExerciseOptionValue(opt).trim() === student);
 }
 
 /**

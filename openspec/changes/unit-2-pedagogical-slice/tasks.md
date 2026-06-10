@@ -298,10 +298,9 @@ Chain strategy: stacked-to-main
 - **Type:** tests
 - **Files:** NEW: `src/domain/__tests__/exercises-u2-shape.test.ts`
 - **Steps:**
-  1. Write tests: 12 exercises exist, unique IDs, type distribution (6 MC + 3 num + 3 sym), difficulty progression per skill, no free-text, commonErrorTags non-empty, gauss.1 relocated.
-  2. All tests must pass against content from tasks 2.6–2.9.
-- **Done when:** `pnpm run test -- exercises-u2-shape` green
-- **Estimated lines:** ~50
+  1. Write tests: 12 exercises exist, unique IDs, type distribution, difficulty progression per skill, no free-text, commonErrorTags non-empty, gauss.1 relocated. ✅
+  2. All tests must pass against content from tasks 2.6–2.9. ✅
+- **Done when:** `pnpm run test -- exercises-u2-shape` green ✅ (12/12)
 
 ---
 
