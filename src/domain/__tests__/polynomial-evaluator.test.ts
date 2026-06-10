@@ -1,5 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { PolynomialParseError, UnsupportedPolynomialFormError } from "../evaluator/polynomial-types";
+import { parsePolynomial } from "../evaluator/polynomial-evaluator";
 import type { Polynomial } from "../evaluator/polynomial-types";
 
 describe("Polynomial type", () => {
@@ -66,5 +67,225 @@ describe("Polynomial interface shape", () => {
 
     expect(poly.coefficients).toEqual([0]);
     expect(poly.coefficients).toHaveLength(1);
+  });
+});
+
+// ============================================================================
+// Task 1.2: parsePolynomial — coefficient array form
+// ============================================================================
+
+describe("parsePolynomial — array form (U2-POLY-003)", () => {
+  test("parses [1, 0, -4] as 1*x² + 0*x − 4", () => {
+    const result = parsePolynomial([1, 0, -4]);
+
+    expect(result.coefficients).toEqual([1, 0, -4]);
+    expect(result.variable).toBe("x");
+  });
+
+  test("parses constant polynomial [5] as degree 0", () => {
+    const result = parsePolynomial([5]);
+
+    expect(result.coefficients).toEqual([5]);
+    expect(result.variable).toBe("x");
+  });
+
+  test("U2-POLY-009: strips leading zeros (normalization)", () => {
+    const result = parsePolynomial([0, 0, 3, 1]);
+
+    expect(result.coefficients).toEqual([3, 1]);
+  });
+
+  test("parses [0] as zero polynomial", () => {
+    const result = parsePolynomial([0]);
+
+    expect(result.coefficients).toEqual([0]);
+  });
+
+  test("parses single-element array [-2] as constant", () => {
+    const result = parsePolynomial([-2]);
+
+    expect(result.coefficients).toEqual([-2]);
+  });
+});
+
+// ============================================================================
+// Task 1.3: parsePolynomial — expanded monomial form
+// ============================================================================
+
+describe("parsePolynomial — expanded form (U2-POLY-001)", () => {
+  test("parses 2x^2 - 5x + 1", () => {
+    const result = parsePolynomial("2x^2 - 5x + 1");
+
+    expect(result.coefficients).toEqual([2, -5, 1]);
+    expect(result.variable).toBe("x");
+  });
+
+  test("parses x^2 + x - 6 (implicit coefficient 1)", () => {
+    const result = parsePolynomial("x^2 + x - 6");
+
+    expect(result.coefficients).toEqual([1, 1, -6]);
+  });
+
+  test("parses -3x + 1 (negative leading coefficient)", () => {
+    const result = parsePolynomial("-3x + 1");
+
+    expect(result.coefficients).toEqual([-3, 1]);
+  });
+
+  test("parses x (linear monomial)", () => {
+    const result = parsePolynomial("x");
+
+    expect(result.coefficients).toEqual([1, 0]);
+  });
+
+  test("parses 42 (constant)", () => {
+    const result = parsePolynomial("42");
+
+    expect(result.coefficients).toEqual([42]);
+  });
+
+  test("parses 0 (zero polynomial)", () => {
+    const result = parsePolynomial("0");
+
+    expect(result.coefficients).toEqual([0]);
+  });
+
+  test("parses x^2 (no linear or constant term)", () => {
+    const result = parsePolynomial("x^2");
+
+    expect(result.coefficients).toEqual([1, 0, 0]);
+  });
+
+  test("parses with unicode minus sign −x^2 + 3", () => {
+    const result = parsePolynomial("−x^2 + 3");
+
+    expect(result.coefficients).toEqual([-1, 0, 3]);
+  });
+
+  test("parses -x (negative linear)", () => {
+    const result = parsePolynomial("-x");
+
+    expect(result.coefficients).toEqual([-1, 0]);
+  });
+
+  test("parses 3x^3 - 2x^2 + 0x - 7 with explicit zero coefficient", () => {
+    const result = parsePolynomial("3x^3 - 2x^2 + 0x - 7");
+
+    expect(result.coefficients).toEqual([3, -2, 0, -7]);
+  });
+
+  test("parses polynomial with spacing variations", () => {
+    const result = parsePolynomial("  2x^2   -   5x   +   1  ");
+
+    expect(result.coefficients).toEqual([2, -5, 1]);
+  });
+});
+
+// ============================================================================
+// Task 1.4: parsePolynomial — factored form
+// ============================================================================
+
+describe("parsePolynomial — factored form (U2-POLY-002)", () => {
+  test("parses (x-2)(x+3) as x² + x − 6", () => {
+    const result = parsePolynomial("(x-2)(x+3)");
+
+    expect(result.coefficients).toEqual([1, 1, -6]);
+  });
+
+  test("parses (x-1)(x-1) as x² − 2x + 1 (repeated root)", () => {
+    const result = parsePolynomial("(x-1)(x-1)");
+
+    expect(result.coefficients).toEqual([1, -2, 1]);
+  });
+
+  test("parses (x+2)(x-3)(x+1) as product of three binomials", () => {
+    const result = parsePolynomial("(x+2)(x-3)(x+1)");
+
+    // (x+2)(x-3) = x² - x - 6; (x² - x - 6)(x+1) = x³ - 7x - 6
+    expect(result.coefficients).toEqual([1, 0, -7, -6]);
+  });
+
+  test("parses (x-2)(x+3) irrespective of factor order (commutativity)", () => {
+    const result = parsePolynomial("(x+3)(x-2)");
+
+    expect(result.coefficients).toEqual([1, 1, -6]);
+  });
+
+  test("parses 2(x-1)(x+1) with constant factor", () => {
+    const result = parsePolynomial("2(x-1)(x+1)");
+
+    // (x-1)(x+1) = x² - 1; 2 * [1, 0, -1] = [2, 0, -2]
+    expect(result.coefficients).toEqual([2, 0, -2]);
+  });
+
+  test("parses (x) as linear factor", () => {
+    const result = parsePolynomial("(x)");
+
+    expect(result.coefficients).toEqual([1, 0]);
+  });
+
+  test("parses (x-0)(x+0) as x²", () => {
+    const result = parsePolynomial("(x-0)(x+0)");
+
+    expect(result.coefficients).toEqual([1, 0, 0]);
+  });
+});
+
+// ============================================================================
+// Task 1.8: Error model — parse errors + unsupported forms
+// ============================================================================
+
+describe("parsePolynomial — error model (U2-POLY-006, U2-POLY-007)", () => {
+  test("throws PolynomialParseError for invalid token '*'", () => {
+    expect(() => parsePolynomial("x^2 + *3")).toThrow(PolynomialParseError);
+    try {
+      parsePolynomial("x^2 + *3");
+    } catch (e) {
+      expect(e).toBeInstanceOf(PolynomialParseError);
+      const err = e as PolynomialParseError;
+      expect(err.position).toBeGreaterThan(0);
+      expect(err.reason).toBeTruthy();
+    }
+  });
+
+  test("throws UnsupportedPolynomialFormError for multivariate x*y + 3", () => {
+    expect(() => parsePolynomial("x*y + 3")).toThrow(UnsupportedPolynomialFormError);
+    try {
+      parsePolynomial("x*y + 3");
+    } catch (e) {
+      expect(e).toBeInstanceOf(UnsupportedPolynomialFormError);
+      const err = e as UnsupportedPolynomialFormError;
+      expect(err.formType).toBe("multivariate");
+    }
+  });
+
+  test("throws PolynomialParseError for empty string", () => {
+    expect(() => parsePolynomial("")).toThrow(PolynomialParseError);
+  });
+
+  test("throws UnsupportedPolynomialFormError for sin(x) + 1 (transcendental)", () => {
+    expect(() => parsePolynomial("sin(x) + 1")).toThrow(UnsupportedPolynomialFormError);
+    try {
+      parsePolynomial("sin(x) + 1");
+    } catch (e) {
+      expect(e).toBeInstanceOf(UnsupportedPolynomialFormError);
+      const err = e as UnsupportedPolynomialFormError;
+      expect(err.formType).toBeTruthy();
+    }
+  });
+
+  test("throws PolynomialParseError for syntax error: x^2 +", () => {
+    expect(() => parsePolynomial("x^2 +")).toThrow(PolynomialParseError);
+  });
+
+  test("throws UnsupportedPolynomialFormError for x^(1/2) (rational exponent)", () => {
+    expect(() => parsePolynomial("x^(1/2) + 1")).toThrow(UnsupportedPolynomialFormError);
+    try {
+      parsePolynomial("x^(1/2) + 1");
+    } catch (e) {
+      expect(e).toBeInstanceOf(UnsupportedPolynomialFormError);
+      const err = e as UnsupportedPolynomialFormError;
+      expect(err.formType).toBeTruthy();
+    }
   });
 });
