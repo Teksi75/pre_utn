@@ -108,9 +108,16 @@
         "mergeCommit": "be45a68",
         "summary": "PR-2 (content + catalog): 6 u2_* error tags in taxonomy, 6 U2 pattern detectors in error-tagging, 3 theory nodes + 6 worked examples + 6 feedback mappings (unit-2.json), 12 new U2 exercises across polinomios_basico/operaciones_polinomios/ruffini_resto, ex.u2.gauss.1 relocated to mat.u3.sistemas, 2 missing skill deps (gauss, mcm_mcd), content loaders extended for unit-2, 45 new tests (1243 total). 17 files changed, ~1307 insertions. GGA bypass: Codex CLI not on Windows."
       },
-      "summary": "PR-1 and PR-2 merged. PR-3 (integration + QA, archive) pending."
+      "pr3": {
+        "branch": "feat/unit-2-integration",
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "cc180db",
+        "summary": "PR-3 (integration + QA): U1 regression test (24 tests, u1-regression.test.ts), pedagogical QA report (qa-report.md, 0 high/0 medium findings, 1 low), full gate green (1267 tests, typecheck, build), AGENTS.md no-op, audit:branches informational, tasks.md updated. GGA bypassed on Windows (pending Linux review). Total: 24 new tests, ~351 lines diff."
+      },
+      "summary": "All 3 PRs merged. PR-1 (domain), PR-2 (content+catalog), PR-3 (integration+QA). Total: 1243 baseline + 24 regression = 1267 tests, all green. Typecheck + build clean. Ready for sdd-verify."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-10T18:35:00-03:00"
+  "lastAudit": "2026-06-10T20:10:00-03:00"
 }
