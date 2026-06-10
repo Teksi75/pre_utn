@@ -57,6 +57,8 @@ describe("practice-progress localStorage adapter", () => {
             skillId: "mat.u1.propiedades_operaciones_reales",
             correct: true,
             answeredAt: "2025-01-01T00:00:00.000Z",
+            timeMs: 0,
+            attemptIndex: 1,
           },
         ],
         accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 1 },
@@ -256,6 +258,8 @@ describe("practice-progress localStorage adapter", () => {
             correct: false,
             errorTag: "u1_error_intervalo",
             answeredAt: "2025-01-01T00:00:00.000Z",
+            timeMs: 0,
+            attemptIndex: 1,
           },
         ],
         accuracyBySkill: { "mat.u1.intervalos": 0 },
@@ -295,6 +299,8 @@ describe("practice-progress localStorage adapter", () => {
             skillId: "mat.u1.propiedades_operaciones_reales",
             correct: true,
             answeredAt: "2025-01-01T00:00:00.000Z",
+            timeMs: 5000,
+            attemptIndex: 1,
           },
         ],
         accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 1 },
@@ -311,6 +317,8 @@ describe("practice-progress localStorage adapter", () => {
         correct: false,
         errorTag: "u1_orden_operaciones",
         answeredAt: "2025-01-01T01:00:00.000Z",
+        timeMs: 3000,
+        attemptIndex: 1,
       });
 
       expect(updated.attempts).toHaveLength(2);
@@ -332,6 +340,8 @@ describe("practice-progress localStorage adapter", () => {
         skillId: "mat.u1.intervalos",
         correct: true,
         answeredAt: "2025-01-01T00:00:00.000Z",
+        timeMs: 5000,
+        attemptIndex: 1,
       });
 
       expect(updated.attempts).toHaveLength(1);
@@ -354,6 +364,8 @@ describe("practice-progress localStorage adapter", () => {
         skillId: "mat.u1.propiedades_operaciones_reales",
         correct: true,
         answeredAt: "2025-01-01T00:00:00.000Z",
+        timeMs: 0,
+        attemptIndex: 1,
       });
 
       const loaded = loadProgress();
@@ -376,6 +388,8 @@ describe("practice-progress localStorage adapter", () => {
         correct: true,
         answeredAt: "2025-01-01T00:00:00.000Z",
         difficulty: 4,
+        timeMs: 0,
+        attemptIndex: 1,
       });
 
       const loaded = loadProgress();
@@ -398,6 +412,8 @@ describe("practice-progress localStorage adapter", () => {
         correct: true,
         answeredAt: "2025-03-15T08:00:00.000Z",
         difficulty: 2,
+        timeMs: 0,
+        attemptIndex: 1,
       });
 
       expect(updated.lastPracticedBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(
@@ -421,6 +437,8 @@ describe("practice-progress localStorage adapter", () => {
         correct: false,
         answeredAt: "2025-02-01T00:00:00.000Z",
         difficulty: 3,
+        timeMs: 0,
+        attemptIndex: 1,
       });
 
       expect(updated.lastPracticedBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(
@@ -450,6 +468,8 @@ describe("practice-progress localStorage adapter", () => {
         correct: true,
         answeredAt: "2025-02-01T00:00:00.000Z",
         difficulty: 1,
+        timeMs: 0,
+        attemptIndex: 1,
       });
 
       expect(updated.diagnosticResult).toEqual(diag);
