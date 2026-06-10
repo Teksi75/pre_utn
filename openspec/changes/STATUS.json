@@ -112,7 +112,7 @@
         "branch": "feat/unit-2-integration",
         "status": "merged",
         "mergedTo": "main",
-        "mergeCommit": "cc180db",
+        "mergeCommit": "1464f07",
         "summary": "PR-3 (integration + QA): U1 regression test (24 tests, u1-regression.test.ts), pedagogical QA report (qa-report.md, 0 high/0 medium findings, 1 low), full gate green (1267 tests, typecheck, build), AGENTS.md no-op, audit:branches informational, tasks.md updated. GGA bypassed on Windows (pending Linux review). Total: 24 new tests, ~351 lines diff."
       },
       "summary": "All 3 PRs merged. PR-1 (domain), PR-2 (content+catalog), PR-3 (integration+QA). Total: 1243 baseline + 24 regression = 1267 tests, all green. Typecheck + build clean. Ready for sdd-verify."
