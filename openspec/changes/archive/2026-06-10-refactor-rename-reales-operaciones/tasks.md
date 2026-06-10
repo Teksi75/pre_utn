@@ -52,7 +52,7 @@
 - [x] `pnpm run test:run` pasa con 0 failures (62 files, 1040 tests).
 - [x] `pnpm run typecheck` pasa.
 - [x] `pnpm run build` pasa.
-- [ ] Inspeccionar visualmente el diff de `content/matematica/exercises.json` para confirmar que solo `id` y `skillId` cambiaron, no el contenido pedagógico.
+- [x] Inspeccionar visualmente el diff de `content/matematica/exercises.json` para confirmar que solo `id` y `skillId` cambiaron, no el contenido pedagógico. — Confirmed via git show e3850e9 (verify-report line 14). Stale checkbox reconciled during archive per orchestrator instruction.
 
 ### T8. Commit final + push
 
