@@ -1,0 +1,38 @@
+[
+  {
+    "errorTag": "u2_signo_operacion",
+    "type": "corrective",
+    "message": "Revisá los signos al operar con polinomios. Cuando restás P(x) − Q(x), cada término de Q(x) cambia de signo: −(−3) = +3, y −(+4x) = −4x. El error más frecuente es olvidar distribuir el signo negativo a todos los términos del segundo polinomio.",
+    "recoveryTarget": "example-operaciones-polinomios-1"
+  },
+  {
+    "errorTag": "u2_termino_semejante",
+    "type": "corrective",
+    "message": "Solo se pueden sumar o restar términos que tienen exactamente la misma parte literal (misma variable y mismo exponente). 3x² y 2x NO son semejantes: uno tiene x² y el otro x. No los combines como si fueran 5x² o 5x³. Agrupá por grado: los x² con los x², los x con los x, y los números solos entre sí.",
+    "recoveryTarget": "example-operaciones-polinomios-1"
+  },
+  {
+    "errorTag": "u2_ruffini_signo_a",
+    "type": "corrective",
+    "message": "Cuidado con el signo al aplicar Ruffini o el teorema del resto. Si el divisor es (x − a), se evalúa en x = a. Si es (x + a), se evalúa en x = −a, porque (x + a) = (x − (−a)). Siempre escribí el divisor como (x − a) antes de identificar el valor que va en la caja de Ruffini.",
+    "recoveryTarget": "example-ruffini-resto-1"
+  },
+  {
+    "errorTag": "u2_grado_incorrecto",
+    "type": "conceptual",
+    "message": "El grado de un polinomio es el MAYOR exponente de la variable con coeficiente distinto de cero, NO la cantidad de términos. En 3x⁴ + 2x² − 1 hay tres términos pero el grado es 4 (por el término 3x⁴). Tampoco se suman los exponentes: el grado no es 4+2=6.",
+    "recoveryTarget": "example-polinomios-basico-1"
+  },
+  {
+    "errorTag": "u2_termino_faltante",
+    "type": "procedural",
+    "message": "Al dividir polinomios (especialmente con Ruffini), tenés que incluir TODOS los grados desde el mayor hasta el término constante. Si falta algún grado intermedio, escribí 0 como coeficiente. Por ejemplo, para x³ − 1, los coeficientes son [1, 0, 0, −1] (hay ceros para x² y x).",
+    "recoveryTarget": "example-ruffini-resto-2"
+  },
+  {
+    "errorTag": "u2_factorizacion_incompleta",
+    "type": "corrective",
+    "message": "Tu factorización no está completa todavía. Después de sacar factor común, revisá si lo que queda dentro del paréntesis se puede seguir factoreando. Por ejemplo, x² − 1 se puede escribir como (x−1)(x+1) por diferencia de cuadrados. La factorización debe continuar hasta que ningún factor pueda descomponerse más.",
+    "recoveryTarget": "example-operaciones-polinomios-2"
+  }
+]

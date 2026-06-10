@@ -201,23 +201,21 @@ Chain strategy: stacked-to-main
 - **Type:** content data
 - **Files:** NEW: `content/matematica/theory/unit-2.json` (3 TheoryNodes)
 - **Steps:**
-  1. Create 3 TheoryNodes: `polinomios_basico` (caps 1-8), `operaciones_polinomios` (cap 9), `ruffini_resto` (caps 10-11).
-  2. Each node: `skillId`, `concepts[]`, `canonicalTrace` referencing PDF pages.
-  3. Verify JSON schema matches U1 theory format.
+  1. Create 3 TheoryNodes: `polinomios_basico` (caps 1-8), `operaciones_polinomios` (cap 9), `ruffini_resto` (caps 10-11). ✅
+  2. Each node: `skillId`, `conceptBlocks[]`, `canonicalTrace` referencing PDF pages. ✅
+  3. Verify JSON schema matches U1 theory format. ✅
 - **Done when:** JSON valid; `loadTheoryContent("unit-2")` returns 3 nodes
-- **Estimated lines:** ~80
 
 ### Task 2.4: Worked examples — unit-2.json
 
 - **Spec:** U2-CAT-006 (partial)
 - **Type:** content data
-- **Files:** NEW: `content/matematica/examples/unit-2.json` (4-6 WorkedExamples)
+- **Files:** NEW: `content/matematica/examples/unit-2.json` (6 WorkedExamples)
 - **Steps:**
-  1. Create ≥5 WorkedExamples: valor numérico, suma/resta, multiplicación, Ruffini, teorema del resto, división larga (worked only).
-  2. Each: `skillId`, `solutionSteps[]`, `canonicalTrace`.
-  3. Verify JSON schema matches U1 examples format.
+  1. Create 6 WorkedExamples: grado+coeficientes, valor numérico, resta, multiplicación, teorema del resto, Ruffini completo. ✅
+  2. Each: `skillId`, `solutionSteps[]`, `canonicalTrace`. ✅
+  3. Verify JSON schema matches U1 examples format. ✅
 - **Done when:** JSON valid; `loadExampleContent("unit-2")` returns ≥5 examples
-- **Estimated lines:** ~70
 
 ### Task 2.5: Feedback mappings — unit-2.json
 
@@ -225,10 +223,9 @@ Chain strategy: stacked-to-main
 - **Type:** content data
 - **Files:** NEW: `content/matematica/feedback/unit-2.json` (6 FeedbackMappings)
 - **Steps:**
-  1. Create 1 FeedbackMapping per `u2_*` tag: `errorTag`, `type: "corrective"`, `message`, `recoveryTarget`.
-  2. Verify JSON schema matches U1 feedback format.
+  1. Create 1 FeedbackMapping per `u2_*` tag: `errorTag`, `type: "corrective"`, `message`, `recoveryTarget`. ✅
+  2. Verify JSON schema matches U1 feedback format. ✅
 - **Done when:** JSON valid; `loadFeedbackContent("unit-2")` returns 6 mappings
-- **Estimated lines:** ~40
 
 ### Task 2.6: Exercises — polinomios_basico (4 new)
 
