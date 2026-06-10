@@ -89,10 +89,12 @@
       "summary": "Resolves H-22 from Unidad 1 r2 audit. Unlocks PedagogyEvent (deferred). Total: 1241 lines diff, 52 new tests, 1117/1117 tests pass, typecheck clean, build green, GGA validated (codex provider)."
     },
     "unit-2-pedagogical-slice": {
-      "status": "in-progress",
+      "status": "done",
       "branch": null,
       "startedAt": "2026-06-10",
+      "completedAt": "2026-06-10",
       "mergedTo": "main",
+      "mergeCommit": "1464f07",
       "delivery": "chained-prs-stacked-to-main (3 PRs)",
       "pr1": {
         "branch": "feat/unit-2-domain",
@@ -115,9 +117,9 @@
         "mergeCommit": "1464f07",
         "summary": "PR-3 (integration + QA): U1 regression test (24 tests, u1-regression.test.ts), pedagogical QA report (qa-report.md, 0 high/0 medium findings, 1 low), full gate green (1267 tests, typecheck, build), AGENTS.md no-op, audit:branches informational, tasks.md updated. GGA bypassed on Windows (pending Linux review). Total: 24 new tests, ~351 lines diff."
       },
-      "summary": "All 3 PRs merged. PR-1 (domain), PR-2 (content+catalog), PR-3 (integration+QA). Total: 1243 baseline + 24 regression = 1267 tests, all green. Typecheck + build clean. Ready for sdd-verify."
+      "summary": "3-skill slice (polinomios_basico, operaciones_polinomios, ruffini_resto) + 12 exercises + 6 u2_* error tags + polynomial-evaluator module + content JSON + skill deps + gauss.1 relocation. 3 chained PRs (350 + 480 + 100 lines diff), 148 new tests (1119→1267), 0 CRITICAL findings in verify, 2 WARNING (GGA pending Linux review, pre-existing zombie branch out of scope). Ready for U2-Factorización slice next."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-10T20:10:00-03:00"
+  "lastAudit": "2026-06-10T22:30:00-03:00"
 }
