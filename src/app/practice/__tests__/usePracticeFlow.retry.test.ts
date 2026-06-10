@@ -274,4 +274,66 @@ describe("usePracticeFlow hook structure (source assertions)", () => {
     // Look for setAttemptIndexByExerciseId(new Map()) or = new Map()
     expect(src).toMatch(/setAttemptIndexByExerciseId\(/);
   });
+
+  // ---------------------------------------------------------------------------
+  // GGA-detected bug fix: exerciseStartTimeRef must be set when exercise is
+  // SHOWN, not when answer is submitted. The bug measured the 300ms evaluation
+  // delay instead of the student's solving time.
+  // ---------------------------------------------------------------------------
+
+  it("sets exerciseStartTimeRef in handleNextExercise (exercise shown)", () => {
+    const src = hookSource();
+    // handleNextExercise must set the timer AFTER setCurrentExercise
+    const handleNextEx = src.slice(
+      src.indexOf("const handleNextExercise"),
+      src.indexOf("}, [exerciseIndex, exercises, resetToSelect]"),
+    );
+    // The timer should be set in this function
+    expect(handleNextEx).toMatch(/exerciseStartTimeRef\.current\s*=\s*performance\.now\(\)/);
+  });
+
+  it("sets exerciseStartTimeRef in handleNextExample → exercise phase", () => {
+    const src = hookSource();
+    // handleNextExample must set the timer when transitioning to exercise phase
+    const handleNextEx = src.slice(
+      src.indexOf("const handleNextExample"),
+      src.indexOf("}, [exampleIndex, examples]"),
+    );
+    // The timer should be set near setPhase("exercise")
+    expect(handleNextEx).toMatch(/exerciseStartTimeRef\.current\s*=\s*performance\.now\(\)/);
+  });
+
+  it("sets exerciseStartTimeRef in handleRetryExercise", () => {
+    const src = hookSource();
+    // handleRetryExercise must reset the timer
+    const handleRetry = src.slice(
+      src.indexOf("const handleRetryExercise"),
+      src.indexOf("}, []);", src.indexOf("const handleRetryExercise")),
+    );
+    expect(handleRetry).toMatch(/exerciseStartTimeRef\.current\s*=\s*performance\.now\(\)/);
+  });
+
+  it("does NOT set exerciseStartTimeRef inside handleAnswerSubmit", () => {
+    const src = hookSource();
+    // handleAnswerSubmit should NOT set the timer — it was moved to
+    // handleNextExercise, handleNextExample, and handleRetryExercise.
+    // Extract the region from handleAnswerSubmit definition to the end of
+    // its dependency array (which is on a separate indented line).
+    const submitStart = src.indexOf("const handleAnswerSubmit");
+    const depsStart = src.indexOf(
+      "[currentExercise, feedbackMappings, selectedSkillId, attemptIndexByExerciseId]",
+      submitStart,
+    );
+    const depsEnd = depsStart !== -1
+      ? src.indexOf("\n", depsStart) !== -1
+        ? src.indexOf("\n", depsStart)
+        : src.length
+      : src.length;
+    const handleSubmit = src.slice(submitStart, depsEnd);
+    // handleAnswerSubmit must NOT assign to exerciseStartTimeRef.
+    // (The only performance.now() calls should be for elapsedMs computation
+    // inside the setTimeout, not for starting the timer.)
+    const assignments = handleSubmit.match(/exerciseStartTimeRef\.current\s*=\s*performance\.now\(\)/g);
+    expect(assignments).toBeNull();
+  });
 });

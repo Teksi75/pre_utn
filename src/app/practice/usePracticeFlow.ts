@@ -246,11 +246,6 @@ export function usePracticeFlow() {
       if (!currentExercise) return;
       setIsEvaluating(true);
 
-      // Start the monotonic timer BEFORE the artificial 300ms delay.
-      // This captures the time from submit click to evaluation result
-      // (the delay is UI polish, not part of learning time).
-      exerciseStartTimeRef.current = performance.now();
-
       if (evaluateTimeoutRef.current !== null) {
         clearTimeout(evaluateTimeoutRef.current);
       }
@@ -326,6 +321,8 @@ export function usePracticeFlow() {
       setPhase("exercise");
       // Clear draft for the new exercise
       setCurrentAnswerDraft({ answer: "", selectedOption: null });
+      // Start the solving timer when the exercise is shown
+      exerciseStartTimeRef.current = performance.now();
     } else {
       resetToSelect();
     }
@@ -358,6 +355,7 @@ export function usePracticeFlow() {
       setCurrentExample(examples[nextIdx]);
     } else {
       setPhase("exercise");
+      exerciseStartTimeRef.current = performance.now();
     }
   }, [exampleIndex, examples]);
 
