@@ -110,3 +110,86 @@ The evaluator MUST be a pure function: given the same exercise and student answe
 - GIVEN a test file importing only from `src/domain/evaluator`
 - WHEN the test runs via `pnpm run test`
 - THEN it passes without importing React, Next.js, or browser APIs
+
+### Requirement: Pluggable Polynomial Evaluator
+
+When an exercise declares `evaluatorId: "polynomial"` (or its type is `symbolic` and the skill belongs to U2), the evaluator MUST delegate comparison to `polynomial-evaluator`. For exercises without this identifier, it MUST use the existing evaluation chain unchanged.
+
+#### Scenario: U2-EVAL-001 — Routing to polynomial-evaluator
+
+- GIVEN an exercise with `evaluatorId: "polynomial"` and expectedAnswer `"(x-2)(x+3)"`
+- WHEN the student answers `"x^2 + x - 6"`
+- THEN the result is `correct: true` (equivalence by expansion)
+
+#### Scenario: U2-EVAL-002 — Routing by U2 skill
+
+- GIVEN a `symbolic` exercise whose skillId is `mat.u2.operaciones_polinomios`
+- WHEN the student answers a polynomial expression
+- THEN evaluation uses `polynomial-evaluator` for comparison
+
+#### Scenario: U2-EVAL-003 — Fallback for exercises without polynomial
+
+- GIVEN a `numerical` U2 exercise without `evaluatorId: "polynomial"`
+- WHEN the student answers
+- THEN the existing evaluation chain (numeric) is used
+
+### Requirement: Unit 2 Error Tagging
+
+When a U2 answer is incorrect, `error-tagging.ts` MUST attempt to match against the `u2_*` patterns defined in the taxonomy. Matching MUST respect the existing contract: only tag if the exercise declares the tag in `commonErrorTags`.
+
+#### Scenario: U2-EVAL-004 — U2 error tag assigned
+
+- GIVEN a U2 exercise with `commonErrorTags: ["u2_signo_operacion"]`
+- WHEN the student answers with inverted sign in a coefficient
+- THEN the result includes `errorTag: "u2_signo_operacion"`
+
+#### Scenario: U2-EVAL-005 — U2 error tag not declared
+
+- GIVEN a U2 exercise without `u2_ruffini_signo_a` in `commonErrorTags`
+- WHEN the student makes the Ruffini sign error
+- THEN the result is incorrect WITHOUT error tag
+
+### Requirement: Polynomial Equivalence Rules
+
+The polynomial evaluator MUST apply these equivalence rules:
+
+| Rule | Example |
+|------|---------|
+| Expanded ≡ factored | `(x-2)(x-3) ≡ x² - 5x + 6` |
+| Sign flip | `-P(x) ≡ 0 - P(x)` |
+| Integer scaling | `2·P(x) ≡ P(x) + P(x)` |
+| Factor commutativity | `(x-2)(x+3) ≡ (x+3)(x-2)` |
+
+The evaluator MUST reject: `1/0`, undefined forms, negative root under even index.
+
+#### Scenario: U2-EVAL-006 — Factor commutativity
+
+- GIVEN expectedAnswer `"(x-2)(x+3)"` and response `"(x+3)(x-2)"`
+- WHEN evaluated
+- THEN the result is `correct: true`
+
+#### Scenario: U2-EVAL-007 — Undefined form rejected
+
+- GIVEN a response containing division by zero
+- WHEN attempting to parse
+- THEN `PolynomialParseError` or `UnsupportedPolynomialFormError` is thrown
+
+### Requirement: Telemetry Compatibility
+
+Each U2 evaluation MUST emit the same telemetry as U1: `evaluationTimeMs`, `errorTags` (if incorrect), `partialCredit` (if applicable). The `EvaluationResult` format MUST NOT change.
+
+#### Scenario: U2-EVAL-008 — Consistent telemetry
+
+- GIVEN a U2 evaluation
+- WHEN the result is inspected
+- THEN it includes the same fields as a U1 evaluation
+
+### Requirement: Unit 1 Regression Safety
+
+U1 evaluators MUST NOT be modified. A regression test MUST exist that runs all U1 evaluator tests on the new build and confirms they still pass.
+
+#### Scenario: U2-EVAL-009 — U1 regression
+
+- GIVEN the full U1 evaluator test suite
+- WHEN executed after U2 changes
+- THEN all U1 tests pass without modifications
