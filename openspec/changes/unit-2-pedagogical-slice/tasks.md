@@ -190,11 +190,10 @@ Chain strategy: stacked-to-main
   - MODIFY: `src/domain/evaluator/error-tagging.ts` (+6 `isU2*Error` functions + tag sets)
   - NEW: `src/domain/__tests__/evaluator-error-tagging-u2.test.ts`
 - **Steps:**
-  1. RED: write 12 tests (2 per tag: positive match + negative when not declared). Must fail.
-  2. GREEN: implement 6 pattern functions + dispatch in `tagError()`. Tests pass.
-  3. REFACTOR: extract shared helpers if patterns overlap.
-- **Done when:** `pnpm run test -- evaluator-error-tagging-u2` green
-- **Estimated lines:** ~50 (code) + ~60 (tests) = ~110
+  1. RED: write 14 tests (2+ per tag: positive match + negative when not declared). Must fail. ✅
+  2. GREEN: implement 6 pattern functions + dispatch in `tagError()`. Tests pass. ✅
+  3. REFACTOR: superscript normalization for degree extraction. ✅
+- **Done when:** `pnpm run test -- evaluator-error-tagging-u2` green ✅ (14/14)
 
 ### Task 2.3: Theory content — unit-2.json
 
