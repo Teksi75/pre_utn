@@ -141,6 +141,10 @@ export default function PracticePage() {
             hasNextExercise={flow.exerciseIndex + 1 < flow.exercises.length}
             onContinue={flow.handleContinueAfterFeedback}
             onBack={flow.resetToSelect}
+            previousSnapshot={flow.previousSnapshot}
+            isViewingPreviousExercise={flow.isViewingPreviousExercise}
+            onViewPrevious={flow.viewPreviousExercise}
+            onReturnToCurrent={flow.returnToCurrentExercise}
           />
         </ViewTransition>
       )}

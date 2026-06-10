@@ -78,7 +78,7 @@ export function PracticeExercisePhase({
                   onClick={onReturnToCurrent}
                   className={prevButtonClassName}
                 >
-                  ← Volver al ejercicio actual
+                  Volver al ejercicio actual →
                 </button>
               )}
             </div>
@@ -106,7 +106,7 @@ export function PracticeExercisePhase({
                   onClick={onViewPrevious}
                   className={prevButtonClassName}
                 >
-                  Ver anterior →
+                  ← Volver al enunciado
                 </button>
               )}
             </div>
