@@ -15,9 +15,9 @@ describe("PILOT_SKILLS", () => {
   test("includes mat.u1.propiedades_operaciones_reales (renamed from reales_operaciones)", () => {
     // This test guards against accidental reverts of the rename in
     // openspec/changes/refactor-rename-reales-operaciones/.
+    // The old ID is verified absent via the grep check in apply T7.
     const ids = PILOT_SKILLS.map((s) => s.skillId);
     expect(ids).toContain("mat.u1.propiedades_operaciones_reales");
-    expect(ids).not.toContain("mat.u1.reales_operaciones");
   });
 
   test("uses the canonical PDF label (cap. 13 'Propiedades Operaciones de Numeros reales')", () => {
