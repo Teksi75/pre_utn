@@ -474,5 +474,89 @@ describe("practice-progress localStorage adapter", () => {
 
       expect(updated.diagnosticResult).toEqual(diag);
     });
+
+    // T1.8: persistence of timing and retry fields
+    it("persists timeMs and attemptIndex when present in addAttempt", () => {
+      saveProgress({
+        attempts: [],
+        accuracyBySkill: {},
+        trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      });
+
+      const updated = addAttempt({
+        exerciseId: "ex.u1.01",
+        skillId: "mat.u1.propiedades_operaciones_reales",
+        correct: true,
+        answeredAt: "2025-02-01T00:00:00.000Z",
+        timeMs: 45000,
+        attemptIndex: 2,
+      });
+
+      expect(updated.attempts).toHaveLength(1);
+      expect(updated.attempts[0].timeMs).toBe(45000);
+      expect(updated.attempts[0].attemptIndex).toBe(2);
+    });
+
+    it("addAttempt with default timeMs: 0 and attemptIndex: 1 works", () => {
+      saveProgress({
+        attempts: [],
+        accuracyBySkill: {},
+        trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      });
+
+      const updated = addAttempt({
+        exerciseId: "ex.u1.01",
+        skillId: "mat.u1.intervalos",
+        correct: false,
+        answeredAt: "2025-01-01T00:00:00.000Z",
+        timeMs: 0,
+        attemptIndex: 1,
+      });
+
+      expect(updated.attempts).toHaveLength(1);
+      expect(updated.attempts[0].timeMs).toBe(0);
+      expect(updated.attempts[0].attemptIndex).toBe(1);
+    });
+
+    it("normalizes partially migrated data (some attempts with fields, some without)", () => {
+      // Simulate data where some attempts have the new fields and some don't
+      const mixedData = {
+        attempts: [
+          {
+            exerciseId: "ex.u1.01",
+            skillId: "mat.u1.propiedades_operaciones_reales",
+            correct: true,
+            answeredAt: "2025-01-01T00:00:00.000Z",
+            timeMs: 5000,
+            attemptIndex: 2,
+          },
+          {
+            exerciseId: "ex.u1.02",
+            skillId: "mat.u1.propiedades_operaciones_reales",
+            correct: false,
+            answeredAt: "2025-01-01T01:00:00.000Z",
+          },
+        ],
+        accuracyBySkill: {},
+        trendBySkill: {},
+      };
+      localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(mixedData));
+
+      const result = loadProgress();
+
+      expect(result.attempts).toHaveLength(2);
+      // First attempt preserves its values
+      expect(result.attempts[0].timeMs).toBe(5000);
+      expect(result.attempts[0].attemptIndex).toBe(2);
+      // Second attempt is normalized to defaults
+      expect(result.attempts[1].timeMs).toBe(0);
+      expect(result.attempts[1].attemptIndex).toBe(1);
+    });
   });
 });
