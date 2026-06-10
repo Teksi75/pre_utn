@@ -10,6 +10,39 @@ import type { Exercise } from "@/domain/models/exercise";
 import type { EvaluationResult } from "@/domain/evaluator/index";
 import type { PreviousExerciseSnapshot } from "@/app/practice/previous-snapshot";
 
+// ---------------------------------------------------------------------------
+// Pure render-decision helpers (tested, no side effects)
+// ---------------------------------------------------------------------------
+
+/**
+ * Whether the retry button should be rendered in the feedback phase.
+ * Requires: wrong answer + under the attempt cap + a handler is wired.
+ */
+export function shouldShowRetryButton(
+  correct: boolean,
+  canRetry: boolean,
+  hasOnRetry: boolean,
+): boolean {
+  return !correct && canRetry && hasOnRetry;
+}
+
+/**
+ * Whether the warm legend (gentle nudge to move on) should appear.
+ * Shown when the student is wrong AND has exhausted the retry cap.
+ */
+export function shouldShowWarmLegend(
+  correct: boolean,
+  canRetry: boolean,
+): boolean {
+  return !correct && !canRetry;
+}
+
+/** Exact text per spec — do not paraphrase. */
+export const WARM_LEGEND_TEXT =
+  "Parecés estar con la cabeza en otro lado. Pasemos al siguiente y volvé a este después si querés.";
+
+// ---------------------------------------------------------------------------
+
 interface PracticeFeedbackPhaseProps {
   exercise: Exercise;
   skillId?: string;
@@ -27,6 +60,13 @@ interface PracticeFeedbackPhaseProps {
   onViewPrevious?: () => void;
   /** Return to the feedback view from the previous view. */
   onReturnToCurrent?: () => void;
+  // ── PR2: retry support ───────────────────────────────────────────
+  /** Handler to retry the current exercise (resets to exercise phase). */
+  onRetry?: () => void;
+  /** 1-indexed attempt counter for the current exercise (1 = first try). */
+  attemptIndex?: number;
+  /** Whether the student is still within the retry cap for this exercise. */
+  canRetry?: boolean;
 }
 
 const prevButtonClassName =
@@ -40,6 +80,10 @@ const prevButtonClassName =
  * When the answer is incorrect, a "← Volver al enunciado" button lets the
  * student review the previous exercise submission without leaving the
  * feedback context.
+ *
+ * PR2: Adds a "Reintentar este ejercicio" button (secondary) when the
+ * answer is wrong and the retry cap hasn't been reached. When the cap IS
+ * reached, shows a warm legend nudging the student to advance.
  */
 export function PracticeFeedbackPhase({
   exercise,
@@ -54,12 +98,22 @@ export function PracticeFeedbackPhase({
   isViewingPreviousExercise = false,
   onViewPrevious,
   onReturnToCurrent,
+  onRetry,
+  attemptIndex = 1,
+  canRetry = true,
 }: PracticeFeedbackPhaseProps) {
   const continueLabel = hasErrorTag
     ? "Ver guía de recuperación →"
     : hasNextExercise
       ? "Siguiente ejercicio"
       : "Volver a selección";
+
+  const showRetry = shouldShowRetryButton(
+    evaluation.correct,
+    canRetry,
+    Boolean(onRetry),
+  );
+  const showLegend = shouldShowWarmLegend(evaluation.correct, canRetry);
 
   return (
     <MathWatermark skillId={skillId} variant="card" opacity={0.12}>
@@ -119,6 +173,23 @@ export function PracticeFeedbackPhase({
               errorTag={evaluation.errorTag}
               feedback={feedback}
             />
+
+            {/* Retry button — shown when answer is wrong, cap not reached */}
+            {showRetry && (
+              <Button variant="secondary" onClick={onRetry} className="w-full">
+                Reintentar este ejercicio
+              </Button>
+            )}
+
+            {/* Warm legend — shown when answer is wrong AND cap reached */}
+            {showLegend && (
+              <div
+                role="status"
+                className="rounded-[var(--radius-card)] border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 shadow-[var(--shadow-card)]"
+              >
+                <p>{WARM_LEGEND_TEXT}</p>
+              </div>
+            )}
 
             <Button variant="secondary" onClick={onContinue} className="w-full">
               {continueLabel}
