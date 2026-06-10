@@ -276,11 +276,10 @@ Chain strategy: stacked-to-main
   - MODIFY: `src/domain/models/skill-catalog.ts` (+2 entries in SKILL_DEPENDENCIES)
   - NEW: `src/domain/__tests__/skill-catalog-u2-deps.test.ts`
 - **Steps:**
-  1. RED: write tests asserting gauss←ruffini_resto, mcm_mcd←factorizacion, no cycles, mcm_mcd not ready. Must fail.
-  2. GREEN: add 2 dependency entries. Tests pass.
-  3. REFACTOR: verify chain linearity.
-- **Done when:** `pnpm run test -- skill-catalog-u2-deps` green
-- **Estimated lines:** ~5 (data) + ~30 (tests) = ~35
+  1. RED: write tests asserting gauss←ruffini_resto, mcm_mcd←factorizacion, no cycles. Must fail. ✅
+  2. GREEN: add 2 dependency entries. Tests pass. ✅
+  3. REFACTOR: verify chain linearity. ✅
+- **Done when:** `pnpm run test -- skill-catalog-u2-deps` green ✅ (8/8)
 
 ### Task 2.11: Content loaders — register unit-2
 
