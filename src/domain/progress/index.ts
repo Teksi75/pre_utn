@@ -74,6 +74,29 @@ const MASTERY_MIN_ATTEMPTS = 5;
 const PRACTICING_ACCURACY_THRESHOLD = 0.7;
 
 /**
+ * Keep only the last attempt (highest attemptIndex) per exerciseId.
+ * Used by computeAccuracy, computeTrend, and computeMasteryLevel to
+ * deduplicate retries — accuracy should measure comprehension
+ * (did the student eventually understand?), not persistence
+ * (how many times did they try?).
+ *
+ * @param attempts - All practice attempts for a skill
+ * @returns Deduplicated attempts (one per exerciseId)
+ */
+export function deduplicateByLastAttempt(
+  attempts: readonly PracticeAttempt[]
+): PracticeAttempt[] {
+  const byExercise = new Map<string, PracticeAttempt>();
+  for (const a of attempts) {
+    const existing = byExercise.get(a.exerciseId);
+    if (!existing || a.attemptIndex > existing.attemptIndex) {
+      byExercise.set(a.exerciseId, a);
+    }
+  }
+  return [...byExercise.values()];
+}
+
+/**
  * Compute accuracy for a given skill from a list of attempts.
  * Returns 0 if no matching attempts exist.
  *

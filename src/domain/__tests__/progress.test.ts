@@ -3,6 +3,7 @@ import {
   computeAccuracy,
   computeTrend,
   computeMasteryLevel,
+  deduplicateByLastAttempt,
   type PracticeAttempt,
   type PracticeProgress,
 } from "../progress/index";
@@ -34,6 +35,43 @@ describe("PracticeAttempt / PracticeProgress", () => {
       const attempt = makeAttempt({ timeMs: 45000, attemptIndex: 3 });
       expect(attempt.timeMs).toBe(45000);
       expect(attempt.attemptIndex).toBe(3);
+    });
+  });
+
+  describe("deduplicateByLastAttempt", () => {
+    test("returns only last attempt per exercise (highest attemptIndex)", () => {
+      const attempts = [
+        makeAttempt({ exerciseId: "ex.1", attemptIndex: 1, correct: false }),
+        makeAttempt({ exerciseId: "ex.1", attemptIndex: 2, correct: false }),
+        makeAttempt({ exerciseId: "ex.1", attemptIndex: 3, correct: true }),
+      ];
+      const result = deduplicateByLastAttempt(attempts);
+      expect(result).toHaveLength(1);
+      expect(result[0].attemptIndex).toBe(3);
+      expect(result[0].correct).toBe(true);
+    });
+
+    test("preserves one attempt per distinct exerciseId", () => {
+      const attempts = [
+        makeAttempt({ exerciseId: "ex.A", attemptIndex: 1, correct: true }),
+        makeAttempt({ exerciseId: "ex.A", attemptIndex: 2, correct: false }),
+        makeAttempt({ exerciseId: "ex.B", attemptIndex: 1, correct: true }),
+      ];
+      const result = deduplicateByLastAttempt(attempts);
+      expect(result).toHaveLength(2);
+      // ex.A: last attempt is attemptIndex 2 (correct: false)
+      const a = result.find((r) => r.exerciseId === "ex.A")!;
+      expect(a.attemptIndex).toBe(2);
+      expect(a.correct).toBe(false);
+      // ex.B: only one attempt (correct: true)
+      const b = result.find((r) => r.exerciseId === "ex.B")!;
+      expect(b.attemptIndex).toBe(1);
+      expect(b.correct).toBe(true);
+    });
+
+    test("returns empty array for empty input", () => {
+      const result = deduplicateByLastAttempt([]);
+      expect(result).toHaveLength(0);
     });
   });
 
