@@ -85,6 +85,38 @@ describe("Boolean evaluator", () => {
     });
   });
 
+  describe("Spanish expected values", () => {
+    test("Verdadero expected, Verdadero answered", () => {
+      const result = evaluateBoolean("Verdadero", "Verdadero");
+      expect(result.correct).toBe(true);
+    });
+
+    test("Verdadero expected, Falso answered", () => {
+      const result = evaluateBoolean("Verdadero", "Falso");
+      expect(result.correct).toBe(false);
+    });
+
+    test("Falso expected, Falso answered", () => {
+      const result = evaluateBoolean("Falso", "Falso");
+      expect(result.correct).toBe(true);
+    });
+
+    test("Falso expected, Verdadero answered", () => {
+      const result = evaluateBoolean("Falso", "Verdadero");
+      expect(result.correct).toBe(false);
+    });
+
+    test("Verdadero expected accepts v alias", () => {
+      const result = evaluateBoolean("Verdadero", "v");
+      expect(result.correct).toBe(true);
+    });
+
+    test("Falso expected accepts f alias", () => {
+      const result = evaluateBoolean("Falso", "f");
+      expect(result.correct).toBe(true);
+    });
+  });
+
   describe("empty answer", () => {
     test("empty answer is incorrect", () => {
       const result = evaluateBoolean("true", "");

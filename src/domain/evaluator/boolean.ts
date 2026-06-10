@@ -37,7 +37,7 @@ export function evaluateBoolean(expected: string, student: string): BooleanResul
     return { correct: false };
   }
 
-  const expectedBool = expected.trim().toLowerCase() === "true";
+  const expectedBool = TRUE_ALIASES.has(expected.trim().toLowerCase());
   const studentBool = TRUE_ALIASES.has(trimmed);
 
   // If student answer is not a recognized boolean alias, it's incorrect
