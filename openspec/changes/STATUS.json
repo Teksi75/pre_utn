@@ -57,6 +57,13 @@
       "mergedTo": "main",
       "mergeCommit": "75b2b3d",
       "summary": "Rename mat.u1.reales_operaciones -> mat.u1.propiedades_operaciones_reales to align with canonical PDF (cap. 13 'Propiedades Operaciones de Numeros reales'). Pure rename across 30 files (~210 replacements). Also fixed 3 pre-existing drift issues required by GGA: skill-catalog header count (44->45), PILOT_SKILL_UNIT_MAP type signature, and new pilot-skills.test.ts guard against reverts."
+    },
+    "feat-practice-attempt-timing-and-retry": {
+      "status": "in-progress",
+      "branch": "feat/practice-attempt-timing-and-retry-domain",
+      "startedAt": "2026-06-10",
+      "pr": 1,
+      "summary": "PR1 — Domain + Persistence: extend PracticeAttempt with timeMs + attemptIndex, dedupe compute functions, migration tests."
     }
   },
   "activeBranches": [],
