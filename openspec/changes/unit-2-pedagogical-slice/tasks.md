@@ -289,13 +289,10 @@ Chain strategy: stacked-to-main
   - MODIFY: `src/domain/catalog/content-loaders.ts` (import + register unit-2 JSON)
   - MODIFY: `src/domain/__tests__/content-loaders.test.ts` (+unit-2 tests)
 - **Steps:**
-  1. RED: write tests for `loadTheoryContent("unit-2")`, `loadExampleContent("unit-2")`, `loadFeedbackContent("unit-2")`, `loadExercisesForSkill` for 3 U2 skills. Must fail.
-  2. GREEN: add static imports + REGISTRY entries. Tests pass.
-  3. REFACTOR: no changes needed.
-- **Done when:** `pnpm run test -- content-loaders` green
-- **Estimated lines:** ~15 (code) + ~30 (tests) = ~45
-
-### Task 2.12: Exercise shape validation tests
+  1. RED: write tests for `loadTheoryContent("unit-2")`, `loadExampleContent("unit-2")`, `loadFeedbackContent("unit-2")`, `loadExercisesForSkill` for 3 U2 skills. Must fail. ✅
+  2. GREEN: add static imports + REGISTRY entries. Tests pass. ✅
+  3. REFACTOR: no changes needed. ✅
+- **Done when:** `pnpm run test -- content-loaders` green ✅ (17/17)
 
 - **Spec:** U2-CAT-001 through U2-CAT-007
 - **Type:** tests
