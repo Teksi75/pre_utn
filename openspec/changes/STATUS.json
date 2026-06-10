@@ -71,7 +71,8 @@
       },
       "pr2": {
         "branch": "feat/practice-attempt-timing-and-retry-ui",
-        "status": "pending",
+        "status": "in-progress",
+        "startedAt": "2026-06-10T14:00:00-03:00",
         "summary": "PR2 — UI + Hook: replace bridge with real timer (performance.now()) and attemptIndexByExerciseId map, add retry button + warm legend in PracticeFeedbackPhase, wire page.tsx."
       },
       "summary": "Chained PRs (stacked-to-main). PR1 merged. PR2 pending. Change global remains in-progress until both PRs are merged."
