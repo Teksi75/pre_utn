@@ -118,6 +118,65 @@ describe("practice-progress localStorage adapter", () => {
       expect(result.lastPracticedBySkill).toEqual({});
       expect(result.diagnosticResult).toBeNull();
       expect(result.studyPlan).toBeNull();
+
+      // T1.2: timeMs and attemptIndex normalized for legacy data
+      expect(result.attempts[0].timeMs).toBe(0);
+      expect(result.attempts[0].attemptIndex).toBe(1);
+    });
+
+    it("normalizes legacy attempts missing timeMs and attemptIndex", () => {
+      // Data from before feat-practice-attempt-timing-and-retry
+      const oldData = {
+        attempts: [
+          {
+            exerciseId: "ex.u1.01",
+            skillId: "mat.u1.propiedades_operaciones_reales",
+            correct: true,
+            answeredAt: "2024-12-01T00:00:00.000Z",
+          },
+          {
+            exerciseId: "ex.u1.02",
+            skillId: "mat.u1.propiedades_operaciones_reales",
+            correct: false,
+            answeredAt: "2024-12-01T01:00:00.000Z",
+          },
+        ],
+        accuracyBySkill: {},
+        trendBySkill: {},
+      };
+      localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(oldData));
+
+      const result = loadProgress();
+
+      expect(result.attempts).toHaveLength(2);
+      expect(result.attempts[0].timeMs).toBe(0);
+      expect(result.attempts[0].attemptIndex).toBe(1);
+      expect(result.attempts[1].timeMs).toBe(0);
+      expect(result.attempts[1].attemptIndex).toBe(1);
+    });
+
+    it("preserves timeMs and attemptIndex when already present", () => {
+      const stored = {
+        attempts: [
+          {
+            exerciseId: "ex.u1.01",
+            skillId: "mat.u1.propiedades_operaciones_reales",
+            correct: true,
+            answeredAt: "2025-01-01T00:00:00.000Z",
+            timeMs: 5000,
+            attemptIndex: 3,
+          },
+        ],
+        accuracyBySkill: {},
+        trendBySkill: {},
+      };
+      localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(stored));
+
+      const result = loadProgress();
+
+      expect(result.attempts).toHaveLength(1);
+      expect(result.attempts[0].timeMs).toBe(5000);
+      expect(result.attempts[0].attemptIndex).toBe(3);
     });
 
     it("preserves stored values for new fields when present", () => {
