@@ -226,6 +226,10 @@ export function usePracticeFlow() {
             errorTag: result.errorTag,
             answeredAt: new Date().toISOString(),
             difficulty: currentExercise.difficulty,
+            // PR1 bridge: PR2 will replace these with real values from useAttemptTimer and attemptIndexByExerciseId map.
+            timeMs: 0,
+            attemptIndex: 1,
+            // TODO(PR2): populate from performance.now() and attemptIndexByExerciseId
           });
           setProgress(updated);
         }
