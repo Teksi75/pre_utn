@@ -177,11 +177,10 @@ Chain strategy: stacked-to-main
   - MODIFY: `src/domain/error-taxonomy/index.ts` (+6 entries)
   - MODIFY: `src/domain/__tests__/error-taxonomy.test.ts` (+assertions for u2_* tags)
 - **Steps:**
-  1. RED: add tests asserting 6 `u2_*` tags exist with metadata, no duplicates, filterable by unit 2. Must fail.
-  2. GREEN: add 6 tag entries to TAXONOMY array. Tests pass.
-  3. REFACTOR: verify tag ordering and descriptions.
-- **Done when:** `pnpm run test -- error-taxonomy` green
-- **Estimated lines:** ~40 (data) + ~25 (tests) = ~65
+  1. RED: add tests asserting 6 `u2_*` tags exist with metadata, no duplicates, filterable by unit 2. Must fail. ✅
+  2. GREEN: add 6 tag entries to TAXONOMY array. Tests pass. ✅
+  3. REFACTOR: verify tag ordering and descriptions. ✅
+- **Done when:** `pnpm run test -- error-taxonomy` green ✅ (16/16)
 
 ### Task 2.2: U2 error tagging patterns
 

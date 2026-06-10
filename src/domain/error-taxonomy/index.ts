@@ -638,6 +638,68 @@ const TAXONOMY: readonly ErrorTag[] = [
     ],
   },
 
+  // Unit 2: Polynomial errors (cap 1-11, UNIDAD2_matemática.pdf)
+  {
+    id: "u2_signo_operacion",
+    unit: 2,
+    description:
+      "Error de signo al operar con polinomios: olvida distribuir el signo negativo al restar, o cambia incorrectamente el signo de los términos al aplicar la propiedad distributiva. La resta de polinomios equivale a sumar el opuesto: P(x) − Q(x) = P(x) + (−Q(x)).",
+    examples: [
+      "Calcular (3x² − 2x + 1) − (x² + 4x − 3) como 2x² − 6x − 2 en vez de 2x² − 6x + 4 (error al distribuir el − en −(−3))",
+      "En (2x + 1)(x − 3), escribir 2x² − 5x − 3 como 2x² + 5x − 3 (error de signo en el término cruzado −6x + 1x)",
+    ],
+  },
+  {
+    id: "u2_termino_semejante",
+    unit: 2,
+    description:
+      "Error al combinar términos semejantes: suma coeficientes de términos con distinto grado (ej. 3x² + 2x = 5x²) o no reduce correctamente términos del mismo grado. Solo se pueden sumar/restar términos que tienen exactamente la misma parte literal (misma variable y mismo exponente).",
+    examples: [
+      "Simplificar 3x² + 2x como 5x² en vez de 3x² + 2x (no se pueden sumar grados distintos)",
+      "Simplificar 4x³ − x³ + 2x² como 3x³ + 2x² (correcto) pero escribir 5x⁵ (incorrecto — confunde suma de coeficientes con suma de exponentes)",
+    ],
+  },
+  {
+    id: "u2_ruffini_signo_a",
+    unit: 2,
+    description:
+      "Error al aplicar el teorema del resto o Ruffini: evalúa P(a) en lugar de P(−a) cuando el divisor es (x − a), o viceversa. La regla de Ruffini para dividir por (x − a) usa a como raíz de prueba; para (x + a) se usa −a. Confundir el signo produce cociente y resto incorrectos.",
+    examples: [
+      "Para P(x) = x³ − 2x + 1 dividido por (x − 2), evaluar P(−2) = −3 en vez de P(2) = 5 (el divisor es x−2, se evalúa en a=2)",
+      "Para P(x) = 2x² + 3x − 1 dividido por (x + 1), usar a = 1 en Ruffini en vez de a = −1",
+    ],
+  },
+  {
+    id: "u2_grado_incorrecto",
+    unit: 2,
+    description:
+      "Error al determinar el grado de un polinomio: confunde el grado (máximo exponente con coeficiente no nulo) con el número de términos, o asigna un grado incorrecto al resultado de una operación entre polinomios.",
+    examples: [
+      "Decir que el grado de 3x⁴ + 2x² − 1 es 3 (número de términos) en vez de 4 (máximo exponente)",
+      "Afirmar que (x² + 1)(x³ − 2) tiene grado 5 (correcto: 2+3=5 por producto de potencias) pero un alumno dice grado 3 (confunde con el término mayor visible)",
+    ],
+  },
+  {
+    id: "u2_termino_faltante",
+    unit: 2,
+    description:
+      "Error al completar un polinomio con coeficientes cero para grados intermedios faltantes. Al operar (especialmente en Ruffini o división), se deben incluir todos los grados desde el máximo hasta el término constante, escribiendo coeficiente 0 para los grados que no aparecen explícitamente.",
+    examples: [
+      "Dividir x³ − 1 por (x − 1) usando Ruffini sin escribir el coeficiente 0 para x² y x: [1, 0, 0, −1] en vez de escribir solo [1, −1]",
+      "Calcular mal el grado de 0x³ + 2x² − 5 (el término 0x³ no cuenta; el grado real es 2)",
+    ],
+  },
+  {
+    id: "u2_factorizacion_incompleta",
+    unit: 2,
+    description:
+      "Error al factorizar un polinomio: extrae un factor común pero no continúa hasta la factorización completa, o deja una expresión que todavía puede factorearse (diferencia de cuadrados, trinomio cuadrado perfecto, etc.). La factorización debe continuar hasta que ningún factor pueda descomponerse más en el conjunto de los enteros.",
+    examples: [
+      "Factorizar x³ − x como x(x² − 1) sin continuar: x² − 1 = (x−1)(x+1), la factorización completa es x(x−1)(x+1)",
+      "Factorizar 2x² − 8 como 2(x² − 4) sin reconocer que x² − 4 = (x−2)(x+2)",
+    ],
+  },
+
   // Unit 3: Inequalities and absolute value
   {
     id: "u3_signo_desigualdad",
