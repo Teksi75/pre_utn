@@ -233,11 +233,10 @@ Chain strategy: stacked-to-main
 - **Type:** content data
 - **Files:** MODIFY: `content/matematica/exercises.json` (+4 exercises)
 - **Steps:**
-  1. Add `ex.u2.polinomios_basico.{2-5}`: grado (MC), clasificación (MC), P(3) (numerical), completar ceros (symbolic/MC).
-  2. Difficulty 1→3, each with `commonErrorTags` from `u2_*` set, `pedagogicalNote` referencing PDF.
-  3. No free-text for polynomial answers.
+  1. Add `ex.u2.polinomios_basico.{2-5}`: grado (MC), clasificación (MC), P(3) (numerical), normalizar coeficientes (symbolic). ✅
+  2. Difficulty 1→3, each with `commonErrorTags` from `u2_*` set, `pedagogicalNote` referencing PDF. ✅
+  3. No free-text for polynomial answers. ✅
 - **Done when:** exercises load; shape tests pass
-- **Estimated lines:** ~30
 
 ### Task 2.7: Exercises — operaciones_polinomios (4 new)
 
@@ -245,10 +244,9 @@ Chain strategy: stacked-to-main
 - **Type:** content data
 - **Files:** MODIFY: `content/matematica/exercises.json` (+4 exercises)
 - **Steps:**
-  1. Add `ex.u2.operaciones_polinomios.{2-5}`: suma (MC), resta (MC), multiplicación (numerical), combinada (symbolic/MC).
-  2. Difficulty 1→4, `commonErrorTags` include `u2_signo_operacion`, `u2_termino_semejante`.
+  1. Add `ex.u2.operaciones_polinomios.{2-5}`: suma (MC), resta (MC), suma de coeficientes (numerical), producto de binomios (symbolic). ✅
+  2. Difficulty 2→4, `commonErrorTags` include `u2_signo_operacion`, `u2_termino_semejante`. ✅
 - **Done when:** exercises load; shape tests pass
-- **Estimated lines:** ~30
 
 ### Task 2.8: Exercises — ruffini_resto (4 new)
 
@@ -256,10 +254,9 @@ Chain strategy: stacked-to-main
 - **Type:** content data
 - **Files:** MODIFY: `content/matematica/exercises.json` (+4 exercises)
 - **Steps:**
-  1. Add `ex.u2.ruffini_resto.{2-5}`: teorema del resto (numerical), cociente+resto (symbolic/MC), verificar raíz (MC), reconstruir (symbolic/MC).
-  2. Difficulty 2→4, `commonErrorTags` include `u2_ruffini_signo_a`.
+  1. Add `ex.u2.ruffini_resto.{2-5}`: teorema del resto (MC), evaluar P(−1) (numerical), Ruffini cociente (MC), factorización vía Ruffini (symbolic). ✅
+  2. Difficulty 2→4, `commonErrorTags` include `u2_ruffini_signo_a`, `u2_termino_faltante`. ✅
 - **Done when:** exercises load; shape tests pass
-- **Estimated lines:** ~30
 
 ### Task 2.9: Relocate ex.u2.gauss.1
 
@@ -267,10 +264,9 @@ Chain strategy: stacked-to-main
 - **Type:** content data fix
 - **Files:** MODIFY: `content/matematica/exercises.json` (change skillId)
 - **Steps:**
-  1. Change `ex.u2.gauss.1` skillId from `mat.u2.gauss` to `mat.u3.sistemas`.
+  1. Change `ex.u2.gauss.1` skillId from `mat.u2.gauss` to `mat.u3.sistemas`. ✅
   2. Update any tests referencing the old skillId.
 - **Done when:** `ex.u2.gauss.1.skillId === "mat.u3.sistemas"`; catalog tests pass
-- **Estimated lines:** ~3 (data) + ~5 (test fixes) = ~8
 
 ### Task 2.10: Skill catalog dependencies
 
