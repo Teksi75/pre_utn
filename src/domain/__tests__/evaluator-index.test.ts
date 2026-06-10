@@ -358,4 +358,56 @@ describe("Evaluator dispatcher", () => {
       expect(result.feedback).toBe("manual-review");
     });
   });
+
+  describe("U2 polynomial routing (U2-EVAL-001)", () => {
+    test("symbolic U2 exercise routes to polynomial evaluator — equivalent forms accepted", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.operaciones_polinomios.3",
+        skillId: "mat.u2.operaciones_polinomios",
+        type: "symbolic",
+        expectedAnswer: "x^2 + x - 6",
+      });
+
+      // Student answers in factored form — polynomial evaluator should accept
+      const result = evaluateAnswer(exercise, "(x-2)(x+3)");
+      expect(result.correct).toBe(true);
+    });
+
+    test("symbolic U2 exercise — non-equivalent answer is rejected", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.operaciones_polinomios.3",
+        skillId: "mat.u2.operaciones_polinomios",
+        type: "symbolic",
+        expectedAnswer: "x^2 + x - 6",
+      });
+
+      const result = evaluateAnswer(exercise, "x^2 + x + 6");
+      expect(result.correct).toBe(false);
+    });
+
+    test("symbolic U2 exercise — coeff array answer equivalent to expanded expected", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.polinomios_basico.3",
+        skillId: "mat.u2.polinomios_basico",
+        type: "symbolic",
+        expectedAnswer: "2x^2 - 5x + 1",
+      });
+
+      const result = evaluateAnswer(exercise, "2x^2 - 5x + 1");
+      expect(result.correct).toBe(true);
+    });
+
+    test("symbolic U1 exercise still routes to exact evaluator (no regression)", () => {
+      const exercise = makeExercise({
+        id: "ex.u1.propiedades_operaciones_reales.1",
+        skillId: "mat.u1.propiedades_operaciones_reales",
+        type: "symbolic",
+        expectedAnswer: "x+1",
+      });
+
+      // U1 should use exact string match, not polynomial equivalence
+      const result = evaluateAnswer(exercise, "x+1");
+      expect(result.correct).toBe(true);
+    });
+  });
 });
