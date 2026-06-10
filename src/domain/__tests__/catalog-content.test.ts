@@ -194,12 +194,15 @@ describe("Exercise content linkage", () => {
 });
 
 describe("Live catalog symbolic migration", () => {
-  test("raw student-facing catalog JSON excludes symbolic exercise types", () => {
+  test("raw student-facing catalog JSON allows only U2 symbolic exercise types", () => {
+    // U2 symbolic exercises are supported via polynomial-evaluator (PR-1).
+    // Other units must not contain symbolic exercises.
     const symbolicExercises = (exercisesJson as unknown as { id: string; type: string }[]).filter(
       (exercise) => exercise.type === "symbolic"
     );
 
-    expect(symbolicExercises).toEqual([]);
+    const nonU2Symbolic = symbolicExercises.filter((ex) => !ex.id.startsWith("ex.u2."));
+    expect(nonU2Symbolic).toEqual([]);
   });
 });
 

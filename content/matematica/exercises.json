@@ -614,8 +614,134 @@
     "pedagogicalNote": "Busca dos números que sumen -5 y multipliquen 6: -2 y -3. Los distractores representan errores de signo al factorizar."
   },
   {
+    "id": "ex.u2.polinomios_basico.2",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "¿Cuál es el grado del polinomio P(x) = 4x⁵ − 2x³ + 7x − 1?",
+    "expectedAnswer": "5",
+    "options": ["5", "4", "3", "7"],
+    "commonErrorTags": ["u2_grado_incorrecto"],
+    "pedagogicalNote": "El grado es el mayor exponente con coeficiente no nulo. En 4x⁵ el exponente es 5. Distractores: 4 (número de términos), 3 (segundo mayor exponente), 7 (coeficiente del término lineal)."
+  },
+  {
+    "id": "ex.u2.polinomios_basico.3",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "¿Cómo se clasifica el polinomio −7x³ + 2x − 1?",
+    "expectedAnswer": "Trinomio de grado 3",
+    "options": ["Trinomio de grado 3", "Binomio de grado 3", "Trinomio de grado 2", "Monomio de grado 3"],
+    "commonErrorTags": ["u2_grado_incorrecto"],
+    "pedagogicalNote": "Tiene 3 términos (trinomio) y su mayor exponente es 3. Distractores: binomio (confunde número de términos), grado 2 (confunde con el segundo término), monomio."
+  },
+  {
+    "id": "ex.u2.polinomios_basico.4",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Evaluá P(3) para P(x) = 2x² − 5x + 1",
+    "expectedAnswer": "4",
+    "commonErrorTags": ["u2_signo_operacion"],
+    "pedagogicalNote": "P(3) = 2(9) − 5(3) + 1 = 18 − 15 + 1 = 4. Error común: calcular 2(3²) como (2×3)² = 36 (confunde orden de operaciones con potencias)."
+  },
+  {
+    "id": "ex.u2.polinomios_basico.5",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "symbolic",
+    "difficulty": 3,
+    "prompt": "Completá los coeficientes del polinomio 0x⁴ + 2x³ + 0x² − 5x + 1 en orden decreciente como arreglo. La respuesta esperada es [2, 0, -5, 1] (sin los ceros del inicio).",
+    "expectedAnswer": "[2, 0, -5, 1]",
+    "commonErrorTags": ["u2_termino_faltante"],
+    "pedagogicalNote": "Los coeficientes en orden decreciente: grado 3 → 2, grado 2 → 0 (término faltante), grado 1 → −5, grado 0 → 1. Los ceros del inicio (0x⁴) se eliminan al normalizar."
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.2",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Calculá (4x² − x + 2) + (x² + 3x − 5)",
+    "expectedAnswer": "5x² + 2x − 3",
+    "options": ["5x² + 2x − 3", "5x² − 4x − 3", "4x² + 2x − 3", "5x² + 2x + 7"],
+    "commonErrorTags": ["u2_signo_operacion", "u2_termino_semejante"],
+    "pedagogicalNote": "Suma de polinomios: agrupar términos del mismo grado. 4x² + x² = 5x², −x + 3x = 2x, 2 + (−5) = −3. Distractor: −4x−3 (confunde signo del −x), 4x² (olvida sumar los x²), +7 (suma constantes con signo incorrecto)."
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.3",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Calculá (3x² − 2x + 1) − (x² + 4x − 3)",
+    "expectedAnswer": "2x² − 6x + 4",
+    "options": ["2x² − 6x + 4", "2x² + 2x + 4", "2x² − 6x − 2", "4x² − 6x + 4"],
+    "commonErrorTags": ["u2_signo_operacion"],
+    "pedagogicalNote": "Resta de polinomios: distribuir el signo negativo a todos los términos del segundo polinomio. −(x²+4x−3) = −x²−4x+3. Distractores: +2x (olvida cambiar signo del 4x), −2 (olvida que −(−3)=+3), 4x² (suma en vez de restar los x²)."
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.4",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "numerical",
+    "difficulty": 3,
+    "prompt": "Calculá el producto de los coeficientes principales al multiplicar (2x² − 1)(x + 3). Pista: el resultado es 2x³ + 6x² − x − 3, ¿cuál es la suma de todos los coeficientes del resultado?",
+    "expectedAnswer": "4",
+    "commonErrorTags": ["u2_signo_operacion", "u2_termino_semejante"],
+    "pedagogicalNote": "El polinomio resultado es 2x³ + 6x² − x − 3. La suma de coeficientes: 2 + 6 + (−1) + (−3) = 4. Alternativa: evaluar el producto en x=1 para obtener la suma de coeficientes."
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.5",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "symbolic",
+    "difficulty": 4,
+    "prompt": "Multiplicá (x − 2)(x + 3) y escribí el polinomio resultado.",
+    "expectedAnswer": "x^2 + x - 6",
+    "commonErrorTags": ["u2_signo_operacion"],
+    "pedagogicalNote": "(x−2)(x+3) = x² + 3x − 2x − 6 = x² + x − 6. El evaluador polinómico acepta formas expandidas equivalentes. Error común: −6x + x → −5x (confunde −2×3=−6 con −2+3=1)."
+  },
+  {
+    "id": "ex.u2.ruffini_resto.2",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Aplicando el teorema del resto, ¿cuál es el residuo de dividir P(x) = 2x³ − 5x² + x − 2 por (x − 3)?",
+    "expectedAnswer": "10",
+    "options": ["10", "-26", "4", "16"],
+    "commonErrorTags": ["u2_ruffini_signo_a"],
+    "pedagogicalNote": "P(3) = 2(27) − 5(9) + 3 − 2 = 54 − 45 + 3 − 2 = 10. Distractores: −26 = P(−3) (error de signo en a), 4 (error en la cuenta), 16 (suma mal los términos)."
+  },
+  {
+    "id": "ex.u2.ruffini_resto.3",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Usando el teorema del resto, calculá el residuo de dividir P(x) = x⁴ − 3x² + 2 por (x + 1).",
+    "expectedAnswer": "0",
+    "commonErrorTags": ["u2_ruffini_signo_a", "u2_termino_faltante"],
+    "pedagogicalNote": "El divisor es (x+1) = (x−(−1)), así que evaluamos P(−1). P(−1) = 1 − 3 + 2 = 0. El residuo es 0, lo que significa que (x+1) es factor. Error común: evaluar en x=1 (daría 0 también en este caso, pero por la razón equivocada)."
+  },
+  {
+    "id": "ex.u2.ruffini_resto.4",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Al dividir x³ − 1 por (x − 1) usando Ruffini, ¿cuáles son los coeficientes del cociente?",
+    "expectedAnswer": "1, 1, 1",
+    "options": ["1, 1, 1", "1, 0, 1", "1, -1, 1", "1, 1, 0"],
+    "commonErrorTags": ["u2_termino_faltante", "u2_ruffini_signo_a"],
+    "pedagogicalNote": "Coeficientes de x³−1: [1, 0, 0, −1]. Ruffini con a=1: bajar 1, 1×1+0=1, 1×1+0=1, 1×1+(−1)=0 (resto). Cociente: [1, 1, 1] → x²+x+1. Distractores: [1,0,1] (olvida el cero de x), [1,−1,1] (confunde signos), [1,1,0] (error en último paso)."
+  },
+  {
+    "id": "ex.u2.ruffini_resto.5",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "symbolic",
+    "difficulty": 4,
+    "prompt": "Verificá que (x − 2) es factor de P(x) = x³ − 3x² + 4. Si es factor, el cociente es un polinomio. Escribí P(x) como producto de (x − 2) por el cociente correspondiente. Esperado: (x-2)(x^2 - x - 2).",
+    "expectedAnswer": "(x-2)(x^2 - x - 2)",
+    "commonErrorTags": ["u2_termino_faltante", "u2_signo_operacion"],
+    "pedagogicalNote": "Ruffini: coeficientes [1, −3, 0, 4] con a=2 → cociente [1, −1, −2], resto 0. P(x) = (x−2)(x²−x−2). El evaluador expande y compara coeficientes."
+  },
+  {
     "id": "ex.u2.gauss.1",
-    "skillId": "mat.u2.gauss",
+    "skillId": "mat.u3.sistemas",
     "type": "multiple-choice",
     "difficulty": 3,
     "prompt": "Resuelve el sistema: x + y = 5, x - y = 1",

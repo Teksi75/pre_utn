@@ -8,12 +8,14 @@
  */
 
 import type { Exercise } from "../models/exercise";
+import { getExerciseOptionValue } from "../models/exercise";
 
 /** Tags that represent sign-related misconceptions. */
 const SIGN_ERROR_TAGS = new Set([
   "u1_signo_racionalizacion",
   "u1_signo_parentesis",
   "u2_signo_al_mover",
+  "u2_signo_operacion",
   "u3_signo_desigualdad",
 ]);
 
@@ -36,6 +38,23 @@ const POWER_OF_POWER_TAGS = new Set(["u1_potencia_de_potencia"]);
 
 /** Tags that represent invalid even roots of negative numbers in ℝ. */
 const NEGATIVE_EVEN_ROOT_TAGS = new Set(["u1_raiz_negativa_par"]);
+
+// ── U2 Polynomial error tag sets ────────────────────────────────────────
+
+/** Tags for combining unlike-degree terms (like-term confusion). */
+const U2_LIKE_TERM_TAGS = new Set(["u2_termino_semejante"]);
+
+/** Tags for Ruffini sign-of-a errors (evaluating at wrong divisor root). */
+const U2_RUFFINI_SIGNO_A_TAGS = new Set(["u2_ruffini_signo_a"]);
+
+/** Tags for incorrect polynomial degree determination. */
+const U2_DEGREE_TAGS = new Set(["u2_grado_incorrecto"]);
+
+/** Tags for missing zero-coefficient terms. */
+const U2_MISSING_TERM_TAGS = new Set(["u2_termino_faltante"]);
+
+/** Tags for incomplete factorization (still factorable). */
+const U2_INCOMPLETE_FACTOR_TAGS = new Set(["u2_factorizacion_incompleta"]);
 
 const SUPERSCRIPT_DIGITS: Readonly<Record<string, string>> = {
   "⁰": "0",
@@ -260,6 +279,162 @@ function isNegativeEvenRootError(exercise: Exercise, userAnswer: string): boolea
   return expected.includes("no tiene resultado real") && student !== expected;
 }
 
+// ── U2 Polynomial error pattern detectors ───────────────────────────────
+
+/**
+ * Detect unlike-term combination: student merged terms of different degrees.
+ * Applies to MC exercises where the expected answer has multiple-degree terms
+ * but the student answer has a single term whose degree matches the expected
+ * max degree and coefficient equals the sum of all expected coefficients.
+ */
+function isU2LikeTermError(exercise: Exercise, userAnswer: string): boolean {
+  if (exercise.type !== "multiple-choice") return false;
+
+  // Normalize superscripts for degree extraction
+  const expectedClean = normalizeSuperscripts(exercise.expectedAnswer).replace(/\s/g, "");
+  const studentClean = normalizeSuperscripts(userAnswer).replace(/\s/g, "");
+
+  // Expected has multiple x terms separated by + or -
+  const hasMultipleTerms = /[+\-]/.test(expectedClean.replace(/^[+\-]/, ""));
+  if (!hasMultipleTerms) return false;
+
+  // Student answer must be a single term (no + or - inside)
+  if (/[+\-]/.test(studentClean.replace(/^[+\-]/, ""))) return false;
+
+  // Extract degree from student answer
+  const stuDegreeMatch = studentClean.match(/x\^?(\d+)/);
+  const stuDegree = stuDegreeMatch ? Number(stuDegreeMatch[1]) : studentClean.includes("x") ? 1 : 0;
+
+  // Extract max degree from expected answer
+  const expDegrees = [...expectedClean.matchAll(/x\^?(\d+)/g)];
+  const expMaxDegree = expDegrees.length > 0
+    ? Math.max(...expDegrees.map(m => Number(m[1])))
+    : expectedClean.includes("x") ? 1 : 0;
+
+  // Student collapsed terms to same max degree → like-term confusion
+  return stuDegree === expMaxDegree && stuDegree > 0;
+}
+
+/**
+ * Detect Ruffini sign-of-a error: student evaluated P(-a) instead of P(a)
+ * or vice versa. Detected in MC exercises where the prompt mentions Ruffini
+ * or remainder theorem, and the student picked a distractor (numeric answer
+ * that differs from expected but is in the options list).
+ */
+function isU2RuffiniSignoAError(exercise: Exercise, userAnswer: string): boolean {
+  if (exercise.type !== "multiple-choice") return false;
+
+  const prompt = exercise.prompt.toLowerCase();
+  const isRuffiniContext =
+    prompt.includes("ruffini") ||
+    prompt.includes("teorema del resto") ||
+    prompt.includes("resto") ||
+    prompt.includes("residuo");
+
+  if (!isRuffiniContext) return false;
+
+  // Student answer must be a numeric value (not the expected one)
+  const expected = exercise.expectedAnswer.trim();
+  const student = userAnswer.trim();
+  const studentNum = Number(student);
+  const expectedNum = Number(expected);
+
+  if (Number.isNaN(studentNum) || Number.isNaN(expectedNum)) return false;
+  if (studentNum === expectedNum) return false;
+
+  // The student answer should be in the options list (a declared distractor)
+  const options = exercise.options ?? [];
+  return options.some((opt) => getExerciseOptionValue(opt).trim() === student);
+}
+
+/**
+ * Detect incorrect degree determination: student confused degree with
+ * number of terms or other property. Applies to MC exercises asking
+ * about polynomial degree.
+ */
+function isU2DegreeError(exercise: Exercise, userAnswer: string): boolean {
+  if (exercise.type !== "multiple-choice") return false;
+
+  const prompt = exercise.prompt.toLowerCase();
+  const isDegreeContext =
+    prompt.includes("grado") || prompt.includes("degree");
+
+  if (!isDegreeContext) return false;
+
+  // Expected answer is the correct degree (numeric)
+  const expected = exercise.expectedAnswer.trim();
+  const student = userAnswer.trim();
+
+  // Student answer differs from expected
+  if (expected === student) return false;
+
+  // Check if student answer is numeric (a plausible wrong degree)
+  const studentNum = Number(student);
+  return !Number.isNaN(studentNum) && studentNum > 0;
+}
+
+/**
+ * Detect missing zero-coefficient terms: student omitted coefficient
+ * positions that should be zero. Applies to symbolic exercises where
+ * the expected answer is a coefficient array.
+ */
+function isU2MissingTermError(exercise: Exercise, userAnswer: string): boolean {
+  if (exercise.type !== "symbolic") return false;
+
+  // Both expected and student look like coefficient arrays
+  const arrayPattern = /^\[[\d,\s.\-]+\]$/;
+  if (!arrayPattern.test(exercise.expectedAnswer) || !arrayPattern.test(userAnswer)) return false;
+
+  const parseCoeffs = (s: string): number[] => {
+    const inner = s.replace(/[\[\]]/g, "").trim();
+    return inner.split(",").map(Number);
+  };
+
+  const expectedCoeffs = parseCoeffs(exercise.expectedAnswer);
+  const studentCoeffs = parseCoeffs(userAnswer);
+
+  // Student omitted zero coefficients: has fewer coefficients than expected
+  // AND the difference is exactly the count of zeros in expected that
+  // are missing in student
+  if (studentCoeffs.length >= expectedCoeffs.length) return false;
+
+  // Check that student coefficients are a subset (some zeros removed)
+  const expectedZeros = expectedCoeffs.filter(c => c === 0).length;
+  const studentZeros = studentCoeffs.filter(c => c === 0).length;
+
+  return studentZeros < expectedZeros;
+}
+
+/**
+ * Detect incomplete factorization: student gave a partially factored
+ * expression that still contains factorable sub-expressions.
+ * Applies to MC exercises about factorization.
+ */
+function isU2IncompleteFactorError(exercise: Exercise, userAnswer: string): boolean {
+  if (exercise.type !== "multiple-choice") return false;
+
+  const prompt = exercise.prompt.toLowerCase();
+  const isFactorContext =
+    prompt.includes("factoriza") || prompt.includes("factorizar") ||
+    prompt.includes("factorización");
+
+  if (!isFactorContext) return false;
+
+  // Complete factorization tends to have more factors (more parentheses pairs)
+  const expParenCount = (exercise.expectedAnswer.match(/\(/g) ?? []).length;
+  const stuParenCount = (userAnswer.match(/\(/g) ?? []).length;
+
+  // Student answer has fewer parentheses = fewer factors = incomplete
+  if (stuParenCount >= expParenCount) return false;
+
+  // Student answer DOES contain parentheses (at least attempted factoring)
+  if (stuParenCount === 0) return false;
+
+  // Student answer looks like a partial factorization:
+  // fewer factors than fully-factored expected answer
+  return stuParenCount < expParenCount;
+}
+
 /**
  * Match the user's answer against known error patterns and return a
  * declared commonErrorTag if one fits, or undefined.
@@ -345,6 +520,48 @@ export function tagError(
   if (isNegativeEvenRootError(exercise, userAnswer)) {
     for (const tag of tags) {
       if (NEGATIVE_EVEN_ROOT_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  // ── U2 polynomial error patterns ───────────────────────────
+
+  if (isU2LikeTermError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U2_LIKE_TERM_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isU2RuffiniSignoAError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U2_RUFFINI_SIGNO_A_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isU2DegreeError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U2_DEGREE_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isU2MissingTermError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U2_MISSING_TERM_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isU2IncompleteFactorError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U2_INCOMPLETE_FACTOR_TAGS.has(tag)) {
         return tag;
       }
     }

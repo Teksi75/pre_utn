@@ -177,11 +177,10 @@ Chain strategy: stacked-to-main
   - MODIFY: `src/domain/error-taxonomy/index.ts` (+6 entries)
   - MODIFY: `src/domain/__tests__/error-taxonomy.test.ts` (+assertions for u2_* tags)
 - **Steps:**
-  1. RED: add tests asserting 6 `u2_*` tags exist with metadata, no duplicates, filterable by unit 2. Must fail.
-  2. GREEN: add 6 tag entries to TAXONOMY array. Tests pass.
-  3. REFACTOR: verify tag ordering and descriptions.
-- **Done when:** `pnpm run test -- error-taxonomy` green
-- **Estimated lines:** ~40 (data) + ~25 (tests) = ~65
+  1. RED: add tests asserting 6 `u2_*` tags exist with metadata, no duplicates, filterable by unit 2. Must fail. ✅
+  2. GREEN: add 6 tag entries to TAXONOMY array. Tests pass. ✅
+  3. REFACTOR: verify tag ordering and descriptions. ✅
+- **Done when:** `pnpm run test -- error-taxonomy` green ✅ (16/16)
 
 ### Task 2.2: U2 error tagging patterns
 
@@ -191,11 +190,10 @@ Chain strategy: stacked-to-main
   - MODIFY: `src/domain/evaluator/error-tagging.ts` (+6 `isU2*Error` functions + tag sets)
   - NEW: `src/domain/__tests__/evaluator-error-tagging-u2.test.ts`
 - **Steps:**
-  1. RED: write 12 tests (2 per tag: positive match + negative when not declared). Must fail.
-  2. GREEN: implement 6 pattern functions + dispatch in `tagError()`. Tests pass.
-  3. REFACTOR: extract shared helpers if patterns overlap.
-- **Done when:** `pnpm run test -- evaluator-error-tagging-u2` green
-- **Estimated lines:** ~50 (code) + ~60 (tests) = ~110
+  1. RED: write 14 tests (2+ per tag: positive match + negative when not declared). Must fail. ✅
+  2. GREEN: implement 6 pattern functions + dispatch in `tagError()`. Tests pass. ✅
+  3. REFACTOR: superscript normalization for degree extraction. ✅
+- **Done when:** `pnpm run test -- evaluator-error-tagging-u2` green ✅ (14/14)
 
 ### Task 2.3: Theory content — unit-2.json
 
@@ -203,23 +201,21 @@ Chain strategy: stacked-to-main
 - **Type:** content data
 - **Files:** NEW: `content/matematica/theory/unit-2.json` (3 TheoryNodes)
 - **Steps:**
-  1. Create 3 TheoryNodes: `polinomios_basico` (caps 1-8), `operaciones_polinomios` (cap 9), `ruffini_resto` (caps 10-11).
-  2. Each node: `skillId`, `concepts[]`, `canonicalTrace` referencing PDF pages.
-  3. Verify JSON schema matches U1 theory format.
+  1. Create 3 TheoryNodes: `polinomios_basico` (caps 1-8), `operaciones_polinomios` (cap 9), `ruffini_resto` (caps 10-11). ✅
+  2. Each node: `skillId`, `conceptBlocks[]`, `canonicalTrace` referencing PDF pages. ✅
+  3. Verify JSON schema matches U1 theory format. ✅
 - **Done when:** JSON valid; `loadTheoryContent("unit-2")` returns 3 nodes
-- **Estimated lines:** ~80
 
 ### Task 2.4: Worked examples — unit-2.json
 
 - **Spec:** U2-CAT-006 (partial)
 - **Type:** content data
-- **Files:** NEW: `content/matematica/examples/unit-2.json` (4-6 WorkedExamples)
+- **Files:** NEW: `content/matematica/examples/unit-2.json` (6 WorkedExamples)
 - **Steps:**
-  1. Create ≥5 WorkedExamples: valor numérico, suma/resta, multiplicación, Ruffini, teorema del resto, división larga (worked only).
-  2. Each: `skillId`, `solutionSteps[]`, `canonicalTrace`.
-  3. Verify JSON schema matches U1 examples format.
+  1. Create 6 WorkedExamples: grado+coeficientes, valor numérico, resta, multiplicación, teorema del resto, Ruffini completo. ✅
+  2. Each: `skillId`, `solutionSteps[]`, `canonicalTrace`. ✅
+  3. Verify JSON schema matches U1 examples format. ✅
 - **Done when:** JSON valid; `loadExampleContent("unit-2")` returns ≥5 examples
-- **Estimated lines:** ~70
 
 ### Task 2.5: Feedback mappings — unit-2.json
 
@@ -227,10 +223,9 @@ Chain strategy: stacked-to-main
 - **Type:** content data
 - **Files:** NEW: `content/matematica/feedback/unit-2.json` (6 FeedbackMappings)
 - **Steps:**
-  1. Create 1 FeedbackMapping per `u2_*` tag: `errorTag`, `type: "corrective"`, `message`, `recoveryTarget`.
-  2. Verify JSON schema matches U1 feedback format.
+  1. Create 1 FeedbackMapping per `u2_*` tag: `errorTag`, `type: "corrective"`, `message`, `recoveryTarget`. ✅
+  2. Verify JSON schema matches U1 feedback format. ✅
 - **Done when:** JSON valid; `loadFeedbackContent("unit-2")` returns 6 mappings
-- **Estimated lines:** ~40
 
 ### Task 2.6: Exercises — polinomios_basico (4 new)
 
@@ -238,11 +233,10 @@ Chain strategy: stacked-to-main
 - **Type:** content data
 - **Files:** MODIFY: `content/matematica/exercises.json` (+4 exercises)
 - **Steps:**
-  1. Add `ex.u2.polinomios_basico.{2-5}`: grado (MC), clasificación (MC), P(3) (numerical), completar ceros (symbolic/MC).
-  2. Difficulty 1→3, each with `commonErrorTags` from `u2_*` set, `pedagogicalNote` referencing PDF.
-  3. No free-text for polynomial answers.
+  1. Add `ex.u2.polinomios_basico.{2-5}`: grado (MC), clasificación (MC), P(3) (numerical), normalizar coeficientes (symbolic). ✅
+  2. Difficulty 1→3, each with `commonErrorTags` from `u2_*` set, `pedagogicalNote` referencing PDF. ✅
+  3. No free-text for polynomial answers. ✅
 - **Done when:** exercises load; shape tests pass
-- **Estimated lines:** ~30
 
 ### Task 2.7: Exercises — operaciones_polinomios (4 new)
 
@@ -250,10 +244,9 @@ Chain strategy: stacked-to-main
 - **Type:** content data
 - **Files:** MODIFY: `content/matematica/exercises.json` (+4 exercises)
 - **Steps:**
-  1. Add `ex.u2.operaciones_polinomios.{2-5}`: suma (MC), resta (MC), multiplicación (numerical), combinada (symbolic/MC).
-  2. Difficulty 1→4, `commonErrorTags` include `u2_signo_operacion`, `u2_termino_semejante`.
+  1. Add `ex.u2.operaciones_polinomios.{2-5}`: suma (MC), resta (MC), suma de coeficientes (numerical), producto de binomios (symbolic). ✅
+  2. Difficulty 2→4, `commonErrorTags` include `u2_signo_operacion`, `u2_termino_semejante`. ✅
 - **Done when:** exercises load; shape tests pass
-- **Estimated lines:** ~30
 
 ### Task 2.8: Exercises — ruffini_resto (4 new)
 
@@ -261,10 +254,9 @@ Chain strategy: stacked-to-main
 - **Type:** content data
 - **Files:** MODIFY: `content/matematica/exercises.json` (+4 exercises)
 - **Steps:**
-  1. Add `ex.u2.ruffini_resto.{2-5}`: teorema del resto (numerical), cociente+resto (symbolic/MC), verificar raíz (MC), reconstruir (symbolic/MC).
-  2. Difficulty 2→4, `commonErrorTags` include `u2_ruffini_signo_a`.
+  1. Add `ex.u2.ruffini_resto.{2-5}`: teorema del resto (MC), evaluar P(−1) (numerical), Ruffini cociente (MC), factorización vía Ruffini (symbolic). ✅
+  2. Difficulty 2→4, `commonErrorTags` include `u2_ruffini_signo_a`, `u2_termino_faltante`. ✅
 - **Done when:** exercises load; shape tests pass
-- **Estimated lines:** ~30
 
 ### Task 2.9: Relocate ex.u2.gauss.1
 
@@ -272,10 +264,9 @@ Chain strategy: stacked-to-main
 - **Type:** content data fix
 - **Files:** MODIFY: `content/matematica/exercises.json` (change skillId)
 - **Steps:**
-  1. Change `ex.u2.gauss.1` skillId from `mat.u2.gauss` to `mat.u3.sistemas`.
+  1. Change `ex.u2.gauss.1` skillId from `mat.u2.gauss` to `mat.u3.sistemas`. ✅
   2. Update any tests referencing the old skillId.
 - **Done when:** `ex.u2.gauss.1.skillId === "mat.u3.sistemas"`; catalog tests pass
-- **Estimated lines:** ~3 (data) + ~5 (test fixes) = ~8
 
 ### Task 2.10: Skill catalog dependencies
 
@@ -285,11 +276,10 @@ Chain strategy: stacked-to-main
   - MODIFY: `src/domain/models/skill-catalog.ts` (+2 entries in SKILL_DEPENDENCIES)
   - NEW: `src/domain/__tests__/skill-catalog-u2-deps.test.ts`
 - **Steps:**
-  1. RED: write tests asserting gauss←ruffini_resto, mcm_mcd←factorizacion, no cycles, mcm_mcd not ready. Must fail.
-  2. GREEN: add 2 dependency entries. Tests pass.
-  3. REFACTOR: verify chain linearity.
-- **Done when:** `pnpm run test -- skill-catalog-u2-deps` green
-- **Estimated lines:** ~5 (data) + ~30 (tests) = ~35
+  1. RED: write tests asserting gauss←ruffini_resto, mcm_mcd←factorizacion, no cycles. Must fail. ✅
+  2. GREEN: add 2 dependency entries. Tests pass. ✅
+  3. REFACTOR: verify chain linearity. ✅
+- **Done when:** `pnpm run test -- skill-catalog-u2-deps` green ✅ (8/8)
 
 ### Task 2.11: Content loaders — register unit-2
 
@@ -299,22 +289,18 @@ Chain strategy: stacked-to-main
   - MODIFY: `src/domain/catalog/content-loaders.ts` (import + register unit-2 JSON)
   - MODIFY: `src/domain/__tests__/content-loaders.test.ts` (+unit-2 tests)
 - **Steps:**
-  1. RED: write tests for `loadTheoryContent("unit-2")`, `loadExampleContent("unit-2")`, `loadFeedbackContent("unit-2")`, `loadExercisesForSkill` for 3 U2 skills. Must fail.
-  2. GREEN: add static imports + REGISTRY entries. Tests pass.
-  3. REFACTOR: no changes needed.
-- **Done when:** `pnpm run test -- content-loaders` green
-- **Estimated lines:** ~15 (code) + ~30 (tests) = ~45
-
-### Task 2.12: Exercise shape validation tests
+  1. RED: write tests for `loadTheoryContent("unit-2")`, `loadExampleContent("unit-2")`, `loadFeedbackContent("unit-2")`, `loadExercisesForSkill` for 3 U2 skills. Must fail. ✅
+  2. GREEN: add static imports + REGISTRY entries. Tests pass. ✅
+  3. REFACTOR: no changes needed. ✅
+- **Done when:** `pnpm run test -- content-loaders` green ✅ (17/17)
 
 - **Spec:** U2-CAT-001 through U2-CAT-007
 - **Type:** tests
 - **Files:** NEW: `src/domain/__tests__/exercises-u2-shape.test.ts`
 - **Steps:**
-  1. Write tests: 12 exercises exist, unique IDs, type distribution (6 MC + 3 num + 3 sym), difficulty progression per skill, no free-text, commonErrorTags non-empty, gauss.1 relocated.
-  2. All tests must pass against content from tasks 2.6–2.9.
-- **Done when:** `pnpm run test -- exercises-u2-shape` green
-- **Estimated lines:** ~50
+  1. Write tests: 12 exercises exist, unique IDs, type distribution, difficulty progression per skill, no free-text, commonErrorTags non-empty, gauss.1 relocated. ✅
+  2. All tests must pass against content from tasks 2.6–2.9. ✅
+- **Done when:** `pnpm run test -- exercises-u2-shape` green ✅ (12/12)
 
 ---
 

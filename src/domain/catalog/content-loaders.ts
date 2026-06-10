@@ -10,8 +10,11 @@ import type { Exercise } from "../models/exercise";
 
 // Static JSON imports
 import theoryUnit1 from "../../../content/matematica/theory/unit-1.json";
+import theoryUnit2 from "../../../content/matematica/theory/unit-2.json";
 import examplesUnit1 from "../../../content/matematica/examples/unit-1.json";
+import examplesUnit2 from "../../../content/matematica/examples/unit-2.json";
 import feedbackUnit1 from "../../../content/matematica/feedback/unit-1.json";
+import feedbackUnit2 from "../../../content/matematica/feedback/unit-2.json";
 import feedbackUnit1ConjuntosNumericos from "../../../content/matematica/feedback/unit-1-conjuntos-numericos.json";
 import exercisesJson from "../../../content/matematica/exercises.json";
 import conjuntosNumericosExercises from "../../../content/matematica/exercises/conjuntos-numericos.json";
@@ -33,12 +36,15 @@ interface ContentRegistry {
 const REGISTRY: ContentRegistry = {
   theory: {
     "unit-1": theoryUnit1 as unknown as readonly TheoryNode[],
+    "unit-2": theoryUnit2 as unknown as readonly TheoryNode[],
   },
   examples: {
     "unit-1": examplesUnit1 as unknown as readonly WorkedExample[],
+    "unit-2": examplesUnit2 as unknown as readonly WorkedExample[],
   },
   feedback: {
     "unit-1": feedbackUnit1 as unknown as readonly FeedbackMapping[],
+    "unit-2": feedbackUnit2 as unknown as readonly FeedbackMapping[],
     "unit-1-conjuntos-numericos": feedbackUnit1ConjuntosNumericos as unknown as readonly FeedbackMapping[],
   },
 };

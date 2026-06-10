@@ -120,8 +120,11 @@ describe("Catalog answer-contract audit", () => {
     expect(hasMultiValuePattern("x = 2")).toBe(true);
   });
 
-  test("live catalog contains no symbolic exercises after migration", () => {
-    expect(getLiveSymbolicIds(exercises)).toEqual([]);
+  test("live catalog contains no symbolic exercises outside U2 after migration", () => {
+    // U2 symbolic exercises are legitimate: polynomial-evaluator handles them.
+    // Symbolic exercises in other units (U1, U3+) are still unsupported.
+    const symbolicIds = getLiveSymbolicIds(exercises).filter((id) => !id.startsWith("ex.u2."));
+    expect(symbolicIds).toEqual([]);
   });
 
   test("known migration targets now use supported structured types", () => {

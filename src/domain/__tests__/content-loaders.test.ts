@@ -11,8 +11,10 @@ import {
   loadExercisesForSkill,
   loadSkillBank,
   validatePracticeBank,
+  loadFeedbackContent,
+  loadTheoryContent,
+  loadExampleContent,
 } from "../catalog/content-loaders";
-import { loadFeedbackContent } from "../catalog/content-loaders";
 import type { Exercise } from "../models/exercise";
 
 describe("applyExerciseDefaults", () => {
@@ -82,5 +84,94 @@ describe("loadSkillBank — wiring bank validator into catalog load path", () =>
     const directDiagnostics = validatePracticeBank(SKILL_ID, exercises, feedback);
     const banked = loadSkillBank(SKILL_ID);
     expect(banked.diagnostics).toEqual(directDiagnostics);
+  });
+});
+
+describe("Unit-2 content loaders", () => {
+  describe("loadTheoryContent", () => {
+    test("loads theory for unit-2 (3 theory nodes)", () => {
+      const theory = loadTheoryContent("unit-2");
+      expect(Array.isArray(theory)).toBe(true);
+      expect(theory.length).toBe(3);
+      expect(theory[0]).toHaveProperty("id");
+      expect(theory[0]).toHaveProperty("skillId");
+      expect(theory[0]).toHaveProperty("conceptBlocks");
+    });
+
+    test("theory nodes belong to U2 skills", () => {
+      const theory = loadTheoryContent("unit-2");
+      const skillIds = theory.map((t) => t.skillId);
+      expect(skillIds).toContain("mat.u2.polinomios_basico");
+      expect(skillIds).toContain("mat.u2.operaciones_polinomios");
+      expect(skillIds).toContain("mat.u2.ruffini_resto");
+    });
+  });
+
+  describe("loadExampleContent", () => {
+    test("loads examples for unit-2 (>= 5 worked examples)", () => {
+      const examples = loadExampleContent("unit-2");
+      expect(Array.isArray(examples)).toBe(true);
+      expect(examples.length).toBeGreaterThanOrEqual(5);
+    });
+
+    test("each example has required fields", () => {
+      const examples = loadExampleContent("unit-2");
+      for (const ex of examples) {
+        expect(ex).toHaveProperty("id");
+        expect(ex).toHaveProperty("skillId");
+        expect(ex).toHaveProperty("problem");
+        expect(ex).toHaveProperty("steps");
+        expect(ex.steps.length).toBeGreaterThan(0);
+      }
+    });
+  });
+
+  describe("loadFeedbackContent", () => {
+    test("loads feedback for unit-2 (6 feedback mappings)", () => {
+      const feedback = loadFeedbackContent("unit-2");
+      expect(Array.isArray(feedback)).toBe(true);
+      expect(feedback.length).toBe(6);
+    });
+
+    test("all 6 u2_* polynomial error tags have feedback", () => {
+      const feedback = loadFeedbackContent("unit-2");
+      const tags = feedback.map((f) => f.errorTag);
+      expect(tags).toContain("u2_signo_operacion");
+      expect(tags).toContain("u2_termino_semejante");
+      expect(tags).toContain("u2_ruffini_signo_a");
+      expect(tags).toContain("u2_grado_incorrecto");
+      expect(tags).toContain("u2_termino_faltante");
+      expect(tags).toContain("u2_factorizacion_incompleta");
+    });
+  });
+
+  describe("loadExercisesForSkill for U2 skills", () => {
+    test("loads exercises for polinomios_basico (>= 5 exercises)", () => {
+      const exercises = loadExercisesForSkill("mat.u2.polinomios_basico");
+      expect(exercises.length).toBeGreaterThanOrEqual(5);
+    });
+
+    test("loads exercises for operaciones_polinomios (>= 5 exercises)", () => {
+      const exercises = loadExercisesForSkill("mat.u2.operaciones_polinomios");
+      expect(exercises.length).toBeGreaterThanOrEqual(5);
+    });
+
+    test("loads exercises for ruffini_resto (>= 5 exercises)", () => {
+      const exercises = loadExercisesForSkill("mat.u2.ruffini_resto");
+      expect(exercises.length).toBeGreaterThanOrEqual(5);
+    });
+
+    test("ex.u2.gauss.1 is now under mat.u3.sistemas (not mat.u2.gauss)", () => {
+      const u2GaussEx = loadExercisesForSkill("mat.u2.gauss");
+      const u3SistemasEx = loadExercisesForSkill("mat.u3.sistemas");
+
+      // gauss.1 should NOT be in mat.u2.gauss exercises
+      const gaussInU2 = u2GaussEx.some((e) => e.id === "ex.u2.gauss.1");
+      expect(gaussInU2).toBe(false);
+
+      // gauss.1 SHOULD be in mat.u3.sistemas exercises
+      const gaussInU3 = u3SistemasEx.some((e) => e.id === "ex.u2.gauss.1");
+      expect(gaussInU3).toBe(true);
+    });
   });
 });

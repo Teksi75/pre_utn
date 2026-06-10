@@ -1,0 +1,126 @@
+[
+  {
+    "id": "example-polinomios-basico-1",
+    "skillId": "mat.u2.polinomios_basico",
+    "problem": "Determinar el grado, el coeficiente principal y el término constante de P(x) = 3x⁴ + 2x² − 5x + 1",
+    "steps": [
+      { "order": 1, "explanation": "Identificamos todos los términos: 3x⁴ (grado 4), 2x² (grado 2), −5x (grado 1), 1 (grado 0, término constante)." },
+      { "order": 2, "explanation": "El grado es el mayor exponente con coeficiente no nulo: grado(P) = 4." },
+      { "order": 3, "explanation": "El coeficiente principal es el que acompaña al término de mayor grado: 3." },
+      { "order": 4, "explanation": "El término constante es el coeficiente de x⁰ (el número sin x): 1." }
+    ],
+    "finalAnswer": "Grado 4, coeficiente principal 3, término constante 1",
+    "pedagogicalNote": "El grado no es la cantidad de términos (4) sino el mayor exponente presente. Tampoco es la suma de los exponentes.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 1-3: Definición, grado, clasificación",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar a identificar los elementos estructurales de un polinomio"
+      }
+    ]
+  },
+  {
+    "id": "example-polinomios-basico-2",
+    "skillId": "mat.u2.polinomios_basico",
+    "problem": "Evaluar P(2) y P(−1) para P(x) = x³ − 2x² + x − 3",
+    "steps": [
+      { "order": 1, "explanation": "Para P(2), reemplazamos x por 2: P(2) = 2³ − 2(2²) + 2 − 3 = 8 − 2(4) + 2 − 3." },
+      { "order": 2, "explanation": "Operamos: 8 − 8 + 2 − 3 = −1. Entonces P(2) = −1." },
+      { "order": 3, "explanation": "Para P(−1): (−1)³ − 2(−1)² + (−1) − 3 = −1 − 2(1) − 1 − 3." },
+      { "order": 4, "explanation": "Operamos: −1 − 2 − 1 − 3 = −7. Entonces P(−1) = −7." }
+    ],
+    "finalAnswer": "P(2) = −1, P(−1) = −7",
+    "pedagogicalNote": "Al evaluar con valores negativos, los paréntesis son esenciales: (−1)³ = −1, no 1. Y (−1)² = 1, no −1.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 4: Valor numérico",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Practicar la evaluación numérica con valores positivos y negativos"
+      }
+    ]
+  },
+  {
+    "id": "example-operaciones-polinomios-1",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "problem": "Calcular (3x² − 2x + 1) − (x² + 4x − 3)",
+    "steps": [
+      { "order": 1, "explanation": "La resta de polinomios es sumar el opuesto: (3x² − 2x + 1) + (−x² − 4x + 3)." },
+      { "order": 2, "explanation": "Agrupamos términos del mismo grado: 3x² + (−x²) = 2x²." },
+      { "order": 3, "explanation": "Para grado 1: −2x + (−4x) = −6x." },
+      { "order": 4, "explanation": "Para el término constante: 1 + 3 = 4. Resultado: 2x² − 6x + 4." }
+    ],
+    "finalAnswer": "2x² − 6x + 4",
+    "pedagogicalNote": "El error más frecuente es no cambiar el signo de TODOS los términos del segundo polinomio. Verificar dos veces: −(−3) = +3, no −3.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 9: Suma y resta de polinomios",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar la correcta distribución del signo negativo en la resta de polinomios"
+      }
+    ]
+  },
+  {
+    "id": "example-operaciones-polinomios-2",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "problem": "Multiplicar (2x + 1)(x − 3)",
+    "steps": [
+      { "order": 1, "explanation": "Aplicamos la propiedad distributiva (método FOIL): (2x)(x) + (2x)(−3) + (1)(x) + (1)(−3)." },
+      { "order": 2, "explanation": "Resolvemos cada producto: 2x² − 6x + x − 3." },
+      { "order": 3, "explanation": "Agrupamos términos semejantes: −6x + x = −5x." },
+      { "order": 4, "explanation": "Resultado final: 2x² − 5x − 3." }
+    ],
+    "finalAnswer": "2x² − 5x − 3",
+    "pedagogicalNote": "El término cruzado −6x + x = −5x es donde ocurren más errores de signo. Verificar cada producto parcial y el signo del término medio al combinar.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 9: Multiplicación de polinomios",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar la multiplicación de binomios con énfasis en los signos del término cruzado"
+      }
+    ]
+  },
+  {
+    "id": "example-ruffini-resto-1",
+    "skillId": "mat.u2.ruffini_resto",
+    "problem": "Usando el teorema del resto, calcular el residuo de dividir P(x) = x³ − 2x + 1 por (x − 2)",
+    "steps": [
+      { "order": 1, "explanation": "El teorema del resto dice: el residuo de dividir P(x) por (x − a) es P(a). Aquí el divisor es (x − 2), así que a = 2." },
+      { "order": 2, "explanation": "Evaluamos P(2): P(2) = 2³ − 2(2) + 1 = 8 − 4 + 1." },
+      { "order": 3, "explanation": "Resultado: P(2) = 5. Por lo tanto, el residuo de la división es 5." }
+    ],
+    "finalAnswer": "5",
+    "pedagogicalNote": "El teorema del resto evita hacer toda la división. Solo hay que evaluar el polinomio en x = a. Error frecuente: evaluar en x = −a en vez de x = a.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 11: Teorema del resto",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar la aplicación directa del teorema del resto sin efectuar la división"
+      }
+    ]
+  },
+  {
+    "id": "example-ruffini-resto-2",
+    "skillId": "mat.u2.ruffini_resto",
+    "problem": "Aplicar la regla de Ruffini para dividir P(x) = 2x³ − 5x² + x − 2 por (x − 3)",
+    "steps": [
+      { "order": 1, "explanation": "Coeficientes de P(x) en orden decreciente: [2, −5, 1, −2]. No hay grados faltantes. El valor a usar es a = 3 (porque el divisor es x − 3)." },
+      { "order": 2, "explanation": "Bajamos el 2. Multiplicamos 2×3=6, sumamos a −5: −5+6=1. Multiplicamos 1×3=3, sumamos a 1: 1+3=4. Multiplicamos 4×3=12, sumamos a −2: −2+12=10." },
+      { "order": 3, "explanation": "Cociente: [2, 1, 4] → 2x² + x + 4. Resto: 10. Verificación con teorema del resto: P(3)=2(27)−5(9)+3−2=54−45+3−2=10 ✓." }
+    ],
+    "finalAnswer": "Cociente: 2x² + x + 4, Resto: 10",
+    "pedagogicalNote": "La regla de Ruffini requiere escribir TODOS los coeficientes, incluso ceros para grados faltantes. El cociente siempre tiene un grado menos que el dividendo.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 10: Regla de Ruffini",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar el procedimiento completo de Ruffini paso a paso con verificación mediante el teorema del resto"
+      }
+    ]
+  }
+]

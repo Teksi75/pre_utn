@@ -1,0 +1,108 @@
+[
+  {
+    "id": "theory-polinomios-basico",
+    "skillId": "mat.u2.polinomios_basico",
+    "title": "Polinomios: definición, clasificación y valor numérico",
+    "summary": "Introducción a los polinomios como expresiones algebraicas formadas por monomios. Se estudia su definición formal, la clasificación por grado y número de términos, la evaluación numérica, el concepto de raíz, el ordenamiento y la identidad de polinomios.",
+    "conceptBlocks": [
+      {
+        "id": "concept-pol-definicion",
+        "title": "1. Definición de polinomio",
+        "body": "Un polinomio en la variable x es una expresión de la forma P(x)=aₙxⁿ+aₙ₋₁xⁿ⁻¹+...+a₁x+a₀, donde los coeficientes aᵢ son números reales y los exponentes son enteros no negativos. Cada término aᵢxⁱ es un monomio. El polinomio es una suma finita de monomios."
+      },
+      {
+        "id": "concept-pol-grado",
+        "title": "2. Grado de un polinomio",
+        "body": "El grado de un polinomio es el mayor exponente de la variable cuyo coeficiente es distinto de cero. El polinomio nulo (todos los coeficientes cero) no tiene grado definido. Ejemplo: en P(x)=3x⁴+2x²−1, el grado es 4. Un polinomio de grado 0 es constante; de grado 1 es lineal; de grado 2 es cuadrático; de grado 3 es cúbico."
+      },
+      {
+        "id": "concept-pol-valor-numerico",
+        "title": "3. Valor numérico y raíces",
+        "body": "El valor numérico de P(x) para x=a es el número que se obtiene al sustituir x por a y operar. Se denota P(a). Una raíz (o cero) del polinomio es un valor a tal que P(a)=0. Ejemplo: para P(x)=x²−5x+6, P(2)=4−10+6=0, así que 2 es raíz."
+      },
+      {
+        "id": "concept-pol-orden",
+        "title": "4. Ordenamiento de polinomios",
+        "body": "Los polinomios se ordenan en forma decreciente (de mayor a menor grado) o creciente (de menor a mayor grado). La forma estándar es la decreciente: P(x)=aₙxⁿ+...+a₀. Ejemplo: 2x+5x³−1 se ordena como 5x³+2x−1."
+      },
+      {
+        "id": "concept-pol-igualdad",
+        "title": "5. Igualdad y polinomios opuestos",
+        "body": "Dos polinomios son iguales si tienen los mismos coeficientes para cada grado. Dos polinomios son opuestos si la suma de ambos es el polinomio nulo. El opuesto de P(x) es −P(x), que se obtiene cambiando el signo de todos los coeficientes."
+      }
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulos 1-8: Definición, grado, valor numérico, raíces, orden, igualdad, opuesto",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Introducir la definición formal de polinomio, clasificación por grado y número de términos, evaluación numérica y concepto de raíz como fundamento para operaciones posteriores"
+      }
+    ],
+    "pageReferences": "págs. 3-5"
+  },
+  {
+    "id": "theory-operaciones-polinomios",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "title": "Operaciones con polinomios: suma, resta, multiplicación y división",
+    "summary": "Se estudian las cuatro operaciones fundamentales entre polinomios: suma y resta (combinando términos semejantes), multiplicación (propiedad distributiva y producto de binomios) y división larga como procedimiento algorítmico.",
+    "conceptBlocks": [
+      {
+        "id": "concept-op-suma-resta",
+        "title": "1. Suma y resta de polinomios",
+        "body": "Para sumar o restar polinomios, se combinan los coeficientes de los términos del mismo grado. La resta P(x)−Q(x) equivale a sumar el opuesto: P(x)+(−Q(x)). Es fundamental distribuir el signo negativo a TODOS los términos del segundo polinomio. Ejemplo: (3x²−2x+1)−(x²+4x−3)=3x²−2x+1−x²−4x+3=2x²−6x+4."
+      },
+      {
+        "id": "concept-op-multiplicacion",
+        "title": "2. Multiplicación de polinomios",
+        "body": "Se aplica la propiedad distributiva: cada término de un polinomio se multiplica por cada término del otro. Luego se agrupan los términos semejantes. Al multiplicar monomios, se multiplican los coeficientes y se suman los exponentes: (axᵐ)(bxⁿ)=abxᵐ⁺ⁿ. Casos especiales: cuadrado de binomio (a+b)²=a²+2ab+b²; producto de binomios conjugados (a+b)(a−b)=a²−b²."
+      },
+      {
+        "id": "concept-op-division",
+        "title": "3. División larga de polinomios (procedimiento)",
+        "body": "La división de polinomios sigue un algoritmo similar a la división numérica: se divide el primer término del dividendo por el primer término del divisor, se multiplica el cociente parcial por el divisor, se resta del dividendo, y se repite con el resto hasta que el grado del resto sea menor que el grado del divisor. La división se expresa como: Dividendo = Divisor × Cociente + Resto, con grado(Resto) < grado(Divisor)."
+      }
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 9: Operaciones con polinomios — suma, resta, multiplicación, división",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar las operaciones entre polinomios con énfasis en la distribución del signo negativo y la combinación correcta de términos semejantes"
+      }
+    ],
+    "pageReferences": "págs. 5-7"
+  },
+  {
+    "id": "theory-ruffini-resto",
+    "skillId": "mat.u2.ruffini_resto",
+    "title": "Regla de Ruffini y teorema del resto",
+    "summary": "La regla de Ruffini es un método abreviado para dividir polinomios cuando el divisor es de la forma (x−a). El teorema del resto establece que el residuo de dividir P(x) por (x−a) es exactamente P(a), lo que permite calcular residuos sin efectuar la división completa.",
+    "conceptBlocks": [
+      {
+        "id": "concept-ruffini-procedimiento",
+        "title": "1. Regla de Ruffini: procedimiento",
+        "body": "Para dividir P(x) por (x−a) usando Ruffini: (1) se escriben los coeficientes de P(x) en orden decreciente, incluyendo ceros para grados faltantes; (2) se escribe el valor a a la izquierda; (3) se baja el primer coeficiente; (4) se multiplica por a y se suma al siguiente coeficiente, repitiendo hasta el último. El último número obtenido es el resto; los anteriores son los coeficientes del cociente (de un grado menor que P)."
+      },
+      {
+        "id": "concept-teorema-resto",
+        "title": "2. Teorema del resto",
+        "body": "El residuo de dividir P(x) por (x−a) es igual a P(a). Esto significa que NO es necesario hacer la división para conocer el resto: basta evaluar el polinomio en x=a. Si el resto es cero, entonces (x−a) es factor de P(x), y a es raíz del polinomio. Ejemplo: para P(x)=x³−2x+1 dividido por (x−2), el resto es P(2)=8−4+1=5."
+      },
+      {
+        "id": "concept-ruffini-signo",
+        "title": "3. Atención al signo de a en Ruffini",
+        "body": "Error frecuente: al dividir por (x−a) se usa a en la regla de Ruffini. Pero si el divisor es (x+a), debe usarse −a. Esto es porque (x+a)=(x−(−a)). Confundir el signo produce cociente y resto incorrectos. Verificar siempre: escribir el divisor como (x−a) e identificar correctamente el valor de a."
+      }
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulos 10-11: Regla de Ruffini y Teorema del resto",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar la regla de Ruffini como método abreviado de división y el teorema del resto como herramienta para verificar raíces sin dividir"
+      }
+    ],
+    "pageReferences": "págs. 7-9"
+  }
+]

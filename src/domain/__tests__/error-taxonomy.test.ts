@@ -94,6 +94,12 @@ describe("Error Taxonomy", () => {
       expect(tagsByUnit.get(2)?.map((tag) => tag.id)).toEqual([
         "u2_aislamiento_variable",
         "u2_signo_al_mover",
+        "u2_signo_operacion",
+        "u2_termino_semejante",
+        "u2_ruffini_signo_a",
+        "u2_grado_incorrecto",
+        "u2_termino_faltante",
+        "u2_factorizacion_incompleta",
       ]);
       expect(tagsByUnit.get(3)?.map((tag) => tag.id)).toEqual([
         "u3_signo_desigualdad",
@@ -202,6 +208,25 @@ describe("Error Taxonomy", () => {
         expect(found, `Tag ${tagId} should be defined in the taxonomy`).toBeDefined();
         expect(found!.id).toBe(tagId);
         expect(found!.unit).toBe(1);
+        expect(found!.description).toBeTruthy();
+        expect(found!.examples.length).toBeGreaterThan(0);
+      }
+    });
+
+    test("each new U2 polynomial error tag is lookupable", () => {
+      const newTags = [
+        "u2_signo_operacion",
+        "u2_termino_semejante",
+        "u2_ruffini_signo_a",
+        "u2_grado_incorrecto",
+        "u2_termino_faltante",
+        "u2_factorizacion_incompleta",
+      ];
+      for (const tagId of newTags) {
+        const found = lookupTag(tagId);
+        expect(found, `Tag ${tagId} should be defined in the taxonomy`).toBeDefined();
+        expect(found!.id).toBe(tagId);
+        expect(found!.unit).toBe(2);
         expect(found!.description).toBeTruthy();
         expect(found!.examples.length).toBeGreaterThan(0);
       }
