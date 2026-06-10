@@ -200,3 +200,39 @@ describe("PracticeFeedbackPhase component structure (source assertions)", () => 
     expect(hasAria).toBe(true);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Source-code assertions: page.tsx canRetry wiring (CRITICAL-1 guard)
+// ---------------------------------------------------------------------------
+
+function practicePageSource(): string {
+  return readFileSync(
+    join(repoRoot, "src/app/practice/page.tsx"),
+    "utf8",
+  );
+}
+
+describe("page.tsx canRetry wiring (CRITICAL-1 guard)", () => {
+  it("does NOT add +1 to the stored attemptIndex (off-by-one bug guard)", () => {
+    const src = practicePageSource();
+    // Locate the canRetry prop region
+    const canRetryIdx = src.indexOf("canRetry={");
+    expect(canRetryIdx).toBeGreaterThan(0);
+    const canRetryRegion = src.slice(canRetryIdx, canRetryIdx + 350);
+    // The buggy pattern: (map.get(...) ?? 0) + 1
+    // After the fix this should NOT be present.
+    const hasBuggyIncrement = canRetryRegion.includes("?? 0) + 1");
+    expect(hasBuggyIncrement).toBe(false);
+  });
+
+  it("page.tsx reads attemptIndex directly from the Map with default 1", () => {
+    const src = practicePageSource();
+    const canRetryIdx = src.indexOf("canRetry={");
+    const canRetryRegion = src.slice(canRetryIdx, canRetryIdx + 350);
+    // The correct pattern: map.get(...) ?? 1 (default value, not ?? 0)
+    // No "+ 1" after the get/default. The closing paren may be on a
+    // separate line, but the default must be 1 — not 0.
+    const hasCorrectDefault = canRetryRegion.includes("?? 1,");
+    expect(hasCorrectDefault).toBe(true);
+  });
+});

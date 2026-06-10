@@ -156,9 +156,9 @@ export default function PracticePage() {
             canRetry={
               flow.currentExercise
                 ? canRetryExercise(
-                    (flow.attemptIndexByExerciseId.get(
+                    flow.attemptIndexByExerciseId.get(
                       flow.currentExercise.id,
-                    ) ?? 0) + 1,
+                    ) ?? 1,
                   )
                 : true
             }
