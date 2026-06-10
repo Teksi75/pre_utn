@@ -101,9 +101,16 @@
         "mergeCommit": "e3dae59",
         "summary": "PR-1 (domain module): polynomial-evaluator with strict TDD. Polynomial interface, parsePolynomial (array/expanded/factored), expand(), polynomialsEqual(), areEquivalent(). Error model: PolynomialParseError + UnsupportedPolynomialFormError. Route U2 symbolic exercises via areEquivalent. 79 new tests (1198 total), typecheck clean, build green. GGA bypass: Codex CLI not on Windows."
       },
-      "summary": "PR-1 merged. PR-2 (content + catalog) and PR-3 (integration + QA) pending."
+      "pr2": {
+        "branch": "feat/unit-2-content",
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "be45a68",
+        "summary": "PR-2 (content + catalog): 6 u2_* error tags in taxonomy, 6 U2 pattern detectors in error-tagging, 3 theory nodes + 6 worked examples + 6 feedback mappings (unit-2.json), 12 new U2 exercises across polinomios_basico/operaciones_polinomios/ruffini_resto, ex.u2.gauss.1 relocated to mat.u3.sistemas, 2 missing skill deps (gauss, mcm_mcd), content loaders extended for unit-2, 45 new tests (1243 total). 17 files changed, ~1307 insertions. GGA bypass: Codex CLI not on Windows."
+      },
+      "summary": "PR-1 and PR-2 merged. PR-3 (integration + QA, archive) pending."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-10T18:15:00-03:00"
+  "lastAudit": "2026-06-10T18:35:00-03:00"
 }
