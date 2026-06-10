@@ -11,7 +11,7 @@ Este repositorio construye una app de preparación para el ingreso a Ingeniería
 - Mantener `src/domain/` libre de React, Next.js, Supabase y efectos secundarios.
 - Usar el material canónico como referencia pedagógica válida. Preferir ejercicios/ejemplos variados para aportar valor; repetir uno canónico solo cuando la repetición tenga intención didáctica explícita.
 - Registrar decisiones, supuestos y deuda técnica relevante en ENGRAM.
-- Pasar GGA antes de cerrar tareas o commits.
+- GGA corre automáticamente en pre-commit vía `.gga` + `AGENTS.md`. La instalación es por máquina: ver `docs/qa/gga-setup.md`. Para saltarse el gate en emergencias: `git commit --no-verify` (dejar comentario en el PR).
 
 ## Verificación esperada
 

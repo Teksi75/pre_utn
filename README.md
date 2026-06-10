@@ -79,6 +79,10 @@ pnpm run build
 
 Abrir `http://localhost:3000` para usar la app en desarrollo.
 
+## Quality gate (GGA)
+
+GGA corre automáticamente en `pre-commit` revisando los cambios contra las reglas de `AGENTS.md`. La instalación del binario y del hook es por máquina: ver [docs/qa/gga-setup.md](./docs/qa/gga-setup.md) y el [checklist manual](./docs/qa/gga-checklist.md).
+
 ## Modo QA de contenido
 
 Para revisar una skill sin completar sus prerrequisitos, activar el modo QA de contenido en desarrollo:

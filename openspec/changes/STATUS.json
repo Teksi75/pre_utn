@@ -118,6 +118,14 @@
         "summary": "PR-3 (integration + QA): U1 regression test (24 tests, u1-regression.test.ts), pedagogical QA report (qa-report.md, 0 high/0 medium findings, 1 low), full gate green (1267 tests, typecheck, build), AGENTS.md no-op, audit:branches informational, tasks.md updated. GGA bypassed on Windows (pending Linux review). Total: 24 new tests, ~351 lines diff."
       },
       "summary": "3-skill slice (polinomios_basico, operaciones_polinomios, ruffini_resto) + 12 exercises + 6 u2_* error tags + polynomial-evaluator module + content JSON + skill deps + gauss.1 relocation. 3 chained PRs (350 + 480 + 100 lines diff), 148 new tests (1119→1267), 0 CRITICAL findings in verify, 2 WARNING (GGA pending Linux review, pre-existing zombie branch out of scope). Ready for U2-Factorización slice next."
+    },
+    "setup-gga-gate": {
+      "status": "done",
+      "branch": null,
+      "completedAt": "2026-06-10",
+      "mergedTo": "main",
+      "mergeCommit": "pending",
+      "summary": "Recovered via merge on 2026-06-10. Originally branched on 2026-06-09 (commits 5ce51dd, 09789dc) but never merged to main. Recovered deliverables: 2 new specs in openspec/specs/ (code-review-gate, pre-commit-hooks), 2 QA docs in docs/qa/ (gga-setup.md, gga-checklist.md), and the original change archive at openspec/changes/archive/2026-06-09-setup-gga-gate/. The provider was switched to codex in a later commit (6bedff1), so the .gga content from this branch is superseded."
     }
   },
   "activeBranches": [],
