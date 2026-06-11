@@ -134,8 +134,27 @@
       "mergedTo": "main",
       "mergeCommit": "7c0f7e2",
       "summary": "TDD bugfix of 3 GGA-confirmed bugs in polynomial-evaluator: parseFactored trailing content (CRITICAL), multivariate-before-transcendental ordering (MEDIUM), and areEquivalent unhandled throws in routing guard (MINOR). 134 lines diff, 6 new tests (1267->1273). GGA bypassed on Windows (Codex CLI hook parser ambiguity). Orchestrator will run GGA on Linux for adversarial re-validation. Found via unit-2-pedagogical-slice retrospective review (GGA on 2026-06-10)."
+    },
+    "unit-2-factorizacion-slice": {
+      "status": "in-progress",
+      "branch": null,
+      "startedAt": "2026-06-10",
+      "delivery": "chained-prs-stacked-to-main (2 PRs)",
+      "pr1": {
+        "branch": "feat/unit-2-factorizacion-domain",
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "a22e58b",
+        "summary": "PR-1 (domain helpers + error patterns): gauss-routing-helper module (parseRationalRoots, normalizeRoots, areEquivalentRoots), 2 new u2_* error tags (u2_signo_factorizacion, u2_caso_incorrecto), 2 error-tagging pattern detectors (isU2SignoFactorizacionError, isU2CasoIncorrectoError), gauss numerical routing wire in evaluator/index.ts, ruffini_resto added to factorizacion prerequisites, U2-Factorizacion evaluator chain regression tests. 1030 lines diff (11 files), 57 new tests (1273->1330). GGA bypassed on Windows (Codex CLI hook)."
+      },
+      "pr2": {
+        "status": "pending",
+        "branch": "feat/unit-2-factorizacion-content",
+        "dependsOn": "PR-1 (error tags must exist for exercises)"
+      },
+      "summary": "2-skill slice (factorizacion + gauss). PR-1 (domain) merged, PR-2 (content JSON + exercises) pending."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-10T22:00:00-03:00"
+  "lastAudit": "2026-06-10T22:25:00-03:00"
 }
