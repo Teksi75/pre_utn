@@ -126,8 +126,16 @@
       "mergedTo": "main",
       "mergeCommit": "a6ead0d",
       "summary": "Recovered via merge on 2026-06-10 (a6ead0d). Originally branched on 2026-06-09 (commits 5ce51dd, 09789dc) but never merged to main. Recovered deliverables: 2 new specs in openspec/specs/ (code-review-gate, pre-commit-hooks), 2 QA docs in docs/qa/ (gga-setup.md, gga-checklist.md), and the original change archive at openspec/changes/archive/2026-06-09-setup-gga-gate/. The provider was switched to codex in a later commit (6bedff1), so the .gga content from this branch is superseded."
+    },
+    "polynomial-evaluator-input-validation": {
+      "status": "done",
+      "branch": null,
+      "completedAt": "2026-06-10",
+      "mergedTo": "main",
+      "mergeCommit": "7c0f7e2",
+      "summary": "TDD bugfix of 3 GGA-confirmed bugs in polynomial-evaluator: parseFactored trailing content (CRITICAL), multivariate-before-transcendental ordering (MEDIUM), and areEquivalent unhandled throws in routing guard (MINOR). 134 lines diff, 6 new tests (1267->1273). GGA bypassed on Windows (Codex CLI hook parser ambiguity). Orchestrator will run GGA on Linux for adversarial re-validation. Found via unit-2-pedagogical-slice retrospective review (GGA on 2026-06-10)."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-10T22:30:00-03:00"
+  "lastAudit": "2026-06-10T22:00:00-03:00"
 }
