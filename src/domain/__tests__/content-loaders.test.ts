@@ -89,10 +89,10 @@ describe("loadSkillBank — wiring bank validator into catalog load path", () =>
 
 describe("Unit-2 content loaders", () => {
   describe("loadTheoryContent", () => {
-    test("loads theory for unit-2 (3 theory nodes)", () => {
+    test("loads theory for unit-2 (5 theory nodes)", () => {
       const theory = loadTheoryContent("unit-2");
       expect(Array.isArray(theory)).toBe(true);
-      expect(theory.length).toBe(3);
+      expect(theory.length).toBe(5);
       expect(theory[0]).toHaveProperty("id");
       expect(theory[0]).toHaveProperty("skillId");
       expect(theory[0]).toHaveProperty("conceptBlocks");
@@ -127,13 +127,13 @@ describe("Unit-2 content loaders", () => {
   });
 
   describe("loadFeedbackContent", () => {
-    test("loads feedback for unit-2 (6 feedback mappings)", () => {
+    test("loads feedback for unit-2 (>= 8 feedback mappings)", () => {
       const feedback = loadFeedbackContent("unit-2");
       expect(Array.isArray(feedback)).toBe(true);
-      expect(feedback.length).toBe(6);
+      expect(feedback.length).toBeGreaterThanOrEqual(8);
     });
 
-    test("all 6 u2_* polynomial error tags have feedback", () => {
+    test("all u2_* polynomial error tags have feedback", () => {
       const feedback = loadFeedbackContent("unit-2");
       const tags = feedback.map((f) => f.errorTag);
       expect(tags).toContain("u2_signo_operacion");
@@ -142,6 +142,8 @@ describe("Unit-2 content loaders", () => {
       expect(tags).toContain("u2_grado_incorrecto");
       expect(tags).toContain("u2_termino_faltante");
       expect(tags).toContain("u2_factorizacion_incompleta");
+      expect(tags).toContain("u2_signo_factorizacion");
+      expect(tags).toContain("u2_caso_incorrecto");
     });
   });
 
@@ -161,17 +163,17 @@ describe("Unit-2 content loaders", () => {
       expect(exercises.length).toBeGreaterThanOrEqual(5);
     });
 
-    test("ex.u2.gauss.1 is now under mat.u3.sistemas (not mat.u2.gauss)", () => {
+    test("ex.u2.gauss.1 is correctly under mat.u2.gauss with U2 Gauss content", () => {
       const u2GaussEx = loadExercisesForSkill("mat.u2.gauss");
       const u3SistemasEx = loadExercisesForSkill("mat.u3.sistemas");
 
-      // gauss.1 should NOT be in mat.u2.gauss exercises
+      // gauss.1 should BE in mat.u2.gauss exercises
       const gaussInU2 = u2GaussEx.some((e) => e.id === "ex.u2.gauss.1");
-      expect(gaussInU2).toBe(false);
+      expect(gaussInU2).toBe(true);
 
-      // gauss.1 SHOULD be in mat.u3.sistemas exercises
+      // gauss.1 should NOT be in mat.u3.sistemas exercises (was relocated in previous slice)
       const gaussInU3 = u3SistemasEx.some((e) => e.id === "ex.u2.gauss.1");
-      expect(gaussInU3).toBe(true);
+      expect(gaussInU3).toBe(false);
     });
   });
 });

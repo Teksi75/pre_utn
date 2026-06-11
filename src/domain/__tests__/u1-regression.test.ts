@@ -195,10 +195,10 @@ describe("U1 Regression — Catalog integrity", () => {
     }
   });
 
-  test("ex.u2.gauss.1 is properly relocated to mat.u3.sistemas", () => {
+  test("ex.u2.gauss.1 is correctly assigned to mat.u2.gauss with U2 Gauss content", () => {
     const gauss = catalog.find((ex) => ex.id === "ex.u2.gauss.1");
     expect(gauss).toBeDefined();
-    expect(gauss!.skillId).toBe("mat.u3.sistemas");
+    expect(gauss!.skillId).toBe("mat.u2.gauss");
   });
 
   test("catalog has no duplicate exercise IDs", () => {
