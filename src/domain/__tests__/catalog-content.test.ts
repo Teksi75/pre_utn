@@ -280,3 +280,102 @@ describe("Potencias y raíces exercise catalog", () => {
     }
   });
 });
+
+describe("Unit-2 theory normalization", () => {
+  test("loads at least 7 theory nodes for unit-2", () => {
+    const nodes = loadTheoryContent("unit-2");
+    expect(nodes.length).toBeGreaterThanOrEqual(7);
+  });
+
+  test("every U2 node has concepts (normalised from conceptBlocks)", () => {
+    const nodes = loadTheoryContent("unit-2");
+    for (const node of nodes) {
+      expect(Array.isArray(node.concepts)).toBe(true);
+      expect(node.concepts.length).toBeGreaterThanOrEqual(1);
+    }
+  });
+
+  test("every U2 node has notation, commonMistakes, and practicePrompts arrays", () => {
+    const nodes = loadTheoryContent("unit-2");
+    for (const node of nodes) {
+      expect(Array.isArray(node.notation)).toBe(true);
+      expect(Array.isArray(node.commonMistakes)).toBe(true);
+      expect(Array.isArray(node.practicePrompts)).toBe(true);
+    }
+  });
+
+  test("every U2 node passes schema-level validation (concepts, canonicalTrace, id)", () => {
+    const nodes = loadTheoryContent("unit-2");
+    for (const node of nodes) {
+      // Validate id is present
+      expect(node.id).toBeTruthy();
+      // Validate concepts are populated from conceptBlocks
+      expect(node.concepts.length).toBeGreaterThanOrEqual(1);
+      // Validate canonicalTrace is present
+      expect(node.canonicalTrace.length).toBeGreaterThanOrEqual(1);
+      // Validate notation/commonMistakes/practicePrompts exist as arrays (won't crash map())
+      expect(Array.isArray(node.notation)).toBe(true);
+      expect(Array.isArray(node.commonMistakes)).toBe(true);
+      expect(Array.isArray(node.practicePrompts)).toBe(true);
+    }
+  });
+
+  test("U2 nodes with non-empty notation/commonMistakes validate successfully", () => {
+    const nodes = loadTheoryContent("unit-2");
+    const nodesWithContent = nodes.filter(
+      (n) => n.notation.length > 0 && n.commonMistakes.length > 0
+    );
+    for (const node of nodesWithContent) {
+      const result = validateTheoryNode(node);
+      expect(result.ok).toBe(true);
+    }
+  });
+
+  test("U2 theory nodes cover all pilot skills", () => {
+    const nodes = loadTheoryContent("unit-2");
+    const skillIds = nodes.map((n) => n.skillId);
+    expect(skillIds).toContain("mat.u2.polinomios_basico");
+    expect(skillIds).toContain("mat.u2.operaciones_polinomios");
+    expect(skillIds).toContain("mat.u2.ruffini_resto");
+    expect(skillIds).toContain("mat.u2.factorizacion");
+    expect(skillIds).toContain("mat.u2.gauss");
+    expect(skillIds).toContain("mat.u2.mcm_mcd_polinomios");
+    expect(skillIds).toContain("mat.u2.ecuaciones_fraccionarias");
+  });
+
+  test("each U2 theory node has a unique skillId", () => {
+    const nodes = loadTheoryContent("unit-2");
+    const skillIds = nodes.map((n) => n.skillId);
+    expect(new Set(skillIds).size).toBe(nodes.length);
+  });
+
+  test("each U2 theory node has canonicalTrace entries", () => {
+    const nodes = loadTheoryContent("unit-2");
+    for (const node of nodes) {
+      expect(node.canonicalTrace.length).toBeGreaterThanOrEqual(1);
+    }
+  });
+
+  test("U2 normalization does not break U1 behavior", () => {
+    const u1Nodes = loadTheoryContent("unit-1");
+    expect(u1Nodes.length).toBeGreaterThanOrEqual(4);
+    for (const node of u1Nodes) {
+      const result = validateTheoryNode(node);
+      expect(result.ok).toBe(true);
+      expect(node.concepts.length).toBeGreaterThanOrEqual(1);
+      expect(node.notation.length).toBeGreaterThanOrEqual(1);
+      expect(node.commonMistakes.length).toBeGreaterThanOrEqual(1);
+      expect(node.practicePrompts.length).toBeGreaterThanOrEqual(1);
+    }
+  });
+
+  test("polinomios_basico node has concept blocks from conceptBlocks field", () => {
+    const nodes = loadTheoryContent("unit-2");
+    const polNode = nodes.find((n) => n.skillId === "mat.u2.polinomios_basico");
+    expect(polNode).toBeDefined();
+    // The raw JSON has 5 conceptBlocks; normalization must deliver them as concepts
+    expect(polNode!.concepts.length).toBe(5);
+    expect(polNode!.concepts[0].id).toBe("concept-pol-definicion");
+    expect(polNode!.concepts[0].title).toContain("Definición");
+  });
+});

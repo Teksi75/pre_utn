@@ -1,14 +1,28 @@
 /**
  * Content loaders — loads theory, examples, and feedback from static JSON.
  * No external dependencies. Pure TypeScript.
+ *
+ * All JSON import boundaries use runtime parsing helpers to validate
+ * structure and apply defaults, replacing unchecked `as unknown as`
+ * casts. Malformed JSON produces clear errors at load time rather than
+ * silent type mismatches deep in consumer code.
+ *
+ * Parsing is deferred to each load: raw JSON is stored at import time
+ * and only parsed when a loader function is called. No throws on
+ * import — domain is free of module-initialization side effects.
  */
 
-import type { TheoryNode } from "../models/theory";
-import type { WorkedExample } from "../models/worked-example";
+import type { TheoryNode, ConceptBlock, CanonicalTrace, IntervalVisualExample, SourceUse } from "../models/theory";
+import type { WorkedExample, SolutionStep } from "../models/worked-example";
 import type { FeedbackMapping } from "../feedback/index";
-import type { Exercise } from "../models/exercise";
+import type { Exercise, ExerciseId, ExerciseOption, ExerciseType, Difficulty } from "../models/exercise";
+import type { SkillId } from "../models/skill";
+import type { IntervalModel, IntervalEndpoint } from "../intervals/index";
+import type { IntervalRepresentation, IntervalBound, EndpointInclusion } from "../intervals/representation";
 
-// Static JSON imports
+// Static JSON imports — arrive as TypeScript-inferred shapes.
+// All are stored as `unknown` in RAW_REGISTRY to prevent module-init
+// parsing; runtime helpers validate the shapes on first load.
 import theoryUnit1 from "../../../content/matematica/theory/unit-1.json";
 import theoryUnit2 from "../../../content/matematica/theory/unit-2.json";
 import examplesUnit1 from "../../../content/matematica/examples/unit-1.json";
@@ -19,6 +33,354 @@ import feedbackUnit1ConjuntosNumericos from "../../../content/matematica/feedbac
 import exercisesJson from "../../../content/matematica/exercises.json";
 import conjuntosNumericosExercises from "../../../content/matematica/exercises/conjuntos-numericos.json";
 
+// ---------------------------------------------------------------------------
+// Runtime parsing helpers — validate JSON shapes at the import boundary
+// ---------------------------------------------------------------------------
+
+/** Throw a structured parse error for a malformed JSON object. */
+function failParse(field: string, id: string, detail: string): never {
+  throw new Error(`Parse error at ${field} (id=${id}): ${detail}`);
+}
+
+/**
+ * Validate a value is a non-null, non-array object and return it as
+ * Record<string, unknown>. Replaces every unsafe `x as Record<string, unknown>`
+ * on unvalidated array elements.
+ */
+function parseRecord(value: unknown, context: string): Record<string, unknown> {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    throw new Error(
+      `Parse error at ${context}: expected a non-null, non-array object, got ${typeof value}${Array.isArray(value) ? " (array)" : ""}`
+    );
+  }
+  return value as Record<string, unknown>;
+}
+
+/** Validate a field is a non-null, non-array object. */
+function parseObjectField(raw: Record<string, unknown>, field: string, context: string): Record<string, unknown> {
+  return parseRecord(raw[field], `${context}.${field}`);
+}
+
+/**
+ * Validate an optional field is an array of non-null objects, returning the
+ * array with each element verified as a plain object. Returns undefined if the
+ * field is absent or empty. Used for `intervalRepresentations` and similar
+ * deep-typed arrays.
+ */
+function parseOptionalObjectArray(
+  raw: Record<string, unknown>,
+  field: string,
+  context: string
+): readonly Record<string, unknown>[] | undefined {
+  const v = raw[field];
+  if (v === undefined || v === null) return undefined;
+  if (!Array.isArray(v)) return undefined;
+  if (v.length === 0) return undefined;
+  return v.map((item, i) => parseRecord(item, `${context}.${field}[${i}]`));
+}
+
+function parseExerciseId(raw: Record<string, unknown>, field: string, id: string): ExerciseId {
+  const value = parseStringField(raw, field, id);
+  if (!/^ex\.u[1-6]\..+\.[a-z0-9-]+$/.test(value)) {
+    failParse(field, id, `invalid ExerciseId format: "${value}"`);
+  }
+  return value as ExerciseId;
+}
+
+function parseExerciseType(raw: Record<string, unknown>, field: string, id: string): ExerciseType {
+  const value = parseStringField(raw, field, id);
+  if (
+    value !== "multiple-choice" &&
+    value !== "true-false" &&
+    value !== "numerical" &&
+    value !== "symbolic" &&
+    value !== "fill-blank" &&
+    value !== "matching" &&
+    value !== "ordering" &&
+    value !== "free-response" &&
+    value !== "graphical"
+  ) {
+    failParse(field, id, `unsupported exercise type: "${value}"`);
+  }
+  if (value === "free-response") {
+    failParse(
+      field,
+      id,
+      "free-response is not allowed for catalog exercises; use structured answer modes"
+    );
+  }
+  return value;
+}
+
+function parseDifficulty(raw: Record<string, unknown>, field: string, id: string): Difficulty {
+  const value = raw[field];
+  if (value !== 1 && value !== 2 && value !== 3 && value !== 4 && value !== 5) {
+    failParse(field, id, `expected difficulty 1-5, got ${String(value)}`);
+  }
+  return value;
+}
+
+/** Assert a field is a non-empty string. */
+function parseStringField(raw: Record<string, unknown>, field: string, id: string): string {
+  const v = raw[field];
+  if (typeof v !== "string" || v.trim().length === 0) {
+    failParse(field, id, `expected non-empty string, got ${typeof v}`);
+  }
+  return v;
+}
+
+/** Runtime-validate a SkillId (mat.u{1-6}.{slug}). */
+function parseSkillId(raw: Record<string, unknown>, field: string, id: string): SkillId {
+  const v = parseStringField(raw, field, id);
+  if (!/^mat\.u[1-6]\.\S+$/.test(v)) {
+    failParse(field, id, `invalid SkillId format: "${v}"`);
+  }
+  return v as SkillId;
+}
+
+/** Parse an optional readonly string array, defaulting to empty. */
+function parseOptionalStringArray(raw: Record<string, unknown>, field: string): readonly string[] {
+  const v = raw[field];
+  if (v === undefined || v === null) return [];
+  if (!Array.isArray(v)) return [];
+  return v.filter((e): e is string => typeof e === "string");
+}
+
+/** Runtime-validate a SourceUse literal. */
+function parseSourceUse(raw: Record<string, unknown>, field: string, id: string): SourceUse {
+  const v = raw[field];
+  if (v === "adapted" || v === "reinforcement" || v === "reference") return v;
+  failParse(field, id, `expected adapted|reinforcement|reference, got ${typeof v} ${v}`);
+}
+
+function parseIntervalEndpoint(raw: Record<string, unknown>, context: string): IntervalEndpoint {
+  const kind = raw.kind;
+  if (kind === "negativeInfinity" || kind === "positiveInfinity") return { kind };
+  if (kind === "finite") {
+    const value = raw.value;
+    if (typeof value !== "number") failParse("value", context, "finite endpoint requires numeric value");
+    return { kind: "finite", value, closed: raw.closed === true };
+  }
+  failParse("kind", context, `invalid interval endpoint kind: ${String(kind)}`);
+}
+
+function parseIntervalModel(raw: Record<string, unknown>, context: string): IntervalModel {
+  return {
+    left: parseIntervalEndpoint(parseObjectField(raw, "left", context), `${context}.left`),
+    right: parseIntervalEndpoint(parseObjectField(raw, "right", context), `${context}.right`),
+  };
+}
+
+function parseIntervalRepresentationBound(raw: Record<string, unknown>, context: string): IntervalBound {
+  const kind = raw.kind;
+  if (kind === "finite") {
+    const value = raw.value;
+    if (typeof value !== "number") failParse("value", context, "finite bound requires numeric value");
+    return { kind, value, label: typeof raw.label === "string" ? raw.label : undefined };
+  }
+  if (kind === "infinity") {
+    const direction = raw.direction;
+    if (direction !== "negative" && direction !== "positive") {
+      failParse("direction", context, `invalid infinity direction: ${String(direction)}`);
+    }
+    return { kind, direction };
+  }
+  failParse("kind", context, `invalid interval representation bound kind: ${String(kind)}`);
+}
+
+function parseEndpointInclusion(raw: Record<string, unknown>, field: string, context: string): EndpointInclusion {
+  const value = raw[field];
+  if (value === "open" || value === "closed") return value;
+  failParse(field, context, `expected open|closed, got ${String(value)}`);
+}
+
+function parseIntervalRepresentation(raw: Record<string, unknown>, context: string): IntervalRepresentation {
+  return {
+    id: parseStringField(raw, "id", context),
+    notation: parseStringField(raw, "notation", context),
+    setBuilderLabel: parseStringField(raw, "setBuilderLabel", context),
+    lower: parseIntervalRepresentationBound(parseObjectField(raw, "lower", context), `${context}.lower`),
+    upper: parseIntervalRepresentationBound(parseObjectField(raw, "upper", context), `${context}.upper`),
+    lowerInclusion: parseEndpointInclusion(raw, "lowerInclusion", context),
+    upperInclusion: parseEndpointInclusion(raw, "upperInclusion", context),
+    ariaLabel: parseStringField(raw, "ariaLabel", context),
+  };
+}
+
+function parseOptionalIntervalRepresentations(raw: Record<string, unknown>, field: string, context: string): readonly IntervalRepresentation[] | undefined {
+  const values = parseOptionalObjectArray(raw, field, context);
+  if (!values) return undefined;
+  return values.map((value, index) => parseIntervalRepresentation(value, `${context}.${field}[${index}]`));
+}
+
+function parseExerciseOption(raw: unknown, context: string): ExerciseOption {
+  if (typeof raw === "string") return raw;
+  const record = parseRecord(raw, context);
+  const value = parseStringField(record, "value", context);
+  const label = parseStringField(record, "label", context);
+  const intervalRepresentation = record.intervalRepresentation === undefined
+    ? undefined
+    : parseIntervalRepresentation(parseObjectField(record, "intervalRepresentation", context), `${context}.intervalRepresentation`);
+  return intervalRepresentation ? { value, label, intervalRepresentation } : { value, label };
+}
+
+/** Runtime-parse a CanonicalTrace object. */
+function parseCanonicalTrace(raw: Record<string, unknown>, id: string): CanonicalTrace {
+  return {
+    path: parseStringField(raw, "path", id),
+    section: typeof raw.section === "string" ? raw.section : undefined,
+    sourceUse: parseSourceUse(raw, "sourceUse", id),
+    pedagogicalIntent: parseStringField(raw, "pedagogicalIntent", id),
+  };
+}
+
+/** Runtime-parse a readonly CanonicalTrace array (defaults to empty). */
+function parseCanonicalTraceArray(raw: Record<string, unknown>, id: string): readonly CanonicalTrace[] {
+  const v = raw.canonicalTrace;
+  if (!Array.isArray(v)) return [];
+  return v.map((t, i) =>
+    parseCanonicalTrace(parseRecord(t, `${id}.canonicalTrace[${i}]`), id)
+  );
+}
+
+/** Runtime-parse a ConceptBlock from a raw object. */
+function parseConceptBlock(raw: Record<string, unknown>, parentId: string, index: number): ConceptBlock {
+  const id = typeof raw.id === "string" ? raw.id : `${parentId}-concept-${index}`;
+  return {
+    id,
+    title: parseStringField(raw, "title", id),
+    body: parseStringField(raw, "body", id),
+    intervalRepresentations: parseOptionalIntervalRepresentations(raw, "intervalRepresentations", id),
+  };
+}
+
+/** Runtime-parse an IntervalVisualExample from a raw object. */
+function parseIntervalVisualExample(
+  raw: Record<string, unknown>,
+  parentId: string,
+  index: number
+): IntervalVisualExample {
+  const id = typeof raw.id === "string" ? raw.id : `${parentId}-vis-${index}`;
+  return {
+    id,
+    title: parseStringField(raw, "title", id),
+    description: parseStringField(raw, "description", id),
+    interval: parseIntervalModel(parseObjectField(raw, "interval", id), `${id}.interval`),
+  };
+}
+
+/** Runtime-parse an optional readonly IntervalVisualExample array. */
+function parseOptionalIntervalVisuals(
+  raw: Record<string, unknown>,
+  parentId: string
+): readonly IntervalVisualExample[] | undefined {
+  const v = raw.intervalVisuals;
+  if (!Array.isArray(v) || v.length === 0) return undefined;
+  return v.map((iv, i) =>
+    parseIntervalVisualExample(
+      parseRecord(iv, `${parentId}.intervalVisuals[${i}]`),
+      parentId,
+      i
+    )
+  );
+}
+
+/** Runtime-parse a WorkedExample from a raw object. */
+function parseWorkedExample(raw: Record<string, unknown>, index: number): WorkedExample {
+  const id = typeof raw.id === "string" ? raw.id : `worked-ex-${index}`;
+  const stepsRaw = raw.steps;
+  const steps: SolutionStep[] = [];
+  if (Array.isArray(stepsRaw)) {
+    for (let i = 0; i < stepsRaw.length; i++) {
+      const s = parseRecord(stepsRaw[i], `${id}.steps[${i}]`);
+      steps.push({
+        order: typeof s.order === "number" ? s.order : i + 1,
+        explanation: parseStringField(s, "explanation", `${id}-step${i}`),
+        intervalRepresentations: parseOptionalIntervalRepresentations(s, "intervalRepresentations", `${id}-step${i}`),
+      });
+    }
+  }
+  return {
+    id,
+    skillId: parseSkillId(raw, "skillId", id),
+    problem: parseStringField(raw, "problem", id),
+    steps,
+    finalAnswer: parseStringField(raw, "finalAnswer", id),
+    pedagogicalNote: parseStringField(raw, "pedagogicalNote", id),
+    canonicalTrace: parseCanonicalTraceArray(raw, id),
+  };
+}
+
+/** Runtime-parse a WorkedExample array. */
+function parseWorkedExampleArray(raw: unknown, sourceName: string): readonly WorkedExample[] {
+  if (!Array.isArray(raw)) {
+    throw new Error(`Parse error: ${sourceName} is not an array`);
+  }
+  return raw.map((e, i) => parseWorkedExample(parseRecord(e, `${sourceName}[${i}]`), i));
+}
+
+/** Runtime-parse a FeedbackMapping from a raw object. */
+function parseFeedbackMapping(raw: Record<string, unknown>, index: number): FeedbackMapping {
+  const id = typeof raw.errorTag === "string" ? raw.errorTag : `feedback-${index}`;
+  const type = raw.type;
+  if (type !== "corrective" && type !== "conceptual" && type !== "procedural") {
+    failParse("type", id, `expected corrective|conceptual|procedural, got ${typeof type} ${type}`);
+  }
+  return {
+    errorTag: parseStringField(raw, "errorTag", id),
+    type,
+    message: parseStringField(raw, "message", id),
+    recoveryTarget: typeof raw.recoveryTarget === "string" ? raw.recoveryTarget : undefined,
+  };
+}
+
+/** Runtime-parse a FeedbackMapping array. */
+function parseFeedbackMappingArray(raw: unknown, sourceName: string): readonly FeedbackMapping[] {
+  if (!Array.isArray(raw)) {
+    throw new Error(`Parse error: ${sourceName} is not an array`);
+  }
+  return raw.map((e, i) => parseFeedbackMapping(parseRecord(e, `${sourceName}[${i}]`), i));
+}
+
+/** Runtime-parse a TheoryNode from a raw object. */
+function parseTheoryNode(raw: Record<string, unknown>, index: number): TheoryNode {
+  const id = typeof raw.id === "string" ? raw.id : `theory-node-${index}`;
+  const intervalVisuals = parseOptionalIntervalVisuals(raw, id);
+
+  // Normalize: prefer `concepts`, fall back to `conceptBlocks`, else empty.
+  const conceptsRaw: unknown[] = Array.isArray(raw.concepts)
+    ? raw.concepts
+    : Array.isArray(raw.conceptBlocks)
+      ? raw.conceptBlocks
+      : [];
+  const concepts: ConceptBlock[] = conceptsRaw.map((c: unknown, i: number) =>
+    parseConceptBlock(parseRecord(c, `${id}.concepts[${i}]`), id, i)
+  );
+
+  return {
+    id,
+    skillId: parseSkillId(raw, "skillId", id),
+    concepts,
+    notation: parseOptionalStringArray(raw, "notation"),
+    commonMistakes: parseOptionalStringArray(raw, "commonMistakes"),
+    practicePrompts: parseOptionalStringArray(raw, "practicePrompts"),
+    canonicalTrace: parseCanonicalTraceArray(raw, id),
+    ...(intervalVisuals !== undefined ? { intervalVisuals } : {}),
+  };
+}
+
+/** Runtime-parse a TheoryNode array. */
+function parseTheoryNodeArray(raw: unknown, sourceName: string): readonly TheoryNode[] {
+  if (!Array.isArray(raw)) {
+    throw new Error(`Parse error: ${sourceName} is not an array`);
+  }
+  return raw.map((n, i) => parseTheoryNode(parseRecord(n, `${sourceName}[${i}]`), i));
+}
+
+// ---------------------------------------------------------------------------
+// Lazy-loading registry — raw JSON stored at import, parsed on first load
+// ---------------------------------------------------------------------------
+
 /** Linkage metadata for exercises referencing theory and examples. */
 export interface ExerciseLinkage {
   readonly exerciseId: string;
@@ -26,84 +388,91 @@ export interface ExerciseLinkage {
   readonly relatedExampleIds: readonly string[];
 }
 
-/** Content registry keyed by unit identifier. */
-interface ContentRegistry {
-  readonly theory: Record<string, readonly TheoryNode[]>;
-  readonly examples: Record<string, readonly WorkedExample[]>;
-  readonly feedback: Record<string, readonly FeedbackMapping[]>;
+/** Raw JSON store — no parsing at module init. */
+interface RawRegistry {
+  readonly theory: Record<string, unknown>;
+  readonly examples: Record<string, unknown>;
+  readonly feedback: Record<string, unknown>;
 }
 
-const REGISTRY: ContentRegistry = {
+const RAW_REGISTRY: RawRegistry = {
   theory: {
-    "unit-1": theoryUnit1 as unknown as readonly TheoryNode[],
-    "unit-2": theoryUnit2 as unknown as readonly TheoryNode[],
+    "unit-1": theoryUnit1 as unknown,
+    "unit-2": theoryUnit2 as unknown,
   },
   examples: {
-    "unit-1": examplesUnit1 as unknown as readonly WorkedExample[],
-    "unit-2": examplesUnit2 as unknown as readonly WorkedExample[],
+    "unit-1": examplesUnit1 as unknown,
+    "unit-2": examplesUnit2 as unknown,
   },
   feedback: {
-    "unit-1": feedbackUnit1 as unknown as readonly FeedbackMapping[],
-    "unit-2": feedbackUnit2 as unknown as readonly FeedbackMapping[],
-    "unit-1-conjuntos-numericos": feedbackUnit1ConjuntosNumericos as unknown as readonly FeedbackMapping[],
+    "unit-1": feedbackUnit1 as unknown,
+    "unit-1-conjuntos-numericos": feedbackUnit1ConjuntosNumericos as unknown,
+    "unit-2": feedbackUnit2 as unknown,
   },
 };
 
 /**
  * Load theory nodes for a given unit.
+ * Parsing is deferred to calls — no throws on import.
+ *
  * @param unitKey - Unit identifier (e.g. "unit-1")
  * @returns Array of TheoryNode objects
- * @throws Error if unit key is unknown
+ * @throws Error if unit key is unknown or JSON is malformed
  */
 export function loadTheoryContent(unitKey: string): readonly TheoryNode[] {
-  const nodes = REGISTRY.theory[unitKey];
-  if (!nodes) {
+  const raw = RAW_REGISTRY.theory[unitKey];
+  if (!raw) {
     throw new Error(`Unknown theory unit key: ${unitKey}`);
   }
-  return nodes;
+  return parseTheoryNodeArray(raw, `theory/${unitKey}.json`);
 }
 
 /**
  * Load worked examples for a given unit.
+ * Parsing is deferred to calls — no throws on import.
+ *
  * @param unitKey - Unit identifier (e.g. "unit-1")
  * @returns Array of WorkedExample objects
- * @throws Error if unit key is unknown
+ * @throws Error if unit key is unknown or JSON is malformed
  */
 export function loadExampleContent(unitKey: string): readonly WorkedExample[] {
-  const examples = REGISTRY.examples[unitKey];
-  if (!examples) {
+  const raw = RAW_REGISTRY.examples[unitKey];
+  if (!raw) {
     throw new Error(`Unknown examples unit key: ${unitKey}`);
   }
-  return examples;
+  return parseWorkedExampleArray(raw, `examples/${unitKey}.json`);
 }
 
 /**
  * Load feedback mappings for a given unit.
+ * Parsing is deferred to calls — no throws on import.
+ *
  * @param unitKey - Unit identifier (e.g. "unit-1")
  * @returns Array of FeedbackMapping objects
- * @throws Error if unit key is unknown
+ * @throws Error if unit key is unknown or JSON is malformed
  */
 export function loadFeedbackContent(unitKey: string): readonly FeedbackMapping[] {
-  const mappings = REGISTRY.feedback[unitKey];
-  if (!mappings) {
+  const raw = RAW_REGISTRY.feedback[unitKey];
+  if (!raw) {
     throw new Error(`Unknown feedback unit key: ${unitKey}`);
   }
-  return mappings;
+  return parseFeedbackMappingArray(raw, `feedback/${unitKey}.json`);
 }
 
 /**
  * Extract exercise linkage metadata from the raw JSON exercises.
  * Filters to only exercises that have relatedTheoryIds or relatedExampleIds.
+ *
  * @param unitKey - Unit identifier (e.g. "unit-1")
  * @returns Array of ExerciseLinkage objects
  */
 export function pilotExercisesWithLinks(unitKey: string): readonly ExerciseLinkage[] {
-  const raw = exercisesJson as unknown as readonly Record<string, unknown>[];
+  if (!Array.isArray(exercisesJson)) return [];
   const unitNum = Number(unitKey.replace("unit-", ""));
 
-  return raw
+  return exercisesJson.map((entry, index) => parseRecord(entry, `exercises[${index}]`))
     .filter((ex) => {
-      const id = ex.id as string;
+      const id = typeof ex.id === "string" ? ex.id : "";
       const match = /^ex\.u(\d+)\./.exec(id);
       return match && Number(match[1]) === unitNum;
     })
@@ -112,33 +481,76 @@ export function pilotExercisesWithLinks(unitKey: string): readonly ExerciseLinka
         Array.isArray(ex.relatedTheoryIds) || Array.isArray(ex.relatedExampleIds)
     )
     .map((ex) => ({
-      exerciseId: ex.id as string,
-      relatedTheoryIds: (ex.relatedTheoryIds as readonly string[]) ?? [],
-      relatedExampleIds: (ex.relatedExampleIds as readonly string[]) ?? [],
+      exerciseId: typeof ex.id === "string" ? ex.id : "",
+      relatedTheoryIds: Array.isArray(ex.relatedTheoryIds)
+        ? ex.relatedTheoryIds.filter((s): s is string => typeof s === "string")
+        : [],
+      relatedExampleIds: Array.isArray(ex.relatedExampleIds)
+        ? ex.relatedExampleIds.filter((s): s is string => typeof s === "string")
+        : [],
     }));
 }
 
 /**
  * Apply backward-compat defaults to a raw exercise object.
  *
- * When loading exercises from JSON, optional metadata fields (category, tags)
- * may be absent. This function fills in sensible defaults so downstream code
- * can rely on their presence without null checks.
+ * Each declared Exercise field is individually validated or defaulted
+ * before constructing the object. Extra fields present in raw (e.g.
+ * `relatedTheoryIds`, `relatedExampleIds`) are passed through unchanged
+ * so downstream consumers that access them via narrow casts continue to
+ * work — the final `as Exercise` assertion is narrow and justified after
+ * all declared fields have been validated.
  *
  * @param raw - Raw exercise object from JSON (may lack optional fields)
  * @returns Exercise with defaults applied for missing optional fields
  */
 export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
-  return {
-    ...raw,
-    category: (raw.category as string | undefined) ?? "clasificacion",
-    tags: (raw.tags as readonly string[] | undefined) ?? [],
-  } as unknown as Exercise;
+  const rawId = typeof raw.id === "string" ? raw.id : "exercise";
+  const id = parseExerciseId(raw, "id", rawId);
+  const skillId = parseSkillId(raw, "skillId", rawId);
+  const type = parseExerciseType(raw, "type", rawId);
+  const difficulty = parseDifficulty(raw, "difficulty", rawId);
+  const prompt = parseStringField(raw, "prompt", rawId);
+  const expectedAnswer = parseStringField(raw, "expectedAnswer", rawId);
+  const pedagogicalNote = parseStringField(raw, "pedagogicalNote", rawId);
+
+  // Optional metadata — apply defaults when absent or malformed.
+  const commonErrorTags = Array.isArray(raw.commonErrorTags)
+    ? raw.commonErrorTags.filter((s): s is string => typeof s === "string")
+    : [];
+  const category = typeof raw.category === "string" ? raw.category : "clasificacion";
+  const tags = Array.isArray(raw.tags)
+    ? raw.tags.filter((s): s is string => typeof s === "string")
+    : [];
+  const options = Array.isArray(raw.options)
+    ? raw.options.map((option, index) => parseExerciseOption(option, `${id}.options[${index}]`))
+    : undefined;
+
+  // Preserve extra fields from raw that aren't part of the Exercise
+  // interface (e.g. relatedTheoryIds, relatedExampleIds) so that
+  // downstream consumers accessing them via narrow casts keep working.
+  const KNOWN_FIELDS = new Set([
+    "id", "skillId", "type", "difficulty", "prompt", "expectedAnswer",
+    "commonErrorTags", "pedagogicalNote", "category", "tags", "options",
+  ]);
+  const extra: Record<string, unknown> = {};
+  for (const key of Object.keys(raw)) {
+    if (!KNOWN_FIELDS.has(key)) {
+      extra[key] = raw[key];
+    }
+  }
+
+  const base: Exercise & Record<string, unknown> = {
+    ...extra,
+    id, skillId, type, difficulty, prompt, expectedAnswer,
+    commonErrorTags, pedagogicalNote, category, tags,
+  };
+  return options ? { ...base, options } : base;
 }
 
-/** Per-skill exercise file registry. */
-const SKILL_EXERCISE_FILES: Readonly<Record<string, readonly Record<string, unknown>[]>> = {
-  "mat.u1.conjuntos_numericos": conjuntosNumericosExercises as unknown as readonly Record<string, unknown>[],
+/** Per-skill exercise file registry (raw JSON, validated lazily). */
+const SKILL_EXERCISE_FILES: Readonly<Record<string, unknown>> = {
+  "mat.u1.conjuntos_numericos": conjuntosNumericosExercises as unknown,
 };
 
 /**
@@ -148,10 +560,17 @@ const SKILL_EXERCISE_FILES: Readonly<Record<string, readonly Record<string, unkn
  * @returns Array of Exercise objects with defaults applied
  */
 export function loadExercisesForSkill(skillId: string): readonly Exercise[] {
-  const mainRaw = exercisesJson as unknown as readonly Record<string, unknown>[];
-  const skillRaw = SKILL_EXERCISE_FILES[skillId] ?? [];
+  const mainRaw = Array.isArray(exercisesJson)
+    ? exercisesJson.map((entry, index) => parseRecord(entry, `exercises[${index}]`))
+    : [];
+  const skillSource = SKILL_EXERCISE_FILES[skillId];
+  const skillRaw = Array.isArray(skillSource)
+    ? skillSource.map((entry, index) => parseRecord(entry, `${skillId}.exercises[${index}]`))
+    : [];
 
-  const mainFiltered = mainRaw.filter((ex) => (ex.skillId as string) === skillId);
+  const mainFiltered = mainRaw.filter(
+    (ex) => typeof ex.skillId === "string" && ex.skillId === skillId
+  );
   const allRaw = [...mainFiltered, ...skillRaw];
 
   return allRaw.map(applyExerciseDefaults);
@@ -193,12 +612,17 @@ export function loadSkillBank(skillId: string): SkillBank {
   const exercises = loadExercisesForSkill(skillId);
 
   // Try to load unit feedback for cross-checking error tag coverage.
-  // If the unit is unknown or has no feedback, the validator will skip
-  // the coverage check and return diagnostics only for category counts.
+  // Only swallow the specific "Unknown feedback unit key" error —
+  // unexpected errors (programming bugs, loader failures) must propagate.
   let feedback: readonly FeedbackMapping[] = [];
   try {
     feedback = loadFeedbackContent(skillIdToUnitKey(skillId));
-  } catch {
+  } catch (e: unknown) {
+    const isUnknownUnit =
+      e instanceof Error && e.message.startsWith("Unknown feedback unit key:");
+    if (!isUnknownUnit) {
+      throw e;
+    }
     // No feedback registered for this unit — proceed without.
   }
 
@@ -266,12 +690,14 @@ export function validatePracticeBank(
     const feedbackTags = new Set(feedback.map((f) => f.errorTag));
     const exercisesWithMissingFeedback = exercises.filter(
       (ex) =>
+        Array.isArray(ex.commonErrorTags) &&
         ex.commonErrorTags.length > 0 &&
         ex.commonErrorTags.some((tag) => !feedbackTags.has(tag))
     );
     if (exercisesWithMissingFeedback.length > 0) {
       for (const ex of exercisesWithMissingFeedback) {
-        const missing = ex.commonErrorTags.filter((tag) => !feedbackTags.has(tag));
+        const tags = Array.isArray(ex.commonErrorTags) ? ex.commonErrorTags : [];
+        const missing = tags.filter((tag) => !feedbackTags.has(tag));
         diagnostics.push(
           `Exercise "${ex.id}" references error tag(s) without feedback: ${missing.join(", ")}`
         );

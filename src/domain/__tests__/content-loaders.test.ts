@@ -54,6 +54,50 @@ describe("applyExerciseDefaults", () => {
     expect(result.category).toBe("decimales");
     expect(result.tags).toEqual(["decimal_finito"]);
   });
+
+  test("exercise without commonErrorTags defaults to empty array", () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { commonErrorTags: _unused, ...rawNoTags } = baseRaw;
+    const result = applyExerciseDefaults(rawNoTags as Record<string, unknown>);
+    expect(Array.isArray(result.commonErrorTags)).toBe(true);
+    expect(result.commonErrorTags).toEqual([]);
+  });
+
+  test("exercise with non-array commonErrorTags defaults to empty array", () => {
+    const raw = { ...baseRaw, commonErrorTags: "not-an-array" };
+    const result = applyExerciseDefaults(raw);
+    expect(Array.isArray(result.commonErrorTags)).toBe(true);
+    expect(result.commonErrorTags).toEqual([]);
+  });
+
+  test("exercise with mixed-type commonErrorTags filters to strings only", () => {
+    const raw = { ...baseRaw, commonErrorTags: ["tag1", 42, "tag2", null] };
+    const result = applyExerciseDefaults(raw);
+    expect(result.commonErrorTags).toEqual(["tag1", "tag2"]);
+  });
+
+  test("exercise without prompt throws instead of defaulting to an empty string", () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { prompt: _unused, ...rawWithoutPrompt } = baseRaw;
+    expect(() => applyExerciseDefaults(rawWithoutPrompt)).toThrow(
+      "expected non-empty string"
+    );
+  });
+
+  test("exercise without expectedAnswer throws instead of defaulting to an empty string", () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { expectedAnswer: _unused, ...rawWithoutAnswer } = baseRaw;
+    expect(() => applyExerciseDefaults(rawWithoutAnswer)).toThrow(
+      "expected non-empty string"
+    );
+  });
+
+  test("free-response exercises are rejected at the catalog boundary", () => {
+    const raw = { ...baseRaw, type: "free-response" };
+    expect(() => applyExerciseDefaults(raw)).toThrow(
+      "free-response is not allowed"
+    );
+  });
 });
 
 describe("loadSkillBank — wiring bank validator into catalog load path", () => {
@@ -89,13 +133,15 @@ describe("loadSkillBank — wiring bank validator into catalog load path", () =>
 
 describe("Unit-2 content loaders", () => {
   describe("loadTheoryContent", () => {
-    test("loads theory for unit-2 (>= 7 theory nodes)", () => {
+    test("loads theory for unit-2 (>= 7 theory nodes) with normalized concepts", () => {
       const theory = loadTheoryContent("unit-2");
       expect(Array.isArray(theory)).toBe(true);
       expect(theory.length).toBeGreaterThanOrEqual(7);
       expect(theory[0]).toHaveProperty("id");
       expect(theory[0]).toHaveProperty("skillId");
-      expect(theory[0]).toHaveProperty("conceptBlocks");
+      expect(theory[0]).toHaveProperty("concepts");
+      expect(Array.isArray(theory[0].concepts)).toBe(true);
+      expect(theory[0].concepts.length).toBeGreaterThanOrEqual(1);
     });
 
     test("theory nodes belong to U2 skills", () => {
@@ -175,5 +221,97 @@ describe("Unit-2 content loaders", () => {
       const gaussInU3 = u3SistemasEx.some((e) => e.id === "ex.u2.gauss.1");
       expect(gaussInU3).toBe(false);
     });
+  });
+});
+
+describe("validatePracticeBank — defensive against missing commonErrorTags", () => {
+  test("does not crash when an exercise has no commonErrorTags field", () => {
+    const ex = {
+      id: "ex.u1.conjuntos_numericos.99" as Exercise["id"],
+      skillId: "mat.u1.conjuntos_numericos",
+      type: "multiple-choice" as Exercise["type"],
+      difficulty: 1 as Exercise["difficulty"],
+      prompt: "Test",
+      expectedAnswer: "A",
+      options: ["A", "B"],
+      pedagogicalNote: "Note",
+      category: "pertenencia",
+      tags: [],
+      // commonErrorTags intentionally omitted
+    } as unknown as Exercise;
+    const diagnostics = validatePracticeBank("mat.u1.conjuntos_numericos", [ex]);
+    // Mostly category-count diagnostics; must not crash.
+    expect(Array.isArray(diagnostics)).toBe(true);
+  });
+
+  test("does not crash when commonErrorTags is undefined", () => {
+    const ex = {
+      id: "ex.u1.conjuntos_numericos.99" as Exercise["id"],
+      skillId: "mat.u1.conjuntos_numericos",
+      type: "multiple-choice" as Exercise["type"],
+      difficulty: 1 as Exercise["difficulty"],
+      prompt: "Test",
+      expectedAnswer: "A",
+      options: ["A", "B"],
+      pedagogicalNote: "Note",
+      category: "pertenencia",
+      tags: [],
+      commonErrorTags: undefined,
+    } as unknown as Exercise;
+    const diagnostics = validatePracticeBank("mat.u1.conjuntos_numericos", [ex]);
+    expect(Array.isArray(diagnostics)).toBe(true);
+  });
+});
+
+describe("loadSkillBank — narrow catch", () => {
+  test("throws for a skillId that cannot derive a unit key (no mat.uN pattern)", () => {
+    // "bad.id" would throw from skillIdToUnitKey, which is NOT an
+    // "Unknown feedback unit key" error — loadSkillBank must NOT swallow it.
+    expect(() => loadSkillBank("bad.id")).toThrow("Cannot derive unit key");
+  });
+
+  test("does not crash for a skillId whose unit has no feedback (legitimate absence)", () => {
+    // mat.u4.vectores has no registered feedback file yet.
+    // loadSkillBank must handle the missing-feedback case gracefully.
+    const result = loadSkillBank("mat.u4.vectores");
+    expect(result).toHaveProperty("exercises");
+    expect(result).toHaveProperty("diagnostics");
+    expect(Array.isArray(result.diagnostics)).toBe(true);
+  });
+});
+
+describe("import safety — no side-effects at module load", () => {
+  test("importing content-loaders does not throw (lazy parsing)", () => {
+    // The import happens at the top of this file. If it threw, vitest
+    // would report a module-load error, not a test failure.
+    // This test exists to make the contract explicit: no parsing at
+    // import time, only on first loader call.
+    expect(true).toBe(true);
+  });
+
+  test("loadTheoryContent returns equivalent data on repeated calls", () => {
+    const first = loadTheoryContent("unit-1");
+    const second = loadTheoryContent("unit-1");
+    expect(second).toEqual(first);
+  });
+
+  test("loadExampleContent returns equivalent data on repeated calls", () => {
+    const first = loadExampleContent("unit-1");
+    const second = loadExampleContent("unit-1");
+    expect(second).toEqual(first);
+  });
+
+  test("loadFeedbackContent returns equivalent data on repeated calls", () => {
+    const first = loadFeedbackContent("unit-1");
+    const second = loadFeedbackContent("unit-1");
+    expect(second).toEqual(first);
+  });
+
+  test("loaders throw on malformed key but do not crash module", () => {
+    // The loader throws at runtime for unknown keys, but the module
+    // itself imported fine (we're already running).
+    expect(() => loadTheoryContent("nonexistent")).toThrow(
+      "Unknown theory unit key"
+    );
   });
 });
