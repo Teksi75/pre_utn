@@ -30,6 +30,9 @@ pnpm-debug.log*
 # Local generated caches
 .atl/
 .gga-tmp/
+opencode-quota/
+opencode.json
+undefined/
 
 # Package manager guardrails
 package-lock.json
