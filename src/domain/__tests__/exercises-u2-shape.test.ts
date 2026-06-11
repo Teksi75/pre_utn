@@ -83,7 +83,7 @@ describe("U2 exercise shape validation", () => {
 
       expect(mcCount).toBeGreaterThanOrEqual(18);
       expect(numCount).toBeGreaterThanOrEqual(7);
-      expect(symCount).toBeGreaterThanOrEqual(6);
+      expect(symCount).toBeGreaterThanOrEqual(4);
     });
   });
 
@@ -166,6 +166,63 @@ describe("U2 exercise shape validation", () => {
       const freeResponse = exercises.filter((e) => e.type === "free-response");
       expect(freeResponse.length).toBe(0);
     });
+  });
+
+  describe("migrated polynomial-expression exercise regression guards", () => {
+    const migratedPolynomialExercises = [
+      {
+        skillId: "mat.u2.polinomios_basico",
+        exerciseId: "ex.u2.polinomios_basico.5",
+      },
+      {
+        skillId: "mat.u2.operaciones_polinomios",
+        exerciseId: "ex.u2.operaciones_polinomios.5",
+      },
+    ] as const;
+
+    for (const { skillId, exerciseId } of migratedPolynomialExercises) {
+      test(`${exerciseId} is structured multiple-choice, never keyboard/free-text input`, () => {
+        const exercises = loadExercisesForSkill(skillId);
+        const exercise = exercises.find((e) => e.id === exerciseId);
+        expect(exercise, `${exerciseId} must exist`).toBeDefined();
+        expect(exercise!.type).toBe("multiple-choice");
+        expect(exercise!.type === "symbolic").toBe(false);
+        expect(exercise!.options).toBeDefined();
+        expect(exercise!.options!.length).toBeGreaterThanOrEqual(3);
+      });
+
+      test(`${exerciseId} has object options with $...$ math labels and a plain expectedAnswer`, () => {
+        const exercises = loadExercisesForSkill(skillId);
+        const exercise = exercises.find((e) => e.id === exerciseId);
+        expect(exercise, `${exerciseId} must exist`).toBeDefined();
+        expect(exercise!.options).toBeDefined();
+
+        const optionValues = exercise!.options!.map((option) => {
+          expect(
+            option !== null && typeof option === "object",
+            `Option "${JSON.stringify(option)}" must be an object, not a string`
+          ).toBe(true);
+
+          if (option !== null && typeof option === "object") {
+            expect(typeof option.value, "Option must have a string 'value' field").toBe("string");
+            expect(typeof option.label, "Option must have a string 'label' field").toBe("string");
+            expect(option.value.length).toBeGreaterThan(0);
+            expect(option.label.length).toBeGreaterThan(0);
+            expect(
+              option.label,
+              `Option label "${option.label}" must use $...$ delimiters for math rendering`
+            ).toMatch(/^\$.*\$$/);
+            return option.value;
+          }
+
+          return "";
+        });
+
+        expect(new Set(optionValues).size).toBe(optionValues.length);
+        expect(exercise!.expectedAnswer).not.toMatch(/^\$/);
+        expect(optionValues).toContain(exercise!.expectedAnswer);
+      });
+    }
   });
 
   describe("commonErrorTags are non-empty for all U2 exercises", () => {

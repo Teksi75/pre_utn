@@ -648,12 +648,18 @@
   {
     "id": "ex.u2.polinomios_basico.5",
     "skillId": "mat.u2.polinomios_basico",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 3,
-    "prompt": "Escribí el polinomio 0x⁴ + 2x³ + 0x² − 5x + 1 eliminando los términos con coeficiente cero. Escribí el polinomio expandido resultante.",
+    "prompt": "Eliminá los términos con coeficiente cero del polinomio 0x⁴ + 2x³ + 0x² − 5x + 1. ¿Cuál es el polinomio resultante?",
     "expectedAnswer": "2x^3 - 5x + 1",
+    "options": [
+      { "value": "2x^3 - 5x + 1", "label": "$2x^3 - 5x + 1$" },
+      { "value": "0x^4 + 2x^3 + 0x^2 - 5x + 1", "label": "$0x^4 + 2x^3 + 0x^2 - 5x + 1$" },
+      { "value": "2x^3 + 5x + 1", "label": "$2x^3 + 5x + 1$" },
+      { "value": "2x^3 - 5x", "label": "$2x^3 - 5x$" }
+    ],
     "commonErrorTags": ["u2_termino_faltante"],
-    "pedagogicalNote": "Los coeficientes en orden decreciente: grado 3 → 2, grado 2 → 0 (término faltante), grado 1 → −5, grado 0 → 1. Los ceros del inicio (0x⁴) se eliminan al normalizar. El polinomio expandido es 2x³ − 5x + 1. El evaluador acepta formas equivalentes.",
+    "pedagogicalNote": "Los coeficientes en orden decreciente: grado 3 → 2, grado 2 → 0 (término faltante), grado 1 → −5, grado 0 → 1. Los ceros del inicio (0x⁴) se eliminan al normalizar. El polinomio expandido es 2x³ − 5x + 1. Distractores: polinomio completo sin eliminar ceros (0x⁴+2x³+0x²−5x+1), signo incorrecto en −5x (+5x+1), y sobre-eliminación del término constante (−5x, sin el +1).",
     "relatedTheoryIds": ["theory-polinomios-basico"],
     "relatedExampleIds": ["example-polinomios-basico-1"]
   },
@@ -692,12 +698,18 @@
   {
     "id": "ex.u2.operaciones_polinomios.5",
     "skillId": "mat.u2.operaciones_polinomios",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 4,
-    "prompt": "Multiplicá (x − 2)(x + 3) y escribí el polinomio resultado.",
+    "prompt": "Multiplicá (x − 2)(x + 3). ¿Cuál es el polinomio resultado?",
     "expectedAnswer": "x^2 + x - 6",
+    "options": [
+      { "value": "x^2 + x - 6", "label": "$x^2 + x - 6$" },
+      { "value": "x^2 - x - 6", "label": "$x^2 - x - 6$" },
+      { "value": "x^2 - 6", "label": "$x^2 - 6$" },
+      { "value": "x^2 + 5x - 6", "label": "$x^2 + 5x - 6$" }
+    ],
     "commonErrorTags": ["u2_signo_operacion"],
-    "pedagogicalNote": "(x−2)(x+3) = x² + 3x − 2x − 6 = x² + x − 6. El evaluador polinómico acepta formas expandidas equivalentes. Error común: −6x + x → −5x (confunde −2×3=−6 con −2+3=1)."
+    "pedagogicalNote": "(x−2)(x+3) = x² + 3x − 2x − 6 = x² + x − 6. Distractores: x²−x−6 (error de signo en −2x+3x), x²−6 (olvida el término lineal), x²+5x−6 (suma 3+2=5 en vez de −2+3=1)."
   },
   {
     "id": "ex.u2.ruffini_resto.2",
