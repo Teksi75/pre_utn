@@ -160,10 +160,20 @@
       "summary": "2-skill slice (factorizacion 7 cases + gauss) + 8 exercises (4 factorizacion + 4 gauss) + 2 u2_* error tags + gauss-routing-helper + content JSON + skill deps + ex.u2.gauss.1 re-creation. 2 chained PRs (1030 + 415 lines diff), 69 new tests (1273→1342), 0 CRITICAL findings in verify, 2 WARNING (GGA pending Linux review, exercises.json monolithic), 1 SUGGESTION (3 factoreo cases without specific exercises, defensible for MVP). U2 main chain complete: polinomios_basico → operaciones_polinomios → ruffini_resto → factorizacion → gauss. Next: U2-Aplicaciones (mcm_mcd + ecuaciones_fraccionarias) or refactor exercises.json."
     },
     "unit-2-aplicaciones-slice": {
-      "status": "in-progress",
+      "status": "done",
       "branch": null,
       "startedAt": "2026-06-10",
-      "summary": "Proposal created. Adds mat.u2.mcm_mcd_polinomios + mat.u2.ecuaciones_fraccionarias. Domain-code-minimal approach (Approach A). 2 chained PRs planned."
+      "completedAt": "2026-06-11",
+      "mergedTo": "main",
+      "pr1": {
+        "commit": "ed20f02",
+        "summary": "PR1 — Domain: error tags u2_denominador_cero + u2_confunde_mcm_mcd, detector wiring in error-tagging.ts, TDD tests with Unicode minus and MCM/MCD false-positive fixes."
+      },
+      "pr2": {
+        "commit": "91e9cc1",
+        "summary": "PR2 — Content: 8 exercises (4 mcm_mcd + 4 ecuaciones), 2 TheoryNodes, 4 WorkedExamples, 2 FeedbackMappings, skill dependency tests, shape tests, build verification."
+      },
+      "summary": "Complete: 2 new skills (u2.mcm_mcd_polinomios, u2.ecuaciones_fraccionarias) + 8 exercises + 2 error tags + 2 detectors + 2 TheoryNodes + 4 WorkedExamples + 2 FeedbackMappings. U2 main chain fully closed: polinomios_basico → operaciones_polinomios → ruffini_resto → factorizacion → gauss → mcm_mcd_polinomios → ecuaciones_fraccionarias."
     }
   },
   "activeBranches": [],
