@@ -17,7 +17,6 @@ const exercises = exercisesJson as unknown as readonly Exercise[];
 
 const MIGRATED_SYMBOLIC_IDS: readonly string[] = [
   "ex.u2.operaciones_polinomios.1",
-  "ex.u2.gauss.1",
   "ex.u3.inecuaciones_lineales.1",
   "ex.u3.recta.1",
   "ex.u3.sistemas.1",

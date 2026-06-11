@@ -214,8 +214,8 @@ describe("Evaluator dispatcher", () => {
       {
         id: "ex.u2.gauss.1",
         expectedType: "multiple-choice",
-        correctAnswer: "x = 3, y = 2",
-        wrongAnswer: "x = 2, y = 3",
+        correctAnswer: "1, -1, 3",
+        wrongAnswer: "1, 3, -3",
       },
       {
         id: "ex.u3.inecuaciones_lineales.1",

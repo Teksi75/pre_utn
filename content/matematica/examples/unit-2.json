@@ -122,5 +122,86 @@
         "pedagogicalIntent": "Demostrar el procedimiento completo de Ruffini paso a paso con verificación mediante el teorema del resto"
       }
     ]
+  },
+  {
+    "id": "example-factorizacion-1",
+    "skillId": "mat.u2.factorizacion",
+    "problem": "Factorizar x² − 16 usando el caso de diferencia de cuadrados",
+    "steps": [
+      { "order": 1, "explanation": "Identificamos que x² es el cuadrado de x (a = x) y 16 es el cuadrado de 4 (b = 4). La expresión es una diferencia (resta) de cuadrados perfectos." },
+      { "order": 2, "explanation": "Aplicamos la fórmula de diferencia de cuadrados: a² − b² = (a − b)(a + b). Sustituimos a = x, b = 4." },
+      { "order": 3, "explanation": "Resultado: x² − 16 = (x − 4)(x + 4). Verificamos expandiendo: (x − 4)(x + 4) = x² + 4x − 4x − 16 = x² − 16 ✓. El orden de los factores no altera el producto." }
+    ],
+    "finalAnswer": "(x − 4)(x + 4)",
+    "pedagogicalNote": "La diferencia de cuadrados siempre produce dos binomios conjugados. Error frecuente: escribir (x − 4)² = x² − 8x + 16, que es un trinomio cuadrado perfecto, no una diferencia de cuadrados.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 13 (págs. 11-12): Diferencia de cuadrados",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar el reconocimiento y factorización de diferencia de cuadrados, enfatizando que los factores son conjugados (mismos números, signos opuestos)"
+      }
+    ]
+  },
+  {
+    "id": "example-factorizacion-2",
+    "skillId": "mat.u2.factorizacion",
+    "problem": "Factorizar x² + 6x + 9 usando el caso de trinomio cuadrado perfecto",
+    "steps": [
+      { "order": 1, "explanation": "Verificamos si es un trinomio cuadrado perfecto: ¿dos términos son cuadrados perfectos? x² = (x)² y 9 = (3)². Sí." },
+      { "order": 2, "explanation": "¿El término del medio es el doble producto de las bases? 2 · x · 3 = 6x. Sí, coincide con el término medio dado." },
+      { "order": 3, "explanation": "Como todos los signos son positivos, la factorización es el cuadrado de la suma: (x + 3)². Verificación: (x + 3)² = x² + 2·x·3 + 3² = x² + 6x + 9 ✓." }
+    ],
+    "finalAnswer": "(x + 3)²",
+    "pedagogicalNote": "Un TCP se reconoce por tres condiciones: (1) primer y tercer término son cuadrados perfectos, (2) el término medio es el doble producto de las bases, (3) el signo del término medio determina si es suma o resta. No confundir con un trinomio de segundo grado cualquiera: x² + 5x + 6 NO es TCP porque 2·x·√6 ≠ 5x.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 13 (págs. 10-11): Trinomio cuadrado perfecto",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar a distinguir un TCP de un trinomio de segundo grado común, verificando explícitamente la condición del doble producto"
+      }
+    ]
+  },
+  {
+    "id": "example-gauss-1",
+    "skillId": "mat.u2.gauss",
+    "problem": "Usar el Teorema de Gauss para encontrar las raíces racionales de P(x) = 2x³ + 3x² − 8x + 3",
+    "steps": [
+      { "order": 1, "explanation": "Identificamos: a₀ = 3 (término constante), aₙ = 2 (coeficiente principal). Divisores de a₀ = 3: ±1, ±3. Divisores de aₙ = 2: 1, 2." },
+      { "order": 2, "explanation": "Formamos todos los candidatos p/q como fracciones irreducibles: ±1/1 = ±1, ±3/1 = ±3, ±1/2, ±3/2. Candidatos: ±1, ±3, ±1/2, ±3/2." },
+      { "order": 3, "explanation": "Evaluamos P(x) en cada candidato usando el teorema del resto. P(1) = 2+3−8+3 = 0 ✓. P(−1) = −2+3+8+3 = 12 ≠ 0. P(3) = 54+27−24+3 = 60 ≠ 0. P(−3) = −54+27+24+3 = 0 ✓. P(1/2) = 2(1/8)+3(1/4)−4+3 = 0.25+0.75−4+3 = 0 ✓. Raíces encontradas: 1, −3, 1/2." },
+      { "order": 4, "explanation": "Verificamos con Ruffini: para a = 1, coeficientes [2, 3, −8, 3] → cociente [2, 5, −3], resto 0. P(x) = (x − 1)(2x² + 5x − 3). El factor cuadrático se resuelve con trinomio de segundo grado → (2x − 1)(x + 3). Factorización completa: (x − 1)(2x − 1)(x + 3)." }
+    ],
+    "finalAnswer": "Raíces: 1, −3, 1/2. Factorización: (x − 1)(2x − 1)(x + 3)",
+    "pedagogicalNote": "El teorema de Gauss reduce las posibles raíces a un conjunto finito de candidatos. Cada raíz encontrada se 'extrae' con Ruffini y se continúa con el cociente. Si el cociente es de grado 2, se resuelve con la fórmula general o factorización directa.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 12 (pág. 9): Reconstrucción a partir de raíces + Cap. 13 (pág. 14): Teorema de Gauss",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar el algoritmo completo de Gauss: listar candidatos p/q, evaluar cada uno, extraer raíces con Ruffini y factorizar el cociente"
+      }
+    ]
+  },
+  {
+    "id": "example-gauss-2",
+    "skillId": "mat.u2.gauss",
+    "problem": "Factorizar P(x) = x⁴ − 5x² + 4 usando el Teorema de Gauss",
+    "steps": [
+      { "order": 1, "explanation": "Identificamos: a₀ = 4 (divisores: ±1, ±2, ±4), aₙ = 1 (divisores: 1). Como aₙ = 1, todos los candidatos son enteros: ±1, ±2, ±4." },
+      { "order": 2, "explanation": "Evaluamos: P(1) = 1−5+4 = 0 ✓. P(−1) = 1−5+4 = 0 ✓. P(2) = 16−20+4 = 0 ✓. P(−2) = 16−20+4 = 0 ✓. ¡Cuatro raíces! Esto significa que el polinomio se factoriza completamente como (x−1)(x+1)(x−2)(x+2)." },
+      { "order": 3, "explanation": "Podemos verificar por otro camino: notar que x⁴ − 5x² + 4 es un trinomio en x², hacemos t = x²: t² − 5t + 4 = (t − 1)(t − 4) = (x² − 1)(x² − 4) = (x−1)(x+1)(x−2)(x+2), donde cada diferencia de cuadrados se factorizó." }
+    ],
+    "finalAnswer": "(x − 1)(x + 1)(x − 2)(x + 2)",
+    "pedagogicalNote": "Este polinomio bicuadrático puede factorizarse por Gauss o por sustitución t = x². El Teorema de Gauss siempre funciona pero puede ser más laborioso; reconocer patrones (diferencia de cuadrados, bicuadrática) ahorra trabajo. El orden de los factores no altera el producto.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 12 (pág. 9) + Cap. 13 (pág. 14): Teorema de Gauss para polinomios de grado ≥ 3",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Mostrar que Gauss funciona incluso para polinomios bicuadráticos, y que a veces conviene reconocer patrones alternativos (sustitución t = x²) para resolver más rápido"
+      }
+    ]
   }
 ]

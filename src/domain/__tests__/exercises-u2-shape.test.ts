@@ -2,12 +2,14 @@ import { describe, test, expect } from "vitest";
 import { loadExercisesForSkill } from "../catalog/content-loaders";
 import type { Exercise } from "../models/exercise";
 
-/** Load all U2 exercises from the 3 slice skills. */
+/** Load all U2 exercises from the 5 slice skills. */
 function allU2Exercises(): Exercise[] {
   return [
     ...loadExercisesForSkill("mat.u2.polinomios_basico"),
     ...loadExercisesForSkill("mat.u2.operaciones_polinomios"),
     ...loadExercisesForSkill("mat.u2.ruffini_resto"),
+    ...loadExercisesForSkill("mat.u2.factorizacion"),
+    ...loadExercisesForSkill("mat.u2.gauss"),
   ];
 }
 
@@ -68,6 +70,42 @@ describe("U2 exercise shape validation", () => {
     });
   });
 
+  describe("factorizacion + gauss exercises exist", () => {
+    test("4 factorizacion exercises (1 updated + 3 new)", () => {
+      const exercises = loadExercisesForSkill("mat.u2.factorizacion");
+      expect(exercises.length).toBeGreaterThanOrEqual(4);
+      const ids = exercises.map((e) => e.id);
+      expect(ids).toContain("ex.u2.factorizacion.1");
+      expect(ids).toContain("ex.u2.factorizacion.2");
+      expect(ids).toContain("ex.u2.factorizacion.3");
+      expect(ids).toContain("ex.u2.factorizacion.4");
+    });
+
+    test("4 gauss exercises (1 recreated + 3 new)", () => {
+      const exercises = loadExercisesForSkill("mat.u2.gauss");
+      expect(exercises.length).toBeGreaterThanOrEqual(4);
+      const ids = exercises.map((e) => e.id);
+      expect(ids).toContain("ex.u2.gauss.1");
+      expect(ids).toContain("ex.u2.gauss.2");
+      expect(ids).toContain("ex.u2.gauss.3");
+      expect(ids).toContain("ex.u2.gauss.4");
+    });
+
+    test("factorizacion + gauss type distribution (4 MC, 2 numerical, 2 symbolic)", () => {
+      const fac = loadExercisesForSkill("mat.u2.factorizacion");
+      const gau = loadExercisesForSkill("mat.u2.gauss");
+      const combined = [...fac, ...gau];
+
+      const mcCount = combined.filter((e) => e.type === "multiple-choice").length;
+      const numCount = combined.filter((e) => e.type === "numerical").length;
+      const symCount = combined.filter((e) => e.type === "symbolic").length;
+
+      expect(mcCount).toBeGreaterThanOrEqual(3);
+      expect(numCount).toBeGreaterThanOrEqual(2);
+      expect(symCount).toBeGreaterThanOrEqual(1);
+    });
+  });
+
   describe("difficulty progression per skill", () => {
     test("polinomios_basico difficulty ranges 1-4", () => {
       const exercises = loadExercisesForSkill("mat.u2.polinomios_basico");
@@ -89,6 +127,20 @@ describe("U2 exercise shape validation", () => {
       expect(Math.min(...difficulties)).toBeLessThanOrEqual(3);
       expect(Math.max(...difficulties)).toBeGreaterThanOrEqual(4);
     });
+
+    test("factorizacion difficulty ranges 2-4", () => {
+      const exercises = loadExercisesForSkill("mat.u2.factorizacion");
+      const difficulties = exercises.map((e) => e.difficulty);
+      expect(Math.min(...difficulties)).toBeLessThanOrEqual(2);
+      expect(Math.max(...difficulties)).toBeGreaterThanOrEqual(3);
+    });
+
+    test("gauss difficulty ranges 2-4", () => {
+      const exercises = loadExercisesForSkill("mat.u2.gauss");
+      const difficulties = exercises.map((e) => e.difficulty);
+      expect(Math.min(...difficulties)).toBeLessThanOrEqual(2);
+      expect(Math.max(...difficulties)).toBeGreaterThanOrEqual(3);
+    });
   });
 
   describe("no free-text for polynomial answers", () => {
@@ -99,7 +151,20 @@ describe("U2 exercise shape validation", () => {
     });
   });
 
-  describe("commonErrorTags are non-empty for all new exercises", () => {
+  describe("commonErrorTags are non-empty for all U2 exercises", () => {
+    test("every U2 factorizacion + gauss exercise has at least one commonErrorTag", () => {
+      const fac = loadExercisesForSkill("mat.u2.factorizacion");
+      const gau = loadExercisesForSkill("mat.u2.gauss");
+      const exercises = [...fac, ...gau];
+
+      for (const ex of exercises) {
+        expect(
+          ex.commonErrorTags.length,
+          `Exercise ${ex.id} should have at least one commonErrorTag`
+        ).toBeGreaterThan(0);
+      }
+    });
+
     test("every new exercise has at least one commonErrorTag", () => {
       const exercises = allU2Exercises();
       const newEx = exercises.filter((e) => !e.id.endsWith(".1"));
@@ -122,16 +187,16 @@ describe("U2 exercise shape validation", () => {
     });
   });
 
-  describe("gauss.1 relocation", () => {
-    test("ex.u2.gauss.1 has skillId mat.u3.sistemas", () => {
-      const exercises = loadExercisesForSkill("mat.u3.sistemas");
+  describe("gauss.1 correction to U2 content", () => {
+    test("ex.u2.gauss.1 has skillId mat.u2.gauss", () => {
+      const exercises = loadExercisesForSkill("mat.u2.gauss");
       const gauss = exercises.find((e) => e.id === "ex.u2.gauss.1");
       expect(gauss).toBeDefined();
-      expect(gauss?.skillId).toBe("mat.u3.sistemas");
+      expect(gauss?.skillId).toBe("mat.u2.gauss");
     });
 
-    test("ex.u2.gauss.1 is NOT in mat.u2.gauss exercises", () => {
-      const exercises = loadExercisesForSkill("mat.u2.gauss");
+    test("ex.u2.gauss.1 is NOT in mat.u3.sistemas exercises", () => {
+      const exercises = loadExercisesForSkill("mat.u3.sistemas");
       const gauss = exercises.find((e) => e.id === "ex.u2.gauss.1");
       expect(gauss).toBeUndefined();
     });
