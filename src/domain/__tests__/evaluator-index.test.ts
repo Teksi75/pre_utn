@@ -359,6 +359,69 @@ describe("Evaluator dispatcher", () => {
     });
   });
 
+  describe("U2 gauss numerical routing (U2FAC-EVAL-006)", () => {
+    test("gauss numerical routes to root set comparison — order-insensitive", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.gauss.1",
+        skillId: "mat.u2.gauss",
+        type: "numerical",
+        expectedAnswer: "1, -3, 1/2",
+      });
+
+      // Same roots in different order → correct
+      const result = evaluateAnswer(exercise, "-3, 1/2, 1");
+      expect(result.correct).toBe(true);
+    });
+
+    test("gauss numerical — extra root is rejected", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.gauss.1",
+        skillId: "mat.u2.gauss",
+        type: "numerical",
+        expectedAnswer: "1, -3",
+      });
+
+      const result = evaluateAnswer(exercise, "1, -3, 2");
+      expect(result.correct).toBe(false);
+    });
+
+    test("gauss numerical — missing root is rejected", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.gauss.1",
+        skillId: "mat.u2.gauss",
+        type: "numerical",
+        expectedAnswer: "1, -3, 1/2",
+      });
+
+      const result = evaluateAnswer(exercise, "1, -3");
+      expect(result.correct).toBe(false);
+    });
+
+    test("gauss numerical — exact match works", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.gauss.1",
+        skillId: "mat.u2.gauss",
+        type: "numerical",
+        expectedAnswer: "1, -3, 1/2",
+      });
+
+      const result = evaluateAnswer(exercise, "1, -3, 1/2");
+      expect(result.correct).toBe(true);
+    });
+
+    test("gauss numerical — whitespace and formats vary", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.gauss.1",
+        skillId: "mat.u2.gauss",
+        type: "numerical",
+        expectedAnswer: "1, -3, 1/2",
+      });
+
+      const result = evaluateAnswer(exercise, "  1 ,  -3 , 0.5 ");
+      expect(result.correct).toBe(true);
+    });
+  });
+
   describe("U2 polynomial routing (U2-EVAL-001)", () => {
     test("symbolic U2 exercise routes to polynomial evaluator — equivalent forms accepted", () => {
       const exercise = makeExercise({
