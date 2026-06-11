@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { isSkillReady } from "../../domain/catalog/readiness";
 import { PILOT_SKILLS } from "../../domain/catalog/pilot-skills";
 import {
@@ -10,18 +9,29 @@ import {
 } from "../../domain/next-step/index";
 import { loadProgress } from "../../lib/practice-progress";
 import { MathWatermark } from "../math-visuals";
-import { SkillRoadmap } from "./SkillRoadmap";
-import { StudyPlanSection } from "./StudyPlanSection";
+import { TeacherDigitalHero } from "./teacher-home/TeacherDigitalHero";
+import { StudentSituationPanel } from "./teacher-home/StudentSituationPanel";
+import { MathRoutePanel } from "./teacher-home/MathRoutePanel";
+import { DecisionBoardPanel } from "./teacher-home/DecisionBoardPanel";
+import {
+  deriveTeacherHomeViewModel,
+  type TeacherHomeViewModel,
+} from "../../domain/teacher-home/index";
 
 /**
- * Home hero — Zone 1 ("Tu estado") + Zone 2 ("Tu camino") of the home page.
+ * Home dashboard — replaced the old Zone 1 hero + Zone 2 roadmap
+ * with the teacher-digital-home view-model and panels.
  *
- * The client-side hydration reads progress + readiness, then delegates all
- * decision logic to `deriveHomeNextStep` in the domain layer. The component
- * itself only renders the data the domain returns.
+ * Client-side hydration:
+ * 1. Load progress from localStorage
+ * 2. Filter ready skills via isSkillReady
+ * 3. Compute nextStep with deriveHomeNextStep
+ * 4. Build teacher view-model via deriveTeacherHomeViewModel
+ * 5. Render 4 dumb panels from the view-model
  */
 export function HomeNextStepClient() {
   const [nextStep, setNextStep] = useState<HomeNextStep | null>(null);
+  const [viewModel, setViewModel] = useState<TeacherHomeViewModel | null>(null);
 
   useEffect(() => {
     const progress = loadProgress();
@@ -32,10 +42,27 @@ export function HomeNextStepClient() {
       label: skill.label,
     }));
 
-    setNextStep(deriveHomeNextStep(progress, readySkills, [...PILOT_SKILLS]));
+    // Backward-compatible: keep deriveHomeNextStep for existing consumers
+    const computedNextStep = deriveHomeNextStep(
+      progress,
+      readySkills,
+      [...PILOT_SKILLS]
+    );
+    setNextStep(computedNextStep);
+
+    // New teacher view-model drives the 4 panels
+    setViewModel(
+      deriveTeacherHomeViewModel({
+        progress,
+        diagnosticResult: progress.diagnosticResult ?? null,
+        availableSkills: readySkills,
+        pilotSkills: [...PILOT_SKILLS],
+        nextStep: computedNextStep,
+      })
+    );
   }, []);
 
-  if (!nextStep) {
+  if (!nextStep || !viewModel) {
     return (
       <section
         aria-busy="true"
@@ -55,64 +82,20 @@ export function HomeNextStepClient() {
   return (
     <MathWatermark topic="sets" variant="background">
       <section
-        aria-labelledby="home-hero-title"
-        className="space-y-4"
+        aria-labelledby="tdh-hero-title"
+        className="space-y-6"
       >
-        {/* Zone 1 — Tu estado (MAX visual weight) */}
-        <article
-          data-testid="home-state-card"
-          className="app-glass-accent rounded-[var(--radius-card)] p-6"
-        >
-          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-accent-600)]">
-            Tu estado
-          </p>
-          <h2
-            id="home-hero-title"
-            className="mt-2 text-[var(--text-2xl)] font-bold text-[var(--color-brand-900)] tracking-tight"
-          >
-            {nextStep.title}
-          </h2>
-          <p className="mt-2 text-sm leading-[var(--leading-relaxed)] text-[var(--color-brand-700)] max-w-2xl">
-            {nextStep.description}
-          </p>
-          <Link
-            href={nextStep.href}
-            className="mt-4 inline-flex min-h-[44px] items-center rounded-[var(--radius-button)] bg-[var(--color-brand-900)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-brand-800)] focus-visible:shadow-[var(--ring-focus)]"
-          >
-            {nextStep.kind === "diagnostic" ? "Hacer diagnóstico →" : "Continuar →"}
-          </Link>
-        </article>
+        {/* Hero — MAX visual weight */}
+        <TeacherDigitalHero hero={viewModel.mission} />
 
-        {/* Study plan */}
-        <StudyPlanSection />
+        {/* Grid: route + situation side by side on desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <MathRoutePanel routeUnits={viewModel.routeUnits} />
+          <StudentSituationPanel situation={viewModel.studentSituation} />
+        </div>
 
-        {/* Zone 2 — Tu camino (MEDIUM visual weight) */}
-        {nextStep.roadmapSkills.length > 0 && (
-          <article
-            aria-labelledby="home-roadmap-title"
-            className="app-glass-surface rounded-[var(--radius-card)] p-5"
-          >
-            <div className="mb-4 flex items-baseline justify-between gap-3 flex-wrap">
-              <h3
-                id="home-roadmap-title"
-                className="text-sm font-semibold uppercase tracking-wide text-[var(--color-brand-700)]"
-              >
-                Tu camino
-              </h3>
-              {nextStep.diagnosticSummary && (
-                <span className="text-xs text-[var(--color-brand-500)]">
-                  Diagnóstico: {nextStep.diagnosticSummary.weakSkills} de{" "}
-                  {nextStep.diagnosticSummary.totalSkills} habilidades por
-                  reforzar
-                </span>
-              )}
-            </div>
-            <SkillRoadmap
-              skills={nextStep.roadmapSkills}
-              nextSkillId={nextStep.skillId}
-            />
-          </article>
-        )}
+        {/* Decision board — action cards */}
+        <DecisionBoardPanel decisions={viewModel.primaryActions} />
       </section>
     </MathWatermark>
   );

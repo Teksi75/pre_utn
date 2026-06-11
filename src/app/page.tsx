@@ -1,61 +1,17 @@
 import Link from "next/link";
 import { HomeNextStepClient } from "@/components/home/HomeNextStepClient";
-import { MathWatermark } from "@/components/math-visuals";
-import { EngineeringHeroVisual } from "@/components/math-visuals/EngineeringHeroVisual";
-
-// One-line flag flip restores the pre-change EngineeringHeroVisual hero.
-const USE_MATH_THEME_PLATE = true;
 
 /**
- * Home page — editorial layout with hero, camino de aprendizaje, and
- * acciones rápidas. Left sidebar (Ingenium nav) lives in the Nav component;
- * this page uses a single-column editorial flow.
+ * Home page — teacher digital home dashboard.
  *
- * Zones:
- *   Zone 1: "Tu estado"  — Hero via HomeNextStepClient (MathThemePlate bg)
- *   Zone 2: "Tu camino"  — Roadmap embedded in Zone 1
- *   Zone 3: "Acciones"   — Quick action links
+ * The editorial hero and MathWatermark wrapper have been moved into
+ * the HomeNextStepClient component. This page now provides the
+ * outer layout: dashboard, quick actions, and course context.
  */
 export default function Home() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Editorial hero with MathThemePlate background */}
-      <section className="relative isolate overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-brand-200)] app-glass-surface p-6 md:p-8 mb-8 min-h-44">
-        {USE_MATH_THEME_PLATE ? (
-          <MathWatermark topic="sets" variant="hero">
-            <div className="md:max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-accent-600)] mb-2">
-                Preparación independiente
-              </p>
-              <h1 className="text-[var(--text-2xl)] md:text-[var(--text-3xl)] font-bold text-[var(--color-brand-900)] tracking-tight mb-2">
-                Tu camino al ingreso a Ingeniería
-              </h1>
-              <p className="text-sm leading-[var(--leading-relaxed)] text-[var(--color-brand-700)] max-w-2xl">
-                Preparación independiente para ingreso a Ingenierías. Practicá,
-                diagnosticá tu nivel y seguí tu camino personalizado.
-              </p>
-            </div>
-          </MathWatermark>
-        ) : (
-          <>
-            <EngineeringHeroVisual />
-            <div className="relative z-10 md:max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-accent-600)] mb-2">
-                Preparación independiente
-              </p>
-              <h1 className="text-[var(--text-2xl)] md:text-[var(--text-3xl)] font-bold text-[var(--color-brand-900)] tracking-tight mb-2">
-                Tu camino al ingreso a Ingeniería
-              </h1>
-              <p className="text-sm leading-[var(--leading-relaxed)] text-[var(--color-brand-700)] max-w-2xl">
-                Preparación independiente para ingreso a Ingenierías. Practicá,
-                diagnosticá tu nivel y seguí tu camino personalizado.
-              </p>
-            </div>
-          </>
-        )}
-      </section>
-
-      {/* Zone 1 + Zone 2 — HomeNextStepClient (hero + roadmap + study plan) */}
+      {/* Dashboard — HomeNextStepClient renders hero + situation + study plan + route + decisions */}
       <HomeNextStepClient />
 
       {/* Zone 3 — Acciones rápidas */}

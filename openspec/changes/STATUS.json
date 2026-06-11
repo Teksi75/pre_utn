@@ -181,6 +181,12 @@
       "startedAt": "2026-06-11",
       "completedAt": "2026-06-11",
       "summary": "Activated all 7 U2 skills in PILOT_SKILLS catalog. Connected Unit 2 to home dashboard, guided-practice pipeline, learn page (multi-unit layout), and skill roadmap. Fixed multi-unit fallback in deriveHomeNextStep (Set-based distinct-unit detection, generic 'Seguir repasando' title). Relaxed computeMasteryLevel signature to Pick. Single work unit, 12 files changed."
+    },
+    "teacher-digital-home": {
+      "status": "done",
+      "branch": null,
+      "completedAt": "2026-06-11",
+      "summary": "Teacher Digital Home — pedagogical decision dashboard. Replaced editorial hero/roadmap with pedagogical domain view-model (deriveTeacherHomeViewModel), 4 dumb UI panels, HomeNextStepClient integration, verified PASS (1533/1533 tests, 27 domain tests, 11 spec scenarios). Code in working tree (uncommitted). Design deviation: SkillRoadmap preserved but not rendered on Home (D5 overridden by user acceptance criteria)."
     }
   },
   "activeBranches": [],
