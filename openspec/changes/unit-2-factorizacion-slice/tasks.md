@@ -3,7 +3,7 @@
 **Change:** unit-2-factorizacion-slice
 **Date:** 2026-06-10
 **Author:** orchestrator + sdd-tasks-chinos
-**Status:** in-progress (PR-1 merged, PR-2 pending)
+**Status:** in-progress (PR-1 merged, PR-2 merged)
 **TDD mode:** strict (RED → GREEN → REFACTOR)
 **Estimated total diff:** ~490 lines
 **PR strategy:** chained-pr (2 PRs)
@@ -344,12 +344,12 @@ Follow `work-unit-commits` skill: one commit per logical work unit. Each commit 
 5. `feat(domain): add ruffini_resto as factorizacion prerequisite`
 6. `test(domain): extend U1 regression guard for U2-Factorizacion evaluator chain`
 
-**PR-2 commits (expected 4–5):**
-1. `feat(content): add factorizacion and gauss theory nodes`
-2. `feat(content): add factorizacion and gauss worked examples and feedback`
-3. `feat(content): add 8 U2 factorizacion and gauss exercises`
-4. `fix(tests): update gauss.1 references for U2 content`
-5. `test(content): extend shape tests for 8 new exercises`
+**PR-2 commits (DONE):**
+1. `docs(content): add factorizacion and gauss theory nodes` ✅
+2. `docs(content): add 4 worked examples for factorizacion and gauss` ✅
+3. `docs(content): add 3 feedback mappings for factorizacion error tags` ✅
+4. `feat(content): update exercises and fix test references` ✅
+5. `test(domain): extend U2 shape and skill-catalog deps tests` ✅
 
 ---
 
