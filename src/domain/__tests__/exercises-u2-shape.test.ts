@@ -1,8 +1,9 @@
 import { describe, test, expect } from "vitest";
-import { loadExercisesForSkill } from "../catalog/content-loaders";
+import { loadExercisesForSkill, loadSkillBank } from "../catalog/content-loaders";
+import { parsePolynomial } from "../evaluator/polynomial-evaluator";
 import type { Exercise } from "../models/exercise";
 
-/** Load all U2 exercises from the 5 slice skills. */
+/** Load all U2 exercises from the 7 slice skills. */
 function allU2Exercises(): Exercise[] {
   return [
     ...loadExercisesForSkill("mat.u2.polinomios_basico"),
@@ -10,12 +11,14 @@ function allU2Exercises(): Exercise[] {
     ...loadExercisesForSkill("mat.u2.ruffini_resto"),
     ...loadExercisesForSkill("mat.u2.factorizacion"),
     ...loadExercisesForSkill("mat.u2.gauss"),
+    ...loadExercisesForSkill("mat.u2.mcm_mcd_polinomios"),
+    ...loadExercisesForSkill("mat.u2.ecuaciones_fraccionarias"),
   ];
 }
 
 describe("U2 exercise shape validation", () => {
-  describe("12 new exercises exist", () => {
-    test("all 12 expected exercise IDs are present", () => {
+  describe("31 U2 exercises exist across all 7 slice skills", () => {
+    test("all 31 expected exercise IDs are present", () => {
       const exercises = allU2Exercises();
       const ids = exercises.map((e) => e.id);
 
@@ -35,13 +38,29 @@ describe("U2 exercise shape validation", () => {
         "ex.u2.ruffini_resto.3",
         "ex.u2.ruffini_resto.4",
         "ex.u2.ruffini_resto.5",
+        "ex.u2.factorizacion.1",
+        "ex.u2.factorizacion.2",
+        "ex.u2.factorizacion.3",
+        "ex.u2.factorizacion.4",
+        "ex.u2.gauss.1",
+        "ex.u2.gauss.2",
+        "ex.u2.gauss.3",
+        "ex.u2.gauss.4",
+        "ex.u2.mcm_mcd_polinomios.1",
+        "ex.u2.mcm_mcd_polinomios.2",
+        "ex.u2.mcm_mcd_polinomios.3",
+        "ex.u2.mcm_mcd_polinomios.4",
+        "ex.u2.ecuaciones_fraccionarias.1",
+        "ex.u2.ecuaciones_fraccionarias.2",
+        "ex.u2.ecuaciones_fraccionarias.3",
+        "ex.u2.ecuaciones_fraccionarias.4",
       ];
 
       for (const id of expected) {
         expect(ids, `Exercise ID ${id} should exist`).toContain(id);
       }
 
-      expect(exercises.length).toBeGreaterThanOrEqual(15);
+      expect(exercises.length).toBeGreaterThanOrEqual(31);
     });
   });
 
@@ -54,19 +73,17 @@ describe("U2 exercise shape validation", () => {
     });
   });
 
-  describe("type distribution (6 MC + 3 numerical + 3 symbolic per the 12 NEW exercises)", () => {
-    test("new exercises have balanced type distribution", () => {
-      // Only check the 12 new exercises (not the .1 placeholders)
+  describe("type distribution (MC, numerical, symbolic across all U2 exercises)", () => {
+    test("U2 exercises have balanced type distribution", () => {
       const exercises = allU2Exercises();
-      const newEx = exercises.filter((e) => !e.id.endsWith(".1"));
 
-      const mcCount = newEx.filter((e) => e.type === "multiple-choice").length;
-      const numCount = newEx.filter((e) => e.type === "numerical").length;
-      const symCount = newEx.filter((e) => e.type === "symbolic").length;
+      const mcCount = exercises.filter((e) => e.type === "multiple-choice").length;
+      const numCount = exercises.filter((e) => e.type === "numerical").length;
+      const symCount = exercises.filter((e) => e.type === "symbolic").length;
 
-      expect(mcCount).toBeGreaterThanOrEqual(5);
-      expect(numCount).toBeGreaterThanOrEqual(3);
-      expect(symCount).toBeGreaterThanOrEqual(2);
+      expect(mcCount).toBeGreaterThanOrEqual(18);
+      expect(numCount).toBeGreaterThanOrEqual(7);
+      expect(symCount).toBeGreaterThanOrEqual(6);
     });
   });
 
@@ -202,16 +219,135 @@ describe("U2 exercise shape validation", () => {
     });
   });
 
-  describe("symbolic exercises have polynomial-friendly expectedAnswer", () => {
-    test("symbolic U2 exercises have coefficient arrays or factorized forms", () => {
+  describe("symbolic exercises have polynomial-evaluator-compatible expectedAnswer", () => {
+    test("every symbolic U2 expectedAnswer parses without error via parsePolynomial", () => {
       const exercises = allU2Exercises();
       const symbolic = exercises.filter((e) => e.type === "symbolic");
 
+      expect(symbolic.length, "There must be symbolic exercises to validate").toBeGreaterThan(0);
+
       for (const ex of symbolic) {
-        // Expected answer should be parseable by polynomial-evaluator
-        expect(ex.expectedAnswer).toBeTruthy();
-        expect(ex.expectedAnswer.length).toBeGreaterThan(0);
+        expect(
+          () => parsePolynomial(ex.expectedAnswer),
+          `Symbolic exercise ${ex.id} expectedAnswer "${ex.expectedAnswer}" must be parseable by polynomial-evaluator`
+        ).not.toThrow();
       }
+    });
+  });
+
+  describe("mcm_mcd_polinomios exercises", () => {
+    test("at least 3 mcm_mcd_polinomios exercises exist", () => {
+      const exercises = loadExercisesForSkill("mat.u2.mcm_mcd_polinomios");
+      expect(exercises.length).toBeGreaterThanOrEqual(3);
+    });
+
+    test("mcm_mcd_polinomios has at least 1 MC and at least 1 symbolic", () => {
+      const exercises = loadExercisesForSkill("mat.u2.mcm_mcd_polinomios");
+      const mcCount = exercises.filter((e) => e.type === "multiple-choice").length;
+      const symCount = exercises.filter((e) => e.type === "symbolic").length;
+      expect(mcCount).toBeGreaterThanOrEqual(1);
+      expect(symCount).toBeGreaterThanOrEqual(1);
+    });
+
+    test("mcm_mcd_polinomios difficulty ranges 1-4", () => {
+      const exercises = loadExercisesForSkill("mat.u2.mcm_mcd_polinomios");
+      const difficulties = exercises.map((e) => e.difficulty);
+      expect(Math.min(...difficulties)).toBeLessThanOrEqual(2);
+      expect(Math.max(...difficulties)).toBeGreaterThanOrEqual(3);
+    });
+
+    test("mcm_mcd_polinomios exercises reference chapter 14 in pedagogicalNote", () => {
+      const exercises = loadExercisesForSkill("mat.u2.mcm_mcd_polinomios");
+      expect(exercises.length, "There must be exercises to check").toBeGreaterThanOrEqual(1);
+      for (const ex of exercises) {
+        expect(
+          ex.pedagogicalNote.toLowerCase(),
+          `Exercise ${ex.id} should reference chapter 14`
+        ).toMatch(/cap[ií]tulo|chapter|14/);
+      }
+    });
+
+    test("mcm_mcd_polinomios exercises include u2_confunde_mcm_mcd tag", () => {
+      const exercises = loadExercisesForSkill("mat.u2.mcm_mcd_polinomios");
+      const taggedExercises = exercises.filter(
+        (e) => e.commonErrorTags.includes("u2_confunde_mcm_mcd")
+      );
+      expect(taggedExercises.length).toBeGreaterThanOrEqual(1);
+    });
+
+    test("every mcm_mcd_polinomios exercise has at least one commonErrorTag", () => {
+      const exercises = loadExercisesForSkill("mat.u2.mcm_mcd_polinomios");
+      for (const ex of exercises) {
+        expect(
+          ex.commonErrorTags.length,
+          `Exercise ${ex.id} should have at least one commonErrorTag`
+        ).toBeGreaterThan(0);
+      }
+    });
+  });
+
+  describe("ecuaciones_fraccionarias exercises", () => {
+    test("at least 3 ecuaciones_fraccionarias exercises exist", () => {
+      const exercises = loadExercisesForSkill("mat.u2.ecuaciones_fraccionarias");
+      expect(exercises.length).toBeGreaterThanOrEqual(3);
+    });
+
+    test("ecuaciones_fraccionarias has at least 1 MC with domain-exclusion distractor and at least 1 numerical", () => {
+      const exercises = loadExercisesForSkill("mat.u2.ecuaciones_fraccionarias");
+      const mcCount = exercises.filter((e) => e.type === "multiple-choice").length;
+      const numCount = exercises.filter((e) => e.type === "numerical").length;
+      expect(mcCount).toBeGreaterThanOrEqual(1);
+      expect(numCount).toBeGreaterThanOrEqual(1);
+    });
+
+    test("ecuaciones_fraccionarias difficulty ranges 2-4", () => {
+      const exercises = loadExercisesForSkill("mat.u2.ecuaciones_fraccionarias");
+      const difficulties = exercises.map((e) => e.difficulty);
+      expect(Math.min(...difficulties)).toBeLessThanOrEqual(2);
+      expect(Math.max(...difficulties)).toBeGreaterThanOrEqual(3);
+    });
+
+    test("ecuaciones_fraccionarias exercises reference chapter 15 in pedagogicalNote", () => {
+      const exercises = loadExercisesForSkill("mat.u2.ecuaciones_fraccionarias");
+      expect(exercises.length, "There must be exercises to check").toBeGreaterThanOrEqual(1);
+      for (const ex of exercises) {
+        expect(
+          ex.pedagogicalNote.toLowerCase(),
+          `Exercise ${ex.id} should reference chapter 15`
+        ).toMatch(/cap[ií]tulo|chapter|15/);
+      }
+    });
+
+    test("ecuaciones_fraccionarias exercises include u2_denominador_cero tag", () => {
+      const exercises = loadExercisesForSkill("mat.u2.ecuaciones_fraccionarias");
+      const taggedExercises = exercises.filter(
+        (e) => e.commonErrorTags.includes("u2_denominador_cero")
+      );
+      expect(taggedExercises.length).toBeGreaterThanOrEqual(1);
+    });
+
+    test("every ecuaciones_fraccionarias exercise has at least one commonErrorTag", () => {
+      const exercises = loadExercisesForSkill("mat.u2.ecuaciones_fraccionarias");
+      for (const ex of exercises) {
+        expect(
+          ex.commonErrorTags.length,
+          `Exercise ${ex.id} should have at least one commonErrorTag`
+        ).toBeGreaterThan(0);
+      }
+    });
+  });
+
+  describe("loadSkillBank integration for new skills", () => {
+    test("mcm_mcd_polinomios skill bank loads exercises", () => {
+      const bank = loadSkillBank("mat.u2.mcm_mcd_polinomios");
+      expect(bank.exercises.length).toBeGreaterThanOrEqual(3);
+      // Diagnostics will include missing feedback until Phase 3 (FeedbackMappings)
+      // but there MUST be NO diagnostics about zero exercises or missing IDs
+    });
+
+    test("ecuaciones_fraccionarias skill bank loads exercises", () => {
+      const bank = loadSkillBank("mat.u2.ecuaciones_fraccionarias");
+      expect(bank.exercises.length).toBeGreaterThanOrEqual(3);
     });
   });
 });

@@ -650,10 +650,12 @@
     "skillId": "mat.u2.polinomios_basico",
     "type": "symbolic",
     "difficulty": 3,
-    "prompt": "Completá los coeficientes del polinomio 0x⁴ + 2x³ + 0x² − 5x + 1 en orden decreciente como arreglo. La respuesta esperada es [2, 0, -5, 1] (sin los ceros del inicio).",
-    "expectedAnswer": "[2, 0, -5, 1]",
+    "prompt": "Escribí el polinomio 0x⁴ + 2x³ + 0x² − 5x + 1 eliminando los términos con coeficiente cero. Escribí el polinomio expandido resultante.",
+    "expectedAnswer": "2x^3 - 5x + 1",
     "commonErrorTags": ["u2_termino_faltante"],
-    "pedagogicalNote": "Los coeficientes en orden decreciente: grado 3 → 2, grado 2 → 0 (término faltante), grado 1 → −5, grado 0 → 1. Los ceros del inicio (0x⁴) se eliminan al normalizar."
+    "pedagogicalNote": "Los coeficientes en orden decreciente: grado 3 → 2, grado 2 → 0 (término faltante), grado 1 → −5, grado 0 → 1. Los ceros del inicio (0x⁴) se eliminan al normalizar. El polinomio expandido es 2x³ − 5x + 1. El evaluador acepta formas equivalentes.",
+    "relatedTheoryIds": ["theory-polinomios-basico"],
+    "relatedExampleIds": ["example-polinomios-basico-1"]
   },
   {
     "id": "ex.u2.operaciones_polinomios.2",
@@ -682,7 +684,7 @@
     "skillId": "mat.u2.operaciones_polinomios",
     "type": "numerical",
     "difficulty": 3,
-    "prompt": "Calculá el producto de los coeficientes principales al multiplicar (2x² − 1)(x + 3). Pista: el resultado es 2x³ + 6x² − x − 3, ¿cuál es la suma de todos los coeficientes del resultado?",
+    "prompt": "Multiplicá (2x² − 1)(x + 3). El resultado es 2x³ + 6x² − x − 3. ¿Cuál es la suma de todos los coeficientes del polinomio resultado?",
     "expectedAnswer": "4",
     "commonErrorTags": ["u2_signo_operacion", "u2_termino_semejante"],
     "pedagogicalNote": "El polinomio resultado es 2x³ + 6x² − x − 3. La suma de coeficientes: 2 + 6 + (−1) + (−3) = 4. Alternativa: evaluar el producto en x=1 para obtener la suma de coeficientes."
@@ -734,10 +736,10 @@
     "skillId": "mat.u2.ruffini_resto",
     "type": "symbolic",
     "difficulty": 4,
-    "prompt": "Verificá que (x − 2) es factor de P(x) = x³ − 3x² + 4. Si es factor, el cociente es un polinomio. Escribí P(x) como producto de (x − 2) por el cociente correspondiente. Esperado: (x-2)(x^2 - x - 2).",
-    "expectedAnswer": "(x-2)(x^2 - x - 2)",
+    "prompt": "Verificá que (x − 2) es factor de P(x) = x³ − 3x² + 4 usando el teorema del resto. Escribí el polinomio expandido del producto (x−2) por el cociente.",
+    "expectedAnswer": "x^3 - 3x^2 + 4",
     "commonErrorTags": ["u2_termino_faltante", "u2_signo_operacion"],
-    "pedagogicalNote": "Ruffini: coeficientes [1, −3, 0, 4] con a=2 → cociente [1, −1, −2], resto 0. P(x) = (x−2)(x²−x−2). El evaluador expande y compara coeficientes."
+    "pedagogicalNote": "Ruffini: coeficientes [1, −3, 0, 4] con a=2 → cociente [1, −1, −2], resto 0. P(x) = (x−2)(x²−x−2) = x³ − 3x² + 4. El evaluador acepta formas expandidas equivalentes."
   },
   {
     "id": "ex.u2.gauss.1",
@@ -1342,5 +1344,111 @@
     "pedagogicalNote": "La igualdad compleja exige que coincidan AMBAS partes: $a+bi = c+di$ si y solo si $a=c$ Y $b=d$. Igualar solo la parte real es un error conceptual frecuente.",
     "relatedTheoryIds": ["theory-complejos"],
     "relatedExampleIds": ["example-complejos-1"]
+  },
+
+  {
+    "id": "ex.u2.mcm_mcd_polinomios.1",
+    "skillId": "mat.u2.mcm_mcd_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "Dados $P(x)=x(x-2)$ y $Q(x)=x(x+3)$ en forma factorizada, ¿cuál es el MCM $[P(x), Q(x)]$?",
+    "expectedAnswer": "x(x-2)(x+3)",
+    "options": ["x", "x(x-2)(x+3)", "x²(x-2)(x+3)", "(x-2)(x+3)"],
+    "commonErrorTags": ["u2_confunde_mcm_mcd"],
+    "pedagogicalNote": "MCM = producto de factores comunes y no comunes con su mayor exponente. Factor común: x (máx exponente 1). Factores no comunes: (x-2) y (x+3). Resultado: x(x-2)(x+3). El distractor 'x' es el MCD (error frecuente: confundir MCM con MCD). Capítulo 14.",
+    "relatedTheoryIds": ["theory-mcm-mcd-polinomios"],
+    "relatedExampleIds": ["example-mcm-mcd-polinomios-1"]
+  },
+  {
+    "id": "ex.u2.mcm_mcd_polinomios.2",
+    "skillId": "mat.u2.mcm_mcd_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Dados $P(x)=(x-1)(x+2)$ y $Q(x)=(x-1)(x-3)$ factorizados, ¿cuál es el MCD $[P(x), Q(x)]$?",
+    "expectedAnswer": "(x-1)",
+    "options": ["(x-1)", "(x-1)(x+2)(x-3)", "(x+2)(x-3)", "(x-1)²"],
+    "commonErrorTags": ["u2_confunde_mcm_mcd"],
+    "pedagogicalNote": "MCD = factores comunes con su menor exponente. El único factor común es (x-1) con exponente 1 en ambos. El distractor (x-1)(x+2)(x-3) es el MCM (error frecuente: confundir MCD con MCM). Capítulo 14.",
+    "relatedTheoryIds": ["theory-mcm-mcd-polinomios"],
+    "relatedExampleIds": ["example-mcm-mcd-polinomios-1"]
+  },
+  {
+    "id": "ex.u2.mcm_mcd_polinomios.3",
+    "skillId": "mat.u2.mcm_mcd_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Factorizá para calcular el MCM de $x^2-4$ y $x^2-2x$. ¿Cuál es el resultado?",
+    "expectedAnswer": "x(x-2)(x+2)",
+    "options": ["x(x-2)(x+2)", "(x-2)", "x(x-2)²(x+2)", "x(x+2)"],
+    "commonErrorTags": ["u2_confunde_mcm_mcd"],
+    "pedagogicalNote": "Paso 1 — factorizar: x²−4=(x−2)(x+2); x²−2x=x(x−2). Paso 2 — MCM: factores comunes y no comunes con mayor exponente: x (exponente 1), (x−2) (exponente 1), (x+2) (exponente 1). Resultado: x(x−2)(x+2). El distractor (x−2) es el MCD. Capítulo 14.",
+    "relatedTheoryIds": ["theory-mcm-mcd-polinomios"],
+    "relatedExampleIds": ["example-mcm-mcd-polinomios-2"]
+  },
+  {
+    "id": "ex.u2.mcm_mcd_polinomios.4",
+    "skillId": "mat.u2.mcm_mcd_polinomios",
+    "type": "symbolic",
+    "difficulty": 4,
+    "prompt": "Calculá el MCM de $P(x)=(x-2)(x+1)$ y $Q(x)=(x-2)(x-3)$. Escribí el polinomio expandido.",
+    "expectedAnswer": "x^3 - 4x^2 + x + 6",
+    "commonErrorTags": ["u2_confunde_mcm_mcd"],
+    "pedagogicalNote": "MCM = (x−2)(x+1)(x−3). Expandido: (x−2)(x²−2x−3) = x³−2x²−3x−2x²+4x+6 = x³−4x²+x+6. El MCD sería (x−2) solamente — error frecuente: confundir MCM con MCD. Capítulo 14.",
+    "relatedTheoryIds": ["theory-mcm-mcd-polinomios"],
+    "relatedExampleIds": ["example-mcm-mcd-polinomios-2"]
+  },
+
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.1",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resolvé $\\frac{1}{x-2} = \\frac{3}{x-2}$ para $x$. ¿Cuál es la solución?",
+    "expectedAnswer": "No tiene solución (x=2 anula el denominador)",
+    "options": ["x=2", "No tiene solución (x=2 anula el denominador)", "x=-2", "x=0"],
+    "commonErrorTags": ["u2_denominador_cero"],
+    "pedagogicalNote": "Al simplificar las fracciones (mismo denominador), se obtiene 1=3, que es falso para todo x. Además, x=2 anula el denominador y debe excluirse. La ecuación no tiene solución. El distractor x=2 testea si el alumno resuelve algebraicamente sin verificar el dominio. Capítulo 15.",
+    "relatedTheoryIds": ["theory-ecuaciones-fraccionarias"],
+    "relatedExampleIds": ["example-ecuaciones-fraccionarias-1"]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.2",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resolvé $\\frac{x}{x-3} + 1 = \\frac{3}{x-3}$. ¿Cuál es la solución?",
+    "expectedAnswer": "No tiene solución (x=3 anula el denominador)",
+    "options": ["x=3", "No tiene solución (x=3 anula el denominador)", "x=0", "x=2"],
+    "commonErrorTags": ["u2_denominador_cero"],
+    "pedagogicalNote": "Multiplicando por (x−3): x + (x−3) = 3 → 2x − 3 = 3 → 2x = 6 → x = 3. Pero x=3 anula los denominadores originales (x−3=0). Por lo tanto, la ecuación no tiene solución. El distractor x=3 testea si el alumno verifica el dominio después de resolver. Capítulo 15.",
+    "relatedTheoryIds": ["theory-ecuaciones-fraccionarias"],
+    "relatedExampleIds": ["example-ecuaciones-fraccionarias-1"]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.3",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resolvé $\\frac{1}{x+2} + \\frac{1}{x-2} = \\frac{4}{x^2-4}$. ¿Cuál es la solución?",
+    "expectedAnswer": "No tiene solución (x=±2 anulan denominadores)",
+    "options": ["x=2", "x=-2", "No tiene solución (x=±2 anulan denominadores)", "x=0"],
+    "commonErrorTags": ["u2_denominador_cero"],
+    "pedagogicalNote": "Dominio: x≠±2. Multiplicando por x²−4=(x+2)(x−2): (x−2)+(x+2)=4 → 2x=4 → x=2. Pero x=2 anula los denominadores (x−2=0 y x²−4=0). La solución algebraica pertenece al dominio excluido → no hay solución. Los dos primeros distractores testean valores excluidos del dominio. Capítulo 15.",
+    "relatedTheoryIds": ["theory-ecuaciones-fraccionarias"],
+    "relatedExampleIds": ["example-ecuaciones-fraccionarias-2"]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.4",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "numerical",
+    "difficulty": 4,
+    "prompt": "Resolvé $\\frac{2}{x+1} = \\frac{3}{x+2}$ para $x$. Ingresá el valor numérico de $x$.",
+    "expectedAnswer": "1",
+    "commonErrorTags": ["u2_denominador_cero"],
+    "pedagogicalNote": "Multiplicación cruzada: 2(x+2)=3(x+1) → 2x+4=3x+3 → x=1. Verificación: denominadores (x+1)=2≠0 y (x+2)=3≠0, ambos válidos. La solución x=1 es correcta. Capítulo 15.",
+    "relatedTheoryIds": ["theory-ecuaciones-fraccionarias"],
+    "relatedExampleIds": ["example-ecuaciones-fraccionarias-2"]
   }
 ]
+
+

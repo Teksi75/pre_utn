@@ -115,7 +115,7 @@ export const SKILL_DEPENDENCIES: readonly SkillDependency[] = [
   { skillId: "mat.u2.factorizacion", prerequisites: ["mat.u2.operaciones_polinomios", "mat.u2.ruffini_resto"] },
   { skillId: "mat.u2.gauss", prerequisites: ["mat.u2.ruffini_resto"] },
   { skillId: "mat.u2.mcm_mcd_polinomios", prerequisites: ["mat.u2.factorizacion"] },
-  { skillId: "mat.u2.ecuaciones_fraccionarias", prerequisites: ["mat.u2.factorizacion"] },
+  { skillId: "mat.u2.ecuaciones_fraccionarias", prerequisites: ["mat.u2.factorizacion", "mat.u2.mcm_mcd_polinomios"] },
 
   { skillId: "mat.u3.inecuaciones_valor_absoluto", prerequisites: ["mat.u1.valor_absoluto", "mat.u3.inecuaciones_lineales"] },
   { skillId: "mat.u3.recta", prerequisites: ["mat.u3.ecuaciones_lineales"] },

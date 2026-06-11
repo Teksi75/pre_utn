@@ -89,10 +89,10 @@ describe("loadSkillBank — wiring bank validator into catalog load path", () =>
 
 describe("Unit-2 content loaders", () => {
   describe("loadTheoryContent", () => {
-    test("loads theory for unit-2 (5 theory nodes)", () => {
+    test("loads theory for unit-2 (>= 7 theory nodes)", () => {
       const theory = loadTheoryContent("unit-2");
       expect(Array.isArray(theory)).toBe(true);
-      expect(theory.length).toBe(5);
+      expect(theory.length).toBeGreaterThanOrEqual(7);
       expect(theory[0]).toHaveProperty("id");
       expect(theory[0]).toHaveProperty("skillId");
       expect(theory[0]).toHaveProperty("conceptBlocks");

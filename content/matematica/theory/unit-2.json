@@ -188,5 +188,69 @@
       }
     ],
     "pageReferences": "págs. 9, 14"
+  },
+  {
+    "id": "theory-mcm-mcd-polinomios",
+    "skillId": "mat.u2.mcm_mcd_polinomios",
+    "title": "MCM y MCD de polinomios: mínimo común múltiplo y máximo común divisor",
+    "summary": "Se estudia el cálculo del Mínimo Común Múltiplo (MCM) y el Máximo Común Divisor (MCD) de polinomios a partir de su forma factorizada. Ambos conceptos extienden las definiciones aritméticas al álgebra: el MCM es el polinomio de menor grado divisible por ambos, y el MCD es el polinomio de mayor grado que divide a ambos exactamente.",
+    "conceptBlocks": [
+      {
+        "id": "concept-mcm-mcd-definicion",
+        "title": "1. Definiciones y relación con factorización",
+        "body": "Para calcular el MCM y MCD de polinomios, primero hay que factorizarlos completamente. MCM = producto de TODOS los factores (comunes y no comunes) elevados al MAYOR exponente con que aparecen. MCD = producto de los factores COMUNES elevados al MENOR exponente con que aparecen. Ejemplo: si P(x) = (x−1)²(x+2) y Q(x) = (x−1)(x+2)³, entonces MCD = (x−1)(x+2)¹ = (x−1)(x+2), MCM = (x−1)²(x+2)³. Error frecuente: intercambiar MCM y MCD (confundir 'mayor exponente' con 'menor exponente')."
+      },
+      {
+        "id": "concept-mcm-mcd-algoritmo",
+        "title": "2. Procedimiento paso a paso",
+        "body": "(1) Factorizar completamente cada polinomio. (2) Listar todos los factores distintos que aparecen en cualquiera de las factorizaciones. (3) Para el MCM: tomar cada factor con el mayor exponente que aparezca en cualquier polinomio. (4) Para el MCD: tomar solo los factores que aparecen en TODOS los polinomios, con el menor exponente. (5) Si dos polinomios no comparten ningún factor, el MCD es 1 y el MCM es el producto de ambos. Verificar siempre: MCM debe ser múltiplo de cada polinomio; MCD debe dividir a cada polinomio."
+      },
+      {
+        "id": "concept-mcm-mcd-ejemplo",
+        "title": "3. Ejemplo: MCM y MCD de x²−4 y x²−2x",
+        "body": "Paso 1 — factorizar: x²−4 = (x−2)(x+2) y x²−2x = x(x−2). Paso 2 — factores: x, (x−2), (x+2). Paso 3 — MCM: x(x−2)(x+2) (todos con exponente 1, máximo en cada caso). Paso 4 — MCD: (x−2) (único factor común, exponente 1 en ambos). Verificación: ¿(x−2) divide a ambos? Sí: x²−4 = (x−2)(x+2) y x²−2x = (x−2)·x. ¿x(x−2)(x+2) es múltiplo de ambos? Sí: es el producto x(x²−4) y también (x+2)(x²−2x)."
+      }
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 14: MCM y MCD de polinomios",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar el cálculo de MCM y MCD de polinomios como extensión de los conceptos aritméticos, enfatizando la necesidad de factorizar primero y la diferencia entre 'mayor exponente' (MCM) y 'menor exponente' (MCD)"
+      }
+    ],
+    "pageReferences": "págs. 14-15"
+  },
+  {
+    "id": "theory-ecuaciones-fraccionarias",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "title": "Ecuaciones fraccionarias: resolución con denominadores algebraicos",
+    "summary": "Se estudia la resolución de ecuaciones donde la variable aparece en al menos un denominador. El procedimiento requiere identificar el dominio (valores excluidos que anulan denominadores), multiplicar por el MCM de los denominadores para eliminarlos, resolver la ecuación resultante y verificar que las soluciones no pertenezcan al dominio excluido.",
+    "conceptBlocks": [
+      {
+        "id": "concept-ec-frac-dominio",
+        "title": "1. Dominio y valores excluidos",
+        "body": "Antes de resolver una ecuación fraccionaria, hay que determinar el DOMINIO: los valores de x para los cuales la ecuación tiene sentido. Cualquier valor que haga CERO algún denominador debe EXCLUIRSE. Ejemplo: en 1/(x−2) + 1/(x+2) = 4/(x²−4), los denominadores son x−2, x+2 y x²−4=(x−2)(x+2). Los valores excluidos son x=2 y x=−2. Si al resolver se obtiene x=2 o x=−2, esas soluciones se descartan. Error frecuente: resolver algebraicamente y aceptar la solución sin verificar el dominio."
+      },
+      {
+        "id": "concept-ec-frac-procedimiento",
+        "title": "2. Procedimiento de resolución",
+        "body": "(1) Factorizar todos los denominadores. (2) Determinar el dominio excluido (valores que anulan denominadores). (3) Calcular el MCM de los denominadores. (4) Multiplicar AMBOS miembros de la ecuación por el MCM (esto elimina los denominadores). (5) Resolver la ecuación polinómica resultante. (6) Verificar que cada solución NO pertenezca al dominio excluido. (7) Descartar las soluciones que anulen algún denominador original."
+      },
+      {
+        "id": "concept-ec-frac-sin-solucion",
+        "title": "3. Ecuaciones sin solución",
+        "body": "Una ecuación fraccionaria puede NO tener solución en dos casos: (a) la ecuación algebraica resultante es contradictoria (ej: 1=3 después de simplificar), o (b) la solución algebraica pertenece al dominio excluido. Ejemplo: 1/(x−2) = 3/(x−2). Al simplificar (mismo denominador) se obtiene 1=3 (contradicción), pero además x=2 está excluido. La ecuación no tiene solución. Ejemplo: x/(x−3) + 1 = 3/(x−3). Al resolver: x + (x−3) = 3 → 2x=6 → x=3. Pero x=3 anula el denominador → no hay solución."
+      }
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 15: Ecuaciones fraccionarias",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar la resolución de ecuaciones fraccionarias con énfasis en la determinación del dominio, el uso del MCM para eliminar denominadores y la verificación de soluciones contra el dominio excluido"
+      }
+    ],
+    "pageReferences": "págs. 15-16"
   }
 ]

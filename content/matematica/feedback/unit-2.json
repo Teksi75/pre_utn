@@ -46,5 +46,17 @@
     "type": "conceptual",
     "message": "El caso de factoreo que elegiste no es el correcto para este polinomio. Antes de factorizar, preguntate: ¿tiene factor común? ¿es una diferencia de cuadrados? ¿es un trinomio cuadrado perfecto? Cada caso tiene un patrón de reconocimiento específico. Repasá los 7 casos de factoreo e identificá cuál aplica según la cantidad de términos, los exponentes y los signos del polinomio dado.",
     "recoveryTarget": "example-factorizacion-2"
+  },
+  {
+    "errorTag": "u2_denominador_cero",
+    "type": "conceptual",
+    "message": "Incluiste como solución un valor que anula algún denominador de la ecuación original. En ecuaciones fraccionarias, siempre hay que verificar el dominio ANTES de aceptar una solución. El procedimiento correcto es: (1) determinar qué valores anulan los denominadores (dominio excluido), (2) resolver algebraicamente, (3) descartar cualquier solución que pertenezca al dominio excluido. Si la única solución algebraica está excluida, la ecuación no tiene solución. Repasá el procedimiento completo en el ejemplo de ecuaciones fraccionarias.",
+    "recoveryTarget": "example-ecuaciones-fraccionarias-1"
+  },
+  {
+    "errorTag": "u2_confunde_mcm_mcd",
+    "type": "conceptual",
+    "message": "Confundiste MCM (Mínimo Común Múltiplo) con MCD (Máximo Común Divisor), o viceversa. Recordá la diferencia: MCM = producto de TODOS los factores (comunes y no comunes) con el MAYOR exponente. MCD = producto de los factores COMUNES con el MENOR exponente. Para MCM tomás todo y con el exponente más grande; para MCD tomás solo lo compartido y con el exponente más chico. Por ejemplo, si P=(x−1)²(x+2) y Q=(x−1)(x+2)³: MCM=(x−1)²(x+2)³, MCD=(x−1)(x+2). Volvé a leer la definición y practicá con el ejemplo paso a paso.",
+    "recoveryTarget": "example-mcm-mcd-polinomios-1"
   }
 ]

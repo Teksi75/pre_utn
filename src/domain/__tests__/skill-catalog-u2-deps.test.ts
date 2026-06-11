@@ -100,4 +100,20 @@ describe("U2 skill dependencies", () => {
       expect(prereqsOf("mat.u2.gauss")).toContain("mat.u2.ruffini_resto");
     });
   });
+
+  describe("U2-SKILL-003: ecuaciones_fraccionarias ← mcm_mcd_polinomios", () => {
+    test("ecuaciones_fraccionarias depends on mcm_mcd_polinomios", () => {
+      const prereqs = prereqsOf("mat.u2.ecuaciones_fraccionarias");
+      expect(prereqs).toContain("mat.u2.mcm_mcd_polinomios");
+    });
+
+    test("ecuaciones_fraccionarias also depends on factorizacion", () => {
+      const prereqs = prereqsOf("mat.u2.ecuaciones_fraccionarias");
+      expect(prereqs).toContain("mat.u2.factorizacion");
+    });
+
+    test("ecuaciones_fraccionarias transitively depends on ruffini_resto", () => {
+      expect(canReach("mat.u2.ecuaciones_fraccionarias", "mat.u2.ruffini_resto")).toBe(true);
+    });
+  });
 });
