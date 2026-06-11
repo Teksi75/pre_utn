@@ -56,6 +56,12 @@ const U2_MISSING_TERM_TAGS = new Set(["u2_termino_faltante"]);
 /** Tags for incomplete factorization (still factorable). */
 const U2_INCOMPLETE_FACTOR_TAGS = new Set(["u2_factorizacion_incompleta"]);
 
+/** Tags for sign errors in factorization (wrong sign in factors). */
+const U2_SIGNO_FACTORIZACION_TAGS = new Set(["u2_signo_factorizacion"]);
+
+/** Tags for wrong factorization case identification. */
+const U2_CASO_INCORRECTO_TAGS = new Set(["u2_caso_incorrecto"]);
+
 const SUPERSCRIPT_DIGITS: Readonly<Record<string, string>> = {
   "⁰": "0",
   "¹": "1",
@@ -436,6 +442,181 @@ function isU2IncompleteFactorError(exercise: Exercise, userAnswer: string): bool
 }
 
 /**
+ * Detect sign errors in factorization: student gives factors with correct
+ * absolute form but wrong sign in one or more factors.
+ *
+ * MC: compares the student's selected option's factor pattern with the
+ * expected answer's factor pattern. If the option has the same factors
+ * but with a sign difference in at least one, flags it.
+ *
+ * Symbolic: compares parenthesized groups in student vs expected answer.
+ * If the groups match in form but differ in sign patterns, flags it.
+ */
+function isU2SignoFactorizacionError(
+  exercise: Exercise,
+  userAnswer: string,
+): boolean {
+  // For MC: compare selected option with expected, check factor sign differences
+  if (exercise.type === "multiple-choice") {
+    const expected = exercise.expectedAnswer.trim();
+    const student = userAnswer.trim();
+
+    if (!expected.includes("(") || !student.includes("(")) return false;
+
+    // Extract parenthesized factors from each string
+    const extractFactors = (s: string): string[] => {
+      const matches = s.match(/\([^)]+\)/g);
+      return matches ? matches.map((m) => m.replace(/\s/g, "")) : [];
+    };
+
+    const expFactors = extractFactors(expected);
+    const stuFactors = extractFactors(student);
+
+    if (expFactors.length === 0 || stuFactors.length === 0) return false;
+    if (expFactors.length !== stuFactors.length) return false;
+
+    // Track which student factors have been matched
+    const used = new Array<boolean>(stuFactors.length).fill(false);
+    const stripSigns = (s: string): string =>
+      s.replace(/\+/g, "").replace(/-/g, "");
+
+    // For each expected factor, find a matching student factor
+    for (const ef of expFactors) {
+      const efNorm = ef.replace(/\(|\)/g, "");
+      let foundExact = false;
+      let foundSignDiff = false;
+
+      for (let j = 0; j < stuFactors.length; j++) {
+        if (used[j]) continue;
+        const sf = stuFactors[j];
+        const sfNorm = sf.replace(/\(|\)/g, "");
+
+        if (stripSigns(efNorm) === stripSigns(sfNorm)) {
+          // Same structure — check if signs match exactly
+          if (ef === sf) {
+            foundExact = true;
+            used[j] = true;
+            break;
+          } else {
+            foundSignDiff = true;
+            used[j] = true;
+            break;
+          }
+        }
+      }
+
+      // If this expected factor found a sign difference, flag it
+      if (foundSignDiff && !foundExact) return true;
+      if (!foundExact && !foundSignDiff) return false; // Factor not found at all
+    }
+    return false;
+  }
+
+  // For symbolic: compare parenthesized groups, check for sign differences
+  if (exercise.type === "symbolic") {
+    const expected = exercise.expectedAnswer.trim();
+    const student = userAnswer.trim();
+
+    const extractFactors = (s: string): string[] => {
+      const matches = s.match(/\([^)]+\)/g);
+      return matches ? matches.map((m) => m.replace(/\s/g, "")) : [];
+    };
+
+    const expFactors = extractFactors(expected);
+    const stuFactors = extractFactors(student);
+
+    if (expFactors.length === 0 || stuFactors.length === 0) return false;
+    if (expFactors.length !== stuFactors.length) return false;
+
+    const used = new Array<boolean>(stuFactors.length).fill(false);
+    const stripSigns = (s: string): string =>
+      s.replace(/\+/g, "").replace(/-/g, "");
+
+    for (const ef of expFactors) {
+      const efNorm = ef.replace(/\(|\)/g, "");
+      let foundMatch = false;
+
+      for (let j = 0; j < stuFactors.length; j++) {
+        if (used[j]) continue;
+        const sf = stuFactors[j];
+        const sfNorm = sf.replace(/\(|\)/g, "");
+
+        if (stripSigns(efNorm) === stripSigns(sfNorm)) {
+          used[j] = true;
+          foundMatch = true;
+          if (ef !== sf) return true; // Sign difference!
+          break;
+        }
+      }
+      if (!foundMatch) return false; // Factor not found at all
+    }
+    return false;
+  }
+
+  return false;
+}
+
+/**
+ * Detect wrong factorization case identification: student chose a factor case
+ * label that doesn't match the correct one.
+ *
+ * Applies to MC exercises where the prompt asks which factorization case
+ * applies. The detector checks if the selected option's case label differs
+ * from the expected case label.
+ */
+function isU2CasoIncorrectoError(
+  exercise: Exercise,
+  userAnswer: string,
+): boolean {
+  if (exercise.type !== "multiple-choice") return false;
+
+  const prompt = exercise.prompt.toLowerCase();
+  const isCaseContext =
+    prompt.includes("caso") ||
+    prompt.includes("factoriza") ||
+    prompt.includes("factorización") ||
+    prompt.includes("tipo de factoreo") ||
+    prompt.includes("qué caso aplica") ||
+    prompt.includes("que caso aplica");
+
+  if (!isCaseContext) return false;
+
+  const expected = exercise.expectedAnswer.trim().toLowerCase();
+  const student = userAnswer.trim().toLowerCase();
+
+  if (expected === student) return false;
+
+  // Define known case keywords (in Spanish)
+  const caseKeywords = [
+    { keyword: "factor común", display: "factor comun" },
+    { keyword: "diferencia de cuadrados", display: "diferencia de cuadrados" },
+    { keyword: "trinomio cuadrado perfecto", display: "trinomio cuadrado perfecto" },
+    { keyword: "cubo perfecto", display: "cubo perfecto" },
+    { keyword: "potencia", display: "potencia" },
+    { keyword: "trinomio de segundo grado", display: "trinomio de segundo grado" },
+    { keyword: "grupos", display: "grupos" },
+  ];
+
+  // Find which case the expected and student answers map to
+  const findCase = (answer: string): string | undefined => {
+    for (const c of caseKeywords) {
+      if (answer.includes(c.keyword)) return c.display;
+    }
+    return undefined;
+  };
+
+  const expCase = findCase(expected);
+  const stuCase = findCase(student);
+
+  // If we can identify both cases and they differ, it's a case error
+  if (expCase != null && stuCase != null && expCase !== stuCase) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Match the user's answer against known error patterns and return a
  * declared commonErrorTag if one fits, or undefined.
  *
@@ -562,6 +743,22 @@ export function tagError(
   if (isU2IncompleteFactorError(exercise, userAnswer)) {
     for (const tag of tags) {
       if (U2_INCOMPLETE_FACTOR_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isU2SignoFactorizacionError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U2_SIGNO_FACTORIZACION_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isU2CasoIncorrectoError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U2_CASO_INCORRECTO_TAGS.has(tag)) {
         return tag;
       }
     }

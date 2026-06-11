@@ -12,6 +12,7 @@ import { tagError } from "./error-tagging";
 import { isFiniteNumericAnswer } from "../utils/numeric";
 import { areEquivalent } from "./polynomial-evaluator";
 import { PolynomialParseError, UnsupportedPolynomialFormError } from "./polynomial-types";
+import { parseRationalRoots, areEquivalentRoots } from "./gauss-routing-helper";
 
 /** The result of evaluating a student's answer. */
 export interface EvaluationResult {
@@ -60,6 +61,22 @@ export function evaluateAnswer(
 
   // Dispatch to type-specific evaluator
   let result: EvaluationResult;
+
+  // Gauss numerical routing guard: mat.u2.gauss with type "numerical"
+  // uses set-based rational root comparison (order-insensitive, fraction-aware).
+  if (exercise.type === "numerical" && exercise.skillId === "mat.u2.gauss") {
+    const expectedRoots = parseRationalRoots(exercise.expectedAnswer);
+    const studentRoots = parseRationalRoots(userAnswer);
+    const correct = areEquivalentRoots(expectedRoots, studentRoots);
+    result = { correct };
+    if (!result.correct) {
+      const errorTag = tagError(exercise, userAnswer);
+      if (errorTag) {
+        return { ...result, errorTag };
+      }
+    }
+    return result;
+  }
 
   // Polynomial evaluator guard: U2 symbolic exercises resolve equivalence
   // via expansion and coefficient comparison, not exact string match.

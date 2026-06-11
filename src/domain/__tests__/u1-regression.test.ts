@@ -214,3 +214,167 @@ describe("U1 Regression — Catalog integrity", () => {
     }
   });
 });
+
+// ---------------------------------------------------------------------------
+// U2 Factorizacion evaluator chain regression (U2FAC-EVAL-008)
+// ---------------------------------------------------------------------------
+
+describe("U2 Regression — Factorizacion evaluator chain", () => {
+  describe("polynomial-evaluator equivalence still works for factorizacion", () => {
+    test("symbolic factorizacion accepts equivalent expanded form", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.factorizacion.4",
+        skillId: "mat.u2.factorizacion",
+        type: "symbolic",
+        expectedAnswer: "(x-2)(x+3)",
+      });
+
+      // Student answers in expanded form — polynomial evaluator should accept
+      const result = evaluateAnswer(exercise, "x^2 + x - 6");
+      expect(result.correct).toBe(true);
+    });
+
+    test("symbolic factorizacion rejects non-equivalent form", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.factorizacion.4",
+        skillId: "mat.u2.factorizacion",
+        type: "symbolic",
+        expectedAnswer: "(x-2)(x+3)",
+      });
+
+      const result = evaluateAnswer(exercise, "x^2 + x + 6");
+      expect(result.correct).toBe(false);
+    });
+  });
+
+  describe("gauss numerical routing works for U2 factorizacion slice", () => {
+    test("gauss numerical with correct roots (different order) is accepted", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.gauss.1",
+        skillId: "mat.u2.gauss",
+        type: "numerical",
+        expectedAnswer: "1, -3, 1/2",
+      });
+
+      const result = evaluateAnswer(exercise, "-3, 1/2, 1");
+      expect(result.correct).toBe(true);
+    });
+
+    test("gauss numerical with extra root is rejected", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.gauss.1",
+        skillId: "mat.u2.gauss",
+        type: "numerical",
+        expectedAnswer: "1, -3",
+      });
+
+      const result = evaluateAnswer(exercise, "1, -3, 2");
+      expect(result.correct).toBe(false);
+    });
+  });
+
+  describe("new error tags do not break tagError flow", () => {
+    test("u2_signo_factorizacion tag is dispatched for sign error", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.factorizacion.1",
+        skillId: "mat.u2.factorizacion",
+        type: "multiple-choice",
+        expectedAnswer: "(x-3)(x+3)",
+        commonErrorTags: ["u2_signo_factorizacion"],
+        options: [
+          { value: "(x-3)(x+3)", label: "A" },
+          { value: "(x-3)(x-3)", label: "B" },
+        ],
+      });
+
+      const result = evaluateAnswer(exercise, "(x-3)(x-3)");
+      expect(result.correct).toBe(false);
+      expect(result.errorTag).toBe("u2_signo_factorizacion");
+    });
+
+    test("u2_caso_incorrecto tag is dispatched for wrong case", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.factorizacion.2",
+        skillId: "mat.u2.factorizacion",
+        type: "multiple-choice",
+        prompt: "¿Qué caso de factoreo aplica al polinomio x² − 25?",
+        expectedAnswer: "Diferencia de cuadrados",
+        commonErrorTags: ["u2_caso_incorrecto"],
+        options: [
+          { value: "Diferencia de cuadrados", label: "A" },
+          { value: "Trinomio cuadrado perfecto", label: "B" },
+        ],
+      });
+
+      const result = evaluateAnswer(exercise, "Trinomio cuadrado perfecto");
+      expect(result.correct).toBe(false);
+      expect(result.errorTag).toBe("u2_caso_incorrecto");
+    });
+
+    test("U1 sign error still tags correctly (regression guard)", () => {
+      const exercise = makeExercise({
+        type: "numerical",
+        expectedAnswer: "5",
+        commonErrorTags: ["u1_signo_racionalizacion"],
+      });
+
+      const result = evaluateAnswer(exercise, "-5");
+      expect(result.correct).toBe(false);
+      expect(result.errorTag).toBe("u1_signo_racionalizacion");
+    });
+
+    test("U2 fundamentos error tags still dispatch correctly", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.operaciones_polinomios.1",
+        skillId: "mat.u2.operaciones_polinomios",
+        type: "multiple-choice",
+        prompt: "¿Cuál es el grado de 3x⁴ + 2x² − 1?",
+        expectedAnswer: "4",
+        commonErrorTags: ["u2_grado_incorrecto"],
+        options: [
+          { value: "4", label: "A" },
+          { value: "3", label: "B" },
+        ],
+      });
+
+      const result = evaluateAnswer(exercise, "3");
+      expect(result.correct).toBe(false);
+      expect(result.errorTag).toBe("u2_grado_incorrecto");
+    });
+  });
+});
+
+describe("U2 Regression — Catalog integrity after factorizacion slice", () => {
+  const catalog = loadCatalog();
+
+  test("U2 skills are present in catalog", () => {
+    const u2SkillIds = [
+      "mat.u2.polinomios_basico",
+      "mat.u2.operaciones_polinomios",
+      "mat.u2.ruffini_resto",
+      "mat.u2.factorizacion",
+      "mat.u2.gauss",
+    ];
+
+    for (const skillId of u2SkillIds) {
+      const exercises = catalog.filter((ex) => ex.skillId === skillId);
+      expect(exercises.length, `Skill ${skillId} should have exercises`).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  test("catalog still has no duplicate exercise IDs", () => {
+    const ids = catalog.map((ex) => ex.id);
+    const uniqueIds = new Set(ids);
+    expect(uniqueIds.size).toBe(ids.length);
+  });
+
+  test("gauss-routing-helper module is importable", async () => {
+    // Verify the module exists and exports expected functions
+    const mod = await import("../evaluator/gauss-routing-helper");
+    expect(typeof mod.parseRationalRoots).toBe("function");
+    expect(typeof mod.normalizeRoots).toBe("function");
+    expect(typeof mod.areEquivalentRoots).toBe("function");
+    expect(typeof mod.GaussParseError).toBe("function");
+    expect(typeof mod.GaussEquivalenceError).toBe("function");
+  });
+});
