@@ -47,15 +47,16 @@ function tokenizeMonomial(raw: string, index: number): MonomialToken {
     throw new PolynomialParseError(index, "empty monomial token");
   }
 
-  // Check for multivariate FIRST (any letter except x/X) — before checking operators,
+  // Transcendental functions MUST run before multivariate — "sin(x)" contains letters
+  // s,i,n that would otherwise match the multivariate check and produce the wrong error.
+  if (/\b(sin|cos|tan|log|exp|ln|sqrt|csc|sec|cot)\b/.test(token)) {
+    throw new UnsupportedPolynomialFormError("transcendental", `transcendental function in "${token}"`);
+  }
+
+  // Check for multivariate (any letter except x/X) AFTER transcendental,
   // so that "x*y" is detected as multivariate, not as a syntax error.
   if (/[a-wyzA-WYZ]/.test(token)) {
     throw new UnsupportedPolynomialFormError("multivariate", `unexpected variable in "${token}"`);
-  }
-
-  // Transcendental functions (check before operators — "sin(x)" has parens but is not a polynomial factor)
-  if (/\b(sin|cos|tan|log|exp|ln|sqrt|csc|sec|cot)\b/.test(token)) {
-    throw new UnsupportedPolynomialFormError("transcendental", `transcendental function in "${token}"`);
   }
 
   // Rational exponents (x^(1/2), x^(a/b), etc.)
@@ -278,6 +279,15 @@ function parseFactored(input: string): Polynomial {
     throw new PolynomialParseError(remaining.length - 1, "unbalanced parentheses");
   }
 
+  // Reject trailing content after the last factor closes.
+  // e.g., "(x+1)+2" should throw, not silently ignore the "+2".
+  if (current.trim() !== "") {
+    throw new PolynomialParseError(
+      remaining.length - current.length,
+      `unexpected trailing content "${current.trim()}" after factored form`
+    );
+  }
+
   if (factors.length === 0) {
     throw new PolynomialParseError(0, "no factors found in factored form");
   }
@@ -332,13 +342,15 @@ export function parsePolynomial(input: string | readonly number[]): Polynomial {
 
   // Detect factored form: contains parentheses
   if (trimmed.includes("(")) {
-    // Guard: check for non-polynomial content before attempting factored parse
+    // Guard: check for non-polynomial content before attempting factored parse.
+    // Transcendental MUST run before multivariate — "sin(x)" letters match the
+    // multivariate regex but it is a transcendental function, not a second variable.
     const noSpaces = trimmed.replace(/\s/g, "");
-    if (/[a-wyzA-WYZ]/.test(noSpaces)) {
-      throw new UnsupportedPolynomialFormError("multivariate", `unexpected variable in "${trimmed}"`);
-    }
     if (/\b(sin|cos|tan|log|exp|ln|sqrt|csc|sec|cot)\b/.test(noSpaces)) {
       throw new UnsupportedPolynomialFormError("transcendental", `transcendental function in "${trimmed}"`);
+    }
+    if (/[a-wyzA-WYZ]/.test(noSpaces)) {
+      throw new UnsupportedPolynomialFormError("multivariate", `unexpected variable in "${trimmed}"`);
     }
     if (/x\^\(.*\/.*\)/.test(noSpaces)) {
       throw new UnsupportedPolynomialFormError("rational_exponent", `rational exponent in "${trimmed}"`);

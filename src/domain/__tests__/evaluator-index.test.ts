@@ -409,5 +409,45 @@ describe("Evaluator dispatcher", () => {
       const result = evaluateAnswer(exercise, "x+1");
       expect(result.correct).toBe(true);
     });
+
+    test("BUG-3: malformed polynomial answer does not throw (parse error)", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.polinomios_basico.1",
+        skillId: "mat.u2.polinomios_basico",
+        type: "symbolic",
+        expectedAnswer: "x^2 + x - 6",
+      });
+
+      // (x+1)+2 has trailing content and throws PolynomialParseError.
+      // evaluateAnswer must catch this and return an incorrect result,
+      // NOT let the exception escape.
+      let result: ReturnType<typeof evaluateAnswer>;
+      expect(() => {
+        result = evaluateAnswer(exercise, "(x+1)+2");
+      }).not.toThrow();
+      result = result!;
+      expect(result.correct).toBe(false);
+      // Should provide feedback indicating the answer is not a valid polynomial
+      expect(result.feedback).toBeTruthy();
+    });
+
+    test("BUG-3: transcendental answer does not throw in evaluateAnswer (form error)", () => {
+      const exercise = makeExercise({
+        id: "ex.u2.polinomios_basico.1",
+        skillId: "mat.u2.polinomios_basico",
+        type: "symbolic",
+        expectedAnswer: "x^2 + x - 6",
+      });
+
+      // sin(x) contains a transcendental function and throws
+      // UnsupportedPolynomialFormError. Must be caught, not propagated.
+      let result: ReturnType<typeof evaluateAnswer>;
+      expect(() => {
+        result = evaluateAnswer(exercise, "sin(x)");
+      }).not.toThrow();
+      result = result!;
+      expect(result.correct).toBe(false);
+      expect(result.feedback).toBeTruthy();
+    });
   });
 });

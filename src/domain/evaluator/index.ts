@@ -11,6 +11,7 @@ import { evaluateBoolean } from "./boolean";
 import { tagError } from "./error-tagging";
 import { isFiniteNumericAnswer } from "../utils/numeric";
 import { areEquivalent } from "./polynomial-evaluator";
+import { PolynomialParseError, UnsupportedPolynomialFormError } from "./polynomial-types";
 
 /** The result of evaluating a student's answer. */
 export interface EvaluationResult {
@@ -63,8 +64,27 @@ export function evaluateAnswer(
   // Polynomial evaluator guard: U2 symbolic exercises resolve equivalence
   // via expansion and coefficient comparison, not exact string match.
   if (exercise.type === "symbolic" && /^mat\.u2\./.test(exercise.skillId)) {
-    const equiv = areEquivalent(exercise.expectedAnswer, userAnswer);
-    result = { correct: equiv };
+    try {
+      const equiv = areEquivalent(exercise.expectedAnswer, userAnswer);
+      result = { correct: equiv };
+    } catch (e) {
+      // Catch polynomial parse/form errors from malformed student input.
+      // These should not crash — they should return an incorrect result
+      // with feedback so the student knows their answer isn't a valid polynomial.
+      if (e instanceof PolynomialParseError) {
+        return {
+          correct: false,
+          feedback: "La expresión ingresada no es un polinomio válido. Revisá la sintaxis.",
+        };
+      }
+      if (e instanceof UnsupportedPolynomialFormError) {
+        return {
+          correct: false,
+          feedback: `La expresión ingresada no es un polinomio válido (${e.formType}). Revisá el formato.`,
+        };
+      }
+      throw e; // Re-throw unexpected errors
+    }
     // Polynomial evaluator result — skip type switch
     // Fall through to error tagging if incorrect
     if (!result.correct) {
