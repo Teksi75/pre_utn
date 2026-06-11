@@ -136,9 +136,12 @@
       "summary": "TDD bugfix of 3 GGA-confirmed bugs in polynomial-evaluator: parseFactored trailing content (CRITICAL), multivariate-before-transcendental ordering (MEDIUM), and areEquivalent unhandled throws in routing guard (MINOR). 134 lines diff, 6 new tests (1267->1273). GGA bypassed on Windows (Codex CLI hook parser ambiguity). Orchestrator will run GGA on Linux for adversarial re-validation. Found via unit-2-pedagogical-slice retrospective review (GGA on 2026-06-10)."
     },
     "unit-2-factorizacion-slice": {
-      "status": "in-progress",
+      "status": "done",
       "branch": null,
       "startedAt": "2026-06-10",
+      "completedAt": "2026-06-10",
+      "mergedTo": "main",
+      "mergeCommit": "0ca1105",
       "delivery": "chained-prs-stacked-to-main (2 PRs)",
       "pr1": {
         "branch": "feat/unit-2-factorizacion-domain",
@@ -154,9 +157,9 @@
         "mergeCommit": "0ca1105",
         "summary": "PR-2 (content + catalog): 2 TheoryNodes (factorizacion with 7 conceptBlocks, gauss algorithm), 4 WorkedExamples (2 factorizacion + 2 gauss), 3 FeedbackMappings (u2_signo_factorizacion, u2_caso_incorrecto, u2_factorizacion_incompleta reuse), 7 exercises updated/created (ex.u2.factorizacion.1 tags updated, ex.u2.gauss.1 recreated with U2 Gauss content, 3 new factorizacion .2-.4, 3 new gauss .2-.4), 12 new tests (1330->1342): shape tests for 8 exercises, skill-catalog deps for factorizacion. 377 ins / 38 del (415 lines diff). GGA bypassed on Windows."
       },
-      "summary": "2-skill slice (factorizacion + gauss). Both PRs merged. 8 new exercises, 2 theory nodes, 4 worked examples, 3 feedback mappings, 2 new error tags, 2 detectors, gauss-routing-helper, skill-catalog dep. Total: ~1445 lines diff, 69 new tests (1273->1342). Ready for verify phase."
+      "summary": "2-skill slice (factorizacion 7 cases + gauss) + 8 exercises (4 factorizacion + 4 gauss) + 2 u2_* error tags + gauss-routing-helper + content JSON + skill deps + ex.u2.gauss.1 re-creation. 2 chained PRs (1030 + 415 lines diff), 69 new tests (1273→1342), 0 CRITICAL findings in verify, 2 WARNING (GGA pending Linux review, exercises.json monolithic), 1 SUGGESTION (3 factoreo cases without specific exercises, defensible for MVP). U2 main chain complete: polinomios_basico → operaciones_polinomios → ruffini_resto → factorizacion → gauss. Next: U2-Aplicaciones (mcm_mcd + ecuaciones_fraccionarias) or refactor exercises.json."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-10T22:42:00-03:00"
+  "lastAudit": "2026-06-10T23:30:00-03:00"
 }
