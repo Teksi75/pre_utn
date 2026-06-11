@@ -49,6 +49,35 @@ describe("U2 skill dependencies", () => {
     });
   });
 
+  describe("U2FAC-SKILL: factorizacion ← ruffini_resto", () => {
+    test("factorizacion depends on ruffini_resto", () => {
+      const prereqs = prereqsOf("mat.u2.factorizacion");
+      expect(prereqs).toContain("mat.u2.ruffini_resto");
+    });
+
+    test("factorizacion also depends on operaciones_polinomios", () => {
+      const prereqs = prereqsOf("mat.u2.factorizacion");
+      expect(prereqs).toContain("mat.u2.operaciones_polinomios");
+    });
+
+    test("factorizacion transitively depends on polinomios_basico", () => {
+      expect(canReach("mat.u2.factorizacion", "mat.u2.polinomios_basico")).toBe(true);
+    });
+
+    test("factorizacion has no cycles in dependency graph", () => {
+      expect(canReach("mat.u2.factorizacion", "mat.u2.factorizacion")).toBe(false);
+    });
+
+    test("cadena factorizacion es mat.u2.factorizacion ← ruffini_resto ← operaciones_polinomios ← polinomios_basico", () => {
+      // ruffini_resto is direct prereq of factorizacion
+      expect(prereqsOf("mat.u2.factorizacion")).toContain("mat.u2.ruffini_resto");
+      // operaciones_polinomios is direct prereq of ruffini_resto
+      expect(prereqsOf("mat.u2.ruffini_resto")).toContain("mat.u2.operaciones_polinomios");
+      // polinomios_basico is direct prereq of operaciones_polinomios
+      expect(prereqsOf("mat.u2.operaciones_polinomios")).toContain("mat.u2.polinomios_basico");
+    });
+  });
+
   describe("Skills outside U2 slice are declared but not yet ready", () => {
     test("gauss is in ALL_SKILLS", () => {
       expect(ALL_SKILLS).toContain("mat.u2.gauss");
@@ -57,12 +86,17 @@ describe("U2 skill dependencies", () => {
     test("mcm_mcd_polinomios is in ALL_SKILLS", () => {
       expect(ALL_SKILLS).toContain("mat.u2.mcm_mcd_polinomios");
     });
+
+    test("factorizacion is in ALL_SKILLS", () => {
+      expect(ALL_SKILLS).toContain("mat.u2.factorizacion");
+    });
   });
 
   describe("Dependency chain linearity", () => {
-    test("U2 intra-unit chain: polinomios_basico → operaciones_polinomios → ruffini_resto → gauss", () => {
+    test("U2 intra-unit chain: polinomios_basico → operaciones_polinomios → ruffini_resto → factorizacion → gauss", () => {
       expect(prereqsOf("mat.u2.operaciones_polinomios")).toContain("mat.u2.polinomios_basico");
       expect(prereqsOf("mat.u2.ruffini_resto")).toContain("mat.u2.operaciones_polinomios");
+      expect(prereqsOf("mat.u2.factorizacion")).toContain("mat.u2.ruffini_resto");
       expect(prereqsOf("mat.u2.gauss")).toContain("mat.u2.ruffini_resto");
     });
   });
