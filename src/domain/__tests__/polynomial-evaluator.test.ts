@@ -274,6 +274,31 @@ describe("parsePolynomial — error model (U2-POLY-006, U2-POLY-007)", () => {
     }
   });
 
+  test("BUG-2: sin(x) is classified as transcendental (not multivariate)", () => {
+    // sin(x) contains letters s,i,n but should be detected as transcendental first,
+    // not misclassified as multivariate.
+    expect(() => parsePolynomial("sin(x)")).toThrow(UnsupportedPolynomialFormError);
+    try {
+      parsePolynomial("sin(x)");
+    } catch (e) {
+      expect(e).toBeInstanceOf(UnsupportedPolynomialFormError);
+      const err = e as UnsupportedPolynomialFormError;
+      expect(err.formType).toBe("transcendental");
+    }
+  });
+
+  test("BUG-2: cos(2x) is classified as transcendental (not multivariate)", () => {
+    // Second triangulation: cos(2x) also has non-x letters but must be transcendental.
+    expect(() => parsePolynomial("cos(2x)")).toThrow(UnsupportedPolynomialFormError);
+    try {
+      parsePolynomial("cos(2x)");
+    } catch (e) {
+      expect(e).toBeInstanceOf(UnsupportedPolynomialFormError);
+      const err = e as UnsupportedPolynomialFormError;
+      expect(err.formType).toBe("transcendental");
+    }
+  });
+
   test("throws PolynomialParseError for syntax error: x^2 +", () => {
     expect(() => parsePolynomial("x^2 +")).toThrow(PolynomialParseError);
   });
