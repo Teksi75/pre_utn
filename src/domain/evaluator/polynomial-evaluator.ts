@@ -278,6 +278,15 @@ function parseFactored(input: string): Polynomial {
     throw new PolynomialParseError(remaining.length - 1, "unbalanced parentheses");
   }
 
+  // Reject trailing content after the last factor closes.
+  // e.g., "(x+1)+2" should throw, not silently ignore the "+2".
+  if (current.trim() !== "") {
+    throw new PolynomialParseError(
+      remaining.length - current.length,
+      `unexpected trailing content "${current.trim()}" after factored form`
+    );
+  }
+
   if (factors.length === 0) {
     throw new PolynomialParseError(0, "no factors found in factored form");
   }

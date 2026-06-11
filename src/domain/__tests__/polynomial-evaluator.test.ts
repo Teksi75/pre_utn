@@ -288,6 +288,31 @@ describe("parsePolynomial — error model (U2-POLY-006, U2-POLY-007)", () => {
       expect(err.formType).toBeTruthy();
     }
   });
+
+  test("BUG-1: rejects factored form with trailing content ((x+1)+2)", () => {
+    // parseFactored() should throw when there is content AFTER the last parenthesis,
+    // e.g., "(x+1)+2" should NOT be treated as equivalent to "(x+1)".
+    expect(() => parsePolynomial("(x+1)+2")).toThrow(PolynomialParseError);
+    try {
+      parsePolynomial("(x+1)+2");
+    } catch (e) {
+      expect(e).toBeInstanceOf(PolynomialParseError);
+      const err = e as PolynomialParseError;
+      expect(err.reason).toBeTruthy();
+    }
+  });
+
+  test("BUG-1: rejects factored form with trailing content ((x-2)(x+3)x)", () => {
+    // Another variant: trailing content that is not a valid factor.
+    expect(() => parsePolynomial("(x-2)(x+3)x")).toThrow(PolynomialParseError);
+    try {
+      parsePolynomial("(x-2)(x+3)x");
+    } catch (e) {
+      expect(e).toBeInstanceOf(PolynomialParseError);
+      const err = e as PolynomialParseError;
+      expect(err.reason).toBeTruthy();
+    }
+  });
 });
 
 // ============================================================================
