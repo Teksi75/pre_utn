@@ -74,16 +74,17 @@ describe("U2 exercise shape validation", () => {
   });
 
   describe("type distribution (MC, numerical, symbolic across all U2 exercises)", () => {
-    test("U2 exercises have balanced type distribution", () => {
+    test("U2 exercises have balanced type distribution (23 MC, 7 numerical, 1 symbolic after migrations)", () => {
       const exercises = allU2Exercises();
 
       const mcCount = exercises.filter((e) => e.type === "multiple-choice").length;
       const numCount = exercises.filter((e) => e.type === "numerical").length;
       const symCount = exercises.filter((e) => e.type === "symbolic").length;
 
-      expect(mcCount).toBeGreaterThanOrEqual(18);
+      expect(mcCount).toBeGreaterThanOrEqual(22);
       expect(numCount).toBeGreaterThanOrEqual(7);
-      expect(symCount).toBeGreaterThanOrEqual(4);
+      expect(symCount).toBeGreaterThanOrEqual(1);
+      expect(symCount).toBeLessThanOrEqual(2);
     });
   });
 
@@ -108,7 +109,7 @@ describe("U2 exercise shape validation", () => {
       expect(ids).toContain("ex.u2.gauss.4");
     });
 
-    test("factorizacion + gauss type distribution (4 MC, 2 numerical, 2 symbolic)", () => {
+    test("factorizacion + gauss type distribution (6 MC, 2 numerical, 0 symbolic after migration)", () => {
       const fac = loadExercisesForSkill("mat.u2.factorizacion");
       const gau = loadExercisesForSkill("mat.u2.gauss");
       const combined = [...fac, ...gau];
@@ -117,9 +118,9 @@ describe("U2 exercise shape validation", () => {
       const numCount = combined.filter((e) => e.type === "numerical").length;
       const symCount = combined.filter((e) => e.type === "symbolic").length;
 
-      expect(mcCount).toBeGreaterThanOrEqual(3);
+      expect(mcCount).toBeGreaterThanOrEqual(5);
       expect(numCount).toBeGreaterThanOrEqual(2);
-      expect(symCount).toBeGreaterThanOrEqual(1);
+      expect(symCount).toBe(0);
     });
   });
 
@@ -178,6 +179,18 @@ describe("U2 exercise shape validation", () => {
         skillId: "mat.u2.operaciones_polinomios",
         exerciseId: "ex.u2.operaciones_polinomios.5",
       },
+      {
+        skillId: "mat.u2.ruffini_resto",
+        exerciseId: "ex.u2.ruffini_resto.5",
+      },
+      {
+        skillId: "mat.u2.factorizacion",
+        exerciseId: "ex.u2.factorizacion.4",
+      },
+      {
+        skillId: "mat.u2.gauss",
+        exerciseId: "ex.u2.gauss.4",
+      },
     ] as const;
 
     for (const { skillId, exerciseId } of migratedPolynomialExercises) {
@@ -223,6 +236,20 @@ describe("U2 exercise shape validation", () => {
         expect(optionValues).toContain(exercise!.expectedAnswer);
       });
     }
+  });
+
+  describe("remaining U2 symbolic exercises — exception report", () => {
+    test("the only remaining U2 symbolic exercises belong to mcm_mcd_polinomios (polynomial-evaluator supported)", () => {
+      const exercises = allU2Exercises();
+      const symbolic = exercises.filter((e) => e.type === "symbolic");
+      expect(symbolic.length).toBeGreaterThan(0);
+      for (const ex of symbolic) {
+        expect(
+          ex.skillId,
+          `Symbolic exercise ${ex.id} must be in mcm_mcd_polinomios. Other U2 symbolic exercises must be migrated to structured types.`
+        ).toBe("mat.u2.mcm_mcd_polinomios");
+      }
+    });
   });
 
   describe("commonErrorTags are non-empty for all U2 exercises", () => {

@@ -746,12 +746,18 @@
   {
     "id": "ex.u2.ruffini_resto.5",
     "skillId": "mat.u2.ruffini_resto",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 4,
-    "prompt": "Verificá que (x − 2) es factor de P(x) = x³ − 3x² + 4 usando el teorema del resto. Escribí el polinomio expandido del producto (x−2) por el cociente.",
+    "prompt": "Verificá que $(x - 2)$ es factor de $P(x) = x^3 - 3x^2 + 4$ usando el teorema del resto. ¿Cuál es el polinomio expandido del producto $(x-2)$ por el cociente?",
     "expectedAnswer": "x^3 - 3x^2 + 4",
+    "options": [
+      { "value": "x^3 - 3x^2 + 4", "label": "$x^3 - 3x^2 + 4$" },
+      { "value": "x^3 + 3x^2 + 4", "label": "$x^3 + 3x^2 + 4$" },
+      { "value": "x^3 - 3x^2 - 4", "label": "$x^3 - 3x^2 - 4$" },
+      { "value": "x^3 - 3x^2", "label": "$x^3 - 3x^2$" }
+    ],
     "commonErrorTags": ["u2_termino_faltante", "u2_signo_operacion"],
-    "pedagogicalNote": "Ruffini: coeficientes [1, −3, 0, 4] con a=2 → cociente [1, −1, −2], resto 0. P(x) = (x−2)(x²−x−2) = x³ − 3x² + 4. El evaluador acepta formas expandidas equivalentes."
+    "pedagogicalNote": "Ruffini: coeficientes [1, −3, 0, 4] con a=2 → cociente [1, −1, −2], resto 0. P(x) = (x−2)(x²−x−2) = x³ − 3x² + 4. Distractores: x³+3x²+4 (error de signo en −3x²), x³−3x²−4 (error de signo en constante), x³−3x² (olvida el término constante +4)."
   },
   {
     "id": "ex.u2.gauss.1",
@@ -788,12 +794,18 @@
   {
     "id": "ex.u2.factorizacion.4",
     "skillId": "mat.u2.factorizacion",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 4,
-    "prompt": "Factoriza completamente 6x² + 7x + 2. Escribí la factorización en forma de producto de binomios.",
+    "prompt": "Factoriza completamente $6x^2 + 7x + 2$. ¿Cuál es la factorización en producto de binomios?",
     "expectedAnswer": "(2x + 1)(3x + 2)",
+    "options": [
+      { "value": "(2x + 1)(3x + 2)", "label": "$(2x + 1)(3x + 2)$" },
+      { "value": "(2x + 2)(3x + 1)", "label": "$(2x + 2)(3x + 1)$" },
+      { "value": "(2x - 1)(3x - 2)", "label": "$(2x - 1)(3x - 2)$" },
+      { "value": "(3x + 1)(x + 2)", "label": "$(3x + 1)(x + 2)$" }
+    ],
     "commonErrorTags": ["u2_signo_factorizacion", "u2_signo_operacion"],
-    "pedagogicalNote": "Trinomio de segundo grado con a ≠ 1: a·c = 12, buscar p y q con p+q=7 y p·q=12 → 3 y 4. 6x² + 3x + 4x + 2 = 3x(2x+1) + 2(2x+1) = (2x+1)(3x+2). El evaluador polinómico verifica equivalencia."
+    "pedagogicalNote": "Trinomio de segundo grado con a ≠ 1: a·c = 12, buscar p y q con p+q=7 y p·q=12 → 3 y 4. Luego 6x²+3x+4x+2 = 3x(2x+1)+2(2x+1) = (2x+1)(3x+2). Distractores: (2x+2)(3x+1) intercambia términos sin verificar el producto, (2x−1)(3x−2) invierte los signos, (3x+1)(x+2) usa 3 como divisor parcial de 6 en vez de 2."
   },
   {
     "id": "ex.u2.gauss.2",
@@ -819,12 +831,18 @@
   {
     "id": "ex.u2.gauss.4",
     "skillId": "mat.u2.gauss",
-    "type": "symbolic",
+    "type": "multiple-choice",
     "difficulty": 4,
-    "prompt": "Usando el Teorema de Gauss, factorizá completamente P(x) = 2x³ + 3x² − 8x + 3. Escribí la factorización en forma de producto de binomios.",
+    "prompt": "Usando el Teorema de Gauss, factorizá completamente $P(x) = 2x^3 + 3x^2 - 8x + 3$. ¿Cuál es la factorización en producto de binomios?",
     "expectedAnswer": "(x - 1)(2x - 1)(x + 3)",
+    "options": [
+      { "value": "(x - 1)(2x - 1)(x + 3)", "label": "$(x - 1)(2x - 1)(x + 3)$" },
+      { "value": "(x + 1)(2x - 1)(x + 3)", "label": "$(x + 1)(2x - 1)(x + 3)$" },
+      { "value": "(x - 1)(2x + 1)(x + 3)", "label": "$(x - 1)(2x + 1)(x + 3)$" },
+      { "value": "(x - 1)(2x - 1)(x - 3)", "label": "$(x - 1)(2x - 1)(x - 3)$" }
+    ],
     "commonErrorTags": ["u2_signo_factorizacion", "u2_factorizacion_incompleta"],
-    "pedagogicalNote": "a₀=3 (divisores ±1,±3), aₙ=2 (divisores 1,2). Candidatos: ±1,±3,±1/2,±3/2. P(1)=0 → raíz. Ruffini: cociente 2x²+5x−3 → factorizar como (2x−1)(x+3). Completa: (x−1)(2x−1)(x+3). El evaluador polinómico verifica equivalencia."
+    "pedagogicalNote": "a₀=3 (divisores ±1,±3), aₙ=2 (divisores 1,2). Candidatos: ±1,±3,±1/2,±3/2. P(1)=0 → raíz. Ruffini: cociente 2x²+5x−3 → factorizar como (2x−1)(x+3). Completa: (x−1)(2x−1)(x+3). Distractores: (x+1) usa la raíz equivocada, (2x+1) invierte el signo del segundo factor, (x−3) invierte el signo del tercer factor."
   },
 
   {
