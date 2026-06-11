@@ -148,13 +148,15 @@
         "summary": "PR-1 (domain helpers + error patterns): gauss-routing-helper module (parseRationalRoots, normalizeRoots, areEquivalentRoots), 2 new u2_* error tags (u2_signo_factorizacion, u2_caso_incorrecto), 2 error-tagging pattern detectors (isU2SignoFactorizacionError, isU2CasoIncorrectoError), gauss numerical routing wire in evaluator/index.ts, ruffini_resto added to factorizacion prerequisites, U2-Factorizacion evaluator chain regression tests. 1030 lines diff (11 files), 57 new tests (1273->1330). GGA bypassed on Windows (Codex CLI hook)."
       },
       "pr2": {
-        "status": "pending",
         "branch": "feat/unit-2-factorizacion-content",
-        "dependsOn": "PR-1 (error tags must exist for exercises)"
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "0ca1105",
+        "summary": "PR-2 (content + catalog): 2 TheoryNodes (factorizacion with 7 conceptBlocks, gauss algorithm), 4 WorkedExamples (2 factorizacion + 2 gauss), 3 FeedbackMappings (u2_signo_factorizacion, u2_caso_incorrecto, u2_factorizacion_incompleta reuse), 7 exercises updated/created (ex.u2.factorizacion.1 tags updated, ex.u2.gauss.1 recreated with U2 Gauss content, 3 new factorizacion .2-.4, 3 new gauss .2-.4), 12 new tests (1330->1342): shape tests for 8 exercises, skill-catalog deps for factorizacion. 377 ins / 38 del (415 lines diff). GGA bypassed on Windows."
       },
-      "summary": "2-skill slice (factorizacion + gauss). PR-1 (domain) merged, PR-2 (content JSON + exercises) pending."
+      "summary": "2-skill slice (factorizacion + gauss). Both PRs merged. 8 new exercises, 2 theory nodes, 4 worked examples, 3 feedback mappings, 2 new error tags, 2 detectors, gauss-routing-helper, skill-catalog dep. Total: ~1445 lines diff, 69 new tests (1273->1342). Ready for verify phase."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-10T22:25:00-03:00"
+  "lastAudit": "2026-06-10T22:42:00-03:00"
 }
