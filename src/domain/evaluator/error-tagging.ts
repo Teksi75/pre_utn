@@ -62,6 +62,14 @@ const U2_SIGNO_FACTORIZACION_TAGS = new Set(["u2_signo_factorizacion"]);
 /** Tags for wrong factorization case identification. */
 const U2_CASO_INCORRECTO_TAGS = new Set(["u2_caso_incorrecto"]);
 
+// ── U2 Aplicaciones error tag sets ──────────────────────────────────────
+
+/** Tags for denominator-zero errors in fractional equations. */
+const U2_DENOMINADOR_CERO_TAGS = new Set(["u2_denominador_cero"]);
+
+/** Tags for MCM/MCD operation confusion. */
+const U2_CONFUNDE_MCM_MCD_TAGS = new Set(["u2_confunde_mcm_mcd"]);
+
 const SUPERSCRIPT_DIGITS: Readonly<Record<string, string>> = {
   "⁰": "0",
   "¹": "1",
@@ -617,6 +625,149 @@ function isU2CasoIncorrectoError(
 }
 
 /**
+ * Normalize Unicode minus sign (U+2212) to ASCII hyphen-minus.
+ * Also handles other common Unicode variants that might appear in
+ * LaTeX-rendered or copy-pasted text.
+ */
+function normalizeMinus(value: string): string {
+  return value.replace(/[−\u2212]/g, "-");
+}
+
+/**
+ * Detect denominator-zero error: student picks a value that zeroes a
+ * denominator in a fractional equation. Applies to MC exercises only.
+ * Numerical detector is deferred (see design.md).
+ *
+ * Detection logic:
+ * 1. Scan the prompt for all (x±N) patterns and treat them as potential
+ *    denominator factors (broad scan — does NOT check actual denominator
+ *    context; see design rationale in design.md).
+ * 2. Compute the excluded values (roots of denominator factors).
+ * 3. Normalize Unicode minus in the student answer to ASCII.
+ * 4. Check if the student's answer contains any EXACT excluded value.
+ */
+function isU2DenominadorCeroError(
+  exercise: Exercise,
+  userAnswer: string,
+): boolean {
+  if (exercise.type !== "multiple-choice") return false;
+
+  const expected = exercise.expectedAnswer.trim();
+  const studentRaw = userAnswer.trim();
+
+  // Not an error if the student picked the correct answer
+  if (studentRaw === expected) return false;
+
+  // Normalize Unicode minus in student answer to avoid false-positives
+  // where x=−2 (opposite sign) would match the wrong excluded value.
+  const student = normalizeMinus(studentRaw);
+
+  // Scan all (x±N) patterns in the prompt as potential denominators.
+  // This is a broad scan — does not limit to actual denominator context.
+  // Rationale: in MC exercises with denominator-zero distractors, every
+  // (x±N) factor in the prompt is typically a denominator.
+  const prompt = exercise.prompt;
+  const denominatorPattern = /\(x\s*([+-])\s*(\d+)\)/g;
+  const excludedValues: number[] = [];
+  let match: RegExpExecArray | null;
+
+  while ((match = denominatorPattern.exec(prompt)) !== null) {
+    const sign = match[1];
+    const value = Number(match[2]);
+    // (x - N) → excluded value is +N
+    // (x + N) → excluded value is -N
+    const excluded = sign === "-" ? value : -value;
+    excludedValues.push(excluded);
+  }
+
+  if (excludedValues.length === 0) return false;
+
+  // Check if the student answer contains any EXACT excluded value.
+  // Student answer is Unicode-normalized; comparison uses ASCII minus only.
+  // Student answer may be in form "2", "x=2", "x = 2", "-3", "x=-3", "x = -3".
+  return excludedValues.some((val) => {
+    const valStr = String(val);
+    return (
+      student === valStr ||
+      student === `x=${valStr}` ||
+      student === `x = ${valStr}`
+    );
+  });
+}
+
+/**
+ * Detect MCM/MCD operation confusion: student picks the result of the
+ * opposite operation. Applies to MC exercises.
+ *
+ * Detection logic:
+ * 1. Check if prompt mentions MCM or MCD keywords
+ * 2. If asking for MCM: student answer has FEWER parenthesized factors
+ *    than the expected answer (picked the MCD-like distractor)
+ * 3. If asking for MCD: student answer has MORE parenthesized factors
+ *    than the expected answer (picked the MCM-like distractor)
+ */
+function isU2ConfundeMcmMcdError(
+  exercise: Exercise,
+  userAnswer: string,
+): boolean {
+  if (exercise.type !== "multiple-choice") return false;
+
+  const promptLower = exercise.prompt.toLowerCase();
+  const expected = exercise.expectedAnswer.trim();
+  const student = userAnswer.trim();
+
+  // Not an error if the student picked the correct answer
+  if (student === expected) return false;
+
+  // Check if the prompt is about MCM/MCD
+  const isMcmPrompt =
+    promptLower.includes("mcm") ||
+    promptLower.includes("mínimo común múltiplo") ||
+    promptLower.includes("minimo comun multiplo");
+  const isMcdPrompt =
+    promptLower.includes("mcd") ||
+    promptLower.includes("máximo común divisor") ||
+    promptLower.includes("maximo comun divisor");
+
+  if (!isMcmPrompt && !isMcdPrompt) return false;
+
+  // Count parenthesized factors as a proxy for "size" of the answer
+  const countFactors = (s: string): number => {
+    const matches = s.match(/\(/g);
+    return matches ? matches.length : 0;
+  };
+
+  const expFactorCount = countFactors(expected);
+  const stuFactorCount = countFactors(student);
+
+  if (isMcmPrompt) {
+    // Asking for MCM → student picked answer with FEWER factors (MCD-like).
+    // Primary: fewer parenthesized factors. Secondary: shorter string
+    // (MCD uses min exponents, producing more compact expressions than MCM).
+    if (stuFactorCount <= 0) return false;
+    return (
+      stuFactorCount < expFactorCount ||
+      (stuFactorCount === expFactorCount && student.length < expected.length)
+    );
+  }
+
+  if (isMcdPrompt) {
+    // Asking for MCD → student picked answer with MORE factors (MCM-like).
+    // Primary: significantly more parenthesized factors (gap ≥ 2) to avoid
+    //   false-positives when the distractor is just one of the original
+    //   polynomials (which has more factors than MCD but is NOT the MCM).
+    // Secondary: same factor count but longer string (higher exponents,
+    //   typical of MCM vs MCD expressions with same factor structure).
+    return (
+      stuFactorCount >= expFactorCount + 2 ||
+      (stuFactorCount === expFactorCount && student.length > expected.length)
+    );
+  }
+
+  return false;
+}
+
+/**
  * Match the user's answer against known error patterns and return a
  * declared commonErrorTag if one fits, or undefined.
  *
@@ -759,6 +910,24 @@ export function tagError(
   if (isU2CasoIncorrectoError(exercise, userAnswer)) {
     for (const tag of tags) {
       if (U2_CASO_INCORRECTO_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  // ── U2 Aplicaciones error patterns ────────────────────────
+
+  if (isU2DenominadorCeroError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U2_DENOMINADOR_CERO_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isU2ConfundeMcmMcdError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U2_CONFUNDE_MCM_MCD_TAGS.has(tag)) {
         return tag;
       }
     }

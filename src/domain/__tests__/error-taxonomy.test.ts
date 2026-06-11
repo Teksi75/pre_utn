@@ -92,6 +92,8 @@ describe("Error Taxonomy", () => {
         "u1_abs_distributiva_falsa",
       ]);
       expect(tagsByUnit.get(2)?.map((tag) => tag.id)).toEqual([
+        "u2_denominador_cero",
+        "u2_confunde_mcm_mcd",
         "u2_aislamiento_variable",
         "u2_signo_al_mover",
         "u2_signo_operacion",

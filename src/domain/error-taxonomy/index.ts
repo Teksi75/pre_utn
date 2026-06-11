@@ -616,6 +616,28 @@ const TAXONOMY: readonly ErrorTag[] = [
     ],
   },
 
+  // Unit 2: Aplicaciones — MCM/MCD and fractional equations
+  {
+    id: "u2_denominador_cero",
+    unit: 2,
+    description:
+      "Incluye como solución un valor que anula un denominador de la ecuación fraccionaria original. El alumno resuelve algebraicamente pero no verifica las restricciones de dominio.",
+    examples: [
+      "Resolver 1/(x-2) = 3/(x-2) y dar x=2 como solución",
+      "Resolver x/(x-3) = 3/(x-3) y dar x=3 como solución",
+    ],
+  },
+  {
+    id: "u2_confunde_mcm_mcd",
+    unit: 2,
+    description:
+      "Confunde MCM con MCD: al pedir el mínimo común múltiplo responde el máximo común divisor, o viceversa. Intercambia la operación de unión de factores (MCM) con la de intersección (MCD).",
+    examples: [
+      "Pedir MCM de (x-2)(x-3) y (x-2)(x+1) y responder (x-2) (que es el MCD)",
+      "Pedir MCD de x²-4 y x²-2x y responder x(x-2)(x+2) (que es el MCM)",
+    ],
+  },
+
   // Unit 2: Equations and systems
   {
     id: "u2_aislamiento_variable",
