@@ -100,6 +100,8 @@ describe("Error Taxonomy", () => {
         "u2_grado_incorrecto",
         "u2_termino_faltante",
         "u2_factorizacion_incompleta",
+        "u2_signo_factorizacion",
+        "u2_caso_incorrecto",
       ]);
       expect(tagsByUnit.get(3)?.map((tag) => tag.id)).toEqual([
         "u3_signo_desigualdad",
@@ -221,6 +223,8 @@ describe("Error Taxonomy", () => {
         "u2_grado_incorrecto",
         "u2_termino_faltante",
         "u2_factorizacion_incompleta",
+        "u2_signo_factorizacion",
+        "u2_caso_incorrecto",
       ];
       for (const tagId of newTags) {
         const found = lookupTag(tagId);

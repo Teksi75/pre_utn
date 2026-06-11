@@ -699,6 +699,27 @@ const TAXONOMY: readonly ErrorTag[] = [
       "Factorizar 2x² − 8 como 2(x² − 4) sin reconocer que x² − 4 = (x−2)(x+2)",
     ],
   },
+  {
+    id: "u2_signo_factorizacion",
+    unit: 2,
+    description:
+      "Error al factorizar: pierde o cambia el signo en uno o más factores. El alumno elige factores con el valor absoluto correcto pero con signos opuestos en al menos uno de ellos, como repetir el mismo factor con el mismo signo cuando deberían ser conjugados para una diferencia de cuadrados.",
+    examples: [
+      "Factorizar x² − 9 como (x−3)(x−3) en vez de (x−3)(x+3) (signo perdido en el segundo factor)",
+      "Factorizar x² − 4 como (x−2)(x−2) en vez de (x−2)(x+2) (signo perdido en el segundo factor)",
+    ],
+  },
+  {
+    id: "u2_caso_incorrecto",
+    unit: 2,
+    description:
+      "Error al identificar el caso de factoreo aplicable. El alumno aplica un caso de factoreo que no corresponde al polinomio dado, como usar factor común donde se necesita diferencia de cuadrados, o intentar trinomio cuadrado perfecto con un binomio.",
+    examples: [
+      "Aplicar factor común donde corresponde diferencia de cuadrados. Ejemplo: x² − 25 tratado como x(x − 25/x) en vez de (x−5)(x+5)",
+      "Tratar un binomio de la forma x² + 1 como si fuera una diferencia de cuadrados (no se puede factorear en ℝ)",
+      "Intentar trinomio cuadrado perfecto con un trinomio que no tiene la forma a² + 2ab + b²",
+    ],
+  },
 
   // Unit 3: Inequalities and absolute value
   {
