@@ -287,3 +287,152 @@ describe("deriveHomeNextStep — roadmap & diagnostic summary", () => {
     expect(nextStep.diagnosticSummary?.totalSkills).toBe(3);
   });
 });
+
+// ── Unit 2 ────────────────────────────────────────────────────────────────────
+
+const u2ReadySkills: readonly ReadySkill[] = [
+  { skillId: "mat.u2.polinomios_basico", label: "Polinomios: definición y clasificación" },
+  { skillId: "mat.u2.operaciones_polinomios", label: "Operaciones con polinomios" },
+];
+
+describe("deriveHomeNextStep — Unit 2", () => {
+  it("resolves practice start-skill for a U2 skill when prior skill is done", () => {
+    // Include an arbitrary attempt to bypass the initial-diagnostic gate.
+    // The first U2 skill (polinomios_basico) has no predecessors in the
+    // readySkills list, so it becomes the next pedagogical step.
+    const nextStep = deriveHomeNextStep(
+      progress({
+        attempts: [
+          {
+            exerciseId: "ex-arbitrary",
+            skillId: "mat.u1.conjuntos_numericos",
+            correct: true,
+            answeredAt: "2026-06-01T00:00:00.000Z",
+            timeMs: 5000,
+            attemptIndex: 1,
+          },
+        ],
+      }),
+      u2ReadySkills
+    );
+
+    expect(nextStep.kind).toBe("practice");
+    expect(nextStep.href).toBe("/practice?skill=mat.u2.polinomios_basico");
+    expect(nextStep.title).toContain("Polinomios");
+    expect(nextStep.description).toContain("Unidad 2");
+  });
+
+  it("resolves diagnostic practice href for a U2 skill after diagnostic and prior practice", () => {
+    const nextStep = deriveHomeNextStep(
+      progress({
+        attempts: [
+          {
+            exerciseId: "ex-diag-u2-1",
+            skillId: "mat.u2.polinomios_basico",
+            correct: true,
+            answeredAt: "2026-06-01T00:00:00.000Z",
+            timeMs: 5000,
+            attemptIndex: 1,
+          },
+        ],
+        accuracyBySkill: { "mat.u2.polinomios_basico": 1 },
+        trendBySkill: { "mat.u2.polinomios_basico": "stable" },
+        diagnosticResult: {
+          completedAt: "2026-06-01T10:00:00.000Z",
+          version: 1,
+          estimates: [
+            {
+              skillId: "mat.u2.polinomios_basico",
+              accuracy: 1,
+              attempts: 1,
+              provisional: true,
+              errorTags: [],
+            },
+          ],
+          suggestions: [],
+        },
+      }),
+      u2ReadySkills
+    );
+
+    expect(nextStep.kind).toBe("practice");
+    expect(nextStep.href).toBe("/practice?skill=mat.u2.operaciones_polinomios");
+    expect(nextStep.title).toContain("Operaciones con polinomios");
+    expect(nextStep.description).toContain("Unidad 2");
+    expect(nextStep.diagnosticSummary).not.toBeNull();
+  });
+});
+
+// ── Mixed U1+U2 fallback ────────────────────────────────────────────────────
+
+const mixedU1U2ReadySkills: readonly ReadySkill[] = [
+  { skillId: "mat.u1.conjuntos_numericos", label: "Conjuntos numéricos" },
+  { skillId: "mat.u1.propiedades_operaciones_reales", label: "Propiedades" },
+  { skillId: "mat.u2.polinomios_basico", label: "Polinomios básico" },
+  { skillId: "mat.u2.operaciones_polinomios", label: "Operaciones con polinomios" },
+];
+
+describe("deriveHomeNextStep — mixed U1+U2 fallback", () => {
+  it("uses a generic title when all mixed-unit skills are complete", () => {
+    // All U1+U2 skills done with acceptable accuracies → fallback.
+    const nextStep = deriveHomeNextStep(
+      progress({
+        attempts: [
+          { exerciseId: "ex-u1-1", skillId: "mat.u1.conjuntos_numericos", correct: true, answeredAt: "2026-06-10T00:00:00.000Z", timeMs: 5000, attemptIndex: 1 },
+          { exerciseId: "ex-u1-2", skillId: "mat.u1.propiedades_operaciones_reales", correct: true, answeredAt: "2026-06-10T00:01:00.000Z", timeMs: 5000, attemptIndex: 1 },
+          { exerciseId: "ex-u2-1", skillId: "mat.u2.polinomios_basico", correct: true, answeredAt: "2026-06-10T00:02:00.000Z", timeMs: 5000, attemptIndex: 1 },
+          { exerciseId: "ex-u2-2", skillId: "mat.u2.operaciones_polinomios", correct: true, answeredAt: "2026-06-10T00:03:00.000Z", timeMs: 5000, attemptIndex: 1 },
+        ],
+        accuracyBySkill: {
+          "mat.u1.conjuntos_numericos": 0.9,
+          "mat.u1.propiedades_operaciones_reales": 0.85,
+          "mat.u2.polinomios_basico": 0.9,
+          "mat.u2.operaciones_polinomios": 0.85,
+        },
+        trendBySkill: {
+          "mat.u1.conjuntos_numericos": "stable",
+          "mat.u1.propiedades_operaciones_reales": "stable",
+          "mat.u2.polinomios_basico": "stable",
+          "mat.u2.operaciones_polinomios": "stable",
+        },
+      }),
+      mixedU1U2ReadySkills
+    );
+
+    expect(nextStep.kind).toBe("continue-unit");
+    // Must NOT misleadingly reference only "Unidad 1".
+    expect(nextStep.title).not.toContain("Unidad 1");
+    expect(nextStep.title).not.toMatch(/Unidad \d/);
+    expect(nextStep.title).toBe("Seguir repasando");
+    expect(nextStep.href).toBe("/learn/matematica");
+    // Roadmap still reflects the pilot list.
+    expect(nextStep.roadmapSkills).toHaveLength(4);
+  });
+
+  it("still uses single-unit title when only one unit is present", () => {
+    const u1Only: readonly ReadySkill[] = [
+      { skillId: "mat.u1.conjuntos_numericos", label: "Conjuntos" },
+      { skillId: "mat.u1.propiedades_operaciones_reales", label: "Propiedades" },
+    ];
+    const nextStep = deriveHomeNextStep(
+      progress({
+        attempts: [
+          { exerciseId: "ex-cn", skillId: "mat.u1.conjuntos_numericos", correct: true, answeredAt: "2026-06-10T00:00:00.000Z", timeMs: 5000, attemptIndex: 1 },
+          { exerciseId: "ex-pr", skillId: "mat.u1.propiedades_operaciones_reales", correct: true, answeredAt: "2026-06-10T00:01:00.000Z", timeMs: 5000, attemptIndex: 1 },
+        ],
+        accuracyBySkill: {
+          "mat.u1.conjuntos_numericos": 0.9,
+          "mat.u1.propiedades_operaciones_reales": 0.85,
+        },
+        trendBySkill: {
+          "mat.u1.conjuntos_numericos": "stable",
+          "mat.u1.propiedades_operaciones_reales": "stable",
+        },
+      }),
+      u1Only
+    );
+
+    expect(nextStep.kind).toBe("continue-unit");
+    expect(nextStep.title).toBe("Continuar Unidad 1 parcial");
+  });
+});

@@ -187,6 +187,12 @@ describe("getAccessibleSkills — accessibility rules", () => {
         "mat.u1.intervalos": 0.85,
         "mat.u1.valor_absoluto": 0.85,
         "mat.u1.logaritmos": 0.85,
+        "mat.u2.polinomios_basico": 0.85,
+        "mat.u2.operaciones_polinomios": 0.85,
+        "mat.u2.ruffini_resto": 0.85,
+        "mat.u2.factorizacion": 0.85,
+        "mat.u2.gauss": 0.85,
+        "mat.u2.mcm_mcd_polinomios": 0.85,
       },
     };
     // Skills without content (like mat.u1.complejos, which is pilot-registered

@@ -73,6 +73,131 @@ describe("PracticeAttempt / PracticeProgress", () => {
       const result = deduplicateByLastAttempt([]);
       expect(result).toHaveLength(0);
     });
+
+    // GGA fix: chronological deduplication — answeredAt wins over attemptIndex
+    test("picks chronologically last attempt (answeredAt), not highest attemptIndex", () => {
+      // Session 2 (newer browser session, reset attemptIndex to 1)
+      // happens after Session 1 (older, attemptIndex=2)
+      // but attemptIndex-only logic would keep the older attempt
+      const attempts = [
+        makeAttempt({
+          exerciseId: "ex.chrono",
+          attemptIndex: 2, // older session, higher index
+          answeredAt: "2026-01-15T10:00:00Z",
+          correct: false,
+        }),
+        makeAttempt({
+          exerciseId: "ex.chrono",
+          attemptIndex: 1, // newer session, lower index
+          answeredAt: "2026-01-16T14:30:00Z",
+          correct: true,
+        }),
+      ];
+      const result = deduplicateByLastAttempt(attempts);
+      expect(result).toHaveLength(1);
+      expect(result[0].answeredAt).toBe("2026-01-16T14:30:00Z");
+      expect(result[0].correct).toBe(true);
+    });
+
+    test("uses attemptIndex as tie-breaker when answeredAt is equal", () => {
+      const attempts = [
+        makeAttempt({
+          exerciseId: "ex.same-time",
+          attemptIndex: 1,
+          answeredAt: "2026-01-15T10:00:00Z",
+          correct: false,
+        }),
+        makeAttempt({
+          exerciseId: "ex.same-time",
+          attemptIndex: 3,
+          answeredAt: "2026-01-15T10:00:00Z",
+          correct: true,
+        }),
+        makeAttempt({
+          exerciseId: "ex.same-time",
+          attemptIndex: 2,
+          answeredAt: "2026-01-15T10:00:00Z",
+          correct: false,
+        }),
+      ];
+      const result = deduplicateByLastAttempt(attempts);
+      expect(result).toHaveLength(1);
+      expect(result[0].attemptIndex).toBe(3);
+      expect(result[0].correct).toBe(true);
+    });
+
+    // GGA fix: output must be chronologically sorted so computeTrend splits correctly
+    test("output is sorted chronologically by answeredAt", () => {
+      const attempts = [
+        makeAttempt({
+          exerciseId: "ex.B",
+          attemptIndex: 1,
+          answeredAt: "2026-01-20T10:00:00Z",
+          correct: true,
+        }),
+        makeAttempt({
+          exerciseId: "ex.A",
+          attemptIndex: 1,
+          answeredAt: "2026-01-10T10:00:00Z",
+          correct: false,
+        }),
+        makeAttempt({
+          exerciseId: "ex.C",
+          attemptIndex: 1,
+          answeredAt: "2026-01-15T10:00:00Z",
+          correct: true,
+        }),
+      ];
+      const result = deduplicateByLastAttempt(attempts);
+      expect(result).toHaveLength(3);
+      expect(result[0].exerciseId).toBe("ex.A"); // earliest
+      expect(result[1].exerciseId).toBe("ex.C"); // middle
+      expect(result[2].exerciseId).toBe("ex.B"); // latest
+    });
+
+    test("chronological sort preserves cross-session dedup: older session vs newer with retries", () => {
+      // Exercise A: 3 attempts across 2 sessions
+      // Session 1: attemptIndex=1, answeredAt T1, incorrect
+      // Session 1: attemptIndex=2, answeredAt T2, incorrect
+      // Session 2: attemptIndex=1, answeredAt T3, correct (newest chronologically, lowest index)
+      // Exercise B: 1 attempt at T4
+      const attempts = [
+        makeAttempt({
+          exerciseId: "ex.xcross.A",
+          attemptIndex: 1,
+          answeredAt: "2026-02-01T10:00:00Z",
+          correct: false,
+        }),
+        makeAttempt({
+          exerciseId: "ex.xcross.A",
+          attemptIndex: 2,
+          answeredAt: "2026-02-01T10:05:00Z",
+          correct: false,
+        }),
+        makeAttempt({
+          exerciseId: "ex.xcross.A",
+          attemptIndex: 1, // session 2 resets
+          answeredAt: "2026-02-02T09:00:00Z",
+          correct: true,
+        }),
+        makeAttempt({
+          exerciseId: "ex.xcross.B",
+          attemptIndex: 1,
+          answeredAt: "2026-02-01T10:10:00Z",
+          correct: true,
+        }),
+      ];
+      const result = deduplicateByLastAttempt(attempts);
+      expect(result).toHaveLength(2);
+      // ex.xcross.A: should be the Feb 2 version (correct)
+      const a = result.find((r) => r.exerciseId === "ex.xcross.A")!;
+      expect(a.correct).toBe(true);
+      expect(a.answeredAt).toBe("2026-02-02T09:00:00Z");
+      // Order: A (Feb 1, 10:10) before ex.xcross.A's latest (Feb 2, 09:00) — wait no
+      // Actually ex.xcross.B at Feb 1 10:10 comes before ex.xcross.A (Feb 2 09:00) chronologically
+      expect(result[0].exerciseId).toBe("ex.xcross.B");
+      expect(result[1].exerciseId).toBe("ex.xcross.A");
+    });
   });
 
   describe("computeAccuracy", () => {
@@ -364,7 +489,7 @@ describe("PracticeAttempt / PracticeProgress", () => {
       // should not throw and should return 'learning' (or higher)
       const progress: PracticeProgress = {
         attempts: [
-          makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: true }),
+          makeAttempt({ skillId: "mat.u1.propiedades_operaciones_reales", correct: true, timeMs: 5000 }),
         ],
         accuracyBySkill: {},
         trendBySkill: {},
@@ -403,6 +528,76 @@ describe("PracticeAttempt / PracticeProgress", () => {
       const level = computeMasteryLevel(skillId, progress);
       // 2 unique exercises < MASTERY_MIN_ATTEMPTS (5) → learning
       expect(level).toBe("learning");
+    });
+
+    // GGA fix: computeMasteryLevel must filter invalid timing like accuracy/trend
+    test("excludes attempts with timeMs < 100 from mastery attempt count", () => {
+      const skillId = "mat.u1.propiedades_operaciones_reales";
+      const t = 5000; // valid
+      const attempts: PracticeAttempt[] = [
+        makeAttempt({ exerciseId: "ex.1", skillId, timeMs: t, attemptIndex: 1, correct: true }),
+        makeAttempt({ exerciseId: "ex.2", skillId, timeMs: t, attemptIndex: 1, correct: true }),
+        makeAttempt({ exerciseId: "ex.3", skillId, timeMs: t, attemptIndex: 1, correct: true }),
+        makeAttempt({ exerciseId: "ex.4", skillId, timeMs: t, attemptIndex: 1, correct: true }),
+        makeAttempt({ exerciseId: "ex.5", skillId, timeMs: 50, attemptIndex: 1, correct: true }), // invalid timing
+      ];
+      // 5 total attempts, but only 4 with valid timing → count 4 < 5 → not mastered.
+      // 4 valid attempts with 1.0 accuracy + improving → practicing (not learning!)
+      const progress: PracticeProgress = {
+        attempts,
+        accuracyBySkill: { [skillId]: 1.0 },
+        trendBySkill: { [skillId]: "improving" },
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      };
+      const level = computeMasteryLevel(skillId, progress);
+      expect(level).toBe("practicing");
+    });
+
+    test("excludes attempts with timeMs > 600000 from mastery attempt count", () => {
+      const skillId = "mat.u1.propiedades_operaciones_reales";
+      const t = 5000; // valid
+      const attempts: PracticeAttempt[] = [
+        makeAttempt({ exerciseId: "ex.1", skillId, timeMs: t, attemptIndex: 1, correct: true }),
+        makeAttempt({ exerciseId: "ex.2", skillId, timeMs: t, attemptIndex: 1, correct: true }),
+        makeAttempt({ exerciseId: "ex.3", skillId, timeMs: t, attemptIndex: 1, correct: true }),
+        makeAttempt({ exerciseId: "ex.4", skillId, timeMs: 700_000, attemptIndex: 1, correct: true }), // abandoned tab
+        makeAttempt({ exerciseId: "ex.5", skillId, timeMs: t, attemptIndex: 1, correct: true }),
+      ];
+      // 5 total, 1 invalid → 4 valid → not mastered → but 4 valid + 1.0 accuracy + improving = practicing
+      const progress: PracticeProgress = {
+        attempts,
+        accuracyBySkill: { [skillId]: 1.0 },
+        trendBySkill: { [skillId]: "improving" },
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      };
+      const level = computeMasteryLevel(skillId, progress);
+      expect(level).toBe("practicing");
+    });
+
+    test("timing filter in mastery: valid attempts at boundary pass", () => {
+      const skillId = "mat.u1.propiedades_operaciones_reales";
+      const attempts: PracticeAttempt[] = [
+        makeAttempt({ exerciseId: "ex.1", skillId, timeMs: 100, attemptIndex: 1, correct: true }),
+        makeAttempt({ exerciseId: "ex.2", skillId, timeMs: 600_000, attemptIndex: 1, correct: true }),
+        makeAttempt({ exerciseId: "ex.3", skillId, timeMs: 5000, attemptIndex: 1, correct: true }),
+        makeAttempt({ exerciseId: "ex.4", skillId, timeMs: 5000, attemptIndex: 1, correct: true }),
+        makeAttempt({ exerciseId: "ex.5", skillId, timeMs: 5000, attemptIndex: 1, correct: true }),
+      ];
+      const progress: PracticeProgress = {
+        attempts,
+        accuracyBySkill: { [skillId]: 1.0 },
+        trendBySkill: { [skillId]: "improving" },
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      };
+      const level = computeMasteryLevel(skillId, progress);
+      // 5 valid attempts (boundary 100 and 600000 included) → mastered
+      expect(level).toBe("mastered");
     });
 
     test("5 unique exercises (some with retries) → mastery achievable", () => {

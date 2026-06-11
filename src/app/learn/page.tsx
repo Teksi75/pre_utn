@@ -18,13 +18,13 @@ export default function LearnPage() {
             <Link
               href="/learn/matematica"
               transitionTypes={["nav-forward"]}
-              className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-all duration-[var(--duration-normal)] transition-shadow duration-[var(--duration-normal)]"
+              className="group block shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-6 bg-white border border-brand-200 hover:shadow-[var(--shadow-elevated)] hover:border-brand-300 transition-shadow transition-colors duration-[var(--duration-normal)] focus-visible:shadow-[var(--ring-focus)]"
             >
               <span className="text-[var(--text-lg)] font-semibold text-brand-900 group-hover:text-accent-600 transition-colors">
                 Matemática
               </span>
               <span className="block text-sm text-brand-500 mt-2 leading-[var(--leading-relaxed)]">
-                Unidad 1: Números reales, operaciones e intervalos.
+                Unidades 1 y 2: Números reales, operaciones, intervalos y polinomios.
               </span>
             </Link>
           </nav>

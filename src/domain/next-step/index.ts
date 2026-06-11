@@ -6,6 +6,12 @@ const LOW_ACCURACY_THRESHOLD = 0.7;
 /** Below this accuracy, an estimate counts as "weak" for the diagnostic summary. */
 const DIAGNOSTIC_WEAK_THRESHOLD = 0.7;
 
+/** Extract the unit number (1–6) from a SkillId like `mat.u2.polinomios_basico`. */
+function parseSkillUnit(skillId: SkillId): number {
+  const match = skillId.match(/^mat\.u(\d)\./);
+  return match ? parseInt(match[1], 10) : 1;
+}
+
 export type HomeNextStepKind = "diagnostic" | "practice" | "continue-unit";
 
 export interface ReadySkill {
@@ -91,10 +97,11 @@ export function deriveHomeNextStep(
   });
 
   if (firstUnattemptedReadySkill) {
+    const unit = parseSkillUnit(firstUnattemptedReadySkill.skillId);
     return {
       kind: "practice",
       title: `Practicar ${firstUnattemptedReadySkill.label}`,
-      description: "Este es el próximo paso disponible del camino de Unidad 1 antes de avanzar a temas posteriores.",
+      description: `Este es el próximo paso disponible del camino de Unidad ${unit} antes de avanzar a temas posteriores.`,
       href: `/practice?skill=${firstUnattemptedReadySkill.skillId}`,
       skillId: firstUnattemptedReadySkill.skillId,
       roadmapSkills,
@@ -124,10 +131,28 @@ export function deriveHomeNextStep(
     };
   }
 
+  // Fallback: all ready skills have been practiced with acceptable progress.
+  // When multiple units are present, use a generic title to avoid misleading
+  // the user into thinking only Unit 1 remains.
+  const distinctUnits = new Set(readySkills.map((s) => parseSkillUnit(s.skillId)));
+  if (distinctUnits.size > 1) {
+    return {
+      kind: "continue-unit",
+      title: "Seguir repasando",
+      description:
+        "Seguí revisando la teoría y los ejemplos disponibles, o repetí el diagnóstico para recalibrar.",
+      href: "/learn/matematica",
+      roadmapSkills,
+      diagnosticSummary,
+    };
+  }
+
+  const fallbackUnit = readySkills.length > 0 ? parseSkillUnit(readySkills[0].skillId) : 1;
   return {
     kind: "continue-unit",
-    title: "Continuar Unidad 1 parcial",
-    description: "Seguí revisando la teoría y los ejemplos disponibles, o repetí el diagnóstico para recalibrar.",
+    title: `Continuar Unidad ${fallbackUnit} parcial`,
+    description:
+      "Seguí revisando la teoría y los ejemplos disponibles, o repetí el diagnóstico para recalibrar.",
     href: "/learn/matematica",
     roadmapSkills,
     diagnosticSummary,
@@ -148,10 +173,7 @@ function buildRoadmapSkills(
   return pilotSkills.map(({ skillId, label }) => ({
     skillId,
     name: label,
-    masteryLevel: computeMasteryLevel(
-      skillId,
-      progress as Pick<PracticeProgress, "attempts" | "accuracyBySkill" | "trendBySkill" | "lastPracticedBySkill" | "diagnosticResult" | "studyPlan">
-    ),
+    masteryLevel: computeMasteryLevel(skillId, progress),
     accuracy: progress.accuracyBySkill[skillId] ?? 0,
   }));
 }

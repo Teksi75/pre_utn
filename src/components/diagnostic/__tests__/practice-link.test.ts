@@ -9,6 +9,6 @@ describe("getPracticeHrefForSuggestion", () => {
   });
 
   it("does not link to skills without a complete guided-practice route", () => {
-    expect(getPracticeHrefForSuggestion("mat.u2.factorizacion")).toBeNull();
+    expect(getPracticeHrefForSuggestion("mat.u3.ecuaciones_lineales")).toBeNull();
   });
 });

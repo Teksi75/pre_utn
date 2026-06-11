@@ -26,7 +26,7 @@ describe("resolveInitialPracticeSkill", () => {
   });
 
   it("rejects a known catalog skill that is not ready for guided practice", () => {
-    expect(resolveInitialPracticeSkill("mat.u2.factorizacion")).toBeNull();
+    expect(resolveInitialPracticeSkill("mat.u3.ecuaciones_lineales")).toBeNull();
   });
 
   it("rejects an absent or unknown skill query param", () => {
@@ -69,11 +69,11 @@ describe("analyzeRequestedSkill", () => {
   });
 
   it("returns 'blocked' with reason 'unknown-skill' for a non-pilot skill id", () => {
-    // mat.u2.factorizacion is in the SKILL_DEPENDENCIES graph (so it would
+    // mat.u3.ecuaciones_lineales is in the SKILL_DEPENDENCIES graph (so it would
     // be "valid" as a skill id) but it is not registered for guided
     // practice in PILOT_SKILL_UNIT_MAP.
     const result = analyzeRequestedSkill(
-      "mat.u2.factorizacion",
+      "mat.u3.ecuaciones_lineales",
       emptyProgress()
     );
     expect(result.kind).toBe("blocked");
@@ -240,7 +240,7 @@ describe("analyzeRequestedSkill — QA content mode", () => {
 
   it("still blocks non-pilot skills even when QA mode is enabled", () => {
     const result = analyzeRequestedSkill(
-      "mat.u2.factorizacion",
+      "mat.u3.ecuaciones_lineales",
       emptyProgress(),
       { qaContentModeEnabled: true }
     );
@@ -252,7 +252,7 @@ describe("analyzeRequestedSkill — QA content mode", () => {
 
   it("still blocks content-not-ready skills even when QA mode is enabled", () => {
     const result = analyzeRequestedSkill(
-      "mat.u2.factorizacion",
+      "mat.u3.ecuaciones_lineales",
       emptyProgress(),
       { qaContentModeEnabled: true }
     );

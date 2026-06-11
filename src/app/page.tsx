@@ -121,7 +121,7 @@ export default function Home() {
             <div className="flex items-center justify-between gap-3 sm:flex-col sm:items-start">
               <dt className="text-[var(--color-brand-600)]">Unidad piloto</dt>
               <dd className="font-medium text-amber-700">
-                Unidad 1 parcial
+                Unidades 1 y 2
               </dd>
             </div>
           </dl>

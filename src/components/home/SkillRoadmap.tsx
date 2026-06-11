@@ -22,7 +22,7 @@ interface SkillRoadmapProps {
 export function SkillRoadmap({ skills, nextSkillId }: SkillRoadmapProps) {
   return (
     <ol
-      aria-label="Camino de la Unidad 1"
+      aria-label="Camino de aprendizaje"
       className="flex flex-col gap-3 md:flex-row md:items-center md:gap-0"
     >
       {skills.map((skill, index) => {

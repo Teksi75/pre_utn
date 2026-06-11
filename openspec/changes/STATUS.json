@@ -174,6 +174,13 @@
         "summary": "PR2 — Content: 8 exercises (4 mcm_mcd + 4 ecuaciones), 2 TheoryNodes, 4 WorkedExamples, 2 FeedbackMappings, skill dependency tests, shape tests, build verification."
       },
       "summary": "Complete: 2 new skills (u2.mcm_mcd_polinomios, u2.ecuaciones_fraccionarias) + 8 exercises + 2 error tags + 2 detectors + 2 TheoryNodes + 4 WorkedExamples + 2 FeedbackMappings. U2 main chain fully closed: polinomios_basico → operaciones_polinomios → ruffini_resto → factorizacion → gauss → mcm_mcd_polinomios → ecuaciones_fraccionarias."
+    },
+    "unit-2-pilot-activation": {
+      "status": "done",
+      "branch": null,
+      "startedAt": "2026-06-11",
+      "completedAt": "2026-06-11",
+      "summary": "Activated all 7 U2 skills in PILOT_SKILLS catalog. Connected Unit 2 to home dashboard, guided-practice pipeline, learn page (multi-unit layout), and skill roadmap. Fixed multi-unit fallback in deriveHomeNextStep (Set-based distinct-unit detection, generic 'Seguir repasando' title). Relaxed computeMasteryLevel signature to Pick. Single work unit, 12 files changed."
     }
   },
   "activeBranches": [],

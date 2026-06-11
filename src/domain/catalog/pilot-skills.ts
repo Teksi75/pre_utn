@@ -47,6 +47,41 @@ export const PILOT_SKILLS: readonly PilotSkill[] = [
     unitKey: "unit-1",
     label: "Números complejos",
   },
+  {
+    skillId: "mat.u2.polinomios_basico",
+    unitKey: "unit-2",
+    label: "Polinomios: definición y clasificación",
+  },
+  {
+    skillId: "mat.u2.operaciones_polinomios",
+    unitKey: "unit-2",
+    label: "Operaciones con polinomios",
+  },
+  {
+    skillId: "mat.u2.ruffini_resto",
+    unitKey: "unit-2",
+    label: "Regla de Ruffini y teorema del resto",
+  },
+  {
+    skillId: "mat.u2.factorizacion",
+    unitKey: "unit-2",
+    label: "Factorización de polinomios",
+  },
+  {
+    skillId: "mat.u2.gauss",
+    unitKey: "unit-2",
+    label: "Método de Gauss",
+  },
+  {
+    skillId: "mat.u2.mcm_mcd_polinomios",
+    unitKey: "unit-2",
+    label: "MCM y MCD de polinomios",
+  },
+  {
+    skillId: "mat.u2.ecuaciones_fraccionarias",
+    unitKey: "unit-2",
+    label: "Ecuaciones fraccionarias",
+  },
 ] as const;
 
 /**

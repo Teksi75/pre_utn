@@ -75,14 +75,19 @@ const MASTERY_MIN_ATTEMPTS = 5;
 const PRACTICING_ACCURACY_THRESHOLD = 0.7;
 
 /**
- * Keep only the last attempt (highest attemptIndex) per exerciseId.
- * Used by computeAccuracy, computeTrend, and computeMasteryLevel to
- * deduplicate retries — accuracy should measure comprehension
- * (did the student eventually understand?), not persistence
- * (how many times did they try?).
+ * Keep only the last chronological attempt per exerciseId.
+ * Uses `answeredAt` as the primary sort key (most recent wins) and
+ * `attemptIndex` as a tie-breaker when timestamps are equal.
+ *
+ * This prevents cross-session bugs: a newer browser session resets
+ * `attemptIndex`, so a later chronological attempt with a lower
+ * `attemptIndex` would be silently ignored by an index-only dedup.
+ *
+ * The output array is sorted chronologically (oldest → newest) so
+ * that `computeTrend` splits the series in the correct order.
  *
  * @param attempts - All practice attempts for a skill
- * @returns Deduplicated attempts (one per exerciseId)
+ * @returns Deduplicated attempts (one per exerciseId), sorted chronologically
  */
 export function deduplicateByLastAttempt(
   attempts: readonly PracticeAttempt[]
@@ -90,11 +95,20 @@ export function deduplicateByLastAttempt(
   const byExercise = new Map<string, PracticeAttempt>();
   for (const a of attempts) {
     const existing = byExercise.get(a.exerciseId);
-    if (!existing || a.attemptIndex > existing.attemptIndex) {
+    if (
+      !existing ||
+      a.answeredAt > existing.answeredAt ||
+      (a.answeredAt === existing.answeredAt && a.attemptIndex > existing.attemptIndex)
+    ) {
       byExercise.set(a.exerciseId, a);
     }
   }
-  return [...byExercise.values()];
+  // Sort chronologically so computeTrend splits first-half vs second-half correctly
+  return [...byExercise.values()].sort((a, b) => {
+    if (a.answeredAt < b.answeredAt) return -1;
+    if (a.answeredAt > b.answeredAt) return 1;
+    return a.attemptIndex - b.attemptIndex;
+  });
 }
 
 /**
@@ -174,11 +188,11 @@ export function computeTrend(
  */
 export function computeMasteryLevel(
   skillId: string,
-  progress: PracticeProgress
+  progress: Pick<PracticeProgress, "attempts" | "accuracyBySkill" | "trendBySkill">
 ): MasteryLevel {
   const attempts = deduplicateByLastAttempt(
     progress.attempts.filter((a) => a.skillId === skillId)
-  );
+  ).filter((a) => a.timeMs >= 100 && a.timeMs <= 600_000);
   if (attempts.length === 0) return "not-started";
 
   const accuracy = progress.accuracyBySkill[skillId] ?? 0;
