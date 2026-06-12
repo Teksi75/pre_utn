@@ -36,8 +36,15 @@ The repository MUST commit a `.gga` configuration that uses `AGENTS.md` as the r
 
 - GIVEN the repository root contains `.gga`
 - WHEN the developer runs `gga config`
-- THEN it shows `RULES_FILE=AGENTS.md`, `PROVIDER=opencode:openai/gpt-5.4-mini`, and `STRICT_MODE=true`
+- THEN it shows `RULES_FILE=AGENTS.md`, `PROVIDER=opencode`, and `STRICT_MODE=true`
 - AND it shows `FILE_PATTERNS=*.ts,*.tsx,*.js,*.jsx` plus `EXCLUDE_PATTERNS` covering test, spec, and `.d.ts` files
+
+#### Scenario: Provider uses OpenCode integration
+
+- GIVEN `.gga` is committed
+- WHEN the `PROVIDER` line is inspected
+- THEN it is `PROVIDER="opencode"` (no model suffix)
+- BECAUSE the repository GGA MUST use the OpenCode provider so the pre-commit gate runs through the same OpenCode integration used by the project workflow, avoiding stale Codex-specific or model-pinned local configuration
 
 #### Scenario: Config comments reference real project source
 
