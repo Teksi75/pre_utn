@@ -8,6 +8,7 @@
     "start": "next start",
     "test": "vitest",
     "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "audit:branches": "bash scripts/audit-branches.sh"
   },
@@ -23,6 +24,7 @@
     "@types/node": "^20",
     "@types/react": "^19.2.16",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^4.1.8",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.8"

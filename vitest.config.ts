@@ -5,5 +5,10 @@ export default defineConfig({
     globals: true,
     environment: "node",
     include: ["src/**/*.test.ts", "tests/**/*.test.ts"],
+    coverage: {
+      provider: "v8",
+      include: ["src/domain/**"],
+      reporter: ["text", "text-summary"],
+    },
   },
 });

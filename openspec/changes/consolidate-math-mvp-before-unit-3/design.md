@@ -69,7 +69,7 @@ Exercise loading should accept exercise data already composed by static imports;
 |---|---|---|
 | Unit | `parseSkillUnit`, difficulty monotonicity, traceability audit, per-unit thresholds | RED tests in `src/domain/__tests__/` before implementation. |
 | Integration | Split catalog equals previous loaded IDs/counts and preserves sorting | Compare `loadCatalog`, `queryBySkill`, `queryByUnit`, and `loadSkillBank` outputs. |
-| CI | pnpm gates and soft domain coverage | GitHub Actions plus `pnpm run test`, `pnpm run typecheck`, `pnpm run build`, `pnpm run test:coverage`. |
+| CI | pnpm gates and soft domain coverage | GitHub Actions plus `pnpm run test:run`, `pnpm run typecheck`, `pnpm run build`, `pnpm run test:coverage`. |
 
 ## Migration / Rollout
 

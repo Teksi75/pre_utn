@@ -46,11 +46,11 @@ Chain strategy: stacked-to-main
 
 ## Phase 2: Coverage + CI
 
-- [ ] 2.1 Add `test:coverage` script to `package.json`: `"test:coverage": "vitest run --coverage"`
-- [ ] 2.2 Modify `vitest.config.ts` to add coverage provider (v8/v9 depending on installed version) with domain-only include path `src/domain/`
-- [ ] 2.3 Create `.github/workflows/ci.yml` with: `pnpm install`, `pnpm run test`, `pnpm run typecheck`, `pnpm run build`, `pnpm run test:coverage`; soft 60% domain coverage floor as warning only
-- [ ] 2.4 Verify CI runs locally: `pnpm run test && pnpm run typecheck && pnpm run build && pnpm run test:coverage`
-- [ ] 2.5 Run `pnpm run test` — all tests must pass before Phase 3
+- [x] 2.1 Add `test:coverage` script to `package.json`: `"test:coverage": "vitest run --coverage"`
+- [x] 2.2 Modify `vitest.config.ts` to add coverage provider (v8/v9 depending on installed version) with domain-only include path `src/domain/`
+- [x] 2.3 Create `.github/workflows/ci.yml` with: `pnpm install --frozen-lockfile`, `pnpm run test:run`, `pnpm run typecheck`, `pnpm run build`, `pnpm run test:coverage`; soft 60% domain coverage floor as warning only
+- [x] 2.4 Verify CI runs locally: `pnpm run test:run && pnpm run typecheck && pnpm run build && pnpm run test:coverage`
+- [x] 2.5 Run `pnpm run test:run` — all tests must pass before Phase 3
 
 ## Phase 3: Content Split by Unit/Skill + Per-Unit Validator
 
@@ -67,4 +67,4 @@ Chain strategy: stacked-to-main
 - [ ] 4.2 Verify `TeacherHomeInput` contract in `src/domain/teacher-home/index.ts` unchanged: `{ progress, diagnosticResult, availableSkills, pilotSkills, nextStep }` — no new fields added
 - [ ] 4.3 Update `openspec/changes/STATUS.json` — add entry for `consolidate-math-mvp-before-unit-3` with `status: in-progress`, `branch: null`
 - [ ] 4.4 Run GGA on Linux: `pnpm run gga` or `.gga` hook — validate no new issues surfaced
-- [ ] 4.5 Final verification: `pnpm run test && pnpm run typecheck && pnpm run build`
+- [ ] 4.5 Final verification: `pnpm run test:run && pnpm run typecheck && pnpm run build`
