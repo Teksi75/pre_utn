@@ -96,6 +96,23 @@ function hasStructuredNumericalAnswer(value: string): boolean {
 }
 
 /**
+ * Detect structured math expressions that are prohibited for fill-blank answers.
+ * Extends `hasStructuredNumericalAnswer` with symbolic pattern detection.
+ * Catches: complex numbers (a+bi), roots (√, sqrt), logarithms (log, ln).
+ */
+function hasStructuredMathAnswer(value: string): boolean {
+  if (hasStructuredNumericalAnswer(value)) return true;
+  const normalized = value.trim();
+  // Symbolic math: letter(s) followed by operator and letter(s) (e.g. "a + bi", "x - y")
+  if (/[a-zA-Z]\s*[+\-*/^]\s*[a-zA-Z]/.test(normalized)) return true;
+  // Roots: √, ∛, sqrt, cbrt
+  if (/[√∛]|sqrt|cbrt/i.test(normalized)) return true;
+  // Logarithmic expressions: log, ln
+  if (/\b(?:log|ln)\b/i.test(normalized)) return true;
+  return false;
+}
+
+/**
  * Validate an exercise object.
  *
  * @param input - The exercise to validate
@@ -165,6 +182,15 @@ export function validateExercise(
     return err({
       field: "expectedAnswer",
       message: `numerical exercise must have a finite numeric expected answer, got: "${input.expectedAnswer}"`,
+    });
+  }
+
+  // Validate type-answer shape: fill-blank exercises must have a short, unambiguous form.
+  // Structured math expressions (sets, equations, complex numbers) are prohibited per AGENTS.md.
+  if (input.type === "fill-blank" && hasStructuredMathAnswer(input.expectedAnswer)) {
+    return err({
+      field: "expectedAnswer",
+      message: `fill-blank exercise must have a simple expected answer, got structured value: "${input.expectedAnswer}"`,
     });
   }
 

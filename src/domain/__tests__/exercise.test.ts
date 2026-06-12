@@ -311,6 +311,50 @@ describe("Exercise validation", () => {
       }
     );
 
+    test.each([
+      "x = -2, x = 2",
+      "{1, 2}",
+      "x = 4",
+      "a + bi",
+      "√2",
+      "sqrt(3)",
+      "log(x)",
+      "ln(5)",
+    ])("fill-blank type with structured math answer %s is rejected", (expectedAnswer) => {
+      const exercise: Exercise = {
+        ...validExercise,
+        type: "fill-blank",
+        expectedAnswer,
+      };
+
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error.field).toBe("expectedAnswer");
+      }
+    });
+
+    test("fill-blank type with simple word answer is accepted", () => {
+      const exercise: Exercise = {
+        ...validExercise,
+        type: "fill-blank",
+        expectedAnswer: "conjunto",
+      };
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+      expect(result.ok).toBe(true);
+    });
+
+    test("fill-blank type with simple numeric answer is accepted", () => {
+      const exercise: Exercise = {
+        ...validExercise,
+        type: "fill-blank",
+        expectedAnswer: "42",
+      };
+      const result = validateExercise(exercise, knownSkills, knownErrorTags);
+      expect(result.ok).toBe(true);
+    });
+
     test("multiple-choice with multi-value answer that IS in options is accepted", () => {
       const exercise: Exercise = {
         ...validExercise,

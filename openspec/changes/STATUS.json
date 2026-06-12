@@ -187,6 +187,28 @@
       "branch": null,
       "completedAt": "2026-06-11",
       "summary": "Teacher Digital Home — pedagogical decision dashboard. Replaced editorial hero/roadmap with pedagogical domain view-model (deriveTeacherHomeViewModel), 4 dumb UI panels, HomeNextStepClient integration, verified PASS (1533/1533 tests, 27 domain tests, 11 spec scenarios). Code in working tree (uncommitted). Design deviation: SkillRoadmap preserved but not rendered on Home (D5 overridden by user acceptance criteria)."
+    },
+    "consolidate-math-mvp-before-unit-3": {
+      "status": "in-progress",
+      "branch": null,
+      "startedAt": "2026-06-12",
+      "delivery": "chained-prs-stacked-to-main (4 PRs + Phase 4 cleanup)",
+      "pr1a": {
+        "summary": "PR1a — Safety net TDD + helpers + validators + wiring: parseSkillUnit shared helper, difficulty progression validator, traceability audit, per-unit thresholds, catalog split equivalence. 11 tasks."
+      },
+      "pr1b": {
+        "summary": "PR1b — canonicalTrace content backfill on exercises.json (~2600 lines JSON reformatting). Pure content, no code."
+      },
+      "pr2": {
+        "summary": "PR2 — Coverage + CI: vitest coverage config, GitHub Actions workflow, 93.11% domain line coverage."
+      },
+      "pr3": {
+        "summary": "PR3 — Content split + per-unit validator: unit-1.json/unit-2.json split, loadCatalog/loadExercisesForSkill composition, unit metadata, threshold config. 1606 tests passing."
+      },
+      "phase4": {
+        "summary": "Phase 4 — Tech debt cleanup + GGA/Linux validation: verified parseSkillUnit dedup (already done), TeacherHomeInput contract unchanged, added fill-blank structured math validation guard (GGA finding), GGA PASSED on Linux, all gates green (1606 tests, typecheck, build, 93.11% coverage)."
+      },
+      "summary": "Consolidate Math MVP before Unit 3: shared helpers, validators, content split, CI, coverage, GGA compliance. 4 chained PRs + Phase 4 cleanup. 1606 tests, 93.11% domain coverage."
     }
   },
   "activeBranches": [],

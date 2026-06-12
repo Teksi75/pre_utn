@@ -71,8 +71,8 @@ Chain strategy: stacked-to-main
 
 ## Phase 4: Tech Debt Cleanup + GGA/Linux Re-Validation
 
-- [ ] 4.1 Remove duplicated `parseSkillUnit` implementations from `src/domain/next-step/index.ts` and `src/domain/teacher-home/index.ts` — both must import from shared helper only
-- [ ] 4.2 Verify `TeacherHomeInput` contract in `src/domain/teacher-home/index.ts` unchanged: `{ progress, diagnosticResult, availableSkills, pilotSkills, nextStep }` — no new fields added
-- [ ] 4.3 Update `openspec/changes/STATUS.json` — add entry for `consolidate-math-mvp-before-unit-3` with `status: in-progress`, `branch: null`
-- [ ] 4.4 Run GGA on Linux: `pnpm run gga` or `.gga` hook — validate no new issues surfaced
-- [ ] 4.5 Final verification: `pnpm run test:run && pnpm run typecheck && pnpm run build`
+- [x] 4.1 Remove duplicated `parseSkillUnit` implementations from `src/domain/next-step/index.ts` and `src/domain/teacher-home/index.ts` — both must import from shared helper only
+- [x] 4.2 Verify `TeacherHomeInput` contract in `src/domain/teacher-home/index.ts` unchanged: `{ progress, diagnosticResult, availableSkills, pilotSkills, nextStep }` — no new fields added
+- [x] 4.3 Update `openspec/changes/STATUS.json` — add entry for `consolidate-math-mvp-before-unit-3` with `status: in-progress`, `branch: null`
+- [x] 4.4 Run GGA on Linux: `pnpm run gga` or `.gga` hook — validate no new issues surfaced
+- [x] 4.5 Final verification: `pnpm run test:run && pnpm run typecheck && pnpm run build`
