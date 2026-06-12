@@ -1,16 +1,11 @@
 import type { MasteryLevel, PracticeProgress, Trend } from "../progress/index";
 import { computeMasteryLevel } from "../progress/index";
 import type { SkillId } from "../models/skill";
+import { parseSkillUnit } from "../shared/skill-id";
 
 const LOW_ACCURACY_THRESHOLD = 0.7;
 /** Below this accuracy, an estimate counts as "weak" for the diagnostic summary. */
 const DIAGNOSTIC_WEAK_THRESHOLD = 0.7;
-
-/** Extract the unit number (1–6) from a SkillId like `mat.u2.polinomios_basico`. */
-function parseSkillUnit(skillId: SkillId): number {
-  const match = skillId.match(/^mat\.u(\d)\./);
-  return match ? parseInt(match[1], 10) : 1;
-}
 
 export type HomeNextStepKind = "diagnostic" | "practice" | "continue-unit";
 

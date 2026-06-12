@@ -707,3 +707,175 @@ export function validatePracticeBank(
 
   return diagnostics;
 }
+
+// ---------------------------------------------------------------------------
+// Per-unit validation thresholds
+// ---------------------------------------------------------------------------
+
+/** Per-unit minimum exercise count configuration. */
+export interface UnitValidationThresholds {
+  readonly minimumExercises: number;
+  readonly categoryMinimums?: Readonly<Record<string, number>>;
+}
+
+/**
+ * Per-unit minimum exercise thresholds.
+ * Keys are unit keys like "unit-1", "unit-2", etc.
+ * Units without explicit entries use the default minimum of 5.
+ */
+export const UNIT_THRESHOLDS: Readonly<Record<string, number>> = {
+  "unit-1": 40,
+  "unit-2": 20,
+  "unit-3": 20,
+};
+
+const DEFAULT_UNIT_MINIMUM = 5;
+
+/**
+ * Get the minimum exercise threshold for a given unit.
+ * Returns the configured threshold or the default minimum (5).
+ *
+ * @param unitKey - Unit identifier (e.g. "unit-1")
+ * @returns Minimum exercise count for that unit
+ */
+export function getUnitThreshold(unitKey: string): number {
+  return UNIT_THRESHOLDS[unitKey] ?? DEFAULT_UNIT_MINIMUM;
+}
+
+// ---------------------------------------------------------------------------
+// Difficulty progression validation (per-skill monotonic non-decreasing)
+// ---------------------------------------------------------------------------
+
+/** A single violation: a skill whose exercises are not monotonic by ID. */
+export interface DifficultyViolation {
+  readonly skillId: string;
+  readonly exerciseIds: readonly string[];
+}
+
+/** Result of difficulty progression validation. */
+export interface DifficultyProgressionResult {
+  readonly valid: boolean;
+  readonly violations: readonly DifficultyViolation[];
+}
+
+/**
+ * Extract the trailing numeric suffix from an exercise ID for natural ordering.
+ * Returns the integer value of the last `.digits` segment, or NaN if absent.
+ *
+ * Example: "ex.u1.a.10" → 10, "ex.u1.a.2" → 2, "ex.u1.cn-per-02" → 2
+ */
+function extractExerciseIdSuffix(id: string): number {
+  const match = /\.(\d+)$/.exec(id);
+  return match ? parseInt(match[1], 10) : NaN;
+}
+
+/**
+ * Compare two exercise IDs using natural numeric ordering for the trailing
+ * suffix. Falls back to lexicographic comparison when both IDs lack a numeric
+ * suffix or when suffixes are equal.
+ *
+ * Examples (correct order):
+ *   "ex.u1.a.2" < "ex.u1.a.10"   (numeric: 2 < 10)
+ *   "ex.u1.a.1" < "ex.u1.a.2"    (numeric: 1 < 2)
+ *   "ex.u1.cn-per-02" < "ex.u1.cn-per-10"
+ */
+function compareExerciseIds(a: string, b: string): number {
+  const suffixA = extractExerciseIdSuffix(a);
+  const suffixB = extractExerciseIdSuffix(b);
+
+  // Both have numeric suffixes — compare numerically
+  if (!isNaN(suffixA) && !isNaN(suffixB)) {
+    if (suffixA !== suffixB) return suffixA - suffixB;
+    // Same suffix — fall through to lexicographic for stable ordering
+  }
+
+  // At least one lacks a numeric suffix — fall back to lexicographic
+  return a.localeCompare(b);
+}
+
+/**
+ * Validate that each skill's exercises show a monotonically non-decreasing
+ * difficulty sequence when ordered by exercise ID.
+ *
+ * Pure function — no I/O, no side effects.
+ *
+ * @param exercises - All exercises to validate
+ * @returns Result with valid flag and any violations found
+ */
+export function validateDifficultyProgression(
+  exercises: readonly Exercise[]
+): DifficultyProgressionResult {
+  const bySkill = new Map<string, Exercise[]>();
+  for (const ex of exercises) {
+    const list = bySkill.get(ex.skillId) ?? [];
+    list.push(ex);
+    bySkill.set(ex.skillId, list);
+  }
+
+  const violations: DifficultyViolation[] = [];
+
+  for (const [skillId, skillExercises] of bySkill) {
+    const sorted = [...skillExercises].sort((a, b) => compareExerciseIds(a.id, b.id));
+    for (let i = 1; i < sorted.length; i++) {
+      if (sorted[i].difficulty < sorted[i - 1].difficulty) {
+        violations.push({
+          skillId,
+          exerciseIds: sorted.map((e) => e.id),
+        });
+        break; // one violation per skill is enough
+      }
+    }
+  }
+
+  return { valid: violations.length === 0, violations };
+}
+
+// ---------------------------------------------------------------------------
+// Traceability audit — flag exercises with theory/example links but no trace
+// ---------------------------------------------------------------------------
+
+/** Warning for an exercise with incomplete traceability metadata. */
+export interface AuditWarning {
+  readonly exerciseId: string;
+  readonly missingFields: readonly string[];
+}
+
+/**
+ * Audit exercises for metadata traceability.
+ *
+ * Flags exercises that reference `relatedTheoryIds` or `relatedExampleIds`
+ * but lack `canonicalTrace` metadata. Exercises without any theory/example
+ * links pass without warning.
+ *
+ * Pure function — no I/O, no side effects.
+ *
+ * @param exercises - All exercises to audit
+ * @returns Array of warnings for exercises with incomplete traceability
+ */
+export function auditTraceability(
+  exercises: readonly Exercise[]
+): readonly AuditWarning[] {
+  const warnings: AuditWarning[] = [];
+
+  for (const ex of exercises) {
+    const raw = ex as unknown as Record<string, unknown>;
+    const hasTheoryLinks =
+      Array.isArray(raw.relatedTheoryIds) && raw.relatedTheoryIds.length > 0;
+    const hasExampleLinks =
+      Array.isArray(raw.relatedExampleIds) && raw.relatedExampleIds.length > 0;
+
+    if (!hasTheoryLinks && !hasExampleLinks) continue;
+
+    const hasCanonicalTrace =
+      Array.isArray(raw.canonicalTrace) && raw.canonicalTrace.length > 0;
+
+    if (!hasCanonicalTrace) {
+      warnings.push({
+        exerciseId: ex.id,
+        missingFields: ["canonicalTrace"],
+      });
+    }
+  }
+
+  return warnings;
+}

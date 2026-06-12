@@ -10,6 +10,7 @@ import { computeMasteryLevel } from "../progress/index";
 import type { HomeNextStep, ReadySkill } from "../next-step/index";
 import type { PilotSkill } from "../catalog/pilot-skills";
 import type { DiagnosticResult } from "../diagnostic/index";
+import { parseSkillUnit } from "../shared/skill-id";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -404,12 +405,3 @@ function buildTodayPlan(
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-
-/**
- * Extract the unit number (1–6) from a SkillId like `mat.u2.polinomios_basico`.
- * Unknown patterns default to unit 1.
- */
-function parseSkillUnit(skillId: string): number {
-  const match = skillId.match(/^mat\.u(\d+)\./);
-  return match ? parseInt(match[1], 10) : 1;
-}
