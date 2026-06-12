@@ -77,4 +77,11 @@ describe("TeacherDigitalHero", () => {
     expect(comp).not.toMatch(/useState/);
     expect(comp).not.toMatch(/useEffect/);
   });
+
+  test("hero.title in domain must be 'Tu profesor digital' (not 'Bienvenido/a al panel docente' or 'Tu panel de decisiones')", () => {
+    const domainSrc = source("src/domain/teacher-home/index.ts");
+    expect(domainSrc).toContain('"Tu profesor digital"');
+    expect(domainSrc).not.toContain("Bienvenido/a al panel docente");
+    expect(domainSrc).not.toContain("Tu panel de decisiones");
+  });
 });

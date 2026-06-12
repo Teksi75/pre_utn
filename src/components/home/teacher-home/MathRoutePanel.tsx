@@ -27,7 +27,7 @@ export function MathRoutePanel({ routeUnits }: MathRoutePanelProps) {
         id="tmr-route-title"
         className="text-sm font-semibold uppercase tracking-wide text-[var(--color-brand-700)]"
       >
-        Tu camino de aprendizaje
+        Ruta Matemática
       </h3>
 
       <ol className="mt-4 space-y-3" aria-label="Unidades del camino">

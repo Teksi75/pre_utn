@@ -85,4 +85,14 @@ describe("StudentSituationPanel", () => {
       comp.includes("&&");
     expect(hasNullCheck).toBe(true);
   });
+
+  test("heading text is 'Tu situación'", () => {
+    const comp = source(componentPath);
+    expect(comp).toContain("Tu situación");
+  });
+
+  test("heading does not contain old forbidden copy", () => {
+    const comp = source(componentPath);
+    expect(comp).not.toContain("Situación del alumno");
+  });
 });

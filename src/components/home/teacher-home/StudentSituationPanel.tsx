@@ -30,7 +30,7 @@ export function StudentSituationPanel({
         id="tss-situation-title"
         className="text-sm font-semibold uppercase tracking-wide text-[var(--color-brand-700)]"
       >
-        Situación del alumno
+        Tu situación
       </h3>
 
       <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">

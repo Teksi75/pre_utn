@@ -81,4 +81,14 @@ describe("MathRoutePanel", () => {
     const comp = source(componentPath);
     expect(comp).toMatch(/export function MathRoutePanel/);
   });
+
+  test("heading text is 'Ruta Matemática'", () => {
+    const comp = source(componentPath);
+    expect(comp).toContain("Ruta Matemática");
+  });
+
+  test("heading does not contain old forbidden copy", () => {
+    const comp = source(componentPath);
+    expect(comp).not.toContain("Tu camino de aprendizaje");
+  });
 });

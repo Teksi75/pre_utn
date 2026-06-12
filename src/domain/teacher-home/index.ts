@@ -147,7 +147,7 @@ function buildMission(
 ): Mission {
   if (progress.attempts.length === 0) {
     return {
-      title: "Bienvenido/a al panel docente",
+      title: "Tu profesor digital",
       subtitle:
         "Realizá un diagnóstico inicial para detectar qué áreas necesitan más atención y recibir un plan de práctica personalizado.",
       ctaLabel: "Hacer diagnóstico inicial",
@@ -156,9 +156,9 @@ function buildMission(
   }
 
   return {
-    title: "Tu panel de decisiones",
+    title: "Tu profesor digital",
     subtitle:
-      "Revisá el progreso de tus estudiantes, las áreas con dificultad y las próximas acciones recomendadas.",
+      "Revisá tu progreso, las áreas con dificultad y las próximas acciones recomendadas.",
     ctaLabel: nextStep.title,
     ctaHref: nextStep.href,
   };

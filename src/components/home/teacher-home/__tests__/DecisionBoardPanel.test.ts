@@ -82,4 +82,10 @@ describe("DecisionBoardPanel", () => {
     const comp = source(componentPath);
     expect(comp).toMatch(/export function DecisionBoardPanel/);
   });
+
+  test("heading text must be 'Plan de hoy' (not 'Decisiones recomendadas')", () => {
+    const comp = source(componentPath);
+    expect(comp).toContain("Plan de hoy");
+    expect(comp).not.toContain("Decisiones recomendadas");
+  });
 });

@@ -30,7 +30,7 @@ export function DecisionBoardPanel({ decisions }: DecisionBoardPanelProps) {
         id="tdb-decisions-title"
         className="text-sm font-semibold uppercase tracking-wide text-[var(--color-brand-700)]"
       >
-        Decisiones recomendadas
+        Plan de hoy
       </h3>
 
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
