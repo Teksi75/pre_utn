@@ -2,7 +2,6 @@ import type { ExerciseType } from "@/domain/models/exercise";
 
 const TEXT_INPUT_TYPES = new Set<ExerciseType>([
   "numerical",
-  "symbolic",
   "fill-blank",
 ]);
 

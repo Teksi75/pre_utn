@@ -27,7 +27,7 @@ describe("exercise answer state", () => {
   });
 
   it("keeps text inputs trimmed", () => {
-    expect(getSubmittedExerciseAnswer("symbolic", "  x > 3  ", null)).toBe(
+    expect(getSubmittedExerciseAnswer("fill-blank", "  x > 3  ", null)).toBe(
       "x > 3"
     );
   });

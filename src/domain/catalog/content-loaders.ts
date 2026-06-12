@@ -17,6 +17,7 @@ import type { WorkedExample, SolutionStep } from "../models/worked-example";
 import type { FeedbackMapping } from "../feedback/index";
 import type { Exercise, ExerciseId, ExerciseOption, ExerciseType, Difficulty } from "../models/exercise";
 import type { SkillId } from "../models/skill";
+import { parseSkillUnit } from "../shared/skill-id";
 import type { IntervalModel, IntervalEndpoint } from "../intervals/index";
 import type { IntervalRepresentation, IntervalBound, EndpointInclusion } from "../intervals/representation";
 
@@ -31,6 +32,8 @@ import feedbackUnit1 from "../../../content/matematica/feedback/unit-1.json";
 import feedbackUnit2 from "../../../content/matematica/feedback/unit-2.json";
 import feedbackUnit1ConjuntosNumericos from "../../../content/matematica/feedback/unit-1-conjuntos-numericos.json";
 import exercisesJson from "../../../content/matematica/exercises.json";
+import unit1Exercises from "../../../content/matematica/exercises/unit-1.json";
+import unit2Exercises from "../../../content/matematica/exercises/unit-2.json";
 import conjuntosNumericosExercises from "../../../content/matematica/exercises/conjuntos-numericos.json";
 
 // ---------------------------------------------------------------------------
@@ -47,7 +50,7 @@ function failParse(field: string, id: string, detail: string): never {
  * Record<string, unknown>. Replaces every unsafe `x as Record<string, unknown>`
  * on unvalidated array elements.
  */
-function parseRecord(value: unknown, context: string): Record<string, unknown> {
+export function parseRecord(value: unknown, context: string): Record<string, unknown> {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     throw new Error(
       `Parse error at ${context}: expected a non-null, non-array object, got ${typeof value}${Array.isArray(value) ? " (array)" : ""}`
@@ -93,21 +96,12 @@ function parseExerciseType(raw: Record<string, unknown>, field: string, id: stri
     value !== "multiple-choice" &&
     value !== "true-false" &&
     value !== "numerical" &&
-    value !== "symbolic" &&
     value !== "fill-blank" &&
     value !== "matching" &&
     value !== "ordering" &&
-    value !== "free-response" &&
     value !== "graphical"
   ) {
     failParse(field, id, `unsupported exercise type: "${value}"`);
-  }
-  if (value === "free-response") {
-    failParse(
-      field,
-      id,
-      "free-response is not allowed for catalog exercises; use structured answer modes"
-    );
   }
   return value;
 }
@@ -467,10 +461,23 @@ export function loadFeedbackContent(unitKey: string): readonly FeedbackMapping[]
  * @returns Array of ExerciseLinkage objects
  */
 export function pilotExercisesWithLinks(unitKey: string): readonly ExerciseLinkage[] {
-  if (!Array.isArray(exercisesJson)) return [];
   const unitNum = Number(unitKey.replace("unit-", ""));
 
-  return exercisesJson.map((entry, index) => parseRecord(entry, `exercises[${index}]`))
+  // Compose from unit file + main exercises.json
+  const sources: unknown[] = [];
+  const unitSource = UNIT_EXERCISE_FILES[unitNum];
+  if (Array.isArray(unitSource)) sources.push(unitSource);
+  if (Array.isArray(exercisesJson)) sources.push(exercisesJson);
+
+  const allEntries: Record<string, unknown>[] = [];
+  for (const source of sources) {
+    if (!Array.isArray(source)) continue;
+    for (let i = 0; i < source.length; i++) {
+      allEntries.push(parseRecord(source[i], `exercises[${i}]`));
+    }
+  }
+
+  return allEntries
     .filter((ex) => {
       const id = typeof ex.id === "string" ? ex.id : "";
       const match = /^ex\.u(\d+)\./.exec(id);
@@ -531,7 +538,7 @@ export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
   // downstream consumers accessing them via narrow casts keep working.
   const KNOWN_FIELDS = new Set([
     "id", "skillId", "type", "difficulty", "prompt", "expectedAnswer",
-    "commonErrorTags", "pedagogicalNote", "category", "tags", "options",
+    "commonErrorTags", "pedagogicalNote", "category", "tags", "options", "unit",
   ]);
   const extra: Record<string, unknown> = {};
   for (const key of Object.keys(raw)) {
@@ -540,12 +547,13 @@ export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
     }
   }
 
-  const base: Exercise & Record<string, unknown> = {
+  const base = {
     ...extra,
     id, skillId, type, difficulty, prompt, expectedAnswer,
     commonErrorTags, pedagogicalNote, category, tags,
+    unit: parseSkillUnit(skillId),
   };
-  return options ? { ...base, options } : base;
+  return (options ? { ...base, options } : base) as Exercise;
 }
 
 /** Per-skill exercise file registry (raw JSON, validated lazily). */
@@ -553,25 +561,66 @@ const SKILL_EXERCISE_FILES: Readonly<Record<string, unknown>> = {
   "mat.u1.conjuntos_numericos": conjuntosNumericosExercises as unknown,
 };
 
+/** Unit exercise file registry — maps unit number to raw JSON array. */
+const UNIT_EXERCISE_FILES: Readonly<Record<number, unknown>> = {
+  1: unit1Exercises as unknown,
+  2: unit2Exercises as unknown,
+};
+
 /**
- * Load all exercises for a given skill, merging per-skill files with the main catalog.
+ * Load all exercises for a given skill, composing from unit files,
+ * the main catalog, and per-skill files. Deterministic ordering: unit file
+ * first, then main catalog, then per-skill file.
  *
  * @param skillId - The skill ID to load exercises for
  * @returns Array of Exercise objects with defaults applied
  */
 export function loadExercisesForSkill(skillId: string): readonly Exercise[] {
-  const mainRaw = Array.isArray(exercisesJson)
-    ? exercisesJson.map((entry, index) => parseRecord(entry, `exercises[${index}]`))
-    : [];
-  const skillSource = SKILL_EXERCISE_FILES[skillId];
-  const skillRaw = Array.isArray(skillSource)
-    ? skillSource.map((entry, index) => parseRecord(entry, `${skillId}.exercises[${index}]`))
-    : [];
+  const unitNum = parseSkillUnit(skillId);
+  const seenIds = new Set<string>();
+  const allRaw: Record<string, unknown>[] = [];
 
-  const mainFiltered = mainRaw.filter(
-    (ex) => typeof ex.skillId === "string" && ex.skillId === skillId
-  );
-  const allRaw = [...mainFiltered, ...skillRaw];
+  // 1. Unit file (if exists for this unit)
+  const unitSource = UNIT_EXERCISE_FILES[unitNum];
+  if (Array.isArray(unitSource)) {
+    for (let i = 0; i < unitSource.length; i++) {
+      const entry = parseRecord(unitSource[i], `unit-${unitNum}.exercises[${i}]`);
+      if (typeof entry.skillId === "string" && entry.skillId === skillId) {
+        const id = typeof entry.id === "string" ? entry.id : "";
+        if (!seenIds.has(id)) {
+          seenIds.add(id);
+          allRaw.push(entry);
+        }
+      }
+    }
+  }
+
+  // 2. Main exercises.json (now contains u3-u6 only)
+  if (Array.isArray(exercisesJson)) {
+    for (let i = 0; i < exercisesJson.length; i++) {
+      const entry = parseRecord(exercisesJson[i], `exercises[${i}]`);
+      if (typeof entry.skillId === "string" && entry.skillId === skillId) {
+        const id = typeof entry.id === "string" ? entry.id : "";
+        if (!seenIds.has(id)) {
+          seenIds.add(id);
+          allRaw.push(entry);
+        }
+      }
+    }
+  }
+
+  // 3. Per-skill file (e.g. conjuntos-numericos.json)
+  const skillSource = SKILL_EXERCISE_FILES[skillId];
+  if (Array.isArray(skillSource)) {
+    for (let i = 0; i < skillSource.length; i++) {
+      const entry = parseRecord(skillSource[i], `${skillId}.exercises[${i}]`);
+      const id = typeof entry.id === "string" ? entry.id : "";
+      if (!seenIds.has(id)) {
+        seenIds.add(id);
+        allRaw.push(entry);
+      }
+    }
+  }
 
   return allRaw.map(applyExerciseDefaults);
 }
@@ -722,11 +771,11 @@ export interface UnitValidationThresholds {
  * Per-unit minimum exercise thresholds.
  * Keys are unit keys like "unit-1", "unit-2", etc.
  * Units without explicit entries use the default minimum of 5.
+ * Thresholds must reflect actual catalog content — not aspirational targets.
  */
 export const UNIT_THRESHOLDS: Readonly<Record<string, number>> = {
   "unit-1": 40,
   "unit-2": 20,
-  "unit-3": 20,
 };
 
 const DEFAULT_UNIT_MINIMUM = 5;

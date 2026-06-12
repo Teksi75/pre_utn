@@ -1,24 +1,41 @@
 /**
  * Safety-net test for catalog split equivalence.
  *
- * Captures the current loadCatalog output as a baseline so that future
+ * Captures the pre-split loadCatalog output as a baseline so that
  * content-split work (Phase 3) can prove no regression: same count, same IDs,
- * same ordering.
+ * same ordering. Exact baseline assertions catch regressions that weak
+ * thresholds (>= 30) would miss.
  *
- * RED phase — test references loadCatalog which already exists.
+ * Baseline values (pre-PR3 / exercises.json with 113 exercises):
+ *   loadCatalog().length = 152
+ *   queryByUnit(1).length = 101
+ *   queryBySkill("mat.u1.conjuntos_numericos").length = 44
  */
 
 import { describe, test, expect } from "vitest";
 import { loadCatalog, queryBySkill, queryByUnit } from "../catalog/index";
 
+/** Pre-PR3 baseline counts — must hold after any content split. */
+const BASELINE_TOTAL = 152;
+const BASELINE_UNIT_1 = 101;
+const BASELINE_CONJUNTOS_NUMERICOS = 44;
+
 describe("catalog split equivalence — baseline snapshot", () => {
-  test("loadCatalog returns a stable baseline count", () => {
+  test("loadCatalog returns exactly the baseline count (no leaked per-skill exercises)", () => {
     const catalog = loadCatalog();
-    // Capture the current count as a baseline.
-    // Future split must produce exactly this many exercises.
-    expect(catalog.length).toBeGreaterThanOrEqual(30);
-    const baseline = catalog.length;
-    expect(baseline).toBeGreaterThan(0);
+    // Exact count catches regressions where per-skill exercises leak
+    // from unit files into the composed catalog (e.g. 152 → 157).
+    expect(catalog.length).toBe(BASELINE_TOTAL);
+  });
+
+  test("queryByUnit(1) returns exactly the baseline unit-1 count", () => {
+    const results = queryByUnit(1);
+    expect(results.length).toBe(BASELINE_UNIT_1);
+  });
+
+  test('queryBySkill("mat.u1.conjuntos_numericos") returns exactly the baseline count', () => {
+    const results = queryBySkill("mat.u1.conjuntos_numericos");
+    expect(results.length).toBe(BASELINE_CONJUNTOS_NUMERICOS);
   });
 
   test("loadCatalog returns exercises with unique IDs", () => {

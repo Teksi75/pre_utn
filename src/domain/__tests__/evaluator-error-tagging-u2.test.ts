@@ -139,31 +139,18 @@ describe("U2 error tagging patterns", () => {
     });
   });
 
-  // ─── u2_termino_faltante ─────────────────────────────────────────────
-  describe("u2_termino_faltante", () => {
-    test("detects missing zero-coefficient terms in symbolic answer", () => {
+  // ─── u2_termino_faltante (symbolic removed — detector disabled) ──────
+  describe("u2_termino_faltante (symbolic type removed)", () => {
+    test("termino_faltante detector no longer fires (symbolic removed)", () => {
       const exercise = ex({
-        type: "symbolic",
+        type: "fill-blank",
         expectedAnswer: "[1, 0, 0, -1]",
         skillId: "mat.u2.polinomios_basico",
         commonErrorTags: ["u2_termino_faltante"],
       });
 
-      // Student wrote [1, -1] — dropped the zero coefficients for x² and x
+      // Symbolic type removed — detector always returns false
       const result = tagError(exercise, "[1, -1]");
-      expect(result).toBe("u2_termino_faltante");
-    });
-
-    test("returns undefined when answer has same number of coefficients but wrong values", () => {
-      const exercise = ex({
-        type: "symbolic",
-        expectedAnswer: "[1, 0, 0, -1]",
-        skillId: "mat.u2.polinomios_basico",
-        commonErrorTags: ["u2_termino_faltante"],
-      });
-
-      // Student has 4 coefficients but wrong values — different kind of error
-      const result = tagError(exercise, "[1, 2, 3, -1]");
       expect(result).toBeUndefined();
     });
   });

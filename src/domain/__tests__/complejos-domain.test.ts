@@ -43,9 +43,7 @@ function emptyProgress(): PracticeProgress {
 }
 
 const FORBIDDEN_TYPES: ReadonlySet<ExerciseType> = new Set<ExerciseType>([
-  "symbolic",
   "fill-blank",
-  "free-response",
   "graphical",
   "matching",
   "ordering",
@@ -213,15 +211,6 @@ describe("mat.u1.complejos — exercises", () => {
         FORBIDDEN_TYPES.has(exercise.type),
         `exercise ${exercise.id} uses forbidden type ${exercise.type}`
       ).toBe(false);
-    }
-  });
-
-  test("no exercise uses free-response type (prohibited for complex expressions)", () => {
-    for (const exercise of exercises) {
-      expect(
-        exercise.type,
-        `exercise ${exercise.id} uses free-response — prohibited for complex numbers`
-      ).not.toBe("free-response");
     }
   });
 

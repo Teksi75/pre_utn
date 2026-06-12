@@ -9,11 +9,18 @@
 
 import { describe, test, expect } from "vitest";
 import exercisesJson from "../../../content/matematica/exercises.json";
+import unit1Exercises from "../../../content/matematica/exercises/unit-1.json";
+import unit2Exercises from "../../../content/matematica/exercises/unit-2.json";
 import type { Exercise, ExerciseType } from "../models/exercise";
 import { getExerciseOptionValue } from "../models/exercise";
 import { isFiniteNumericAnswer } from "../utils/numeric";
 
-const exercises = exercisesJson as unknown as readonly Exercise[];
+// Compose all exercise sources (mirrors catalog/index.ts composition)
+const exercises = [
+  ...(unit1Exercises as unknown as readonly Exercise[]),
+  ...(unit2Exercises as unknown as readonly Exercise[]),
+  ...(exercisesJson as unknown as readonly Exercise[]),
+];
 
 const MIGRATED_SYMBOLIC_IDS: readonly string[] = [
   "ex.u2.operaciones_polinomios.1",
@@ -34,7 +41,8 @@ const MIGRATED_SYMBOLIC_IDS: readonly string[] = [
 ];
 
 function getLiveSymbolicIds(catalog: readonly Exercise[]): string[] {
-  return catalog.filter((exercise) => exercise.type === "symbolic").map((exercise) => exercise.id);
+  // Symbolic type removed — this function always returns empty.
+  return catalog.filter((exercise) => exercise.type === ("symbolic" as string)).map((exercise) => exercise.id);
 }
 
 /**

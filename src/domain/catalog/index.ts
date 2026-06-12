@@ -1,6 +1,10 @@
 /**
  * Exercise catalog — loads and queries the static exercise catalog.
  * No external dependencies. Pure TypeScript.
+ *
+ * Composition and default application are LAZY — no parsing or throws
+ * at module initialization time. Raw JSON is stored as `unknown` and
+ * only parsed/composed on first call to loadCatalog().
  */
 
 import type { Exercise } from "../models/exercise";
@@ -9,33 +13,84 @@ import type { SkillDependency } from "../models/skill-catalog";
 import { KNOWN_SKILL_IDS } from "../models/skill-catalog";
 import { SKILL_DEPENDENCIES } from "../models/skill-catalog";
 import { loadTaxonomy } from "../error-taxonomy/index";
+import { parseSkillUnit } from "../shared/skill-id";
+import { getUnitThreshold, applyExerciseDefaults, parseRecord } from "./content-loaders";
 
-// Import the static JSON catalog
-import exercisesJson from "../../../content/matematica/exercises.json";
-import conjuntosNumericosExercises from "../../../content/matematica/exercises/conjuntos-numericos.json";
-import { applyExerciseDefaults } from "./content-loaders";
+// ---------------------------------------------------------------------------
+// Raw JSON imports — stored as unknown, no parsing at module init.
+// Static imports are safe (bundler loads data); the composition that
+// follows is deferred to getComposedExercises().
+// ---------------------------------------------------------------------------
+import _exercisesJson from "../../../content/matematica/exercises.json";
+import _unit1Exercises from "../../../content/matematica/exercises/unit-1.json";
+import _unit2Exercises from "../../../content/matematica/exercises/unit-2.json";
+import _conjuntosNumericosExercises from "../../../content/matematica/exercises/conjuntos-numericos.json";
 
 /** Skill IDs that have dedicated per-skill exercise files. */
 const PER_SKILL_SKILL_IDS = new Set(["mat.u1.conjuntos_numericos"]);
 
-// Cast and compose: take the main catalog, filter out exercises owned by
-// per-skill files, then merge in the per-skill file entries with defaults applied.
-const mainExercises = exercisesJson as unknown as readonly Record<string, unknown>[];
-const MAIN_FILTERED = mainExercises.filter(
-  (raw) => !PER_SKILL_SKILL_IDS.has(raw.skillId as string)
-);
-const PER_SKILL_EXERCISES: Record<string, readonly Record<string, unknown>[]> = {
-  "mat.u1.conjuntos_numericos": conjuntosNumericosExercises as unknown as readonly Record<string, unknown>[],
-};
+// ---------------------------------------------------------------------------
+// Lazy composition cache — populated on first call to loadCatalog()
+// ---------------------------------------------------------------------------
+let _composedExercises: readonly Exercise[] | null = null;
 
-const COMPOSED_EXERCISES: Record<string, unknown>[] = [...MAIN_FILTERED];
-for (const [skillId, exercises] of Object.entries(PER_SKILL_EXERCISES)) {
-  for (const raw of exercises) {
-    COMPOSED_EXERCISES.push({ ...raw, skillId } as Record<string, unknown>);
+/**
+ * Compose exercises from all sources (unit files + main catalog + per-skill
+ * files) with validated parsing. Result is cached after first call.
+ *
+ * Uses parseRecord() for safe validation at the JSON boundary — no unchecked
+ * `as Record<string, unknown>` casts. applyExerciseDefaults is called only
+ * here, never at module init.
+ */
+function getComposedExercises(): readonly Exercise[] {
+  if (_composedExercises !== null) return _composedExercises;
+
+  const seenIds = new Set<string>();
+  const composed: Record<string, unknown>[] = [];
+
+  function addExercises(source: unknown, label: string, excludeSkillIds?: Set<string>): void {
+    if (!Array.isArray(source)) return;
+    for (let i = 0; i < source.length; i++) {
+      const raw = parseRecord(source[i], `${label}[${i}]`);
+      // Skip exercises whose skillId has a dedicated per-skill file
+      if (excludeSkillIds && typeof raw.skillId === "string" && excludeSkillIds.has(raw.skillId)) continue;
+      const id = typeof raw.id === "string" ? raw.id : "";
+      if (!seenIds.has(id)) {
+        seenIds.add(id);
+        composed.push(raw);
+      }
+    }
   }
-}
 
-const EXERCISES: readonly Exercise[] = COMPOSED_EXERCISES.map(applyExerciseDefaults) as unknown as readonly Exercise[];
+  // Unit files first (highest priority for u1/u2 exercises).
+  // Exclude exercises whose skillId has a dedicated per-skill file.
+  addExercises(_unit1Exercises, "unit-1", PER_SKILL_SKILL_IDS);
+  addExercises(_unit2Exercises, "unit-2", PER_SKILL_SKILL_IDS);
+
+  // Main catalog (u3-u6, plus any u1/u2 not in unit files).
+  // Exclude exercises whose skillId has a dedicated per-skill file.
+  addExercises(_exercisesJson, "main", PER_SKILL_SKILL_IDS);
+
+  // Per-skill files (e.g. conjuntos-numericos.json)
+  const perSkillSources: Record<string, unknown> = {
+    "mat.u1.conjuntos_numericos": _conjuntosNumericosExercises as unknown,
+  };
+  for (const [skillId, exercises] of Object.entries(perSkillSources)) {
+    if (!Array.isArray(exercises)) continue;
+    for (let i = 0; i < exercises.length; i++) {
+      const raw = parseRecord(exercises[i], `${skillId}[${i}]`);
+      const id = typeof raw.id === "string" ? raw.id : "";
+      const entry = { ...raw, skillId };
+      if (!seenIds.has(id)) {
+        seenIds.add(id);
+        composed.push(entry);
+      }
+    }
+  }
+
+  _composedExercises = composed.map(applyExerciseDefaults) as readonly Exercise[];
+  return _composedExercises;
+}
 
 /**
  * Detect prerequisite cycles in the skill dependency graph.
@@ -109,9 +164,12 @@ export function loadCatalog(): Exercise[] {
   const taxonomy = loadTaxonomy();
   const knownErrorTagIds = new Set(taxonomy.map((t) => t.id));
 
+  // Get composed exercises (lazy — parsed on first call)
+  const exercises = getComposedExercises();
+
   // Validate each exercise
   const validated: Exercise[] = [];
-  for (const raw of EXERCISES) {
+  for (const raw of exercises) {
     const result = validateExercise(raw, KNOWN_SKILL_IDS, knownErrorTagIds);
     if (!result.ok) {
       throw new Error(
@@ -121,15 +179,15 @@ export function loadCatalog(): Exercise[] {
     validated.push(result.value);
   }
 
-  // Validate coverage per unit
+  // Validate coverage per unit using configured thresholds.
+  // getUnitThreshold returns the configured minimum for units in
+  // UNIT_THRESHOLDS, or the default minimum (5) for others.
   for (let unit = 1; unit <= 6; unit++) {
-    const unitExercises = validated.filter((e) => {
-      const match = e.skillId.match(/^mat\.u(\d+)\./);
-      return match && Number(match[1]) === unit;
-    });
-    if (unitExercises.length < 5) {
+    const unitExercises = validated.filter((e) => parseSkillUnit(e.skillId) === unit);
+    const threshold = getUnitThreshold(`unit-${unit}`);
+    if (unitExercises.length < threshold) {
       throw new Error(
-        `Unit ${unit} has only ${unitExercises.length} exercises; requires at least 5`
+        `Unit ${unit} has only ${unitExercises.length} exercises; requires at least ${threshold}`
       );
     }
   }
@@ -145,10 +203,7 @@ export function loadCatalog(): Exercise[] {
  */
 export function queryByUnit(unit: number): Exercise[] {
   const catalog = loadCatalog();
-  const filtered = catalog.filter((e) => {
-    const match = e.skillId.match(/^mat\.u(\d+)\./);
-    return match && Number(match[1]) === unit;
-  });
+  const filtered = catalog.filter((e) => parseSkillUnit(e.skillId) === unit);
   return sortExercises(filtered);
 }
 

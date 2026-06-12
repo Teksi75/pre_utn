@@ -15,6 +15,7 @@ function makeExercise(overrides: PartialWithSkill = {}): Exercise {
     expectedAnswer: "42",
     commonErrorTags: [],
     pedagogicalNote: "",
+    unit: 1,
     ...overrides,
   };
 }
@@ -49,7 +50,7 @@ describe("createPreviousExerciseSnapshot", () => {
   });
 
   it("preserves the exact submitted answer string (including whitespace)", () => {
-    const exercise = makeExercise({ type: "symbolic" });
+    const exercise = makeExercise({ type: "fill-blank" });
     const evaluation = makeEvaluation();
 
     const snapshot = createPreviousExerciseSnapshot(

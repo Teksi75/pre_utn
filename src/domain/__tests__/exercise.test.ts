@@ -23,6 +23,7 @@ describe("Exercise validation", () => {
     expectedAnswer: "13",
     commonErrorTags: ["u1_order_of_operations"],
     pedagogicalNote: "Evalúa orden de operaciones",
+    unit: 1,
   };
 
   describe("valid exercises are accepted", () => {
@@ -36,16 +37,14 @@ describe("Exercise validation", () => {
     });
   });
 
-  describe("all 9 exercise types are accepted", () => {
+  describe("all 7 exercise types are accepted", () => {
     const types: ExerciseType[] = [
       "multiple-choice",
       "true-false",
       "numerical",
-      "symbolic",
       "fill-blank",
       "matching",
       "ordering",
-      "free-response",
       "graphical",
     ];
 

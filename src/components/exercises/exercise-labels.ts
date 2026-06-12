@@ -4,11 +4,9 @@ const EXERCISE_TYPE_LABELS: Record<ExerciseType, string> = {
   "multiple-choice": "Opción múltiple",
   "true-false": "Verdadero / Falso",
   numerical: "Respuesta numérica",
-  symbolic: "Respuesta algebraica",
   "fill-blank": "Completar respuesta",
   matching: "Relacionar conceptos",
   ordering: "Ordenar pasos",
-  "free-response": "Respuesta desarrollada",
   graphical: "Respuesta gráfica",
 };
 

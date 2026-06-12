@@ -100,6 +100,7 @@ describe("Exercise with ExerciseOption objects", () => {
       commonErrorTags: ["u1_error_intervalo"],
       pedagogicalNote: "Nota",
       options: ["[−2, 3]", "(−2, 3)", "[−2, 3)", "(−2, 3]"],
+      unit: 1,
     };
     const knownSkills = new Set(["mat.u1.intervalos"] as const);
     const knownTags = new Set(["u1_error_intervalo"]);
@@ -123,6 +124,7 @@ describe("Exercise with ExerciseOption objects", () => {
         { value: "[−2, 3)", label: "[−2, 3)" },
         { value: "(−2, 3]", label: "(−2, 3]" },
       ],
+      unit: 1,
     };
     const knownSkills = new Set(["mat.u1.intervalos"] as const);
     const knownTags = new Set(["u1_error_intervalo"]);
@@ -144,6 +146,7 @@ describe("Exercise with ExerciseOption objects", () => {
         { value: "(−2, 3)", label: "(−2, 3)" },
         { value: "[−2, 3)", label: "[−2, 3)" },
       ],
+      unit: 1,
     };
     const knownSkills = new Set(["mat.u1.intervalos"] as const);
     const knownTags = new Set(["u1_error_intervalo"]);

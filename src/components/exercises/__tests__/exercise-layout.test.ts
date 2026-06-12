@@ -27,7 +27,6 @@ describe("exercise-layout", () => {
 
     it("returns stacked layout for text input types", () => {
       expect(optionsContainerClassName("numerical")).not.toContain("grid");
-      expect(optionsContainerClassName("symbolic")).not.toContain("grid");
       expect(optionsContainerClassName("fill-blank")).not.toContain("grid");
     });
   });

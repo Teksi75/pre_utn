@@ -23,6 +23,7 @@ describe("Exercise options field", () => {
     expectedAnswer: "(3, ∞)",
     commonErrorTags: ["u1_extremo_inclusion"],
     pedagogicalNote: "Test",
+    unit: 1,
   };
 
   describe("multiple-choice exercises without options are rejected", () => {

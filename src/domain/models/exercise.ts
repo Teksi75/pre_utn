@@ -29,16 +29,14 @@ export function getExerciseOptionValue(option: ExerciseOption): string {
   return typeof option === "string" ? option : option.value;
 }
 
-/** The 9 supported exercise types. */
+/** The 7 supported exercise types. free-response and symbolic are prohibited by AGENTS.md (no free-text for math). */
 export type ExerciseType =
   | "multiple-choice"
   | "true-false"
   | "numerical"
-  | "symbolic"
   | "fill-blank"
   | "matching"
   | "ordering"
-  | "free-response"
   | "graphical";
 
 /** Difficulty level: 1 (easiest) to 5 (hardest). */
@@ -54,6 +52,8 @@ export interface Exercise {
   readonly expectedAnswer: string;
   readonly commonErrorTags: readonly string[];
   readonly pedagogicalNote: string;
+  /** Unit number (1–6) derived from skillId during defaulting. */
+  readonly unit: number;
   /** Selectable choices for multiple-choice exercises. Required when type is "multiple-choice". */
   readonly options?: readonly ExerciseOption[];
   /** Practice category for bank organization (e.g. "clasificacion", "pertenencia"). */
@@ -74,11 +74,9 @@ const SUPPORTED_TYPES: ReadonlySet<string> = new Set<ExerciseType>([
   "multiple-choice",
   "true-false",
   "numerical",
-  "symbolic",
   "fill-blank",
   "matching",
   "ordering",
-  "free-response",
   "graphical",
 ]);
 

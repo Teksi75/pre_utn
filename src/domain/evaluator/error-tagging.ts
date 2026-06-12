@@ -151,10 +151,14 @@ function isOrderOfOpsError(exercise: Exercise, userAnswer: string): boolean {
 /**
  * Detect an interval endpoint-inclusion pattern: the student uses the wrong
  * bracket type (parenthesis vs square bracket) for endpoint inclusion.
- * Only applies to symbolic exercises with interval notation.
+ * Only applies to exercises with interval notation (currently unused — symbolic type removed).
  */
 function isIntervalEndpointError(exercise: Exercise, userAnswer: string): boolean {
-  if (exercise.type !== "symbolic") return false;
+  // Symbolic type was removed; this detector is retained for future use
+  // but currently never matches any exercise type.
+  void exercise;
+  void userAnswer;
+  return false;
 
   const expected = exercise.expectedAnswer.trim();
   const student = userAnswer.trim();
@@ -389,11 +393,15 @@ function isU2DegreeError(exercise: Exercise, userAnswer: string): boolean {
 
 /**
  * Detect missing zero-coefficient terms: student omitted coefficient
- * positions that should be zero. Applies to symbolic exercises where
- * the expected answer is a coefficient array.
+ * positions that should be zero. Applies to exercises where the expected
+ * answer is a coefficient array (currently unused — symbolic type removed).
  */
 function isU2MissingTermError(exercise: Exercise, userAnswer: string): boolean {
-  if (exercise.type !== "symbolic") return false;
+  // Symbolic type was removed; this detector is retained for future use
+  // but currently never matches any exercise type.
+  void exercise;
+  void userAnswer;
+  return false;
 
   // Both expected and student look like coefficient arrays
   const arrayPattern = /^\[[\d,\s.\-]+\]$/;
@@ -457,8 +465,7 @@ function isU2IncompleteFactorError(exercise: Exercise, userAnswer: string): bool
  * expected answer's factor pattern. If the option has the same factors
  * but with a sign difference in at least one, flags it.
  *
- * Symbolic: compares parenthesized groups in student vs expected answer.
- * If the groups match in form but differ in sign patterns, flags it.
+ * Symbolic branch removed (symbolic type no longer supported).
  */
 function isU2SignoFactorizacionError(
   exercise: Exercise,
@@ -516,47 +523,6 @@ function isU2SignoFactorizacionError(
       // If this expected factor found a sign difference, flag it
       if (foundSignDiff && !foundExact) return true;
       if (!foundExact && !foundSignDiff) return false; // Factor not found at all
-    }
-    return false;
-  }
-
-  // For symbolic: compare parenthesized groups, check for sign differences
-  if (exercise.type === "symbolic") {
-    const expected = exercise.expectedAnswer.trim();
-    const student = userAnswer.trim();
-
-    const extractFactors = (s: string): string[] => {
-      const matches = s.match(/\([^)]+\)/g);
-      return matches ? matches.map((m) => m.replace(/\s/g, "")) : [];
-    };
-
-    const expFactors = extractFactors(expected);
-    const stuFactors = extractFactors(student);
-
-    if (expFactors.length === 0 || stuFactors.length === 0) return false;
-    if (expFactors.length !== stuFactors.length) return false;
-
-    const used = new Array<boolean>(stuFactors.length).fill(false);
-    const stripSigns = (s: string): string =>
-      s.replace(/\+/g, "").replace(/-/g, "");
-
-    for (const ef of expFactors) {
-      const efNorm = ef.replace(/\(|\)/g, "");
-      let foundMatch = false;
-
-      for (let j = 0; j < stuFactors.length; j++) {
-        if (used[j]) continue;
-        const sf = stuFactors[j];
-        const sfNorm = sf.replace(/\(|\)/g, "");
-
-        if (stripSigns(efNorm) === stripSigns(sfNorm)) {
-          used[j] = true;
-          foundMatch = true;
-          if (ef !== sf) return true; // Sign difference!
-          break;
-        }
-      }
-      if (!foundMatch) return false; // Factor not found at all
     }
     return false;
   }

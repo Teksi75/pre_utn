@@ -17,6 +17,7 @@ function makeExercise(overrides: PartialWithSkill = {}): Exercise {
     expectedAnswer: "42",
     commonErrorTags: [],
     pedagogicalNote: "",
+    unit: 1,
     ...overrides,
   };
 }
@@ -30,9 +31,9 @@ describe("mapSubmittedAnswer", () => {
       expect(result).toEqual([{ label: "Respuesta", value: "42" }]);
     });
 
-    it("maps a symbolic answer to a single 'Respuesta' row", () => {
+    it("maps a fill-blank answer to a single 'Respuesta' row (symbolic removed)", () => {
       const exercise = makeExercise({
-        type: "symbolic",
+        type: "fill-blank",
         expectedAnswer: "x^2 + 1",
       });
       const result = mapSubmittedAnswer(exercise, "x^2 + 1");
@@ -127,22 +128,7 @@ describe("mapSubmittedAnswer", () => {
     });
   });
 
-  describe("free-response and other non-text types", () => {
-    it("maps a free-response answer to a single 'Respuesta' row", () => {
-      const exercise = makeExercise({
-        type: "free-response",
-        expectedAnswer: "",
-      });
-      const result = mapSubmittedAnswer(
-        exercise,
-        "El alumno escribió un párrafo extenso de respuesta."
-      );
-
-      expect(result).toEqual([
-        { label: "Respuesta", value: "El alumno escribió un párrafo extenso de respuesta." },
-      ]);
-    });
-
+  describe("non-text types", () => {
     it("maps a graphical answer to a single 'Respuesta' row", () => {
       const exercise = makeExercise({ type: "graphical", expectedAnswer: "" });
       const result = mapSubmittedAnswer(exercise, "drawn");

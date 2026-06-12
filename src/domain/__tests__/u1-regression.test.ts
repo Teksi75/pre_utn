@@ -24,6 +24,7 @@ function makeExercise(overrides: Partial<Exercise> = {}): Exercise {
     expectedAnswer: "8",
     commonErrorTags: [],
     pedagogicalNote: "Test exercise",
+    unit: 1,
     ...overrides,
   };
 }
@@ -63,33 +64,6 @@ describe("U1 Regression — Evaluator chain", () => {
       const exercise = makeExercise({ type: "numerical", expectedAnswer: "−4" });
       const result = evaluateAnswer(exercise, "-4");
       expect(result.correct).toBe(true);
-    });
-  });
-
-  describe("U1 symbolic/exact evaluator still works", () => {
-    test("exact string match for symbolic", () => {
-      const exercise = makeExercise({ type: "symbolic", expectedAnswer: "x+1" });
-      const result = evaluateAnswer(exercise, "x+1");
-      expect(result.correct).toBe(true);
-    });
-
-    test("whitespace is trimmed for symbolic", () => {
-      const exercise = makeExercise({ type: "symbolic", expectedAnswer: "x+1" });
-      const result = evaluateAnswer(exercise, "  x+1  ");
-      expect(result.correct).toBe(true);
-    });
-
-    test("symbolic U1 exercise does NOT route to polynomial evaluator", () => {
-      // Regression guard: non-U2 symbolic exercises must use exact match
-      const exercise = makeExercise({
-        id: "ex.u1.intervalos.1",
-        skillId: "mat.u1.intervalos",
-        type: "symbolic",
-        expectedAnswer: "[2, 5]",
-      });
-      // A different interval-like answer should be rejected (exact match)
-      const result = evaluateAnswer(exercise, "(2, 5]");
-      expect(result.correct).toBe(false);
     });
   });
 
@@ -143,7 +117,7 @@ describe("U1 Regression — Evaluator chain", () => {
   });
 
   describe("U1 unsupported types return manual-review", () => {
-    test.each(["free-response", "graphical", "matching", "ordering"] as const)(
+    test.each(["graphical", "matching", "ordering"] as const)(
       "%s returns manual-review",
       (type) => {
         const exercise = makeExercise({ type, expectedAnswer: "any" });
@@ -184,11 +158,6 @@ describe("U1 Regression — Catalog integrity", () => {
   test("U1 exercises have correct types (no free-text for structured math)", () => {
     const u1Exercises = catalog.filter((ex) => ex.skillId.startsWith("mat.u1."));
     for (const ex of u1Exercises) {
-      // Free-response is only allowed for conceptual questions, not structured math
-      if (ex.type === "free-response") {
-        // Acceptable — but verify it has valid expectedAnswer
-        expect(typeof ex.expectedAnswer).toBe("string");
-      }
       // No graphical, no ordering for U1 exercises (regression guard)
       expect(ex.type).not.toBe("graphical");
       expect(ex.type).not.toBe("ordering");
@@ -220,56 +189,31 @@ describe("U1 Regression — Catalog integrity", () => {
 // ---------------------------------------------------------------------------
 
 describe("U2 Regression — Factorizacion evaluator chain", () => {
-  describe("polynomial-evaluator equivalence still works for factorizacion", () => {
-    test("symbolic factorizacion accepts equivalent expanded form", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.factorizacion.4",
-        skillId: "mat.u2.factorizacion",
-        type: "symbolic",
-        expectedAnswer: "(x-2)(x+3)",
-      });
-
-      // Student answers in expanded form — polynomial evaluator should accept
-      const result = evaluateAnswer(exercise, "x^2 + x - 6");
-      expect(result.correct).toBe(true);
-    });
-
-    test("symbolic factorizacion rejects non-equivalent form", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.factorizacion.4",
-        skillId: "mat.u2.factorizacion",
-        type: "symbolic",
-        expectedAnswer: "(x-2)(x+3)",
-      });
-
-      const result = evaluateAnswer(exercise, "x^2 + x + 6");
-      expect(result.correct).toBe(false);
+  describe("symbolic type removed — factorizacion uses structured types", () => {
+    test("no U2 exercise uses symbolic type", () => {
+      const catalog = loadCatalog();
+      // Symbolic is no longer in ExerciseType; cast to check raw JSON hasn't reintroduced it
+      const u2Symbolic = catalog.filter(
+        (e) => e.skillId.startsWith("mat.u2.") && (e.type as string) === "symbolic"
+      );
+      expect(u2Symbolic.length).toBe(0);
     });
   });
 
-  describe("gauss numerical routing works for U2 factorizacion slice", () => {
-    test("gauss numerical with correct roots (different order) is accepted", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.gauss.1",
-        skillId: "mat.u2.gauss",
-        type: "numerical",
-        expectedAnswer: "1, -3, 1/2",
-      });
-
-      const result = evaluateAnswer(exercise, "-3, 1/2, 1");
-      expect(result.correct).toBe(true);
+  describe("gauss exercises use multiple-choice for multi-root answers", () => {
+    test("gauss.1 is multiple-choice with options", () => {
+      const exercise = loadCatalog().find((e) => e.id === "ex.u2.gauss.1");
+      expect(exercise).toBeDefined();
+      expect(exercise?.type).toBe("multiple-choice");
+      expect(exercise?.options).toBeDefined();
+      expect(exercise!.options!.length).toBeGreaterThanOrEqual(3);
     });
 
-    test("gauss numerical with extra root is rejected", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.gauss.1",
-        skillId: "mat.u2.gauss",
-        type: "numerical",
-        expectedAnswer: "1, -3",
-      });
-
-      const result = evaluateAnswer(exercise, "1, -3, 2");
-      expect(result.correct).toBe(false);
+    test("gauss.3 is numerical with single scalar answer", () => {
+      const exercise = loadCatalog().find((e) => e.id === "ex.u2.gauss.3");
+      expect(exercise).toBeDefined();
+      expect(exercise?.type).toBe("numerical");
+      expect(exercise?.expectedAnswer).toBe("1");
     });
   });
 

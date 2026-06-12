@@ -236,11 +236,9 @@ describe("Exercise Catalog", () => {
         "multiple-choice",
         "true-false",
         "numerical",
-        "symbolic",
         "fill-blank",
         "matching",
         "ordering",
-        "free-response",
         "graphical",
       ]);
       const catalog = loadCatalog();
@@ -249,15 +247,10 @@ describe("Exercise Catalog", () => {
       }
     });
 
-    test("student-facing catalog allows symbolic only for U2 (polynomial evaluator)", () => {
-      // U2 symbolic exercises are supported via polynomial-evaluator (PR-1).
-      // Exercises in other units must not be symbolic.
+    test("no exercise in catalog uses removed symbolic type", () => {
       const catalog = loadCatalog();
-
       for (const exercise of catalog) {
-        if (exercise.type === "symbolic") {
-          expect(exercise.id).toMatch(/^ex\.u2\./);
-        }
+        expect((exercise.type as string) !== "symbolic").toBe(true);
       }
     });
 

@@ -95,7 +95,7 @@ describe("applyExerciseDefaults", () => {
   test("free-response exercises are rejected at the catalog boundary", () => {
     const raw = { ...baseRaw, type: "free-response" };
     expect(() => applyExerciseDefaults(raw)).toThrow(
-      "free-response is not allowed"
+      "unsupported exercise type"
     );
   });
 });

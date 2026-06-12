@@ -12,6 +12,7 @@ describe("Error tagging — tagError()", () => {
     expectedAnswer: "5",
     commonErrorTags: [],
     pedagogicalNote: "Test exercise",
+    unit: 1,
     ...overrides,
   });
 
@@ -68,23 +69,14 @@ describe("Error tagging — tagError()", () => {
     });
   });
 
-  describe("interval endpoint-inclusion pattern", () => {
-    test("detects endpoint inclusion error when declared", () => {
-      // Exercise expects [3,7] but student writes (3,7) — endpoint type mismatch
+  describe("interval endpoint-inclusion pattern (symbolic removed)", () => {
+    test("interval endpoint detector no longer fires (symbolic type removed)", () => {
+      // Symbolic type was removed; interval endpoint errors are no longer detected
+      // via tagError since no exercise type supports interval notation.
       const exercise = makeExercise({
-        type: "symbolic",
+        type: "fill-blank",
         expectedAnswer: "[3,7]",
         commonErrorTags: ["u1_extremo_inclusion"],
-      });
-      const tag = tagError(exercise, "(3,7)");
-      expect(tag).toBe("u1_extremo_inclusion");
-    });
-
-    test("no tag for interval when exercise does not declare the tag", () => {
-      const exercise = makeExercise({
-        type: "symbolic",
-        expectedAnswer: "[3,7]",
-        commonErrorTags: [],
       });
       const tag = tagError(exercise, "(3,7)");
       expect(tag).toBeUndefined();

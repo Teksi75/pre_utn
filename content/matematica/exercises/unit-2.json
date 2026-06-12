@@ -1,0 +1,721 @@
+[
+  {
+    "id": "ex.u2.polinomios_basico.1",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "Simplifica 3x + 2x",
+    "expectedAnswer": "5x",
+    "options": [
+      "5x",
+      "6x",
+      "5x²",
+      "6x²"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Combina términos semejantes sumando coeficientes: 3x + 2x = (3+2)x = 5x. Error común: multiplicar en lugar de sumar (6x) o elevar al cuadrado."
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.1",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Calcula (2x + 1)(x - 3)",
+    "expectedAnswer": "2x² - 5x - 3",
+    "options": [
+      "2x² - 5x - 3",
+      "2x² - 6x - 3",
+      "2x² + 5x - 3",
+      "2x² - x - 3"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Aplica distribución (FOIL) y combina términos semejantes. Los distractores representan errores al combinar términos medios o al distribuir signos."
+  },
+  {
+    "id": "ex.u2.ruffini_resto.1",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "numerical",
+    "difficulty": 3,
+    "prompt": "Usando el teorema del resto, calcula el residuo de (x³ - 2x + 1) al dividir por (x - 2)",
+    "expectedAnswer": "5",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Sustituye x = 2 en el polinomio para obtener el residuo."
+  },
+  {
+    "id": "ex.u2.factorizacion.1",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Factoriza x² - 5x + 6",
+    "expectedAnswer": "(x - 2)(x - 3)",
+    "options": [
+      "(x - 2)(x - 3)",
+      "(x - 2)(x + 3)",
+      "(x + 2)(x - 3)",
+      "(x + 2)(x + 3)"
+    ],
+    "commonErrorTags": [
+      "u2_caso_incorrecto",
+      "u2_signo_factorizacion"
+    ],
+    "pedagogicalNote": "Busca dos números que sumen -5 y multipliquen 6: -2 y -3. Los distractores representan errores de signo al factorizar."
+  },
+  {
+    "id": "ex.u2.polinomios_basico.2",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "¿Cuál es el grado del polinomio P(x) = 4x⁵ − 2x³ + 7x − 1?",
+    "expectedAnswer": "5",
+    "options": [
+      "5",
+      "4",
+      "3",
+      "7"
+    ],
+    "commonErrorTags": [
+      "u2_grado_incorrecto"
+    ],
+    "pedagogicalNote": "El grado es el mayor exponente con coeficiente no nulo. En 4x⁵ el exponente es 5. Distractores: 4 (número de términos), 3 (segundo mayor exponente), 7 (coeficiente del término lineal)."
+  },
+  {
+    "id": "ex.u2.polinomios_basico.3",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "¿Cómo se clasifica el polinomio −7x³ + 2x − 1?",
+    "expectedAnswer": "Trinomio de grado 3",
+    "options": [
+      "Trinomio de grado 3",
+      "Binomio de grado 3",
+      "Trinomio de grado 2",
+      "Monomio de grado 3"
+    ],
+    "commonErrorTags": [
+      "u2_grado_incorrecto"
+    ],
+    "pedagogicalNote": "Tiene 3 términos (trinomio) y su mayor exponente es 3. Distractores: binomio (confunde número de términos), grado 2 (confunde con el segundo término), monomio."
+  },
+  {
+    "id": "ex.u2.polinomios_basico.4",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Evaluá P(3) para P(x) = 2x² − 5x + 1",
+    "expectedAnswer": "4",
+    "commonErrorTags": [
+      "u2_signo_operacion"
+    ],
+    "pedagogicalNote": "P(3) = 2(9) − 5(3) + 1 = 18 − 15 + 1 = 4. Error común: calcular 2(3²) como (2×3)² = 36 (confunde orden de operaciones con potencias)."
+  },
+  {
+    "id": "ex.u2.polinomios_basico.5",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Eliminá los términos con coeficiente cero del polinomio 0x⁴ + 2x³ + 0x² − 5x + 1. ¿Cuál es el polinomio resultante?",
+    "expectedAnswer": "2x^3 - 5x + 1",
+    "options": [
+      {
+        "value": "2x^3 - 5x + 1",
+        "label": "$2x^3 - 5x + 1$"
+      },
+      {
+        "value": "0x^4 + 2x^3 + 0x^2 - 5x + 1",
+        "label": "$0x^4 + 2x^3 + 0x^2 - 5x + 1$"
+      },
+      {
+        "value": "2x^3 + 5x + 1",
+        "label": "$2x^3 + 5x + 1$"
+      },
+      {
+        "value": "2x^3 - 5x",
+        "label": "$2x^3 - 5x$"
+      }
+    ],
+    "commonErrorTags": [
+      "u2_termino_faltante"
+    ],
+    "pedagogicalNote": "Los coeficientes en orden decreciente: grado 3 → 2, grado 2 → 0 (término faltante), grado 1 → −5, grado 0 → 1. Los ceros del inicio (0x⁴) se eliminan al normalizar. El polinomio expandido es 2x³ − 5x + 1. Distractores: polinomio completo sin eliminar ceros (0x⁴+2x³+0x²−5x+1), signo incorrecto en −5x (+5x+1), y sobre-eliminación del término constante (−5x, sin el +1).",
+    "relatedTheoryIds": [
+      "theory-polinomios-basico"
+    ],
+    "relatedExampleIds": [
+      "example-polinomios-basico-1"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulos 1-8: Definición, grado, valor numérico, raíces, orden, igualdad, opuesto",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.2",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Calculá (4x² − x + 2) + (x² + 3x − 5)",
+    "expectedAnswer": "5x² + 2x − 3",
+    "options": [
+      "5x² + 2x − 3",
+      "5x² − 4x − 3",
+      "4x² + 2x − 3",
+      "5x² + 2x + 7"
+    ],
+    "commonErrorTags": [
+      "u2_signo_operacion",
+      "u2_termino_semejante"
+    ],
+    "pedagogicalNote": "Suma de polinomios: agrupar términos del mismo grado. 4x² + x² = 5x², −x + 3x = 2x, 2 + (−5) = −3. Distractor: −4x−3 (confunde signo del −x), 4x² (olvida sumar los x²), +7 (suma constantes con signo incorrecto)."
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.3",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Calculá (3x² − 2x + 1) − (x² + 4x − 3)",
+    "expectedAnswer": "2x² − 6x + 4",
+    "options": [
+      "2x² − 6x + 4",
+      "2x² + 2x + 4",
+      "2x² − 6x − 2",
+      "4x² − 6x + 4"
+    ],
+    "commonErrorTags": [
+      "u2_signo_operacion"
+    ],
+    "pedagogicalNote": "Resta de polinomios: distribuir el signo negativo a todos los términos del segundo polinomio. −(x²+4x−3) = −x²−4x+3. Distractores: +2x (olvida cambiar signo del 4x), −2 (olvida que −(−3)=+3), 4x² (suma en vez de restar los x²)."
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.4",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "numerical",
+    "difficulty": 3,
+    "prompt": "Multiplicá (2x² − 1)(x + 3). El resultado es 2x³ + 6x² − x − 3. ¿Cuál es la suma de todos los coeficientes del polinomio resultado?",
+    "expectedAnswer": "4",
+    "commonErrorTags": [
+      "u2_signo_operacion",
+      "u2_termino_semejante"
+    ],
+    "pedagogicalNote": "El polinomio resultado es 2x³ + 6x² − x − 3. La suma de coeficientes: 2 + 6 + (−1) + (−3) = 4. Alternativa: evaluar el producto en x=1 para obtener la suma de coeficientes."
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.5",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Multiplicá (x − 2)(x + 3). ¿Cuál es el polinomio resultado?",
+    "expectedAnswer": "x^2 + x - 6",
+    "options": [
+      {
+        "value": "x^2 + x - 6",
+        "label": "$x^2 + x - 6$"
+      },
+      {
+        "value": "x^2 - x - 6",
+        "label": "$x^2 - x - 6$"
+      },
+      {
+        "value": "x^2 - 6",
+        "label": "$x^2 - 6$"
+      },
+      {
+        "value": "x^2 + 5x - 6",
+        "label": "$x^2 + 5x - 6$"
+      }
+    ],
+    "commonErrorTags": [
+      "u2_signo_operacion"
+    ],
+    "pedagogicalNote": "(x−2)(x+3) = x² + 3x − 2x − 6 = x² + x − 6. Distractores: x²−x−6 (error de signo en −2x+3x), x²−6 (olvida el término lineal), x²+5x−6 (suma 3+2=5 en vez de −2+3=1)."
+  },
+  {
+    "id": "ex.u2.ruffini_resto.2",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Aplicando el teorema del resto, ¿cuál es el residuo de dividir P(x) = 2x³ − 5x² + x − 2 por (x − 3)?",
+    "expectedAnswer": "10",
+    "options": [
+      "10",
+      "-26",
+      "4",
+      "16"
+    ],
+    "commonErrorTags": [
+      "u2_ruffini_signo_a"
+    ],
+    "pedagogicalNote": "P(3) = 2(27) − 5(9) + 3 − 2 = 54 − 45 + 3 − 2 = 10. Distractores: −26 = P(−3) (error de signo en a), 4 (error en la cuenta), 16 (suma mal los términos)."
+  },
+  {
+    "id": "ex.u2.ruffini_resto.3",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Usando el teorema del resto, calculá el residuo de dividir P(x) = x⁴ − 3x² + 2 por (x + 1).",
+    "expectedAnswer": "0",
+    "commonErrorTags": [
+      "u2_ruffini_signo_a",
+      "u2_termino_faltante"
+    ],
+    "pedagogicalNote": "El divisor es (x+1) = (x−(−1)), así que evaluamos P(−1). P(−1) = 1 − 3 + 2 = 0. El residuo es 0, lo que significa que (x+1) es factor. Error común: evaluar en x=1 (daría 0 también en este caso, pero por la razón equivocada)."
+  },
+  {
+    "id": "ex.u2.ruffini_resto.4",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Al dividir x³ − 1 por (x − 1) usando Ruffini, ¿cuáles son los coeficientes del cociente?",
+    "expectedAnswer": "1, 1, 1",
+    "options": [
+      "1, 1, 1",
+      "1, 0, 1",
+      "1, -1, 1",
+      "1, 1, 0"
+    ],
+    "commonErrorTags": [
+      "u2_termino_faltante",
+      "u2_ruffini_signo_a"
+    ],
+    "pedagogicalNote": "Coeficientes de x³−1: [1, 0, 0, −1]. Ruffini con a=1: bajar 1, 1×1+0=1, 1×1+0=1, 1×1+(−1)=0 (resto). Cociente: [1, 1, 1] → x²+x+1. Distractores: [1,0,1] (olvida el cero de x), [1,−1,1] (confunde signos), [1,1,0] (error en último paso)."
+  },
+  {
+    "id": "ex.u2.ruffini_resto.5",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Verificá que $(x - 2)$ es factor de $P(x) = x^3 - 3x^2 + 4$ usando el teorema del resto. ¿Cuál es el polinomio expandido del producto $(x-2)$ por el cociente?",
+    "expectedAnswer": "x^3 - 3x^2 + 4",
+    "options": [
+      {
+        "value": "x^3 - 3x^2 + 4",
+        "label": "$x^3 - 3x^2 + 4$"
+      },
+      {
+        "value": "x^3 + 3x^2 + 4",
+        "label": "$x^3 + 3x^2 + 4$"
+      },
+      {
+        "value": "x^3 - 3x^2 - 4",
+        "label": "$x^3 - 3x^2 - 4$"
+      },
+      {
+        "value": "x^3 - 3x^2",
+        "label": "$x^3 - 3x^2$"
+      }
+    ],
+    "commonErrorTags": [
+      "u2_termino_faltante",
+      "u2_signo_operacion"
+    ],
+    "pedagogicalNote": "Ruffini: coeficientes [1, −3, 0, 4] con a=2 → cociente [1, −1, −2], resto 0. P(x) = (x−2)(x²−x−2) = x³ − 3x² + 4. Distractores: x³+3x²+4 (error de signo en −3x²), x³−3x²−4 (error de signo en constante), x³−3x² (olvida el término constante +4)."
+  },
+  {
+    "id": "ex.u2.gauss.1",
+    "skillId": "mat.u2.gauss",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Aplicando el Teorema de Gauss, ¿cuáles son las raíces racionales de P(x) = x³ − 3x² − x + 3?",
+    "expectedAnswer": "1, -1, 3",
+    "options": [
+      "1, -1, 3",
+      "-1, 3, -3",
+      "1, 3",
+      "1, -1, -3"
+    ],
+    "commonErrorTags": [
+      "u2_ruffini_signo_a",
+      "u2_signo_operacion"
+    ],
+    "pedagogicalNote": "a₀ = 3, divisores: ±1, ±3. aₙ = 1, divisores: 1. Candidatos: ±1, ±3. Evaluar: P(1)=0, P(−1)=0, P(3)=0. Las raíces son 1, −1, 3. Los distractores representan errores al evaluar signos o listar divisores incorrectos."
+  },
+  {
+    "id": "ex.u2.factorizacion.2",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Factoriza x² − 25",
+    "expectedAnswer": "(x − 5)(x + 5)",
+    "options": [
+      "(x − 5)(x + 5)",
+      "(x − 5)(x − 5)",
+      "(x + 5)(x + 5)",
+      "(x − 25)(x + 1)"
+    ],
+    "commonErrorTags": [
+      "u2_signo_factorizacion",
+      "u2_factorizacion_incompleta"
+    ],
+    "pedagogicalNote": "Diferencia de cuadrados: a² − b² = (a − b)(a + b). Los distractores representan confundir con un TCP (mismo signo en ambos factores) o inventar factores sin relación con la estructura."
+  },
+  {
+    "id": "ex.u2.factorizacion.3",
+    "skillId": "mat.u2.factorizacion",
+    "type": "numerical",
+    "difficulty": 3,
+    "prompt": "Extraé el máximo factor común de 12x³ − 8x² + 4x. ¿Cuál es el coeficiente del factor común extraído?",
+    "expectedAnswer": "4",
+    "commonErrorTags": [
+      "u2_factorizacion_incompleta"
+    ],
+    "pedagogicalNote": "El MCD de 12, 8 y 4 es 4. El factor común es 4x (coeficiente 4, parte literal x). Error frecuente: extraer solo 2x en vez de 4x (no es el MÁXIMO factor común)."
+  },
+  {
+    "id": "ex.u2.factorizacion.4",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Factoriza completamente $6x^2 + 7x + 2$. ¿Cuál es la factorización en producto de binomios?",
+    "expectedAnswer": "(2x + 1)(3x + 2)",
+    "options": [
+      {
+        "value": "(2x + 1)(3x + 2)",
+        "label": "$(2x + 1)(3x + 2)$"
+      },
+      {
+        "value": "(2x + 2)(3x + 1)",
+        "label": "$(2x + 2)(3x + 1)$"
+      },
+      {
+        "value": "(2x - 1)(3x - 2)",
+        "label": "$(2x - 1)(3x - 2)$"
+      },
+      {
+        "value": "(3x + 1)(x + 2)",
+        "label": "$(3x + 1)(x + 2)$"
+      }
+    ],
+    "commonErrorTags": [
+      "u2_signo_factorizacion",
+      "u2_signo_operacion"
+    ],
+    "pedagogicalNote": "Trinomio de segundo grado con a ≠ 1: a·c = 12, buscar p y q con p+q=7 y p·q=12 → 3 y 4. Luego 6x²+3x+4x+2 = 3x(2x+1)+2(2x+1) = (2x+1)(3x+2). Distractores: (2x+2)(3x+1) intercambia términos sin verificar el producto, (2x−1)(3x−2) invierte los signos, (3x+1)(x+2) usa 3 como divisor parcial de 6 en vez de 2."
+  },
+  {
+    "id": "ex.u2.gauss.2",
+    "skillId": "mat.u2.gauss",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Para P(x) = 2x³ − 5x² + x + 2, ¿cuál es el conjunto correcto de candidatos p/q según el Teorema de Gauss?",
+    "expectedAnswer": "±1, ±2, ±1/2",
+    "options": [
+      "±1, ±2, ±1/2",
+      "±1, ±2",
+      "±1, ±2, ±1/2, ±2/2",
+      "±1, ±5, ±2"
+    ],
+    "commonErrorTags": [
+      "u2_ruffini_signo_a"
+    ],
+    "pedagogicalNote": "a₀ = 2 → p ∈ {±1, ±2}. aₙ = 2 → q ∈ {1, 2}. Candidatos p/q: ±1/1=±1, ±2/1=±2, ±1/2, ±2/2=±1 (repetido, se elimina). Resultado: ±1, ±2, ±1/2. Los distractores omiten denominador q o confunden divisores del coeficiente principal con el término constante."
+  },
+  {
+    "id": "ex.u2.gauss.3",
+    "skillId": "mat.u2.gauss",
+    "type": "numerical",
+    "difficulty": 3,
+    "prompt": "Usando el Teorema de Gauss, encontrá una raíz racional de P(x) = x⁴ − 4x³ + 3x² + 4x − 4. Ingresá el valor de una de sus raíces enteras.",
+    "expectedAnswer": "1",
+    "commonErrorTags": [
+      "u2_ruffini_signo_a",
+      "u2_signo_operacion"
+    ],
+    "pedagogicalNote": "a₀ = −4, divisores: ±1, ±2, ±4. aₙ = 1 → candidatos enteros: ±1, ±2, ±4. Evaluar: P(1)=1−4+3+4−4=0 ✓. Raíz entera: 1. Después de extraer (x−1) con Ruffini, el cociente es x³−3x²+0x+4, que también tiene raíces enteras. Se pide ingresar UNA raíz."
+  },
+  {
+    "id": "ex.u2.gauss.4",
+    "skillId": "mat.u2.gauss",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Usando el Teorema de Gauss, factorizá completamente $P(x) = 2x^3 + 3x^2 - 8x + 3$. ¿Cuál es la factorización en producto de binomios?",
+    "expectedAnswer": "(x - 1)(2x - 1)(x + 3)",
+    "options": [
+      {
+        "value": "(x - 1)(2x - 1)(x + 3)",
+        "label": "$(x - 1)(2x - 1)(x + 3)$"
+      },
+      {
+        "value": "(x + 1)(2x - 1)(x + 3)",
+        "label": "$(x + 1)(2x - 1)(x + 3)$"
+      },
+      {
+        "value": "(x - 1)(2x + 1)(x + 3)",
+        "label": "$(x - 1)(2x + 1)(x + 3)$"
+      },
+      {
+        "value": "(x - 1)(2x - 1)(x - 3)",
+        "label": "$(x - 1)(2x - 1)(x - 3)$"
+      }
+    ],
+    "commonErrorTags": [
+      "u2_signo_factorizacion",
+      "u2_factorizacion_incompleta"
+    ],
+    "pedagogicalNote": "a₀=3 (divisores ±1,±3), aₙ=2 (divisores 1,2). Candidatos: ±1,±3,±1/2,±3/2. P(1)=0 → raíz. Ruffini: cociente 2x²+5x−3 → factorizar como (2x−1)(x+3). Completa: (x−1)(2x−1)(x+3). Distractores: (x+1) usa la raíz equivocada, (2x+1) invierte el signo del segundo factor, (x−3) invierte el signo del tercer factor."
+  },
+  {
+    "id": "ex.u2.mcm_mcd_polinomios.1",
+    "skillId": "mat.u2.mcm_mcd_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "Dados $P(x)=x(x-2)$ y $Q(x)=x(x+3)$ en forma factorizada, ¿cuál es el MCM $[P(x), Q(x)]$?",
+    "expectedAnswer": "x(x-2)(x+3)",
+    "options": [
+      "x",
+      "x(x-2)(x+3)",
+      "x²(x-2)(x+3)",
+      "(x-2)(x+3)"
+    ],
+    "commonErrorTags": [
+      "u2_confunde_mcm_mcd"
+    ],
+    "pedagogicalNote": "MCM = producto de factores comunes y no comunes con su mayor exponente. Factor común: x (máx exponente 1). Factores no comunes: (x-2) y (x+3). Resultado: x(x-2)(x+3). El distractor 'x' es el MCD (error frecuente: confundir MCM con MCD). Capítulo 14.",
+    "relatedTheoryIds": [
+      "theory-mcm-mcd-polinomios"
+    ],
+    "relatedExampleIds": [
+      "example-mcm-mcd-polinomios-1"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 14: MCM y MCD de polinomios",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.mcm_mcd_polinomios.2",
+    "skillId": "mat.u2.mcm_mcd_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Dados $P(x)=(x-1)(x+2)$ y $Q(x)=(x-1)(x-3)$ factorizados, ¿cuál es el MCD $[P(x), Q(x)]$?",
+    "expectedAnswer": "(x-1)",
+    "options": [
+      "(x-1)",
+      "(x-1)(x+2)(x-3)",
+      "(x+2)(x-3)",
+      "(x-1)²"
+    ],
+    "commonErrorTags": [
+      "u2_confunde_mcm_mcd"
+    ],
+    "pedagogicalNote": "MCD = factores comunes con su menor exponente. El único factor común es (x-1) con exponente 1 en ambos. El distractor (x-1)(x+2)(x-3) es el MCM (error frecuente: confundir MCD con MCM). Capítulo 14.",
+    "relatedTheoryIds": [
+      "theory-mcm-mcd-polinomios"
+    ],
+    "relatedExampleIds": [
+      "example-mcm-mcd-polinomios-1"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 14: MCM y MCD de polinomios",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.mcm_mcd_polinomios.3",
+    "skillId": "mat.u2.mcm_mcd_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Factorizá para calcular el MCM de $x^2-4$ y $x^2-2x$. ¿Cuál es el resultado?",
+    "expectedAnswer": "x(x-2)(x+2)",
+    "options": [
+      "x(x-2)(x+2)",
+      "(x-2)",
+      "x(x-2)²(x+2)",
+      "x(x+2)"
+    ],
+    "commonErrorTags": [
+      "u2_confunde_mcm_mcd"
+    ],
+    "pedagogicalNote": "Paso 1 — factorizar: x²−4=(x−2)(x+2); x²−2x=x(x−2). Paso 2 — MCM: factores comunes y no comunes con mayor exponente: x (exponente 1), (x−2) (exponente 1), (x+2) (exponente 1). Resultado: x(x−2)(x+2). El distractor (x−2) es el MCD. Capítulo 14.",
+    "relatedTheoryIds": [
+      "theory-mcm-mcd-polinomios"
+    ],
+    "relatedExampleIds": [
+      "example-mcm-mcd-polinomios-2"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 14: MCM y MCD de polinomios",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.mcm_mcd_polinomios.4",
+    "skillId": "mat.u2.mcm_mcd_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Calculá el MCM de $P(x)=(x-2)(x+1)$ y $Q(x)=(x-2)(x-3)$. ¿Cuál es el polinomio expandido?",
+    "expectedAnswer": "x^3 - 4x^2 + x + 6",
+    "options": [
+      {
+        "value": "x^3 - 4x^2 + x + 6",
+        "label": "$x^3 - 4x^2 + x + 6$"
+      },
+      {
+        "value": "x^3 - 4x^2 - x + 6",
+        "label": "$x^3 - 4x^2 - x + 6$"
+      },
+      {
+        "value": "x^2 - 4x + 3",
+        "label": "$x^2 - 4x + 3$"
+      },
+      {
+        "value": "x^3 + 4x^2 + x - 6",
+        "label": "$x^3 + 4x^2 + x - 6$"
+      }
+    ],
+    "commonErrorTags": [
+      "u2_confunde_mcm_mcd"
+    ],
+    "pedagogicalNote": "MCM = (x−2)(x+1)(x−3). Expandido: (x−2)(x²−2x−3) = x³−2x²−3x−2x²+4x+6 = x³−4x²+x+6. El MCD sería (x−2) solamente — error frecuente: confundir MCM con MCD. Capítulo 14.",
+    "relatedTheoryIds": [
+      "theory-mcm-mcd-polinomios"
+    ],
+    "relatedExampleIds": [
+      "example-mcm-mcd-polinomios-2"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 14: MCM y MCD de polinomios",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.1",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resolvé $\\frac{1}{x-2} = \\frac{3}{x-2}$ para $x$. ¿Cuál es la solución?",
+    "expectedAnswer": "No tiene solución (x=2 anula el denominador)",
+    "options": [
+      "x=2",
+      "No tiene solución (x=2 anula el denominador)",
+      "x=-2",
+      "x=0"
+    ],
+    "commonErrorTags": [
+      "u2_denominador_cero"
+    ],
+    "pedagogicalNote": "Al simplificar las fracciones (mismo denominador), se obtiene 1=3, que es falso para todo x. Además, x=2 anula el denominador y debe excluirse. La ecuación no tiene solución. El distractor x=2 testea si el alumno resuelve algebraicamente sin verificar el dominio. Capítulo 15.",
+    "relatedTheoryIds": [
+      "theory-ecuaciones-fraccionarias"
+    ],
+    "relatedExampleIds": [
+      "example-ecuaciones-fraccionarias-1"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 15: Ecuaciones fraccionarias",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.2",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resolvé $\\frac{x}{x-3} + 1 = \\frac{3}{x-3}$. ¿Cuál es la solución?",
+    "expectedAnswer": "No tiene solución (x=3 anula el denominador)",
+    "options": [
+      "x=3",
+      "No tiene solución (x=3 anula el denominador)",
+      "x=0",
+      "x=2"
+    ],
+    "commonErrorTags": [
+      "u2_denominador_cero"
+    ],
+    "pedagogicalNote": "Multiplicando por (x−3): x + (x−3) = 3 → 2x − 3 = 3 → 2x = 6 → x = 3. Pero x=3 anula los denominadores originales (x−3=0). Por lo tanto, la ecuación no tiene solución. El distractor x=3 testea si el alumno verifica el dominio después de resolver. Capítulo 15.",
+    "relatedTheoryIds": [
+      "theory-ecuaciones-fraccionarias"
+    ],
+    "relatedExampleIds": [
+      "example-ecuaciones-fraccionarias-1"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 15: Ecuaciones fraccionarias",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.3",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resolvé $\\frac{1}{x+2} + \\frac{1}{x-2} = \\frac{4}{x^2-4}$. ¿Cuál es la solución?",
+    "expectedAnswer": "No tiene solución (x=±2 anulan denominadores)",
+    "options": [
+      "x=2",
+      "x=-2",
+      "No tiene solución (x=±2 anulan denominadores)",
+      "x=0"
+    ],
+    "commonErrorTags": [
+      "u2_denominador_cero"
+    ],
+    "pedagogicalNote": "Dominio: x≠±2. Multiplicando por x²−4=(x+2)(x−2): (x−2)+(x+2)=4 → 2x=4 → x=2. Pero x=2 anula los denominadores (x−2=0 y x²−4=0). La solución algebraica pertenece al dominio excluido → no hay solución. Los dos primeros distractores testean valores excluidos del dominio. Capítulo 15.",
+    "relatedTheoryIds": [
+      "theory-ecuaciones-fraccionarias"
+    ],
+    "relatedExampleIds": [
+      "example-ecuaciones-fraccionarias-2"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 15: Ecuaciones fraccionarias",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.4",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "numerical",
+    "difficulty": 4,
+    "prompt": "Resolvé $\\frac{2}{x+1} = \\frac{3}{x+2}$ para $x$. Ingresá el valor numérico de $x$.",
+    "expectedAnswer": "1",
+    "commonErrorTags": [
+      "u2_denominador_cero"
+    ],
+    "pedagogicalNote": "Multiplicación cruzada: 2(x+2)=3(x+1) → 2x+4=3x+3 → x=1. Verificación: denominadores (x+1)=2≠0 y (x+2)=3≠0, ambos válidos. La solución x=1 es correcta. Capítulo 15.",
+    "relatedTheoryIds": [
+      "theory-ecuaciones-fraccionarias"
+    ],
+    "relatedExampleIds": [
+      "example-ecuaciones-fraccionarias-2"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 15: Ecuaciones fraccionarias",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
+      }
+    ]
+  }
+]

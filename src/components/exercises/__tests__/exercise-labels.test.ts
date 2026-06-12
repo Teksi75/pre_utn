@@ -8,7 +8,7 @@ describe("exercise labels", () => {
   it("returns student-facing labels instead of raw technical type names", () => {
     expect(getExerciseTypeLabel("multiple-choice")).toBe("Opción múltiple");
     expect(getExerciseTypeLabel("numerical")).toBe("Respuesta numérica");
-    expect(getExerciseTypeLabel("symbolic")).toBe("Respuesta algebraica");
+    expect(getExerciseTypeLabel("fill-blank")).toBe("Completar respuesta");
     expect(getExerciseTypeLabel("true-false")).toBe("Verdadero / Falso");
   });
 
@@ -16,6 +16,6 @@ describe("exercise labels", () => {
     expect(usesSelectableAnswerControl("multiple-choice")).toBe(true);
     expect(usesSelectableAnswerControl("true-false")).toBe(true);
     expect(usesSelectableAnswerControl("numerical")).toBe(false);
-    expect(usesSelectableAnswerControl("symbolic")).toBe(false);
+    expect(usesSelectableAnswerControl("fill-blank")).toBe(false);
   });
 });

@@ -1,6 +1,5 @@
 import { describe, test, expect } from "vitest";
 import { loadExercisesForSkill, loadSkillBank } from "../catalog/content-loaders";
-import { parsePolynomial } from "../evaluator/polynomial-evaluator";
 import type { Exercise } from "../models/exercise";
 
 /** Load all U2 exercises from the 7 slice skills. */
@@ -73,18 +72,17 @@ describe("U2 exercise shape validation", () => {
     });
   });
 
-  describe("type distribution (MC, numerical, symbolic across all U2 exercises)", () => {
-    test("U2 exercises have balanced type distribution (23 MC, 7 numerical, 1 symbolic after migrations)", () => {
+  describe("type distribution (MC, numerical across all U2 exercises — symbolic removed)", () => {
+    test("U2 exercises have balanced type distribution (24 MC, 7 numerical, 0 symbolic)", () => {
       const exercises = allU2Exercises();
 
       const mcCount = exercises.filter((e) => e.type === "multiple-choice").length;
       const numCount = exercises.filter((e) => e.type === "numerical").length;
-      const symCount = exercises.filter((e) => e.type === "symbolic").length;
+      const symCount = exercises.filter((e) => (e.type as string) === "symbolic").length;
 
-      expect(mcCount).toBeGreaterThanOrEqual(22);
+      expect(mcCount).toBeGreaterThanOrEqual(23);
       expect(numCount).toBeGreaterThanOrEqual(7);
-      expect(symCount).toBeGreaterThanOrEqual(1);
-      expect(symCount).toBeLessThanOrEqual(2);
+      expect(symCount).toBe(0);
     });
   });
 
@@ -109,16 +107,16 @@ describe("U2 exercise shape validation", () => {
       expect(ids).toContain("ex.u2.gauss.4");
     });
 
-    test("factorizacion + gauss type distribution (6 MC, 2 numerical, 0 symbolic after migration)", () => {
+    test("factorizacion + gauss type distribution (7 MC, 2 numerical, 0 symbolic)", () => {
       const fac = loadExercisesForSkill("mat.u2.factorizacion");
       const gau = loadExercisesForSkill("mat.u2.gauss");
       const combined = [...fac, ...gau];
 
       const mcCount = combined.filter((e) => e.type === "multiple-choice").length;
       const numCount = combined.filter((e) => e.type === "numerical").length;
-      const symCount = combined.filter((e) => e.type === "symbolic").length;
+      const symCount = combined.filter((e) => (e.type as string) === "symbolic").length;
 
-      expect(mcCount).toBeGreaterThanOrEqual(5);
+      expect(mcCount).toBeGreaterThanOrEqual(6);
       expect(numCount).toBeGreaterThanOrEqual(2);
       expect(symCount).toBe(0);
     });
@@ -162,10 +160,10 @@ describe("U2 exercise shape validation", () => {
   });
 
   describe("no free-text for polynomial answers", () => {
-    test("no U2 exercise uses free-response type", () => {
+    test("no U2 exercise uses graphical type (requires structured answers)", () => {
       const exercises = allU2Exercises();
-      const freeResponse = exercises.filter((e) => e.type === "free-response");
-      expect(freeResponse.length).toBe(0);
+      const graphical = exercises.filter((e) => e.type === "graphical");
+      expect(graphical.length).toBe(0);
     });
   });
 
@@ -199,7 +197,7 @@ describe("U2 exercise shape validation", () => {
         const exercise = exercises.find((e) => e.id === exerciseId);
         expect(exercise, `${exerciseId} must exist`).toBeDefined();
         expect(exercise!.type).toBe("multiple-choice");
-        expect(exercise!.type === "symbolic").toBe(false);
+        expect((exercise!.type as string) === "symbolic").toBe(false);
         expect(exercise!.options).toBeDefined();
         expect(exercise!.options!.length).toBeGreaterThanOrEqual(3);
       });
@@ -238,17 +236,11 @@ describe("U2 exercise shape validation", () => {
     }
   });
 
-  describe("remaining U2 symbolic exercises — exception report", () => {
-    test("the only remaining U2 symbolic exercises belong to mcm_mcd_polinomios (polynomial-evaluator supported)", () => {
+  describe("no U2 symbolic exercises remain (symbolic type removed)", () => {
+    test("zero symbolic exercises in U2 catalog", () => {
       const exercises = allU2Exercises();
-      const symbolic = exercises.filter((e) => e.type === "symbolic");
-      expect(symbolic.length).toBeGreaterThan(0);
-      for (const ex of symbolic) {
-        expect(
-          ex.skillId,
-          `Symbolic exercise ${ex.id} must be in mcm_mcd_polinomios. Other U2 symbolic exercises must be migrated to structured types.`
-        ).toBe("mat.u2.mcm_mcd_polinomios");
-      }
+      const symbolic = exercises.filter((e) => (e.type as string) === "symbolic");
+      expect(symbolic.length).toBe(0);
     });
   });
 
@@ -303,34 +295,18 @@ describe("U2 exercise shape validation", () => {
     });
   });
 
-  describe("symbolic exercises have polynomial-evaluator-compatible expectedAnswer", () => {
-    test("every symbolic U2 expectedAnswer parses without error via parsePolynomial", () => {
-      const exercises = allU2Exercises();
-      const symbolic = exercises.filter((e) => e.type === "symbolic");
-
-      expect(symbolic.length, "There must be symbolic exercises to validate").toBeGreaterThan(0);
-
-      for (const ex of symbolic) {
-        expect(
-          () => parsePolynomial(ex.expectedAnswer),
-          `Symbolic exercise ${ex.id} expectedAnswer "${ex.expectedAnswer}" must be parseable by polynomial-evaluator`
-        ).not.toThrow();
-      }
-    });
-  });
-
   describe("mcm_mcd_polinomios exercises", () => {
     test("at least 3 mcm_mcd_polinomios exercises exist", () => {
       const exercises = loadExercisesForSkill("mat.u2.mcm_mcd_polinomios");
       expect(exercises.length).toBeGreaterThanOrEqual(3);
     });
 
-    test("mcm_mcd_polinomios has at least 1 MC and at least 1 symbolic", () => {
+    test("mcm_mcd_polinomios has all MC exercises (symbolic removed)", () => {
       const exercises = loadExercisesForSkill("mat.u2.mcm_mcd_polinomios");
       const mcCount = exercises.filter((e) => e.type === "multiple-choice").length;
-      const symCount = exercises.filter((e) => e.type === "symbolic").length;
-      expect(mcCount).toBeGreaterThanOrEqual(1);
-      expect(symCount).toBeGreaterThanOrEqual(1);
+      const symCount = exercises.filter((e) => (e.type as string) === "symbolic").length;
+      expect(mcCount).toBeGreaterThanOrEqual(3);
+      expect(symCount).toBe(0);
     });
 
     test("mcm_mcd_polinomios difficulty ranges 1-4", () => {

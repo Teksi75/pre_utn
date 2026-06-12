@@ -20,6 +20,7 @@ function makeExercise(overrides: Partial<Exercise> = {}): Exercise {
     expectedAnswer: "(x-2)(x-3)(x+1)",
     commonErrorTags: [],
     pedagogicalNote: "Test exercise",
+    unit: 2,
     options: [
       { value: "(x-2)(x-3)(x+1)", label: "A" },
       { value: "(x-2)", label: "B" },
@@ -378,14 +379,14 @@ describe("u2_confunde_mcm_mcd MC detection", () => {
     const exercise = makeExercise({
       id: "ex.u2.mcm_mcd_polinomios.7",
       skillId: "mat.u2.mcm_mcd_polinomios",
-      type: "symbolic",
+      type: "fill-blank",
       prompt: "¿Cuál es el MCM de (x-2) y (x+1)? Escribí la expresión.",
       expectedAnswer: "(x-2)(x+1)",
       commonErrorTags: ["u2_confunde_mcm_mcd"],
       options: undefined,
     });
 
-    // Symbolic type — detector only works on MC
+    // fill-blank type — detector only works on MC
     const result = tagError(exercise, "(x-2)");
     expect(result).toBeUndefined();
   });

@@ -8,7 +8,16 @@ import {
 import { validateTheoryNode } from "../models/theory";
 import { validateWorkedExample } from "../models/worked-example";
 import exercisesJson from "../../../content/matematica/exercises.json";
+import unit1Exercises from "../../../content/matematica/exercises/unit-1.json";
+import unit2Exercises from "../../../content/matematica/exercises/unit-2.json";
 import { loadTaxonomy } from "../error-taxonomy/index";
+
+// Compose all exercise sources (mirrors catalog/index.ts composition)
+const allExercises = [
+  ...(unit1Exercises as unknown as Record<string, unknown>[]),
+  ...(unit2Exercises as unknown as Record<string, unknown>[]),
+  ...(exercisesJson as unknown as Record<string, unknown>[]),
+];
 
 describe("Theory content loading", () => {
   test("loads at least four theory nodes from JSON", () => {
@@ -193,21 +202,19 @@ describe("Exercise content linkage", () => {
   });
 });
 
-describe("Live catalog symbolic migration", () => {
-  test("raw student-facing catalog JSON allows only U2 symbolic exercise types", () => {
-    // U2 symbolic exercises are supported via polynomial-evaluator (PR-1).
-    // Other units must not contain symbolic exercises.
-    const symbolicExercises = (exercisesJson as unknown as { id: string; type: string }[]).filter(
+describe("Live catalog — no symbolic exercises (symbolic type removed)", () => {
+  test("raw student-facing catalog JSON contains zero symbolic exercises", () => {
+    // Symbolic type was removed from ExerciseType.
+    // No exercise in the catalog should use it.
+    const symbolicExercises = (allExercises as unknown as { id: string; type: string }[]).filter(
       (exercise) => exercise.type === "symbolic"
     );
-
-    const nonU2Symbolic = symbolicExercises.filter((ex) => !ex.id.startsWith("ex.u2."));
-    expect(nonU2Symbolic).toEqual([]);
+    expect(symbolicExercises).toEqual([]);
   });
 });
 
 describe("Potencias y raíces exercise catalog", () => {
-  const prExercises = (exercisesJson as unknown as Record<string, unknown>[])
+  const prExercises = (allExercises as unknown as Record<string, unknown>[])
     .filter((ex) => (ex.skillId as string) === "mat.u1.potencias_raices");
 
   test("potencias_raices has at least 6 exercises", () => {

@@ -13,6 +13,7 @@ describe("Evaluator dispatcher", () => {
     expectedAnswer: "8",
     commonErrorTags: [],
     pedagogicalNote: "Test exercise",
+    unit: 1,
     ...overrides,
   });
 
@@ -58,18 +59,6 @@ describe("Evaluator dispatcher", () => {
   });
 
   describe("dispatches to exact evaluator", () => {
-    test("symbolic exercise with matching answer returns correct", () => {
-      const exercise = makeExercise({ type: "symbolic", expectedAnswer: "x+1" });
-      const result = evaluateAnswer(exercise, "x+1");
-      expect(result.correct).toBe(true);
-    });
-
-    test("symbolic exercise trims whitespace", () => {
-      const exercise = makeExercise({ type: "symbolic", expectedAnswer: "x+1" });
-      const result = evaluateAnswer(exercise, "  x+1  ");
-      expect(result.correct).toBe(true);
-    });
-
     test("fill-blank exercise is case-insensitive", () => {
       const exercise = makeExercise({ type: "fill-blank", expectedAnswer: "hello" });
       const result = evaluateAnswer(exercise, "HELLO");
@@ -110,14 +99,6 @@ describe("Evaluator dispatcher", () => {
   });
 
   describe("unsupported types return manual-review", () => {
-    test("free-response returns manual-review", () => {
-      const exercise = makeExercise({ type: "free-response", expectedAnswer: "any" });
-      const result = evaluateAnswer(exercise, "student answer");
-      expect(result.correct).toBe(false);
-      expect(result.errorTag).toBe("unsupported_type");
-      expect(result.feedback).toBe("manual-review");
-    });
-
     test("graphical returns manual-review", () => {
       const exercise = makeExercise({ type: "graphical", expectedAnswer: "any" });
       const result = evaluateAnswer(exercise, "student answer");
@@ -351,7 +332,7 @@ describe("Evaluator dispatcher", () => {
     });
 
     test("incorrect result may have feedback", () => {
-      const exercise = makeExercise({ type: "free-response", expectedAnswer: "any" });
+      const exercise = makeExercise({ type: "graphical", expectedAnswer: "any" });
       const result = evaluateAnswer(exercise, "wrong");
       expect(result.correct).toBe(false);
       expect(result.errorTag).toBe("unsupported_type");
@@ -359,158 +340,34 @@ describe("Evaluator dispatcher", () => {
     });
   });
 
-  describe("U2 gauss numerical routing (U2FAC-EVAL-006)", () => {
-    test("gauss numerical routes to root set comparison — order-insensitive", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.gauss.1",
-        skillId: "mat.u2.gauss",
-        type: "numerical",
-        expectedAnswer: "1, -3, 1/2",
-      });
-
-      // Same roots in different order → correct
-      const result = evaluateAnswer(exercise, "-3, 1/2, 1");
-      expect(result.correct).toBe(true);
+  describe("Gauss numerical exercises are now multiple-choice (no raw-string routing)", () => {
+    test("gauss.1 is multiple-choice, not numerical", () => {
+      const exercise = loadCatalog().find((e) => e.id === "ex.u2.gauss.1");
+      expect(exercise).toBeDefined();
+      expect(exercise?.type).toBe("multiple-choice");
     });
 
-    test("gauss numerical — extra root is rejected", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.gauss.1",
-        skillId: "mat.u2.gauss",
-        type: "numerical",
-        expectedAnswer: "1, -3",
-      });
-
-      const result = evaluateAnswer(exercise, "1, -3, 2");
-      expect(result.correct).toBe(false);
-    });
-
-    test("gauss numerical — missing root is rejected", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.gauss.1",
-        skillId: "mat.u2.gauss",
-        type: "numerical",
-        expectedAnswer: "1, -3, 1/2",
-      });
-
-      const result = evaluateAnswer(exercise, "1, -3");
-      expect(result.correct).toBe(false);
-    });
-
-    test("gauss numerical — exact match works", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.gauss.1",
-        skillId: "mat.u2.gauss",
-        type: "numerical",
-        expectedAnswer: "1, -3, 1/2",
-      });
-
-      const result = evaluateAnswer(exercise, "1, -3, 1/2");
-      expect(result.correct).toBe(true);
-    });
-
-    test("gauss numerical — whitespace and formats vary", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.gauss.1",
-        skillId: "mat.u2.gauss",
-        type: "numerical",
-        expectedAnswer: "1, -3, 1/2",
-      });
-
-      const result = evaluateAnswer(exercise, "  1 ,  -3 , 0.5 ");
-      expect(result.correct).toBe(true);
+    test("gauss.3 is numerical with single scalar answer", () => {
+      const exercise = loadCatalog().find((e) => e.id === "ex.u2.gauss.3");
+      expect(exercise).toBeDefined();
+      expect(exercise?.type).toBe("numerical");
+      expect(exercise?.expectedAnswer).toBe("1");
     });
   });
 
-  describe("U2 polynomial routing (U2-EVAL-001)", () => {
-    test("symbolic U2 exercise routes to polynomial evaluator — equivalent forms accepted", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.operaciones_polinomios.3",
-        skillId: "mat.u2.operaciones_polinomios",
-        type: "symbolic",
-        expectedAnswer: "x^2 + x - 6",
-      });
-
-      // Student answers in factored form — polynomial evaluator should accept
-      const result = evaluateAnswer(exercise, "(x-2)(x+3)");
-      expect(result.correct).toBe(true);
+  describe("symbolic type removed — exercises converted to structured types", () => {
+    test("no exercise in catalog uses symbolic type", () => {
+      const catalog = loadCatalog();
+      const symbolic = catalog.filter((e) => (e.type as string) === "symbolic");
+      expect(symbolic.length).toBe(0);
     });
 
-    test("symbolic U2 exercise — non-equivalent answer is rejected", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.operaciones_polinomios.3",
-        skillId: "mat.u2.operaciones_polinomios",
-        type: "symbolic",
-        expectedAnswer: "x^2 + x - 6",
-      });
-
-      const result = evaluateAnswer(exercise, "x^2 + x + 6");
-      expect(result.correct).toBe(false);
-    });
-
-    test("symbolic U2 exercise — coeff array answer equivalent to expanded expected", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.polinomios_basico.3",
-        skillId: "mat.u2.polinomios_basico",
-        type: "symbolic",
-        expectedAnswer: "2x^2 - 5x + 1",
-      });
-
-      const result = evaluateAnswer(exercise, "2x^2 - 5x + 1");
-      expect(result.correct).toBe(true);
-    });
-
-    test("symbolic U1 exercise still routes to exact evaluator (no regression)", () => {
-      const exercise = makeExercise({
-        id: "ex.u1.propiedades_operaciones_reales.1",
-        skillId: "mat.u1.propiedades_operaciones_reales",
-        type: "symbolic",
-        expectedAnswer: "x+1",
-      });
-
-      // U1 should use exact string match, not polynomial equivalence
-      const result = evaluateAnswer(exercise, "x+1");
-      expect(result.correct).toBe(true);
-    });
-
-    test("BUG-3: malformed polynomial answer does not throw (parse error)", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.polinomios_basico.1",
-        skillId: "mat.u2.polinomios_basico",
-        type: "symbolic",
-        expectedAnswer: "x^2 + x - 6",
-      });
-
-      // (x+1)+2 has trailing content and throws PolynomialParseError.
-      // evaluateAnswer must catch this and return an incorrect result,
-      // NOT let the exception escape.
-      let result: ReturnType<typeof evaluateAnswer>;
-      expect(() => {
-        result = evaluateAnswer(exercise, "(x+1)+2");
-      }).not.toThrow();
-      result = result!;
-      expect(result.correct).toBe(false);
-      // Should provide feedback indicating the answer is not a valid polynomial
-      expect(result.feedback).toBeTruthy();
-    });
-
-    test("BUG-3: transcendental answer does not throw in evaluateAnswer (form error)", () => {
-      const exercise = makeExercise({
-        id: "ex.u2.polinomios_basico.1",
-        skillId: "mat.u2.polinomios_basico",
-        type: "symbolic",
-        expectedAnswer: "x^2 + x - 6",
-      });
-
-      // sin(x) contains a transcendental function and throws
-      // UnsupportedPolynomialFormError. Must be caught, not propagated.
-      let result: ReturnType<typeof evaluateAnswer>;
-      expect(() => {
-        result = evaluateAnswer(exercise, "sin(x)");
-      }).not.toThrow();
-      result = result!;
-      expect(result.correct).toBe(false);
-      expect(result.feedback).toBeTruthy();
+    test("mcm_mcd_polinomios.4 is now multiple-choice", () => {
+      const exercise = loadCatalog().find((e) => e.id === "ex.u2.mcm_mcd_polinomios.4");
+      expect(exercise).toBeDefined();
+      expect(exercise?.type).toBe("multiple-choice");
+      expect(exercise?.options).toBeDefined();
+      expect(exercise!.options!.length).toBeGreaterThanOrEqual(3);
     });
   });
 });

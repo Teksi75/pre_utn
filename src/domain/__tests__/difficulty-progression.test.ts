@@ -23,6 +23,7 @@ function makeExercise(
     expectedAnswer: "42",
     commonErrorTags: [],
     pedagogicalNote: "Note",
+    unit: 1,
   };
 }
 

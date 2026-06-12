@@ -37,9 +37,7 @@ function emptyProgress(): PracticeProgress {
 }
 
 const FORBIDDEN_TYPES: ReadonlySet<ExerciseType> = new Set<ExerciseType>([
-  "symbolic",
   "fill-blank",
-  "free-response",
   "graphical",
   "matching",
   "ordering",

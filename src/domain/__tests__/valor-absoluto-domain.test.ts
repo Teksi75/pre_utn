@@ -273,8 +273,7 @@ describe("valor_absoluto — exercises", () => {
   test("no exercise uses prohibited types", () => {
     const exercises = queryBySkill(SKILL_ID);
     for (const ex of exercises) {
-      expect(ex.type).not.toBe("symbolic");
-      expect(ex.type).not.toBe("free-response");
+      expect((ex.type as string) !== "symbolic").toBe(true);
     }
   });
 

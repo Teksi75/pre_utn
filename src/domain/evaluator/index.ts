@@ -10,9 +10,6 @@ import { evaluateExact } from "./exact";
 import { evaluateBoolean } from "./boolean";
 import { tagError } from "./error-tagging";
 import { isFiniteNumericAnswer } from "../utils/numeric";
-import { areEquivalent } from "./polynomial-evaluator";
-import { PolynomialParseError, UnsupportedPolynomialFormError } from "./polynomial-types";
-import { parseRationalRoots, areEquivalentRoots } from "./gauss-routing-helper";
 
 /** The result of evaluating a student's answer. */
 export interface EvaluationResult {
@@ -23,7 +20,6 @@ export interface EvaluationResult {
 
 /** Types that require manual review (no automated comparison). */
 const MANUAL_REVIEW_TYPES: ReadonlySet<string> = new Set([
-  "free-response",
   "graphical",
   "matching",
   "ordering",
@@ -62,57 +58,6 @@ export function evaluateAnswer(
   // Dispatch to type-specific evaluator
   let result: EvaluationResult;
 
-  // Gauss numerical routing guard: mat.u2.gauss with type "numerical"
-  // uses set-based rational root comparison (order-insensitive, fraction-aware).
-  if (exercise.type === "numerical" && exercise.skillId === "mat.u2.gauss") {
-    const expectedRoots = parseRationalRoots(exercise.expectedAnswer);
-    const studentRoots = parseRationalRoots(userAnswer);
-    const correct = areEquivalentRoots(expectedRoots, studentRoots);
-    result = { correct };
-    if (!result.correct) {
-      const errorTag = tagError(exercise, userAnswer);
-      if (errorTag) {
-        return { ...result, errorTag };
-      }
-    }
-    return result;
-  }
-
-  // Polynomial evaluator guard: U2 symbolic exercises resolve equivalence
-  // via expansion and coefficient comparison, not exact string match.
-  if (exercise.type === "symbolic" && /^mat\.u2\./.test(exercise.skillId)) {
-    try {
-      const equiv = areEquivalent(exercise.expectedAnswer, userAnswer);
-      result = { correct: equiv };
-    } catch (e) {
-      // Catch polynomial parse/form errors from malformed student input.
-      // These should not crash — they should return an incorrect result
-      // with feedback so the student knows their answer isn't a valid polynomial.
-      if (e instanceof PolynomialParseError) {
-        return {
-          correct: false,
-          feedback: "La expresión ingresada no es un polinomio válido. Revisá la sintaxis.",
-        };
-      }
-      if (e instanceof UnsupportedPolynomialFormError) {
-        return {
-          correct: false,
-          feedback: `La expresión ingresada no es un polinomio válido (${e.formType}). Revisá el formato.`,
-        };
-      }
-      throw e; // Re-throw unexpected errors
-    }
-    // Polynomial evaluator result — skip type switch
-    // Fall through to error tagging if incorrect
-    if (!result.correct) {
-      const errorTag = tagError(exercise, userAnswer);
-      if (errorTag) {
-        return { ...result, errorTag };
-      }
-    }
-    return result;
-  }
-
   switch (exercise.type) {
     case "numerical":
       // Config guard: non-numeric expected answer is a content error, not a student error
@@ -126,7 +71,6 @@ export function evaluateAnswer(
       result = evaluateBoolean(exercise.expectedAnswer, userAnswer);
       break;
 
-    case "symbolic":
     case "fill-blank":
     case "multiple-choice":
       result = evaluateExact(exercise.expectedAnswer, userAnswer);

@@ -20,6 +20,7 @@ const makeExercise = (overrides: Partial<Exercise> = {}): Exercise => ({
   expectedAnswer: "5",
   commonErrorTags: [],
   pedagogicalNote: "Test exercise",
+  unit: 1,
   ...overrides,
 });
 
@@ -249,7 +250,7 @@ describe("suggestPractice — weak-area tag aggregation", () => {
 const SAFE_DIAGNOSTIC_TYPES = new Set(["multiple-choice", "true-false", "numerical"]);
 
 describe("selectBalancedSet — diagnostic type safety (WU-9)", () => {
-  test("diagnostic set contains no symbolic or fill-blank exercises from the real catalog", () => {
+  test("diagnostic set contains only MC, true-false, and numerical exercises from the real catalog", () => {
     const catalog = loadCatalog();
     const result = selectBalancedSet(catalog);
 
@@ -374,9 +375,9 @@ describe("isExerciseReliable — excludes exercises with unreliable evaluation",
     expect(isExerciseReliable(exercise)).toBe(true);
   });
 
-  test("symbolic exercise is always reliable", () => {
+  test("fill-blank exercise is always reliable", () => {
     const exercise = makeExercise({
-      type: "symbolic",
+      type: "fill-blank",
       expectedAnswer: "x = 3, y = 2",
     });
     expect(isExerciseReliable(exercise)).toBe(true);

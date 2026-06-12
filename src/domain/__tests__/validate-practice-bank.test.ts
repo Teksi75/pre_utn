@@ -32,6 +32,7 @@ describe("validatePracticeBank", () => {
       pedagogicalNote: "Note",
       category,
       tags: [],
+      unit: 1,
     };
   }
 
@@ -58,6 +59,7 @@ describe("validatePracticeBank", () => {
           options: ["A", "B"],
           commonErrorTags: [],
           pedagogicalNote: "Note",
+          unit: 1,
           // no category field
         },
       ];

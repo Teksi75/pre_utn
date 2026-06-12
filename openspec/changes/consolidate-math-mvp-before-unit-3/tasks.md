@@ -54,12 +54,20 @@ Chain strategy: stacked-to-main
 
 ## Phase 3: Content Split by Unit/Skill + Per-Unit Validator
 
-- [ ] 3.1 Create `content/matematica/exercises/unit-1.json` and `content/matematica/exercises/unit-2.json` — migrate exercises from `exercises.json` preserving all fields and ordering
-- [ ] 3.2 Update `src/domain/catalog/content-loaders.ts` — extend `loadExercisesForSkill` and `loadSkillBank` to compose from split unit files while preserving deterministic ordering
-- [ ] 3.3 Add explicit `unit` metadata field during `applyExerciseDefaults` — derive from skillId regex, store as `unit: number` for explicit grouping
-- [ ] 3.4 Update `src/domain/catalog/index.ts` — use `loadExercisesForSkill` composition instead of manual filter/merge; use `parseSkillUnit` for unit grouping in `loadCatalog`
-- [ ] 3.5 Run `src/domain/__tests__/catalog-split-equivalence.test.ts` — verify loaded count and IDs match pre-split baseline
-- [ ] 3.6 Verify `loadCatalog`, `queryBySkill`, `queryByUnit` produce same results as before split
+- [x] 3.1 Create `content/matematica/exercises/unit-1.json` and `content/matematica/exercises/unit-2.json` — migrate exercises from `exercises.json` preserving all fields and ordering
+- [x] 3.2 Update `src/domain/catalog/content-loaders.ts` — extend `loadExercisesForSkill` and `loadSkillBank` to compose from split unit files while preserving deterministic ordering
+- [x] 3.3 Add explicit `unit` metadata field during `applyExerciseDefaults` — derive from skillId regex, store as `unit: number` for explicit grouping
+- [x] 3.4 Update `src/domain/catalog/index.ts` — use `loadExercisesForSkill` composition instead of manual filter/merge; use `parseSkillUnit` for unit grouping in `loadCatalog`
+- [x] 3.5 Run `src/domain/__tests__/catalog-split-equivalence.test.ts` — verify loaded count and IDs match pre-split baseline
+- [x] 3.6 Verify `loadCatalog`, `queryBySkill`, `queryByUnit` produce same results as before split
+
+## Phase 3 Fix: loadCatalog Regression (PR3 hotfix)
+
+- [x] 3.7 RED: strengthen `catalog-split-equivalence.test.ts` with exact baseline assertions — `loadCatalog().length === 152`, `queryByUnit(1).length === 101`, `queryBySkill("mat.u1.conjuntos_numericos").length === 44`
+- [x] 3.8 GREEN: filter exercises from unit files whose `skillId` is in `PER_SKILL_SKILL_IDS` before composing catalog — prevents 5 legacy `conjuntos_numericos` entries from leaking into `loadCatalog()` (157→152)
+- [x] 3.9 GREEN: wire `getUnitThreshold` / `UNIT_THRESHOLDS` into `loadCatalog` unit validation instead of hardcoded `< 5`
+- [x] 3.10 GREEN: adjust `UNIT_THRESHOLDS` — remove `unit-3` entry (placeholder content has 5 exercises, threshold 20 was aspirational); update `per-unit-thresholds.test.ts` accordingly
+- [x] 3.11 Verify: `pnpm run test:run` (1618/1618), `pnpm run typecheck` (clean), `pnpm run build` (clean), `pnpm run test:coverage` (94.91% lines)
 
 ## Phase 4: Tech Debt Cleanup + GGA/Linux Re-Validation
 

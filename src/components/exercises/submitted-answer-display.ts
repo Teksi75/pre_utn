@@ -36,8 +36,8 @@ function resolveOptionLabel(
  * - multiple-choice: resolves the stored value back to its option label
  *   (handles shuffle correctly). Falls back to the raw value when the
  *   option is not found in the exercise.
- * - text types (numerical, symbolic, fill-blank): single row with label "Respuesta"
- * - free-response, graphical, and other types: single row with label "Respuesta"
+ * - text types (numerical, fill-blank): single row with label "Respuesta"
+ * - graphical, matching, ordering: single row with label "Respuesta"
  *
  * @param exercise - The exercise the student answered
  * @param submittedAnswer - The raw answer string submitted by the student
@@ -61,7 +61,7 @@ export function mapSubmittedAnswer(
 
     default: {
       // Text types (numerical, symbolic, fill-blank) +
-      // free-response, graphical, matching, ordering — all get "Respuesta"
+      // graphical, matching, ordering — all get "Respuesta"
       return [{ label: DEFAULT_ANSWER_LABEL, value: submittedAnswer }];
     }
   }

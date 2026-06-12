@@ -18,6 +18,7 @@ function makeExercise(overrides: Partial<Exercise> = {}): Exercise {
     expectedAnswer: "(x-3)(x+3)",
     commonErrorTags: [],
     pedagogicalNote: "Test exercise",
+    unit: 2,
     options: [
       { value: "(x-3)(x+3)", label: "A" },
       { value: "(x-3)(x-3)", label: "B" },
@@ -79,23 +80,19 @@ describe("u2_signo_factorizacion MC detection", () => {
     expect(result).toBeUndefined();
   });
 
-  test("detects sign error in non-MC factorizacion context (symbolic)", () => {
-    // For symbolic exercises in factorizacion, the polynomial-evaluator
-    // catches equivalence. But tagError can also detect sign patterns.
+  test("sign error detector no longer fires for non-MC (symbolic removed)", () => {
+    // Symbolic type was removed; sign error detection only works for MC exercises now.
     const exercise = makeExercise({
       id: "ex.u2.factorizacion.4",
-      type: "symbolic",
+      type: "fill-blank",
       skillId: "mat.u2.factorizacion",
       prompt: "Factoriza completamente: x² − 4",
       expectedAnswer: "(x-2)(x+2)",
       commonErrorTags: ["u2_signo_factorizacion"],
     });
 
-    // Student gives (x-2)(x-2) — only sign differs in second factor
-    // This won't route through polynomial-evaluator in tagError but
-    // the detector should work on the raw strings
     const result = tagError(exercise, "(x-2)(x-2)");
-    expect(result).toBe("u2_signo_factorizacion");
+    expect(result).toBeUndefined();
   });
 });
 
