@@ -42,7 +42,7 @@ Chain strategy: stacked-to-main
 
 ## Phase 1b: canonicalTrace Content Backfill (PR1b — deferred)
 
-- [ ] 1.12 GREEN: backfill `canonicalTrace` metadata on existing `content/matematica/exercises.json` and `content/matematica/exercises/conjuntos-numericos.json` exercises that reference `relatedTheoryIds`/`relatedExampleIds` but lack traceable links. **Deferred to separate PR1b**: this task involves ~2600 lines of JSON reformatting + backfill that exceeds the 400-line review budget. PR1a verifies the audit helper behavior via unit tests with stubs; PR1b is a pure content change with no code.
+- [x] 1.12 GREEN: backfill `canonicalTrace` metadata on existing `content/matematica/exercises.json` and `content/matematica/exercises/conjuntos-numericos.json` exercises that reference `relatedTheoryIds`/`relatedExampleIds` but lack traceable links. **Deferred to separate PR1b**: this task involves ~2600 lines of JSON reformatting + backfill that exceeds the 400-line review budget. PR1a verifies the audit helper behavior via unit tests with stubs; PR1b is a pure content change with no code.
 
 ## Phase 2: Coverage + CI
 
