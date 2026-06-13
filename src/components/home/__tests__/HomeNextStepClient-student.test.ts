@@ -87,6 +87,12 @@ describe("HomeNextStepClient — student identity wiring (PR2)", () => {
     expect(src).toMatch(/student\s*===\s*null/);
   });
 
+  it("waits for the derived view model before rendering dashboard panels", () => {
+    const src = homeSource();
+    expect(src).toMatch(/viewModel\s*===\s*null/);
+    expect(src).not.toContain("viewModel!");
+  });
+
   it("has 'Cambiar alumno' action in the active state", () => {
     const src = homeSource();
     expect(src).toContain("Cambiar alumno");

@@ -107,6 +107,23 @@ export function HomeNextStepClient() {
     );
   }
 
+  if (viewModel === null) {
+    return (
+      <section
+        aria-busy="true"
+        aria-live="polite"
+        className="app-glass-surface rounded-[var(--radius-card)] p-5"
+      >
+        <div className="animate-pulse space-y-3">
+          <div className="h-3 bg-[var(--color-brand-200)] rounded w-1/3" />
+          <div className="h-5 bg-[var(--color-brand-200)] rounded w-3/4" />
+          <div className="h-4 bg-[var(--color-brand-200)] rounded w-full" />
+          <div className="h-10 bg-[var(--color-brand-200)] rounded-[var(--radius-button)] w-40" />
+        </div>
+      </section>
+    );
+  }
+
   // Active profile — render the student cockpit dashboard
   return (
     <>
@@ -132,16 +149,16 @@ export function HomeNextStepClient() {
           </div>
 
           {/* Hero — MAX visual weight */}
-          <TeacherDigitalHero hero={viewModel!.mission} />
+          <TeacherDigitalHero hero={viewModel.mission} />
 
           {/* Grid: route + situation side by side on desktop */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <MathRoutePanel routeUnits={viewModel!.routeUnits} />
-            <StudentSituationPanel situation={viewModel!.studentSituation} />
+            <MathRoutePanel routeUnits={viewModel.routeUnits} />
+            <StudentSituationPanel situation={viewModel.studentSituation} />
           </div>
 
           {/* Decision board — action cards */}
-          <DecisionBoardPanel decisions={viewModel!.primaryActions} />
+          <DecisionBoardPanel decisions={viewModel.primaryActions} />
         </section>
       </MathWatermark>
     </>
