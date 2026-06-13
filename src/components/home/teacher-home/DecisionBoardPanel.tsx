@@ -8,8 +8,20 @@ interface DecisionBoardPanelProps {
 }
 
 /**
+ * Class string matching `Button` variant="secondary" (added in A3).
+ * Kept in sync manually: the link here must use Next's client-side
+ * navigation, so we can't reuse the <Button> component directly.
+ * If `Button` ever changes its secondary class string, update this
+ * constant too (or extract into a shared helper).
+ */
+const SECONDARY_LINK_CLASSES =
+  "mt-4 inline-flex min-h-[44px] items-center justify-center rounded-[var(--radius-button)] bg-[var(--color-brand-100)] px-4 py-2 text-sm font-semibold text-brand-700 transition-colors hover:bg-[var(--color-brand-200)] focus-visible:shadow-[var(--ring-focus)] self-start";
+
+/**
  * Dumb decision board — renders action cards in a responsive grid.
- * Each card shows a label, description, and a safe CTA link.
+ * Each card shows a label, description, and a CTA link styled as
+ * `secondary` so the Home's only `primary` CTA stays in the hero.
+ *
  * No domain logic, no hooks.
  */
 export function DecisionBoardPanel({ decisions }: DecisionBoardPanelProps) {
@@ -37,7 +49,7 @@ export function DecisionBoardPanel({ decisions }: DecisionBoardPanelProps) {
         {decisions.map((action, index) => (
           <div
             key={`action-${index}`}
-            className="rounded-[var(--radius-card)] border border-[var(--color-brand-200)] bg-white p-4 flex flex-col"
+            className="rounded-[var(--radius-card)] bg-[var(--color-brand-50)] p-4 flex flex-col"
           >
             <h4 className="text-sm font-semibold text-[var(--color-brand-900)]">
               {action.label}
@@ -47,7 +59,7 @@ export function DecisionBoardPanel({ decisions }: DecisionBoardPanelProps) {
             </p>
             <Link
               href={action.href}
-              className="mt-4 inline-flex min-h-[44px] items-center justify-center rounded-[var(--radius-button)] bg-[var(--color-brand-900)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-brand-800)] focus-visible:shadow-[var(--ring-focus)] self-start"
+              className={SECONDARY_LINK_CLASSES}
             >
               {actionLabel(action)}
             </Link>
