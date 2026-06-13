@@ -138,23 +138,31 @@ export function FocusSelector({
       <div>
         <label
           htmlFor="unit-select"
-          className="block text-sm font-semibold text-brand-700 mb-2"
+          className="block text-sm font-semibold text-brand-800 mb-2"
         >
           Unidad
         </label>
-        <select
-          id="unit-select"
-          value={selectedUnit ?? ""}
-          onChange={handleUnitChange}
-          className="w-full border border-brand-300 rounded-[var(--radius-button)] px-3 py-2.5 text-sm bg-white text-brand-900 min-h-[44px] focus-visible:shadow-[var(--ring-focus)]"
-        >
-          <option value="">Seleccionar unidad...</option>
-          {UNITS.map((unit) => (
-            <option key={unit} value={unit}>
-              Unidad {unit}
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <select
+            id="unit-select"
+            value={selectedUnit ?? ""}
+            onChange={handleUnitChange}
+            className="w-full appearance-none border border-brand-300 rounded-[var(--radius-button)] pl-3 pr-9 py-2.5 text-sm bg-white text-brand-900 min-h-[44px] cursor-pointer transition-colors duration-[var(--duration-fast)] hover:border-brand-400 focus-visible:shadow-[var(--ring-focus)]"
+          >
+            <option value="">Seleccionar unidad...</option>
+            {UNITS.map((unit) => (
+              <option key={unit} value={unit}>
+                Unidad {unit}
+              </option>
+            ))}
+          </select>
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-[var(--color-brand-500)]"
+          >
+            ▾
+          </span>
+        </div>
       </div>
 
       {selectedUnit !== null && (
