@@ -47,15 +47,15 @@ Chain strategy: stacked-to-main
 
 ## Phase 3: Client Hook + UI Components (React)
 
-- [ ] 3.1 Create `src/hooks/useActiveStudent.ts` — `useActiveStudent()` returning `{ student: StudentProfile | null; createAndActivate: (name: string) => void; switchTo: (id: string) => void; refresh: () => void; isLoading: boolean }`
-- [ ] 3.2 Create `src/components/StudentGate.tsx` — identification card with exact copy: heading `¿Quién está estudiando ahora?`, body, label `Nombre o apodo`, button `Empezar a estudiar`, info line; validates via domain `validateDisplayName`; no forbidden language
-- [ ] 3.3 Create `src/components/home/StudentSwitcher.tsx` — lists existing profiles, allows picking one or creating new; no delete/edit
-- [ ] 3.4 Modify `src/components/home/HomeNextStepClient.tsx` — call `useActiveStudent`; if null render `<StudentGate>` instead of dashboard; if active render `Estás estudiando como {displayName}` in dashboard zone; reload progress on student switch
-- [ ] 3.5 Modify `src/components/Nav.tsx` — add `Alumno activo: {displayName}` chip when profile is active (top bar, right side)
-- [ ] 3.6 Modify `src/app/practice/usePracticeFlow.ts` — on `handleAnswerSubmit`, check `recoverActiveProfile()` before calling `addAttempt`; if null, surface `StudentGate` instead of persisting
-- [ ] 3.7 Modify `src/app/diagnostic/page.tsx` — gate on `recoverActiveProfile()`; show `StudentGate` if null; write to active student
-- [ ] 3.8 Verify no `Docente`, `login`, `cuenta`, `admin`, `email`, `contraseña`, `avatar`, or `Supabase` copy in any new or modified UI files
-- [ ] 3.9 Run `pnpm run test`, `pnpm run typecheck`, `pnpm run build`; all must pass
+- [x] 3.1 Create `src/hooks/useActiveStudent.ts` — `useActiveStudent()` returning `{ student: StudentProfile | null; createAndActivate: (name: string) => void; switchTo: (id: string) => void; refresh: () => void; isLoading: boolean }`
+- [x] 3.2 Create `src/components/StudentGate.tsx` — identification card with exact copy: heading `¿Quién está estudiando ahora?`, body, label `Nombre o apodo`, button `Empezar a estudiar`, info line; validates via domain `validateDisplayName`; no forbidden language
+- [x] 3.3 Create `src/components/home/StudentSwitcher.tsx` — lists existing profiles, allows picking one or creating new; no delete/edit
+- [x] 3.4 Modify `src/components/home/HomeNextStepClient.tsx` — call `useActiveStudent`; if null render `<StudentGate>` instead of dashboard; if active render `Estás estudiando como {displayName}` in dashboard zone; reload progress on student switch
+- [x] 3.5 Modify `src/components/Nav.tsx` — add `Alumno activo: {displayName}` chip when profile is active (top bar, right side)
+- [x] 3.6 Modify `src/app/practice/usePracticeFlow.ts` — on `handleAnswerSubmit`, check `recoverActiveProfile()` before calling `addAttempt`; if null, surface `StudentGate` instead of persisting
+- [x] 3.7 Modify `src/app/diagnostic/page.tsx` — gate on `recoverActiveProfile()`; show `StudentGate` if null; write to active student
+- [x] 3.8 Verify no `Docente`, `login`, `cuenta`, `admin`, `email`, `contraseña`, `avatar`, or `Supabase` copy in any new or modified UI files
+- [x] 3.9 Run `pnpm run test`, `pnpm run typecheck`, `pnpm run build`; all must pass
 
 ## Phase 4: Verification
 

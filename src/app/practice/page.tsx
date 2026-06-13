@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { ViewTransition } from "react";
 import { PracticeSelectPhase } from "@/components/practice/PracticeSelectPhase";
 import { PracticeTheoryPhase } from "@/components/practice/PracticeTheoryPhase";
@@ -12,11 +13,41 @@ import { Button } from "@/components/ui/Button";
 import { usePracticeFlow, canRetryExercise } from "./usePracticeFlow";
 import { skillLabel } from "@/lib/skill-label";
 import type { SkillId } from "@/domain/models/skill";
+import { StudentGate } from "@/components/StudentGate";
+import { useActiveStudent } from "@/hooks/useActiveStudent";
 
 const TOTAL_PHASES = 4;
 
 export default function PracticePage() {
   const flow = usePracticeFlow();
+  const { student, createAndActivate } = useActiveStudent();
+  const { profileBlocked, resetProfileBlocked } = flow;
+
+  // Auto-unblock when a profile becomes active
+  useEffect(() => {
+    if (student !== null && profileBlocked) {
+      resetProfileBlocked();
+    }
+  }, [student, profileBlocked, resetProfileBlocked]);
+
+  // Gate: no active profile OR attempt was blocked → show identification card
+  if (flow.profileBlocked || student === null) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <h1 className="text-[var(--text-2xl)] font-bold text-brand-900 mb-6">
+          Práctica
+        </h1>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <StudentGate
+            onSubmitProfile={(name) => {
+              createAndActivate(name);
+            }}
+            externalError={null}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">

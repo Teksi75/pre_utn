@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useActiveStudent } from "../hooks/useActiveStudent";
 
 const NAV_ITEMS = [
   { href: "/", label: "Inicio" },
@@ -12,6 +13,7 @@ const NAV_ITEMS = [
 
 export function Nav() {
   const pathname = usePathname();
+  const { student } = useActiveStudent();
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
@@ -33,7 +35,17 @@ export function Nav() {
             Preuniversitario para Ingenierías
           </span>
         </Link>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-3">
+          {/* Active student chip — discreet, right side */}
+          {student !== null && (
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--color-brand-100)] text-xs font-medium text-[var(--color-brand-700)] border border-[var(--color-brand-200)]">
+              <span aria-hidden="true">🎓</span>
+              <span>Alumno activo:</span>
+              <span className="font-semibold text-[var(--color-brand-900)] not-italic">
+                {student.displayName}
+              </span>
+            </span>
+          )}
           {NAV_ITEMS.map(({ href, label }) => (
             <Link
               key={href}

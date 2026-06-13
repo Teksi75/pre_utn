@@ -98,6 +98,7 @@ export function usePracticeFlow() {
     useState(false);
   const [currentAnswerDraft, setCurrentAnswerDraft] =
     useState<ExerciseDraftState>({ answer: "", selectedOption: null });
+  const [profileBlocked, setProfileBlocked] = useState(false);
   const evaluateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const initialSkillConsumedRef = useRef(false);
 
@@ -281,7 +282,7 @@ export function usePracticeFlow() {
           currentExercise.id,
         );
 
-        // Persist attempt and refresh progress so the FocusSelector
+          // Persist attempt and refresh progress so the FocusSelector
         // re-derives the accessibility map with the new accuracy.
         if (selectedSkillId) {
           const result2 = addAttempt({
@@ -295,9 +296,12 @@ export function usePracticeFlow() {
             attemptIndex: nextIdx,
           });
           // If no active profile, addAttempt returns blocked result.
-          // The UI will surface the identification gate; do not update progress.
+          // Signal the UI to show the identification gate.
           if (result2.ok) {
             setProgress(result2.value);
+            setProfileBlocked(false);
+          } else {
+            setProfileBlocked(true);
           }
         }
 
@@ -403,6 +407,8 @@ export function usePracticeFlow() {
     currentAnswerDraft,
     setCurrentAnswerDraft,
     attemptIndexByExerciseId,
+    profileBlocked,
+    resetProfileBlocked: () => setProfileBlocked(false),
     resetToSelect,
     handleSkillSelect,
     handleNextPhase,

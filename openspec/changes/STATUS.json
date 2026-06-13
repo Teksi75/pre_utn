@@ -215,14 +215,26 @@
     },
     "student-identity-local-persistence-bridge": {
       "status": "in-progress",
-      "branch": "feat/student-identity-local-persistence-bridge",
+      "branch": "feat/student-identity-local-persistence-bridge-ui",
       "startedAt": "2026-06-12",
-      "delivery": "auto-forecast; chained PRs expected if sdd-tasks confirms >400-line risk",
-      "summary": "Proposal phase: minimal local student identity, per-student local progress separation, legacy migration to Alumno local, and Supabase-ready adapter contract before Unit 3."
+      "delivery": "auto-forecast; chained PRs; stacked-to-main",
+      "pr1": {
+        "branch": "feat/student-identity-local-persistence-bridge",
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "c37daef495973d879d0ac3210239c04c6ef0e7fd",
+        "summary": "PR1 — Domain + Storage + Migration: pure StudentProfile domain, localStorage adapters, legacy migration to Alumno local, central-map per-student shape."
+      },
+      "pr2": {
+        "branch": "feat/student-identity-local-persistence-bridge-ui",
+        "status": "in-progress",
+        "summary": "PR2 — UI Gate + Switcher + Wiring: useActiveStudent hook, StudentGate, StudentSwitcher, Home/Practice/Diagnostic wiring, Nav chip."
+      },
+      "summary": "PR1 merged (c37daef). PR2 in progress on feat/student-identity-local-persistence-bridge-ui."
     }
   },
   "activeBranches": [
-    "feat/student-identity-local-persistence-bridge"
+    "feat/student-identity-local-persistence-bridge-ui"
   ],
   "lastAudit": "2026-06-10T23:30:00-03:00"
 }
