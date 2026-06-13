@@ -17,23 +17,35 @@ import {
   deriveTeacherHomeViewModel,
   type TeacherHomeViewModel,
 } from "../../domain/teacher-home/index";
+import { useActiveStudent } from "../../hooks/useActiveStudent";
+import { StudentGate } from "../StudentGate";
+import { StudentSwitcher } from "./StudentSwitcher";
 
 /**
- * Home dashboard — replaced the old Zone 1 hero + Zone 2 roadmap
- * with the teacher-digital-home view-model and panels.
+ * Home dashboard — PR2 extension:
+ * - Student identity gate when no active profile.
+ * - Active student chrome when profile exists.
+ * - Cambiar alumno flow via StudentSwitcher.
  *
  * Client-side hydration:
- * 1. Load progress from localStorage
- * 2. Filter ready skills via isSkillReady
- * 3. Compute nextStep with deriveHomeNextStep
- * 4. Build teacher view-model via deriveTeacherHomeViewModel
- * 5. Render 4 dumb panels from the view-model
+ * 1. useActiveStudent loads the active profile from localStorage.
+ *    If null, renders the StudentGate identification card.
+ * 2. If active profile exists, the 4-panel dashboard renders.
+ * 3. Progress is loaded from the per-student storage slice.
  */
 export function HomeNextStepClient() {
+  const { student, createAndActivate, refresh, isLoading } = useActiveStudent();
+  const [showSwitcher, setShowSwitcher] = useState(false);
   const [nextStep, setNextStep] = useState<HomeNextStep | null>(null);
   const [viewModel, setViewModel] = useState<TeacherHomeViewModel | null>(null);
 
+  // Reload progress when student changes (active profile switched or created)
   useEffect(() => {
+    if (student === null) {
+      setNextStep(null);
+      setViewModel(null);
+      return;
+    }
     const progress = loadProgress();
     const readySkills = PILOT_SKILLS.filter(
       (skill) => isSkillReady(skill.skillId).ready
@@ -42,7 +54,6 @@ export function HomeNextStepClient() {
       label: skill.label,
     }));
 
-    // Backward-compatible: keep deriveHomeNextStep for existing consumers
     const computedNextStep = deriveHomeNextStep(
       progress,
       readySkills,
@@ -50,7 +61,6 @@ export function HomeNextStepClient() {
     );
     setNextStep(computedNextStep);
 
-    // New teacher view-model drives the 4 panels
     setViewModel(
       deriveTeacherHomeViewModel({
         progress,
@@ -60,9 +70,10 @@ export function HomeNextStepClient() {
         nextStep: computedNextStep,
       })
     );
-  }, []);
+  }, [student]);
 
-  if (!nextStep || !viewModel) {
+  // Loading skeleton — shown while hook initializes
+  if (isLoading) {
     return (
       <section
         aria-busy="true"
@@ -79,24 +90,60 @@ export function HomeNextStepClient() {
     );
   }
 
-  return (
-    <MathWatermark topic="sets" variant="background">
+  // No active profile — show the identification card
+  if (student === null) {
+    return (
       <section
-        aria-labelledby="tdh-hero-title"
-        className="space-y-6"
+        aria-labelledby="student-gate-heading"
+        className="flex items-center justify-center min-h-[60vh]"
       >
-        {/* Hero — MAX visual weight */}
-        <TeacherDigitalHero hero={viewModel.mission} />
-
-        {/* Grid: route + situation side by side on desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <MathRoutePanel routeUnits={viewModel.routeUnits} />
-          <StudentSituationPanel situation={viewModel.studentSituation} />
-        </div>
-
-        {/* Decision board — action cards */}
-        <DecisionBoardPanel decisions={viewModel.primaryActions} />
+        <StudentGate
+          onSubmitProfile={(name) => {
+            createAndActivate(name);
+          }}
+          externalError={null}
+        />
       </section>
-    </MathWatermark>
+    );
+  }
+
+  // Active profile — render the student cockpit dashboard
+  return (
+    <>
+      {showSwitcher && (
+        <StudentSwitcher onClose={() => setShowSwitcher(false)} />
+      )}
+      <MathWatermark topic="sets" variant="background">
+        <section
+          aria-labelledby="tdh-hero-title"
+          className="space-y-6"
+        >
+          {/* Active student chrome — within the dashboard zone */}
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-[var(--color-brand-600)] italic">
+              Estás estudiando como <strong className="text-[var(--color-brand-800)] not-italic">{student.displayName}</strong>
+            </p>
+            <button
+              onClick={() => setShowSwitcher(true)}
+              className="text-sm text-[var(--color-brand-600)] hover:text-[var(--color-brand-800)] underline underline-offset-2 transition-colors"
+            >
+              Cambiar alumno
+            </button>
+          </div>
+
+          {/* Hero — MAX visual weight */}
+          <TeacherDigitalHero hero={viewModel!.mission} />
+
+          {/* Grid: route + situation side by side on desktop */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <MathRoutePanel routeUnits={viewModel!.routeUnits} />
+            <StudentSituationPanel situation={viewModel!.studentSituation} />
+          </div>
+
+          {/* Decision board — action cards */}
+          <DecisionBoardPanel decisions={viewModel!.primaryActions} />
+        </section>
+      </MathWatermark>
+    </>
   );
 }

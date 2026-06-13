@@ -26,10 +26,13 @@ import type {
   PracticeSuggestion,
   DiagnosticResult,
 } from "@/domain/diagnostic/index";
+import { StudentGate } from "@/components/StudentGate";
+import { useActiveStudent } from "@/hooks/useActiveStudent";
 
 type DiagnosticPhase = "loading" | "question" | "results" | "error";
 
 export default function DiagnosticPage() {
+  const { student, createAndActivate } = useActiveStudent();
   const [phase, setPhase] = useState<DiagnosticPhase>("loading");
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -38,9 +41,13 @@ export default function DiagnosticPage() {
   const [suggestions, setSuggestions] = useState<PracticeSuggestion[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isEvaluating, setIsEvaluating] = useState(false);
+  const [profileBlocked, setProfileBlocked] = useState(false);
 
   // Load catalog and select balanced set on mount
   useEffect(() => {
+    if (student === null) return;
+
+    setProfileBlocked(false);
     const catalog = loadCatalog();
     const selection = selectBalancedSet(catalog);
 
@@ -61,10 +68,15 @@ export default function DiagnosticPage() {
     setExercises([...selection.exercises]);
     setCurrentIndex(0);
     setPhase("question");
-  }, []);
+  }, [student]);
 
   const handleAnswerSubmit = useCallback(
     (answer: string) => {
+      if (student === null) {
+        setProfileBlocked(true);
+        return;
+      }
+
       const exercise = exercises[currentIndex];
       if (!exercise) return;
 
@@ -101,11 +113,80 @@ export default function DiagnosticPage() {
           suggestions: sug,
           version: 1,
         };
-        saveDiagnosticResult(result);
+        const saveResult = saveDiagnosticResult(result);
+        if (!saveResult.ok && saveResult.reason === "missing-active-profile") {
+          setProfileBlocked(true);
+        }
       }
     },
-    [exercises, currentIndex, attempts]
+    [exercises, currentIndex, attempts, student]
   );
+
+  const handleRestart = useCallback(() => {
+    setAttempts([]);
+    setEstimates([]);
+    setSuggestions([]);
+    setCurrentIndex(0);
+    setIsEvaluating(false);
+    const catalog = loadCatalog();
+    const selection = selectBalancedSet(catalog);
+    if (selection.ok && selection.exercises.length > 0) {
+      setExercises([...selection.exercises]);
+      setPhase("question");
+    } else {
+      setPhase("error");
+    }
+  }, []);
+
+  const handleCreatePlan = useCallback((): boolean => {
+    if (student === null) {
+      setProfileBlocked(true);
+      return false;
+    }
+
+    const result: DiagnosticResult = {
+      completedAt: new Date().toISOString(),
+      estimates,
+      suggestions,
+      version: 1,
+    };
+    const progress = loadProgress();
+    const plan = createStudyPlan(result, progress);
+    if (!plan) return false;
+    const saveResult = saveStudyPlan(plan);
+    if (!saveResult.ok && saveResult.reason === "missing-active-profile") {
+      setProfileBlocked(true);
+      return false;
+    }
+    return true;
+  }, [estimates, suggestions, student]);
+
+  // Gate: require active profile to take diagnostic
+  if (student === null || profileBlocked) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-[var(--text-2xl)] font-bold text-[var(--color-brand-900)]">
+            Diagnóstico
+          </h1>
+          <Link
+            href="/"
+            className="text-sm text-[var(--color-brand-700)] hover:text-[var(--color-brand-900)] font-medium min-h-[44px] inline-flex items-center px-3 py-2 rounded-[var(--radius-button)] hover:bg-[var(--color-brand-100)] transition-colors focus-visible:shadow-[var(--ring-focus)]"
+          >
+            ← Volver al inicio
+          </Link>
+        </div>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <StudentGate
+            onSubmitProfile={(name) => {
+              createAndActivate(name);
+            }}
+            externalError={null}
+          />
+        </div>
+      </div>
+    );
+  }
 
   if (phase === "loading") {
     return (
@@ -149,36 +230,6 @@ export default function DiagnosticPage() {
   }
 
   if (phase === "results") {
-    const handleRestart = () => {
-      setAttempts([]);
-      setEstimates([]);
-      setSuggestions([]);
-      setCurrentIndex(0);
-      setIsEvaluating(false);
-      const catalog = loadCatalog();
-      const selection = selectBalancedSet(catalog);
-      if (selection.ok && selection.exercises.length > 0) {
-        setExercises([...selection.exercises]);
-        setPhase("question");
-      } else {
-        setPhase("error");
-      }
-    };
-
-    const handleCreatePlan = (): boolean => {
-      const result: DiagnosticResult = {
-        completedAt: new Date().toISOString(),
-        estimates,
-        suggestions,
-        version: 1,
-      };
-      const progress = loadProgress();
-      const plan = createStudyPlan(result, progress);
-      if (!plan) return false;
-      saveStudyPlan(plan);
-      return true;
-    };
-
     return (
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">

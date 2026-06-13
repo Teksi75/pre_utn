@@ -58,17 +58,18 @@ describe("HomeNextStepClient — integration with TeacherHomeViewModel", () => {
 
   test("passes viewModel.mission to TeacherDigitalHero", () => {
     const comp = source(componentPath);
-    expect(comp).toContain("viewModel.mission");
+    // May be viewModel.mission or viewModel!.mission (non-null assertion in active-student branch)
+    expect(comp).toMatch(/viewModel!\.mission|viewModel\.mission/);
   });
 
   test("passes viewModel.routeUnits to MathRoutePanel", () => {
     const comp = source(componentPath);
-    expect(comp).toContain("viewModel.routeUnits");
+    expect(comp).toMatch(/viewModel!\.routeUnits|viewModel\.routeUnits/);
   });
 
   test("passes viewModel.primaryActions to DecisionBoardPanel", () => {
     const comp = source(componentPath);
-    expect(comp).toContain("viewModel.primaryActions");
+    expect(comp).toMatch(/viewModel!\.primaryActions|viewModel\.primaryActions/);
   });
 
   test("keeps the loading skeleton with aria-busy and aria-live", () => {
