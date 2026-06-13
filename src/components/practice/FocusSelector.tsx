@@ -12,6 +12,7 @@ import {
 import { isSkillReady } from "@/domain/catalog/readiness";
 import type { AccessibleSkill } from "@/domain/catalog/accessibility";
 import { skillLabel } from "@/lib/skill-label";
+import { StatusPill, type StatusPillVariant } from "@/components/ui/StatusPill";
 import type { SkillId } from "@/domain/models/skill";
 
 const UNITS = [1, 2, 3, 4, 5, 6] as const;
@@ -210,17 +211,17 @@ export function FocusSelector({
                       )}
                     </span>
                     {isReady ? (
-                      <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full font-medium shrink-0">
+                      <StatusPill variant="available" className="shrink-0">
                         Disponible
-                      </span>
+                      </StatusPill>
                     ) : blockedByPrereq ? (
-                      <span className="text-xs text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full font-medium shrink-0">
+                      <StatusPill variant="locked" className="shrink-0">
                         Bloqueada
-                      </span>
+                      </StatusPill>
                     ) : (
-                      <span className="text-xs text-brand-400 bg-brand-100 px-2 py-0.5 rounded-full shrink-0">
+                      <StatusPill variant="neutral" className="shrink-0">
                         Próximamente
-                      </span>
+                      </StatusPill>
                     )}
                   </span>
                 </button>
