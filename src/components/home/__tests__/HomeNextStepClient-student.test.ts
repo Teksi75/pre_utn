@@ -48,9 +48,12 @@ describe("HomeNextStepClient — student identity wiring (PR2)", () => {
 
   it("warmly identifies the active student in the dashboard zone", () => {
     const src = homeSource();
-    expect(src).toContain("Este es tu recorrido de aprendizaje,");
-    expect(src).toMatch(/student\.displayName|displayName/);
+    // The legacy line now lives in the HomeGreeting sub-component
+    // (introduced in B1). The parent still wires the student's displayName
+    // through, so we keep asserting on that contract here.
+    expect(src).toMatch(/HomeGreeting|student\.displayName|displayName/);
     expect(src).not.toContain("Estás estudiando como");
+    // The legacy copy itself is asserted in HomeGreeting.test.ts.
   });
 
   it("passes onSubmitProfile to StudentGate to create and activate profile", () => {

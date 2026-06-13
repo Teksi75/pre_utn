@@ -9,6 +9,7 @@ import {
 } from "../../domain/next-step/index";
 import { loadProgress } from "../../lib/practice-progress";
 import { MathWatermark } from "../math-visuals";
+import { HomeGreeting } from "./HomeGreeting";
 import { TeacherDigitalHero } from "./teacher-home/TeacherDigitalHero";
 import { StudentSituationPanel } from "./teacher-home/StudentSituationPanel";
 import { MathRoutePanel } from "./teacher-home/MathRoutePanel";
@@ -137,12 +138,10 @@ export function HomeNextStepClient() {
         >
           {/* Active student chrome — within the dashboard zone */}
           <div className="flex items-center justify-between">
-            <p className="text-sm text-[var(--color-brand-700)] italic">
-              Este es tu recorrido de aprendizaje, <strong className="text-[var(--color-brand-800)] not-italic">{student.displayName}</strong>
-            </p>
+            <HomeGreeting studentName={student.displayName} />
             <button
               onClick={() => setShowSwitcher(true)}
-              className="text-sm text-[var(--color-brand-700)] hover:text-[var(--color-brand-900)] underline underline-offset-2 transition-colors"
+              className="text-sm text-[var(--color-brand-700)] hover:text-[var(--color-brand-900)] underline underline-offset-2 transition-colors focus-visible:shadow-[var(--ring-focus)] rounded-[var(--radius-button)] px-2 py-1 self-start min-h-[44px] inline-flex items-center"
             >
               Cambiar alumno
             </button>
