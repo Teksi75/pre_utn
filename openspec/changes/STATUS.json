@@ -212,8 +212,17 @@
         "summary": "Phase 4 — Tech debt cleanup + GGA/Linux validation: verified parseSkillUnit dedup (already done), TeacherHomeInput contract unchanged, added fill-blank structured math validation guard (GGA finding), GGA PASSED on Linux, all gates green (1606 tests, typecheck, build, 93.11% coverage)."
       },
       "summary": "Consolidate Math MVP before Unit 3: shared helpers, validators, content split, CI, coverage, GGA compliance. 4 chained PRs + Phase 4 cleanup. 1606 tests, 93.11% domain coverage. PASS verify."
+    },
+    "student-identity-local-persistence-bridge": {
+      "status": "in-progress",
+      "branch": "feat/student-identity-local-persistence-bridge",
+      "startedAt": "2026-06-12",
+      "delivery": "auto-forecast; chained PRs expected if sdd-tasks confirms >400-line risk",
+      "summary": "Proposal phase: minimal local student identity, per-student local progress separation, legacy migration to Alumno local, and Supabase-ready adapter contract before Unit 3."
     }
   },
-  "activeBranches": [],
+  "activeBranches": [
+    "feat/student-identity-local-persistence-bridge"
+  ],
   "lastAudit": "2026-06-10T23:30:00-03:00"
 }
