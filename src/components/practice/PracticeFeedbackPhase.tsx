@@ -116,7 +116,7 @@ export function PracticeFeedbackPhase({
   const showLegend = shouldShowWarmLegend(evaluation.correct, canRetry);
 
   return (
-    <MathWatermark skillId={skillId} variant="card" opacity={0.12}>
+    <MathWatermark skillId={skillId} variant="card" opacity={0.06}>
       <div className="space-y-4" aria-live="polite" aria-atomic="false">
         <BackButton onClick={onBack} />
 
