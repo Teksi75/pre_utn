@@ -13,7 +13,8 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   secondary:
     "bg-[var(--color-brand-100)] text-brand-700 hover:bg-[var(--color-brand-200)]",
   ghost: "text-brand-700 hover:text-brand-900 hover:bg-[var(--color-brand-50)]",
-  danger: "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100",
+  danger:
+    "bg-[var(--color-danger-soft)] text-[var(--color-danger)] border border-[var(--color-danger)] hover:bg-[var(--color-danger-soft)]",
 };
 
 const BASE_CLASSES =

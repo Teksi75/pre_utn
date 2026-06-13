@@ -40,6 +40,17 @@
   --color-status-success-soft: #dcfce7;
   --color-status-active-soft: #fef3c7;
 
+  /* ── Danger role (consumed by Card.danger, Button.danger) ────── */
+  /* Surface-level "error / destructive" — NOT a pill state. Use
+     status-weak for badge-level "needs reinforcement" instead. */
+  --color-danger: #b91c1c;        /* red-700 */
+  --color-danger-soft: #fee2e2;   /* red-100 */
+
+  /* ── Accent soft (consumed by Card.accent, mirrors status-locked
+     surface but as a "contextual notice" role, not a status) ──── */
+  --color-accent-soft: #fef3c7;   /* amber-100 */
+  --color-accent-border: #fcd34d; /* amber-300 */
+
   /* ── Surfaces ───────────────────────────────────────────────── */
   --color-page-background: #f2efea;
   --color-surface: #fafaf9;
