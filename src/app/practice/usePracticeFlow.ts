@@ -284,7 +284,7 @@ export function usePracticeFlow() {
         // Persist attempt and refresh progress so the FocusSelector
         // re-derives the accessibility map with the new accuracy.
         if (selectedSkillId) {
-          const updated = addAttempt({
+          const result2 = addAttempt({
             exerciseId: currentExercise.id,
             skillId: selectedSkillId,
             correct: result.correct,
@@ -294,7 +294,11 @@ export function usePracticeFlow() {
             timeMs: elapsedMs,
             attemptIndex: nextIdx,
           });
-          setProgress(updated);
+          // If no active profile, addAttempt returns blocked result.
+          // The UI will surface the identification gate; do not update progress.
+          if (result2.ok) {
+            setProgress(result2.value);
+          }
         }
 
         // Update the attempt index map for this exercise

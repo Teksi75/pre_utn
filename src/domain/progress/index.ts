@@ -30,6 +30,13 @@ export interface PracticeAttempt {
   readonly difficulty?: Difficulty;
   readonly timeMs: number;
   readonly attemptIndex: number;
+  /**
+   * Optional studentId — added in the student-identity-local-persistence-bridge
+   * change. Attempts saved before this change do not have this field (backward
+   * compat). New attempts created via addAttempt will always include it once
+   * the storage adapter is switched over.
+   */
+  readonly studentId?: string;
 }
 
 /**

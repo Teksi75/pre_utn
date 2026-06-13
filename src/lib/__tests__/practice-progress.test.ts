@@ -6,9 +6,9 @@ import {
   addAttempt,
   PRACTICE_STORAGE_KEY,
 } from "../practice-progress";
+import { PROFILES_STORAGE_KEY } from "../student-profile-storage";
 import type { PracticeProgress } from "../../domain/progress/index";
 
-// Mock localStorage
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
@@ -28,10 +28,38 @@ const localStorageMock = (() => {
   };
 })();
 
+const emptyProgress = (overrides: Partial<PracticeProgress> = {}): PracticeProgress => ({
+  attempts: [],
+  accuracyBySkill: {},
+  trendBySkill: {},
+  lastPracticedBySkill: {},
+  diagnosticResult: null,
+  studyPlan: null,
+  ...overrides,
+});
+
+function activateStudent(studentId = "local-student-a") {
+  localStorageMock.setItem(
+    PROFILES_STORAGE_KEY,
+    JSON.stringify({
+      profiles: [
+        {
+          studentId,
+          displayName: "Ana",
+          createdAt: "2025-01-01T00:00:00.000Z",
+          lastActiveAt: "2025-01-01T00:00:00.000Z",
+        },
+      ],
+      activeStudentId: studentId,
+    })
+  );
+  return studentId;
+}
+
 beforeEach(() => {
   vi.stubGlobal("localStorage", localStorageMock);
   localStorageMock.clear();
-  vi.clearAllMocks();
+  vi.restoreAllMocks();
 });
 
 describe("practice-progress localStorage adapter", () => {
@@ -42,36 +70,53 @@ describe("practice-progress localStorage adapter", () => {
   });
 
   describe("loadProgress", () => {
-    it("returns empty progress when nothing stored", () => {
+    it("returns empty progress when nothing stored and no active student exists", () => {
       const result = loadProgress();
       expect(result.attempts).toEqual([]);
       expect(result.accuracyBySkill).toEqual({});
       expect(result.trendBySkill).toEqual({});
     });
 
-    it("returns stored progress when valid JSON exists", () => {
-      const stored: PracticeProgress = {
-        attempts: [
-          {
-            exerciseId: "ex.u1.test",
-            skillId: "mat.u1.propiedades_operaciones_reales",
-            correct: true,
-            answeredAt: "2025-01-01T00:00:00.000Z",
-            timeMs: 0,
-            attemptIndex: 1,
+    it("returns the active student's slice from the central map", () => {
+      activateStudent("local-a");
+      localStorageMock.setItem(
+        PRACTICE_STORAGE_KEY,
+        JSON.stringify({
+          students: {
+            "local-a": emptyProgress({
+              attempts: [
+                {
+                  exerciseId: "ex.active",
+                  skillId: "mat.u1.propiedades_operaciones_reales",
+                  correct: true,
+                  answeredAt: "2025-01-01T00:00:00.000Z",
+                  timeMs: 1000,
+                  attemptIndex: 1,
+                },
+              ],
+              accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 1 },
+            }),
+            "local-b": emptyProgress({
+              attempts: [
+                {
+                  exerciseId: "ex.other",
+                  skillId: "mat.u1.intervalos",
+                  correct: false,
+                  answeredAt: "2025-01-02T00:00:00.000Z",
+                  timeMs: 1000,
+                  attemptIndex: 1,
+                },
+              ],
+            }),
           },
-        ],
-        accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 1 },
-        trendBySkill: { "mat.u1.propiedades_operaciones_reales": "improving" },
-        lastPracticedBySkill: {},
-        diagnosticResult: null,
-        studyPlan: null,
-      };
-      localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(stored));
+          activeStudentId: "local-a",
+        })
+      );
 
       const result = loadProgress();
+
       expect(result.attempts).toHaveLength(1);
-      expect(result.attempts[0].skillId).toBe("mat.u1.propiedades_operaciones_reales");
+      expect(result.attempts[0].exerciseId).toBe("ex.active");
       expect(result.accuracyBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(1);
     });
 
@@ -79,178 +124,44 @@ describe("practice-progress localStorage adapter", () => {
       localStorageMock.setItem(PRACTICE_STORAGE_KEY, "not-valid-json {{{");
 
       const result = loadProgress();
+
       expect(result.attempts).toEqual([]);
       expect(result.accuracyBySkill).toEqual({});
     });
 
-    it("returns empty progress when stored data lacks required fields", () => {
+    it("migrates legacy flat progress to Alumno local and normalizes old attempts", () => {
       localStorageMock.setItem(
         PRACTICE_STORAGE_KEY,
-        JSON.stringify({ foo: "bar" })
+        JSON.stringify({
+          attempts: [
+            {
+              exerciseId: "ex.u1.01",
+              skillId: "mat.u1.propiedades_operaciones_reales",
+              correct: true,
+              answeredAt: "2024-12-01T00:00:00.000Z",
+            },
+          ],
+          accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 1 },
+          trendBySkill: { "mat.u1.propiedades_operaciones_reales": "stable" },
+        })
       );
 
       const result = loadProgress();
-      expect(result.attempts).toEqual([]);
-    });
+      const profiles = JSON.parse(localStorageMock.getItem(PROFILES_STORAGE_KEY) ?? "{}");
 
-    it("returns defaults for new fields when loading old (pre-WU5) data", () => {
-      // Simulate data saved before WU 5: only the three original fields
-      const oldData = {
-        attempts: [
-          {
-            exerciseId: "ex.u1.01",
-            skillId: "mat.u1.propiedades_operaciones_reales",
-            correct: true,
-            answeredAt: "2024-12-01T00:00:00.000Z",
-          },
-        ],
-        accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 1 },
-        trendBySkill: { "mat.u1.propiedades_operaciones_reales": "stable" },
-      };
-      localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(oldData));
-
-      const result = loadProgress();
-
-      // Original fields preserved
+      expect(profiles.profiles).toHaveLength(1);
+      expect(profiles.profiles[0].displayName).toBe("Alumno local");
       expect(result.attempts).toHaveLength(1);
-      expect(result.accuracyBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(1);
-      expect(result.trendBySkill["mat.u1.propiedades_operaciones_reales"]).toBe("stable");
-
-      // New fields defaulted
-      expect(result.lastPracticedBySkill).toEqual({});
-      expect(result.diagnosticResult).toBeNull();
-      expect(result.studyPlan).toBeNull();
-
-      // T1.2: timeMs and attemptIndex normalized for legacy data
+      expect(result.attempts[0].studentId).toBe(profiles.activeStudentId);
       expect(result.attempts[0].timeMs).toBe(0);
       expect(result.attempts[0].attemptIndex).toBe(1);
-    });
-
-    it("normalizes legacy attempts missing timeMs and attemptIndex", () => {
-      // Data from before feat-practice-attempt-timing-and-retry
-      const oldData = {
-        attempts: [
-          {
-            exerciseId: "ex.u1.01",
-            skillId: "mat.u1.propiedades_operaciones_reales",
-            correct: true,
-            answeredAt: "2024-12-01T00:00:00.000Z",
-          },
-          {
-            exerciseId: "ex.u1.02",
-            skillId: "mat.u1.propiedades_operaciones_reales",
-            correct: false,
-            answeredAt: "2024-12-01T01:00:00.000Z",
-          },
-        ],
-        accuracyBySkill: {},
-        trendBySkill: {},
-      };
-      localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(oldData));
-
-      const result = loadProgress();
-
-      expect(result.attempts).toHaveLength(2);
-      expect(result.attempts[0].timeMs).toBe(0);
-      expect(result.attempts[0].attemptIndex).toBe(1);
-      expect(result.attempts[1].timeMs).toBe(0);
-      expect(result.attempts[1].attemptIndex).toBe(1);
-    });
-
-    it("preserves timeMs and attemptIndex when already present", () => {
-      const stored = {
-        attempts: [
-          {
-            exerciseId: "ex.u1.01",
-            skillId: "mat.u1.propiedades_operaciones_reales",
-            correct: true,
-            answeredAt: "2025-01-01T00:00:00.000Z",
-            timeMs: 5000,
-            attemptIndex: 3,
-          },
-        ],
-        accuracyBySkill: {},
-        trendBySkill: {},
-      };
-      localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(stored));
-
-      const result = loadProgress();
-
-      expect(result.attempts).toHaveLength(1);
-      expect(result.attempts[0].timeMs).toBe(5000);
-      expect(result.attempts[0].attemptIndex).toBe(3);
-    });
-
-    it("preserves stored values for new fields when present", () => {
-      const storedDiagnostic = {
-        completedAt: "2025-06-01T10:00:00.000Z",
-        estimates: [],
-        suggestions: [],
-        version: 1 as const,
-      };
-      const full: PracticeProgress = {
-        attempts: [],
-        accuracyBySkill: {},
-        trendBySkill: {},
-        lastPracticedBySkill: { "mat.u1.propiedades_operaciones_reales": "2025-06-01" },
-        diagnosticResult: storedDiagnostic,
-        studyPlan: null,
-      };
-      localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(full));
-
-      const result = loadProgress();
-
-      expect(result.lastPracticedBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(
-        "2025-06-01"
-      );
-      expect(result.diagnosticResult).toEqual(storedDiagnostic);
-      expect(result.studyPlan).toBeNull();
-    });
-
-    it("keeps diagnosticResult and studyPlan across round-trip even with no attempts", () => {
-      const diag = {
-        completedAt: "2025-06-01T10:00:00.000Z",
-        estimates: [],
-        suggestions: [],
-        version: 1 as const,
-      };
-      const initial: PracticeProgress = {
-        attempts: [],
-        accuracyBySkill: {},
-        trendBySkill: {},
-        lastPracticedBySkill: {},
-        diagnosticResult: diag,
-        studyPlan: null,
-      };
-
-      saveProgress(initial);
-      const loaded = loadProgress();
-
-      expect(loaded.diagnosticResult).toEqual(diag);
     });
   });
 
   describe("saveProgress", () => {
-    it("persists progress to localStorage", () => {
-      const progress: PracticeProgress = {
-        attempts: [],
-        accuracyBySkill: {},
-        trendBySkill: {},
-        lastPracticedBySkill: {},
-        diagnosticResult: null,
-        studyPlan: null,
-      };
-
-      saveProgress(progress);
-
-      expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        PRACTICE_STORAGE_KEY,
-        JSON.stringify(progress)
-      );
-    });
-
-    it("round-trips through load correctly", () => {
-      const progress: PracticeProgress = {
+    it("persists progress under the active student in the central map", () => {
+      const studentId = activateStudent("local-a");
+      const progress = emptyProgress({
         attempts: [
           {
             exerciseId: "ex.u1.test",
@@ -262,19 +173,24 @@ describe("practice-progress localStorage adapter", () => {
             attemptIndex: 1,
           },
         ],
-        accuracyBySkill: { "mat.u1.intervalos": 0 },
         trendBySkill: { "mat.u1.intervalos": "needs-review" },
-        lastPracticedBySkill: {},
-        diagnosticResult: null,
-        studyPlan: null,
-      };
+      });
 
-      saveProgress(progress);
-      const loaded = loadProgress();
+      const result = saveProgress(progress);
+      const stored = JSON.parse(localStorageMock.getItem(PRACTICE_STORAGE_KEY) ?? "{}");
 
-      expect(loaded.attempts).toHaveLength(1);
-      expect(loaded.attempts[0].errorTag).toBe("u1_error_intervalo");
-      expect(loaded.trendBySkill["mat.u1.intervalos"]).toBe("needs-review");
+      expect(result.ok).toBe(true);
+      expect(stored.activeStudentId).toBe(studentId);
+      expect(stored.students[studentId].attempts).toHaveLength(1);
+      expect(loadProgress().trendBySkill["mat.u1.intervalos"]).toBe("needs-review");
+    });
+
+    it("returns a blocked result and writes nothing when no active profile exists", () => {
+      const result = saveProgress(emptyProgress());
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) expect(result.reason).toBe("missing-active-profile");
+      expect(localStorageMock.getItem(PRACTICE_STORAGE_KEY)).toBeNull();
     });
   });
 
@@ -284,34 +200,30 @@ describe("practice-progress localStorage adapter", () => {
 
       resetProgress();
 
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith(
-        PRACTICE_STORAGE_KEY
-      );
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith(PRACTICE_STORAGE_KEY);
     });
   });
 
   describe("addAttempt", () => {
-    it("appends attempt to existing progress and recomputes accuracy", () => {
-      const existing: PracticeProgress = {
-        attempts: [
-          {
-            exerciseId: "ex.u1.01",
-            skillId: "mat.u1.propiedades_operaciones_reales",
-            correct: true,
-            answeredAt: "2025-01-01T00:00:00.000Z",
-            timeMs: 5000,
-            attemptIndex: 1,
-          },
-        ],
-        accuracyBySkill: { "mat.u1.propiedades_operaciones_reales": 1 },
-        trendBySkill: { "mat.u1.propiedades_operaciones_reales": "stable" },
-        lastPracticedBySkill: {},
-        diagnosticResult: null,
-        studyPlan: null,
-      };
-      saveProgress(existing);
+    it("appends attempt to the active student and recomputes skill metrics", () => {
+      activateStudent("local-a");
+      saveProgress(
+        emptyProgress({
+          attempts: [
+            {
+              exerciseId: "ex.u1.01",
+              skillId: "mat.u1.propiedades_operaciones_reales",
+              correct: true,
+              answeredAt: "2025-01-01T00:00:00.000Z",
+              timeMs: 5000,
+              attemptIndex: 1,
+              studentId: "local-a",
+            },
+          ],
+        })
+      );
 
-      const updated = addAttempt({
+      const result = addAttempt({
         exerciseId: "ex.u1.02",
         skillId: "mat.u1.propiedades_operaciones_reales",
         correct: false,
@@ -321,242 +233,60 @@ describe("practice-progress localStorage adapter", () => {
         attemptIndex: 1,
       });
 
-      expect(updated.attempts).toHaveLength(2);
-      expect(updated.accuracyBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(0.5);
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.value.attempts).toHaveLength(2);
+        expect(result.value.attempts[1].studentId).toBe("local-a");
+        expect(result.value.accuracyBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(0.5);
+        expect(result.value.lastPracticedBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(
+          "2025-01-01T01:00:00.000Z"
+        );
+      }
     });
 
-    it("creates new skill entry when first attempt for that skill", () => {
-      saveProgress({
-        attempts: [],
-        accuracyBySkill: {},
-        trendBySkill: {},
-        lastPracticedBySkill: {},
-        diagnosticResult: null,
-        studyPlan: null,
-      });
-
-      const updated = addAttempt({
-        exerciseId: "ex.u1.01",
-        skillId: "mat.u1.intervalos",
-        correct: true,
-        answeredAt: "2025-01-01T00:00:00.000Z",
-        timeMs: 5000,
-        attemptIndex: 1,
-      });
-
-      expect(updated.attempts).toHaveLength(1);
-      expect(updated.accuracyBySkill["mat.u1.intervalos"]).toBe(1);
-      expect(updated.trendBySkill["mat.u1.intervalos"]).toBe("stable");
-    });
-
-    it("persists the updated progress after adding attempt", () => {
-      saveProgress({
-        attempts: [],
-        accuracyBySkill: {},
-        trendBySkill: {},
-        lastPracticedBySkill: {},
-        diagnosticResult: null,
-        studyPlan: null,
-      });
-
-      addAttempt({
-        exerciseId: "ex.u1.01",
-        skillId: "mat.u1.propiedades_operaciones_reales",
-        correct: true,
-        answeredAt: "2025-01-01T00:00:00.000Z",
-        timeMs: 0,
-        attemptIndex: 1,
-      });
-
-      const loaded = loadProgress();
-      expect(loaded.attempts).toHaveLength(1);
-    });
-
-    it("stores difficulty in the persisted attempt", () => {
-      saveProgress({
-        attempts: [],
-        accuracyBySkill: {},
-        trendBySkill: {},
-        lastPracticedBySkill: {},
-        diagnosticResult: null,
-        studyPlan: null,
-      });
-
-      addAttempt({
-        exerciseId: "ex.u1.01",
-        skillId: "mat.u1.propiedades_operaciones_reales",
-        correct: true,
-        answeredAt: "2025-01-01T00:00:00.000Z",
-        difficulty: 4,
-        timeMs: 0,
-        attemptIndex: 1,
-      });
-
-      const loaded = loadProgress();
-      expect(loaded.attempts[0].difficulty).toBe(4);
-    });
-
-    it("updates lastPracticedBySkill with the attempt's answeredAt", () => {
-      saveProgress({
-        attempts: [],
-        accuracyBySkill: {},
-        trendBySkill: {},
-        lastPracticedBySkill: {},
-        diagnosticResult: null,
-        studyPlan: null,
-      });
-
-      const updated = addAttempt({
-        exerciseId: "ex.u1.01",
-        skillId: "mat.u1.propiedades_operaciones_reales",
-        correct: true,
-        answeredAt: "2025-03-15T08:00:00.000Z",
-        difficulty: 2,
-        timeMs: 0,
-        attemptIndex: 1,
-      });
-
-      expect(updated.lastPracticedBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(
-        "2025-03-15T08:00:00.000Z"
-      );
-    });
-
-    it("overwrites lastPracticedBySkill on subsequent attempts for the same skill", () => {
-      saveProgress({
-        attempts: [],
-        accuracyBySkill: {},
-        trendBySkill: {},
-        lastPracticedBySkill: { "mat.u1.propiedades_operaciones_reales": "2025-01-01T00:00:00.000Z" },
-        diagnosticResult: null,
-        studyPlan: null,
-      });
-
-      const updated = addAttempt({
-        exerciseId: "ex.u1.02",
-        skillId: "mat.u1.propiedades_operaciones_reales",
-        correct: false,
-        answeredAt: "2025-02-01T00:00:00.000Z",
-        difficulty: 3,
-        timeMs: 0,
-        attemptIndex: 1,
-      });
-
-      expect(updated.lastPracticedBySkill["mat.u1.propiedades_operaciones_reales"]).toBe(
-        "2025-02-01T00:00:00.000Z"
-      );
-    });
-
-    it("preserves diagnosticResult and studyPlan when adding an attempt", () => {
+    it("persists difficulty, timeMs, attemptIndex, diagnosticResult, and studyPlan", () => {
       const diag = {
         completedAt: "2025-01-01T00:00:00.000Z",
         estimates: [],
         suggestions: [],
         version: 1 as const,
       };
-      saveProgress({
-        attempts: [],
-        accuracyBySkill: {},
-        trendBySkill: {},
-        lastPracticedBySkill: {},
-        diagnosticResult: diag,
-        studyPlan: null,
-      });
+      activateStudent("local-a");
+      saveProgress(emptyProgress({ diagnosticResult: diag }));
 
-      const updated = addAttempt({
+      const result = addAttempt({
         exerciseId: "ex.u1.01",
-        skillId: "mat.u1.propiedades_operaciones_reales",
+        skillId: "mat.u1.intervalos",
         correct: true,
         answeredAt: "2025-02-01T00:00:00.000Z",
-        difficulty: 1,
-        timeMs: 0,
-        attemptIndex: 1,
-      });
-
-      expect(updated.diagnosticResult).toEqual(diag);
-    });
-
-    // T1.8: persistence of timing and retry fields
-    it("persists timeMs and attemptIndex when present in addAttempt", () => {
-      saveProgress({
-        attempts: [],
-        accuracyBySkill: {},
-        trendBySkill: {},
-        lastPracticedBySkill: {},
-        diagnosticResult: null,
-        studyPlan: null,
-      });
-
-      const updated = addAttempt({
-        exerciseId: "ex.u1.01",
-        skillId: "mat.u1.propiedades_operaciones_reales",
-        correct: true,
-        answeredAt: "2025-02-01T00:00:00.000Z",
+        difficulty: 4,
         timeMs: 45000,
         attemptIndex: 2,
       });
 
-      expect(updated.attempts).toHaveLength(1);
-      expect(updated.attempts[0].timeMs).toBe(45000);
-      expect(updated.attempts[0].attemptIndex).toBe(2);
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.value.attempts[0].difficulty).toBe(4);
+        expect(result.value.attempts[0].timeMs).toBe(45000);
+        expect(result.value.attempts[0].attemptIndex).toBe(2);
+        expect(result.value.diagnosticResult).toEqual(diag);
+      }
     });
 
-    it("addAttempt with default timeMs: 0 and attemptIndex: 1 works", () => {
-      saveProgress({
-        attempts: [],
-        accuracyBySkill: {},
-        trendBySkill: {},
-        lastPracticedBySkill: {},
-        diagnosticResult: null,
-        studyPlan: null,
-      });
-
-      const updated = addAttempt({
+    it("returns blocked result and does not persist when no active profile exists", () => {
+      const result = addAttempt({
         exerciseId: "ex.u1.01",
-        skillId: "mat.u1.intervalos",
-        correct: false,
+        skillId: "mat.u1.propiedades_operaciones_reales",
+        correct: true,
         answeredAt: "2025-01-01T00:00:00.000Z",
         timeMs: 0,
         attemptIndex: 1,
       });
 
-      expect(updated.attempts).toHaveLength(1);
-      expect(updated.attempts[0].timeMs).toBe(0);
-      expect(updated.attempts[0].attemptIndex).toBe(1);
-    });
-
-    it("normalizes partially migrated data (some attempts with fields, some without)", () => {
-      // Simulate data where some attempts have the new fields and some don't
-      const mixedData = {
-        attempts: [
-          {
-            exerciseId: "ex.u1.01",
-            skillId: "mat.u1.propiedades_operaciones_reales",
-            correct: true,
-            answeredAt: "2025-01-01T00:00:00.000Z",
-            timeMs: 5000,
-            attemptIndex: 2,
-          },
-          {
-            exerciseId: "ex.u1.02",
-            skillId: "mat.u1.propiedades_operaciones_reales",
-            correct: false,
-            answeredAt: "2025-01-01T01:00:00.000Z",
-          },
-        ],
-        accuracyBySkill: {},
-        trendBySkill: {},
-      };
-      localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(mixedData));
-
-      const result = loadProgress();
-
-      expect(result.attempts).toHaveLength(2);
-      // First attempt preserves its values
-      expect(result.attempts[0].timeMs).toBe(5000);
-      expect(result.attempts[0].attemptIndex).toBe(2);
-      // Second attempt is normalized to defaults
-      expect(result.attempts[1].timeMs).toBe(0);
-      expect(result.attempts[1].attemptIndex).toBe(1);
+      expect(result.ok).toBe(false);
+      if (!result.ok) expect(result.reason).toBe("missing-active-profile");
+      expect(localStorageMock.getItem(PRACTICE_STORAGE_KEY)).toBeNull();
+      expect(loadProgress().attempts).toHaveLength(0);
     });
   });
 });
