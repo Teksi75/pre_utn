@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   title: "Ingenium — Preparación independiente para ingreso a Ingeniería",
   description:
     "Preuniversitario independiente para ingreso a Ingenierías. Práctica, diagnóstico y plan de estudio personalizado.",
+  openGraph: {
+    locale: "es_AR",
+  },
+  other: {
+    "Content-Language": "es",
+  },
 };
 
 export default function RootLayout({
