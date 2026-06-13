@@ -4,7 +4,6 @@ import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { DiagnosticQuestion } from "@/components/diagnostic/DiagnosticQuestion";
 import { ResultsDisplay } from "@/components/diagnostic/ResultsDisplay";
-import { MathWatermark } from "@/components/math-visuals";
 import { Card } from "@/components/ui/Card";
 import {
   selectBalancedSet,
@@ -273,42 +272,37 @@ export default function DiagnosticPage() {
         </Link>
       </div>
 
-      <MathWatermark
-        skillId={currentExercise?.skillId}
-        variant="hero"
-      >
-        <section className="rounded-[var(--radius-card)] p-4 md:p-6">
-          {/* Fine progress bar */}
-          <div className="mb-6" role="progressbar" aria-valuenow={progressPercent} aria-valuemin={0} aria-valuemax={100} aria-label={`Progreso: ${currentIndex + 1} de ${exercises.length}`}>
-            <div className="flex items-center justify-between text-xs text-[var(--color-brand-500)] mb-1.5">
-              <span>Pregunta {currentIndex + 1} de {exercises.length}</span>
-              <span>{progressPercent}%</span>
-            </div>
-            <div className="h-1.5 rounded-full bg-[var(--color-brand-200)] overflow-hidden">
-              <div
-                className="h-full rounded-full bg-[var(--color-accent-500)] transition-[width] duration-[var(--duration-normal)]"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
+      <section className="rounded-[var(--radius-card)] p-4 md:p-6">
+        {/* Fine progress bar */}
+        <div className="mb-6" role="progressbar" aria-valuenow={progressPercent} aria-valuemin={0} aria-valuemax={100} aria-label={`Progreso: ${currentIndex + 1} de ${exercises.length}`}>
+          <div className="flex items-center justify-between text-xs text-[var(--color-brand-500)] mb-1.5">
+            <span>Pregunta {currentIndex + 1} de {exercises.length}</span>
+            <span>{progressPercent}%</span>
           </div>
+          <div className="h-1.5 rounded-full bg-[var(--color-brand-200)] overflow-hidden">
+            <div
+              className="h-full rounded-full bg-[var(--color-accent-500)] transition-[width] duration-[var(--duration-normal)]"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+        </div>
 
-          <div aria-live="polite" aria-atomic="false">
-            {currentExercise ? (
-              <DiagnosticQuestion
-                exercise={currentExercise}
-                questionNumber={currentIndex + 1}
-                totalQuestions={exercises.length}
-                onSubmit={handleAnswerSubmit}
-                disabled={isEvaluating}
-              />
-            ) : (
-              <div className="text-center py-8 text-[var(--color-brand-500)]">
-                No hay ejercicios disponibles.
-              </div>
-            )}
-          </div>
-        </section>
-      </MathWatermark>
+        <div aria-live="polite" aria-atomic="false">
+          {currentExercise ? (
+            <DiagnosticQuestion
+              exercise={currentExercise}
+              questionNumber={currentIndex + 1}
+              totalQuestions={exercises.length}
+              onSubmit={handleAnswerSubmit}
+              disabled={isEvaluating}
+            />
+          ) : (
+            <div className="text-center py-8 text-[var(--color-brand-500)]">
+              No hay ejercicios disponibles.
+            </div>
+          )}
+        </div>
+      </section>
     </div>
   );
 }
