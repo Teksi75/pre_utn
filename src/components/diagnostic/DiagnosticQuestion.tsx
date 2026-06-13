@@ -13,24 +13,19 @@ interface DiagnosticQuestionProps {
 }
 
 /**
- * Shows exercise prompt + answer input for diagnostic.
- * Editorial visual shell with MathThemePlate decorative background,
- * large question area, and conceptual background hint.
+ * Shows exercise prompt + answer input for the diagnostic question
+ * screen. The "Pregunta X de N" counter lives in <DiagnosticProgress>
+ * (rendered by the parent page above this card) so it is NOT echoed
+ * here — C3 of the redesign sprint.
  */
 export function DiagnosticQuestion({
   exercise,
-  questionNumber,
-  totalQuestions,
   onSubmit,
   disabled,
 }: DiagnosticQuestionProps) {
   return (
     <div className="space-y-4">
       <div className="app-glass-surface rounded-[var(--radius-card)] p-5 md:p-6">
-        <div className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-brand-600)] bg-[var(--color-brand-100)] px-2.5 py-1 rounded-[var(--radius-badge)] mb-4">
-          Pregunta {questionNumber} de {totalQuestions}
-        </div>
-
         <ExerciseCard exercise={exercise} />
       </div>
 
