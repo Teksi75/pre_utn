@@ -46,12 +46,11 @@ describe("HomeNextStepClient — student identity wiring (PR2)", () => {
     expect(src).toMatch(/displayName/);
   });
 
-  it("shows 'Estás estudiando como {displayName}' in the dashboard zone", () => {
+  it("warmly identifies the active student in the dashboard zone", () => {
     const src = homeSource();
-    // Must contain the exact text + displayName variable
-    expect(src).toContain("Estás estudiando como");
-    expect(src).toMatch(/Estás estudiando como/);
+    expect(src).toContain("Este es tu recorrido de aprendizaje,");
     expect(src).toMatch(/student\.displayName|displayName/);
+    expect(src).not.toContain("Estás estudiando como");
   });
 
   it("passes onSubmitProfile to StudentGate to create and activate profile", () => {

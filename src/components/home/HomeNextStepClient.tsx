@@ -137,12 +137,12 @@ export function HomeNextStepClient() {
         >
           {/* Active student chrome — within the dashboard zone */}
           <div className="flex items-center justify-between">
-            <p className="text-sm text-[var(--color-brand-600)] italic">
-              Estás estudiando como <strong className="text-[var(--color-brand-800)] not-italic">{student.displayName}</strong>
+            <p className="text-sm text-[var(--color-brand-700)] italic">
+              Este es tu recorrido de aprendizaje, <strong className="text-[var(--color-brand-800)] not-italic">{student.displayName}</strong>
             </p>
             <button
               onClick={() => setShowSwitcher(true)}
-              className="text-sm text-[var(--color-brand-600)] hover:text-[var(--color-brand-800)] underline underline-offset-2 transition-colors"
+              className="text-sm text-[var(--color-brand-700)] hover:text-[var(--color-brand-900)] underline underline-offset-2 transition-colors"
             >
               Cambiar alumno
             </button>

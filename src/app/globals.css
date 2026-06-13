@@ -20,6 +20,7 @@
   --color-accent-600: #d97706;
 
   /* Surfaces & muted */
+  --color-page-background: #f2efea;
   --color-surface: #fafaf9;
   --color-muted: #a8a29e;
 
@@ -98,7 +99,7 @@
 }
 
 @theme inline {
-  --color-background: var(--color-surface);
+  --color-background: var(--color-page-background);
   --color-foreground: var(--color-brand-900);
   --font-sans: var(--font-sans);
   --font-mono: ui-monospace, "Cascadia Code", "Fira Code", monospace;
@@ -106,7 +107,7 @@
 
 /* ── Base body styles ─────────────────────────────────────────── */
 body {
-  background: var(--color-surface);
+  background: var(--color-page-background);
   color: var(--color-brand-900);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
