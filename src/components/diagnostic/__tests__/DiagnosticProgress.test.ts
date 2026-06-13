@@ -64,6 +64,27 @@ describe("DiagnosticProgress", () => {
     expect(comp).toMatch(/computeProgressPercent\s*\(\s*currentIndex\s*,\s*total\s*\)/);
   });
 
+  test("computeProgressPercent represents 'questions already answered', not 'current question'", () => {
+    // Hotfix after visual review (C2.1): the bar used to fill
+    // (currentIndex + 1) / total which made it look like the student
+    // was already 8% into the diagnostic on question 1, before
+    // answering anything. The bar must now represent completed work:
+    // currentIndex / total.
+    //
+    //   currentIndex = 0  ->  0%   (the bar is empty, no fake "inicio")
+    //   currentIndex = 1  ->  ~8%  (1 of 12 already answered)
+    //   currentIndex = 11 ->  ~92% (one question left)
+    //
+    // We assert this by reading the source and the helper behaviour.
+    const comp = source(componentPath);
+
+    // The helper function body must NOT use (currentIndex + 1) any
+    // more — that was the bug. It should divide currentIndex / total.
+    expect(comp).not.toMatch(/Math\.round\(\s*\(\s*\(currentIndex\s*\+\s*1\)\s*\/\s*total\s*\)/);
+    // It should divide currentIndex by total, with the +1 removed.
+    expect(comp).toMatch(/currentIndex\s*\/\s*total/);
+  });
+
   test("always renders the 'Pregunta X de N' counter (even on the first question)", () => {
     const comp = source(componentPath);
     // The counter is the primary locator for the student; it must never
