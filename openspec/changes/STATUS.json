@@ -214,9 +214,12 @@
       "summary": "Consolidate Math MVP before Unit 3: shared helpers, validators, content split, CI, coverage, GGA compliance. 4 chained PRs + Phase 4 cleanup. 1606 tests, 93.11% domain coverage. PASS verify."
     },
     "student-identity-local-persistence-bridge": {
-      "status": "in-progress",
-      "branch": "feat/student-identity-local-persistence-bridge-ui",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-06-12",
+      "completedAt": "2026-06-13",
+      "mergedTo": "main",
+      "mergeCommit": "b90164a6389ae191c87c7c425ff25075fea5bf99",
       "delivery": "auto-forecast; chained PRs; stacked-to-main",
       "pr1": {
         "branch": "feat/student-identity-local-persistence-bridge",
@@ -227,14 +230,14 @@
       },
       "pr2": {
         "branch": "feat/student-identity-local-persistence-bridge-ui",
-        "status": "in-progress",
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "b90164a6389ae191c87c7c425ff25075fea5bf99",
         "summary": "PR2 — UI Gate + Switcher + Wiring: useActiveStudent hook, StudentGate, StudentSwitcher, Home/Practice/Diagnostic wiring, Nav chip."
       },
-      "summary": "PR1 merged (c37daef). PR2 in progress on feat/student-identity-local-persistence-bridge-ui."
+      "summary": "Complete: PR1 domain/storage/migration plus PR2 cockpit identity UI, local student switcher, Home/Practice/Diagnostic wiring, and Nav active-student chip. Verification PASS: 1733 tests, typecheck, build."
     }
   },
-  "activeBranches": [
-    "feat/student-identity-local-persistence-bridge-ui"
-  ],
-  "lastAudit": "2026-06-10T23:30:00-03:00"
+  "activeBranches": [],
+  "lastAudit": "2026-06-13T00:20:00-03:00"
 }
