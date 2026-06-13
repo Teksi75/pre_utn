@@ -22,12 +22,18 @@ describe("DiagnosticPage — C1: no MathWatermark on the question screen", () =>
     expect(src).not.toMatch(/<\/MathWatermark>/);
   });
 
-  it("keeps the question card structure intact (section + progress bar + DiagnosticQuestion)", () => {
+  it("keeps the question card structure intact (section + DiagnosticQuestion + progress via DiagnosticProgress)", () => {
     const src = diagnosticSource();
     // The question UI itself (sans watermark) must remain.
     expect(src).toContain("DiagnosticQuestion");
-    expect(src).toContain("role=\"progressbar\"");
-    expect(src).toContain("aria-label={`Progreso: ");
+    // C2 extracted the progress bar into its own component. We assert
+    // the parent still mounts it with the right props and that the
+    // progressbar + a11y are covered by the new component
+    // (cross-checked in DiagnosticProgress.test.ts).
+    expect(src).toContain("DiagnosticProgress");
+    expect(src).toMatch(/<DiagnosticProgress\b/);
+    expect(src).toMatch(/currentIndex=\{currentIndex\}/);
+    expect(src).toMatch(/total=\{exercises\.length\}/);
     expect(src).toMatch(/<section\b/);
   });
 
