@@ -12,7 +12,7 @@ import {
 import { isSkillReady } from "@/domain/catalog/readiness";
 import type { AccessibleSkill } from "@/domain/catalog/accessibility";
 import { skillLabel } from "@/lib/skill-label";
-import { StatusPill, type StatusPillVariant } from "@/components/ui/StatusPill";
+import { StatusPill } from "@/components/ui/StatusPill";
 import type { SkillId } from "@/domain/models/skill";
 
 const UNITS = [1, 2, 3, 4, 5, 6] as const;
@@ -196,7 +196,7 @@ export function FocusSelector({
                   }
                   role="option"
                   aria-selected={selectedSkillId === skillId}
-                  className={`w-full text-left px-4 py-3 text-sm rounded-[var(--radius-card)] border transition-all duration-[var(--duration-fast)] min-h-[44px] ${
+                  className={`w-full text-left px-4 py-3 text-sm rounded-[var(--radius-card)] border transition-colors duration-[var(--duration-fast)] min-h-[44px] ${
                     selectedSkillId === skillId
                       ? "bg-accent-500/10 border-accent-500 text-brand-900 font-medium shadow-[var(--shadow-card)]"
                       : isReady
