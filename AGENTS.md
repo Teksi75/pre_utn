@@ -34,6 +34,79 @@ Toda feature debe responder al menos una de estas preguntas:
 
 Si la respuesta a ambas es “no”, la feature no entra en el MVP.
 
+## Marca y voz (Ingenium — Instituto Bárbara Tomba)
+
+Decisión de marca del usuario (Pablo, profesor del Instituto),
+surgida durante el sprint de rediseño 2026-06-13/14. **Cualquier
+copy, microcopy o claim sobre la app debe respetarla.**
+
+### Contexto de la app dentro de la oferta del Instituto
+
+La app tiene **dos misiones**:
+
+1. **Misión pedagógica (principal):** la enseñanza real ocurre en
+   clase presencial con Pablo como profesor. La app es
+   **material de apoyo** para que el alumno practique, refuerce y
+   mida su progreso entre clases. La diferenciación pedagógica
+   viene del Instituto, no de la app.
+2. **Misión comercial (secundaria):** la app funciona como plus
+   digital del Instituto frente a la competencia. Refuerza el
+   valor de marca y la propuesta pedagógica del Instituto.
+
+Consecuencia directa: la app **no es un instrumento de enseñanza
+autónomo**. No necesita (ni debe pretender) simular un profesor
+detrás. Cualquier claim que lo sugiera está mintiendo sobre la
+naturaleza del producto y degrada la propuesta del Instituto
+("¿para qué pagás clase si la app ya te enseña?").
+
+### Reglas de voz
+
+- **Ingenium es la marca del Instituto de Bárbara Tomba**
+  (https://ingenium-web.vercel.app/). No es un "profe digital",
+  no es un personaje, no es un LLM conversacional.
+- **Voz aceptable:** la app es **material de apoyo** del alumno
+  que ya está tomando clase con Pablo. La app puede orientar
+  ("empezá por el diagnóstico", "seguí practicando", "elegí
+  por dónde arrancar") sin atribuirse la voz del profesor.
+- **Voz prohibida:** "Soy tu profe…", "te marco qué practicar",
+  "primero miro tu punto de partida", "vamos a armar un plan a
+  tu medida" (cuando no hay tal loop), o cualquier variante que
+  personifique la app como tutor. También: claims de
+  personalización ("plan personalizado para vos") que la app
+  cumple de forma limitada (basado en errores taggeados) y que
+  confunden al alumno sobre qué es la app y qué es la clase.
+- **Lo que la app SÍ puede prometer honestamente:**
+  - "Material de apoyo del Instituto Ingenium" — describe qué es.
+  - "Empezá por el diagnóstico inicial" — acción concreta.
+  - "Seguí donde dejaste" — orientación básica.
+  - "El alumno va encaminado" / "Hay N habilidades que necesitan
+    atención" — observado del estado, no promesa.
+
+### Anti-patrones visuales asociados
+
+- Avatares de "profe", emojis de birrete/capirotada, copy en
+  segunda persona con pretensión de tutoría, CTAs que prometen
+  "diagnóstico personalizado con IA".
+
+### Tests de caracterización obsoletos
+
+Cualquier test que claven copy de "profe digital" (ej:
+`TeacherDigitalHero.test.ts` que exigía `hero.title === "Tu
+profesor digital"`, o `copy-strings-acceptance.test.ts` con
+`REQUIRED_DOMAIN_STRINGS = ["Tu profesor digital"]`) son
+obsoletos desde la decisión de marca B3. Al refactorizar el
+hero / el view-model / el copy, hay que actualizar tanto el
+dominio como el test, y documentar el cambio en el commit
+message (no es un cambio de copy "estético" — es una decisión
+de producto sobre lo que la app ES y lo que NO ES).
+
+### Criterio de decisión rápido
+
+Si el alumno leyera el copy en voz alta y se sintiera engañado
+porque la app no cumple lo que dice, el copy está mal. La promesa
+implícita debe ser cumplible por la lógica real del producto,
+que a su vez complementa (no reemplaza) la clase presencial.
+
 ## Diseño de ejercicios
 
 No usar respuesta libre para expresiones matemáticas estructuradas. Es frágil para corregir, introduce ambigüedad sintáctica y castiga al alumno por formato en vez de evaluar comprensión matemática.
