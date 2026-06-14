@@ -2,11 +2,20 @@ import Link from "next/link";
 import { HomeNextStepClient } from "@/components/home/HomeNextStepClient";
 
 /**
- * Home page — teacher digital home dashboard.
+ * Home page — student dashboard for Ingenium.
  *
  * The editorial hero and MathWatermark wrapper have been moved into
  * the HomeNextStepClient component. This page now provides the
  * outer layout: dashboard, quick actions, and course context.
+ *
+ * B3 (redesign closeout): renamed from "teacher digital home
+ * dashboard" to drop the "teacher digital" framing. Ingenium
+ * is a brand of the Instituto led by Barbara Tomba, not a
+ * personified tutor. The app is supporting material for the
+ * student who is taking in-person class with the teacher. The
+ * future teacher-facing panel (where the profesor can see
+ * each student's progress) is a separate product with its own
+ * SDD; see AGENTS.md "Marca y voz".
  */
 export default function Home() {
   return (
@@ -14,14 +23,14 @@ export default function Home() {
       {/* Dashboard — HomeNextStepClient renders hero + situation + study plan + route + decisions */}
       <HomeNextStepClient />
 
-      {/* Zone 3 — Acciones rápidas */}
+      {/* Zone 3 — Acciones rápidas (B5: lower visual weight) */}
       <section
         aria-labelledby="home-actions-title"
-        className="mt-8 space-y-3"
+        className="mt-8 space-y-3 opacity-90"
       >
         <h2
           id="home-actions-title"
-          className="text-sm font-semibold uppercase tracking-wide text-[var(--color-brand-700)]"
+          className="text-xs font-medium uppercase tracking-wide text-[var(--color-brand-500)]"
         >
           Acciones rápidas
         </h2>
@@ -29,10 +38,10 @@ export default function Home() {
           <li>
             <Link
               href="/diagnostic"
-              className="app-glass-surface flex items-center justify-between gap-3 rounded-[var(--radius-button)] px-4 py-2.5 text-[var(--color-brand-700)] hover:border-[var(--color-brand-300)] hover:text-[var(--color-brand-900)] hover:bg-[var(--color-brand-100)] transition-colors focus-visible:shadow-[var(--ring-focus)] min-h-[44px]"
+              className="flex items-center justify-between gap-3 rounded-[var(--radius-button)] border border-[var(--color-brand-200)] bg-transparent px-4 py-2.5 text-[var(--color-brand-600)] hover:border-[var(--color-brand-300)] hover:text-[var(--color-brand-900)] hover:bg-[var(--color-brand-50)] transition-colors focus-visible:shadow-[var(--ring-focus)] min-h-[44px]"
             >
               <span>Hacer diagnóstico</span>
-              <span aria-hidden="true" className="text-[var(--color-brand-500)]">
+              <span aria-hidden="true" className="text-[var(--color-brand-400)]">
                 →
               </span>
             </Link>
@@ -40,10 +49,10 @@ export default function Home() {
           <li>
             <Link
               href="/practice"
-              className="app-glass-surface flex items-center justify-between gap-3 rounded-[var(--radius-button)] px-4 py-2.5 text-[var(--color-brand-700)] hover:border-[var(--color-brand-300)] hover:text-[var(--color-brand-900)] hover:bg-[var(--color-brand-100)] transition-colors focus-visible:shadow-[var(--ring-focus)] min-h-[44px]"
+              className="flex items-center justify-between gap-3 rounded-[var(--radius-button)] border border-[var(--color-brand-200)] bg-transparent px-4 py-2.5 text-[var(--color-brand-600)] hover:border-[var(--color-brand-300)] hover:text-[var(--color-brand-900)] hover:bg-[var(--color-brand-50)] transition-colors focus-visible:shadow-[var(--ring-focus)] min-h-[44px]"
             >
               <span>Ir a práctica</span>
-              <span aria-hidden="true" className="text-[var(--color-brand-500)]">
+              <span aria-hidden="true" className="text-[var(--color-brand-400)]">
                 →
               </span>
             </Link>

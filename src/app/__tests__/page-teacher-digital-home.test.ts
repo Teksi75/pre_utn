@@ -59,4 +59,70 @@ describe("page.tsx — Teacher Digital Home integration", () => {
     const page = source(pagePath);
     expect(page).not.toMatch(/["']use client["']/);
   });
+
+  // ── B5: Acciones rápidas con menor peso visual ────────────────────
+  // The Home has one primary CTA in the hero. The Zone 3 quick
+  // actions ("Hacer diagnóstico" / "Ir a práctica") must read as
+  // secondary shortcuts, not as a second primary CTA surface. We
+  // pin the lighter visual contract here.
+  test("B5: Zone 3 section uses a lower-key h2 (text-xs, text-brand-500)", () => {
+    const page = source(pagePath);
+    // The h2 "Acciones rápidas" must be visually lighter than the
+    // h3 inside the dashboard panels (text-sm font-semibold).
+    // We assert the class string of the "home-actions-title" h2.
+    const match = page.match(
+      /id="home-actions-title"[\s\S]*?className="([^"]+)"/,
+    );
+    expect(match).not.toBeNull();
+    const classes = match![1]!;
+    expect(classes).toContain("text-xs");
+    expect(classes).toContain("text-[var(--color-brand-500)]");
+    // Forbid the bolder old combination.
+    expect(classes).not.toMatch(/text-sm font-semibold/);
+  });
+
+  test("B5: Zone 3 section has an overall opacity dim (opacity-90 or similar)", () => {
+    const page = source(pagePath);
+    // The section must declare an opacity below 1 so the
+    // shortcut row reads as a quiet helper, not a featured
+    // action block. We assert the section class string contains
+    // an opacity-* utility.
+    const match = page.match(
+      /aria-labelledby="home-actions-title"[\s\S]*?className="([^"]+)"/,
+    );
+    expect(match).not.toBeNull();
+    const classes = match![1]!;
+    expect(classes).toMatch(/opacity-\d/);
+  });
+
+  test("B5: Zone 3 quick-action links drop the app-glass-surface heavy style", () => {
+    // The links should read as quiet outline buttons, not as
+    // glass cards. They keep min-h-[44px] and focus-visible
+    // for a11y, but the surface treatment must be lighter.
+    const page = source(pagePath);
+    // Find the Zone 3 <Link href="/diagnostic" ...> block.
+    const match = page.match(
+      /<Link\s+href="\/diagnostic"[\s\S]*?className="([^"]+)"/,
+    );
+    expect(match).not.toBeNull();
+    const classes = match![1]!;
+    // Must NOT carry the heavy glass surface.
+    expect(classes).not.toContain("app-glass-surface");
+    // Must keep the touch target and the focus cue.
+    expect(classes).toContain("min-h-[44px]");
+    expect(classes).toContain("focus-visible:shadow-[var(--ring-focus)]");
+  });
+
+  test("B5: Zone 3 quick-action link text uses the lighter brand-600", () => {
+    // The labels in the shortcut links drop from brand-700 to
+    // brand-600 (one notch lighter) so the visual weight of the
+    // row matches the reduced h2.
+    const page = source(pagePath);
+    const match = page.match(
+      /<Link\s+href="\/diagnostic"[\s\S]*?className="([^"]+)"/,
+    );
+    expect(match).not.toBeNull();
+    const classes = match![1]!;
+    expect(classes).toMatch(/text-\[var\(--color-brand-600\)\]/);
+  });
 });

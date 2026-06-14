@@ -78,10 +78,83 @@ describe("TeacherDigitalHero", () => {
     expect(comp).not.toMatch(/useEffect/);
   });
 
-  test("hero.title in domain must be 'Tu profesor digital' (not 'Bienvenido/a al panel docente' or 'Tu panel de decisiones')", () => {
+  test("hero.title in domain is 'Ingenium' (B3 brand refresh)", () => {
+    // B3 of the redesign sprint: the hero title is the institute's
+    // brand (Ingenium), not a personification ("profesor digital",
+    // "profe", etc.). The copy is honest about what the app is:
+    // a piece of practice material.
     const domainSrc = source("src/domain/teacher-home/index.ts");
-    expect(domainSrc).toContain('"Tu profesor digital"');
+    expect(domainSrc).toContain('"Ingenium"');
+    // Anti-regression: forbid the previous personification copy and
+    // the older "panel docente / decisiones" framings.
+    expect(domainSrc).not.toContain("Tu profesor digital");
+    expect(domainSrc).not.toContain("Soy Ingenium");
+    expect(domainSrc).not.toContain("profe");
     expect(domainSrc).not.toContain("Bienvenido/a al panel docente");
     expect(domainSrc).not.toContain("Tu panel de decisiones");
+  });
+
+  test("hero.subtitle in domain names the Instituto Ingenium and points the student at next steps (B3 brand refresh)", () => {
+    // The subtitle speaks to the student (imperative "empezá",
+    // "seguí"), not to a tutor. It mentions the institute as the
+    // source of the material, without claiming any personalised
+    // guidance that the app does not actually provide.
+    const domainSrc = source("src/domain/teacher-home/index.ts");
+    expect(domainSrc).toContain("Material de apoyo del Instituto Ingenium");
+    expect(domainSrc).toContain("Empezá por el diagnóstico inicial o seguí donde dejaste");
+  });
+
+  // ── B3 visual refresh: spacing + hierarchy + CTA ────────────────────────
+  test("B3: title and subtitle read as one text block (close spacing)", () => {
+    const comp = source(componentPath);
+    // The subtitle <p> must have a small top margin so the title
+    // and subtitle feel like a single message but stay
+    // distinguishable. The CTA must be visibly further away.
+    const subtitleMatch = comp.match(
+      /<p\s+className="([^"]+)"\s*>\s*\{hero\.subtitle\}/,
+    );
+    expect(subtitleMatch).not.toBeNull();
+    const subtitleClasses = subtitleMatch![1]!;
+    // The subtitle is base-text (readable) and relaxed.
+    expect(subtitleClasses).toMatch(/text-base|text-\[var\(--text-base\)\]/);
+    expect(subtitleClasses).toContain("leading-[var(--leading-relaxed)]");
+    // It still has a top margin (close, not zero) — proves hierarchy.
+    expect(subtitleClasses).toMatch(/mt-\d/);
+  });
+
+  test("B3: CTA link is the most prominent action, larger than the subtitle margin", () => {
+    const comp = source(componentPath);
+    // The CTA <Link> sits below the subtitle with a larger
+    // margin (mt-6) so the eye lands on it after reading.
+    const ctaMatch = comp.match(
+      /<Link\s+href=\{hero\.ctaHref\}[\s\S]*?className="([^"]+)"/,
+    );
+    expect(ctaMatch).not.toBeNull();
+    const ctaClasses = ctaMatch![1]!;
+    // Larger padding than before (px-6 py-3) so the button reads
+    // as the main affordance.
+    expect(ctaClasses).toContain("px-6");
+    expect(ctaClasses).toContain("py-3");
+    // 44px touch target stays.
+    expect(ctaClasses).toContain("min-h-[44px]");
+    // Solid primary surface, focus ring intact.
+    expect(ctaClasses).toContain("bg-[var(--color-brand-900)]");
+    expect(ctaClasses).toContain("text-white");
+    expect(ctaClasses).toContain("focus-visible:shadow-[var(--ring-focus)]");
+  });
+
+  test("B3: hero container is a true card surface (border + shadow on top of glass)", () => {
+    const comp = source(componentPath);
+    const articleMatch = comp.match(/<article\b[\s\S]*?className="([^"]+)"/);
+    expect(articleMatch).not.toBeNull();
+    const articleClasses = articleMatch![1]!;
+    // The hero container keeps the warm glass surface from A1
+    // but adds an explicit border + shadow so it reads as a
+    // featured card, not a generic translucent panel.
+    expect(articleClasses).toContain("app-glass-accent");
+    expect(articleClasses).toContain("rounded-[var(--radius-card)]");
+    expect(articleClasses).toContain("border");
+    expect(articleClasses).toMatch(/border-\[var\(--color-accent/);
+    expect(articleClasses).toMatch(/shadow-\[var\(--shadow-elevated\)\]/);
   });
 });

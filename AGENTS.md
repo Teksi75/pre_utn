@@ -59,6 +59,32 @@ detrás. Cualquier claim que lo sugiera está mintiendo sobre la
 naturaleza del producto y degrada la propuesta del Instituto
 ("¿para qué pagás clase si la app ya te enseña?").
 
+### Autonomía de la app vs autonomía del alumno
+
+Precisión importante del usuario, capturada el 2026-06-14
+durante el sprint closeout (B3):
+
+- **La app del alumno es técnicamente autosuficiente** para
+  hacer el recorrido completo (diagnóstico, práctica,
+  feedback, progreso) sin depender de que nadie más la
+  supervise en el momento.
+- **El alumno NO está solo** desde un punto de vista
+  institucional. El **panel docente futuro** (producto
+  complementario, SDD propia, fuera del scope de esta app)
+  es donde Pablo — u otro profesor del Instituto — va a
+  poder ver si el alumno está realizando los ejercicios y
+  cómo le va con su resolución. Cuando ese panel exista,
+  vivirá en su propio repo/rama/SDD; no es parte de la app
+  del alumno.
+
+Consecuencia para la voz: la app del alumno **no debe
+sugerir ni negar la presencia del profesor**. El alumno
+puede estar haciendo el recorrido a las 3am solo, o puede
+estar haciéndolo después de clase con la expectativa de
+que Pablo lo mire. La app no lo sabe y no debe asumir
+ninguno de los dos casos. El copy debe ser **neutro al
+contexto de uso**.
+
 ### Reglas de voz
 
 - **Ingenium es la marca del Instituto de Bárbara Tomba**

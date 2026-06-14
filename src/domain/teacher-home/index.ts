@@ -142,24 +142,31 @@ function buildTeacherMessage(
 
 // ── Mission ──────────────────────────────────────────────────────────────────
 
+// B3 (redesign closeout): the hero title is the institute's brand
+// ("Ingenium"), not a personification. The subtitle names the
+// Instituto Ingenium and orients the student at next steps
+// without claiming any personalised guidance the app does not
+// actually provide. See AGENTS.md "Marca y voz".
+const MISSION_TITLE = "Ingenium";
+const MISSION_SUBTITLE =
+  "Material de apoyo del Instituto Ingenium. Empezá por el diagnóstico inicial o seguí donde dejaste.";
+
 function buildMission(
   progress: PracticeProgress,
   nextStep: HomeNextStep
 ): Mission {
   if (progress.attempts.length === 0) {
     return {
-      title: "Tu profesor digital",
-      subtitle:
-        "Realizá un diagnóstico inicial para detectar qué áreas necesitan más atención y recibir un plan de práctica personalizado.",
+      title: MISSION_TITLE,
+      subtitle: MISSION_SUBTITLE,
       ctaLabel: "Hacer diagnóstico inicial",
       ctaHref: "/diagnostic",
     };
   }
 
   return {
-    title: "Tu profesor digital",
-    subtitle:
-      "Revisá tu progreso, las áreas con dificultad y las próximas acciones recomendadas.",
+    title: MISSION_TITLE,
+    subtitle: MISSION_SUBTITLE,
     ctaLabel: nextStep.title,
     ctaHref: nextStep.href,
   };

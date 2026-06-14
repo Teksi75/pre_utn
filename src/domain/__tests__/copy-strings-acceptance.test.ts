@@ -21,8 +21,15 @@ const FORBIDDEN_STRINGS = [
 
 // ── Strings that MUST appear in specific locations ──────────────────────────
 
+// B3 (redesign sprint closeout): the hero title is the institute's
+// brand "Ingenium" (not a personification like "Tu profesor
+// digital" — see AGENTS.md "Marca y voz (Ingenium — Instituto
+// Bárbara Tomba)"). The subtitle names the Instituto Ingenium
+// and speaks to the student with imperatives ("empezá", "seguí").
 const REQUIRED_DOMAIN_STRINGS = [
-  "Tu profesor digital",
+  "Ingenium",
+  "Material de apoyo del Instituto Ingenium",
+  "Empezá por el diagnóstico inicial o seguí donde dejaste",
 ] as const;
 
 describe("Copy strings — FORBIDDEN strings must not exist", () => {
@@ -46,10 +53,12 @@ describe("Copy strings — FORBIDDEN strings must not exist", () => {
 });
 
 describe("Copy strings — REQUIRED domain strings must exist", () => {
-  test("domain teacher-home/index.ts must contain Tu profesor digital", () => {
-    const content = source("src/domain/teacher-home/index.ts");
-    expect(content).toContain("Tu profesor digital");
-  });
+  for (const required of REQUIRED_DOMAIN_STRINGS) {
+    test(`domain teacher-home/index.ts must contain "${required}"`, () => {
+      const content = source("src/domain/teacher-home/index.ts");
+      expect(content).toContain(required);
+    });
+  }
 });
 
 describe("MathRoutePanel — heading must be 'Ruta Matemática'", () => {
@@ -94,16 +103,22 @@ describe("DecisionBoardPanel — heading must be 'Plan de hoy'", () => {
   });
 });
 
-describe("TeacherDigitalHero — mission.title must use 'Tu profesor digital'", () => {
-  test("domain buildMission must produce title containing 'Tu profesor digital'", () => {
+describe("TeacherDigitalHero — mission.title must use 'Ingenium' (B3)", () => {
+  test("domain buildMission must produce title containing 'Ingenium'", () => {
     const content = source("src/domain/teacher-home/index.ts");
-    // The mission.title must be "Tu profesor digital" in buildMission
-    // We check the literal string is in the source
-    expect(content).toContain('"Tu profesor digital"');
+    // B3: title is the institute's brand, not a personification.
+    // The string is the source-of-truth for what the home hero says.
+    expect(content).toContain('"Ingenium"');
   });
 
   test("domain buildMission subtitle must NOT mention 'tus estudiantes'", () => {
     const content = source("src/domain/teacher-home/index.ts");
+    // Anti-regression for the older "docente" framing.
     expect(content).not.toContain("tus estudiantes");
+  });
+
+  test("domain buildMission subtitle must reference Instituto Ingenium as the source of the material", () => {
+    const content = source("src/domain/teacher-home/index.ts");
+    expect(content).toContain("Material de apoyo del Instituto Ingenium");
   });
 });
