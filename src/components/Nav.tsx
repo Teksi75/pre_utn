@@ -25,20 +25,30 @@ export function Nav() {
       aria-label="Principal"
       className="border-b border-[var(--color-brand-200)] bg-[var(--color-surface)]/80 backdrop-blur-sm sticky top-0 z-40"
     >
-      <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
         <Link
           href="/"
-          className="flex items-baseline gap-2 text-lg font-bold text-[var(--color-brand-900)] tracking-tight"
+          className="flex shrink-0 items-baseline gap-2 text-lg font-bold text-[var(--color-brand-900)] tracking-tight"
         >
           Ingenium
           <span className="hidden sm:inline text-xs font-normal text-[var(--color-brand-500)] tracking-normal">
             Preuniversitario para Ingenierías
           </span>
         </Link>
-        <div className="flex items-center gap-3">
+        {/*
+          E2: the link row can overflow on narrow mobile (4 nav items
+          + the optional active-student chip on desktop). We wrap it
+          in a horizontally scrollable container so the *page* never
+          scrolls sideways; only the nav row does, with no visible
+          scrollbar and momentum scrolling on touch devices.
+        */}
+        <div
+          className="flex items-center gap-3 overflow-x-auto min-w-0 [&::-webkit-scrollbar]:hidden"
+          style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
+        >
           {/* Active student chip — discreet, right side */}
           {student !== null && (
-            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--color-brand-100)] text-xs font-medium text-[var(--color-brand-700)] border border-[var(--color-brand-200)]">
+            <span className="hidden sm:inline-flex shrink-0 items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--color-brand-100)] text-xs font-medium text-[var(--color-brand-700)] border border-[var(--color-brand-200)]">
               <span aria-hidden="true">🎓</span>
               <span>Alumno activo:</span>
               <span className="font-semibold text-[var(--color-brand-900)] not-italic">
@@ -50,7 +60,7 @@ export function Nav() {
             <Link
               key={href}
               href={href}
-              className={`px-3 py-2 text-sm font-medium rounded-[var(--radius-button)] transition-colors ${
+              className={`shrink-0 px-3 py-2 text-sm font-medium rounded-[var(--radius-button)] transition-colors ${
                 isActive(href)
                   ? "text-[var(--color-brand-900)] bg-[var(--color-brand-100)]"
                   : "text-[var(--color-brand-700)] hover:text-[var(--color-brand-900)] hover:bg-[var(--color-brand-100)]"
