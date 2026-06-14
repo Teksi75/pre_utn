@@ -88,4 +88,35 @@ describe("DecisionBoardPanel", () => {
     expect(comp).toContain("Plan de hoy");
     expect(comp).not.toContain("Decisiones recomendadas");
   });
+
+  // B2 — single primary CTA on Home. The decision board is no longer
+  // a primary CTA surface; its links must read as secondary.
+
+  test("does NOT use the primary CTA style (bg-brand-900 + text-white) for its links", () => {
+    const comp = source(componentPath);
+    // The primary fingerprint from Button.variant="primary" is
+    //   bg-[var(--color-brand-900)] ... text-white
+    // The decision board links must not paint themselves primary anymore.
+    expect(comp).not.toMatch(/bg-\[var\(--color-brand-900\)\][^"]*text-white/);
+    expect(comp).not.toMatch(/text-white/);
+  });
+
+  test("links render with the secondary CTA style (bg-brand-100 + text-brand-700)", () => {
+    const comp = source(componentPath);
+    // Secondary fingerprint from Button.variant="secondary":
+    //   bg-[var(--color-brand-100)] text-brand-700 hover:bg-[var(--color-brand-200)]
+    expect(comp).toMatch(/bg-\[var\(--color-brand-100\)\]/);
+    expect(comp).toMatch(/text-brand-700/);
+    expect(comp).toMatch(/hover:bg-\[var\(--color-brand-200\)\]/);
+  });
+
+  test("card containers use the subtle brand surface (no strong white surface)", () => {
+    const comp = source(componentPath);
+    // The inner action card used to be `bg-white border-brand-200` which
+    // made each card feel like a CTA on its own. B2 lowers them to a
+    // softer `bg-brand-50` so the button inside is the focal point.
+    expect(comp).toMatch(/bg-\[var\(--color-brand-50\)\]/);
+    // And we drop the strong `border-brand-200` outline.
+    expect(comp).not.toMatch(/border-\[var\(--color-brand-200\)\][^"]*bg-white/);
+  });
 });

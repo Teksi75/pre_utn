@@ -12,6 +12,7 @@ import {
 import { isSkillReady } from "@/domain/catalog/readiness";
 import type { AccessibleSkill } from "@/domain/catalog/accessibility";
 import { skillLabel } from "@/lib/skill-label";
+import { StatusPill } from "@/components/ui/StatusPill";
 import type { SkillId } from "@/domain/models/skill";
 
 const UNITS = [1, 2, 3, 4, 5, 6] as const;
@@ -137,23 +138,31 @@ export function FocusSelector({
       <div>
         <label
           htmlFor="unit-select"
-          className="block text-sm font-semibold text-brand-700 mb-2"
+          className="block text-sm font-semibold text-brand-800 mb-2"
         >
           Unidad
         </label>
-        <select
-          id="unit-select"
-          value={selectedUnit ?? ""}
-          onChange={handleUnitChange}
-          className="w-full border border-brand-300 rounded-[var(--radius-button)] px-3 py-2.5 text-sm bg-white text-brand-900 min-h-[44px] focus-visible:shadow-[var(--ring-focus)]"
-        >
-          <option value="">Seleccionar unidad...</option>
-          {UNITS.map((unit) => (
-            <option key={unit} value={unit}>
-              Unidad {unit}
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <select
+            id="unit-select"
+            value={selectedUnit ?? ""}
+            onChange={handleUnitChange}
+            className="w-full appearance-none border border-brand-300 rounded-[var(--radius-button)] pl-3 pr-9 py-2.5 text-sm bg-white text-brand-900 min-h-[44px] cursor-pointer transition-colors duration-[var(--duration-fast)] hover:border-brand-400 focus-visible:shadow-[var(--ring-focus)]"
+          >
+            <option value="">Seleccionar unidad...</option>
+            {UNITS.map((unit) => (
+              <option key={unit} value={unit}>
+                Unidad {unit}
+              </option>
+            ))}
+          </select>
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-[var(--color-brand-500)]"
+          >
+            ▾
+          </span>
+        </div>
       </div>
 
       {selectedUnit !== null && (
@@ -187,7 +196,7 @@ export function FocusSelector({
                   }
                   role="option"
                   aria-selected={selectedSkillId === skillId}
-                  className={`w-full text-left px-4 py-3 text-sm rounded-[var(--radius-card)] border transition-all duration-[var(--duration-fast)] min-h-[44px] ${
+                  className={`w-full text-left px-4 py-3 text-sm rounded-[var(--radius-card)] border transition-colors duration-[var(--duration-fast)] min-h-[44px] ${
                     selectedSkillId === skillId
                       ? "bg-accent-500/10 border-accent-500 text-brand-900 font-medium shadow-[var(--shadow-card)]"
                       : isReady
@@ -210,17 +219,17 @@ export function FocusSelector({
                       )}
                     </span>
                     {isReady ? (
-                      <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full font-medium shrink-0">
+                      <StatusPill variant="available" className="shrink-0">
                         Disponible
-                      </span>
+                      </StatusPill>
                     ) : blockedByPrereq ? (
-                      <span className="text-xs text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full font-medium shrink-0">
+                      <StatusPill variant="locked" className="shrink-0">
                         Bloqueada
-                      </span>
+                      </StatusPill>
                     ) : (
-                      <span className="text-xs text-brand-400 bg-brand-100 px-2 py-0.5 rounded-full shrink-0">
+                      <StatusPill variant="neutral" className="shrink-0">
                         Próximamente
-                      </span>
+                      </StatusPill>
                     )}
                   </span>
                 </button>

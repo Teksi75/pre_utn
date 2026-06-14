@@ -55,8 +55,8 @@ function hashStringToSeed(str: string): number {
 function optionClassName(selected: boolean): string {
   return `flex w-full cursor-pointer items-center gap-3 text-left px-4 py-3 text-sm rounded-[var(--radius-button)] min-h-[44px] transition-colors duration-[var(--duration-fast)] focus-within:shadow-[var(--ring-focus)] border ${
     selected
-      ? "bg-[var(--color-brand-900)] text-white border-[var(--color-brand-900)]"
-      : "bg-white/90 text-[var(--color-brand-900)] border-[var(--color-brand-300)] backdrop-blur-sm hover:bg-[var(--color-brand-50)]"
+      ? "bg-[var(--color-accent-soft)] text-[var(--color-accent-700)] border-[var(--color-accent-500)] ring-1 ring-inset ring-[var(--color-accent-500)]"
+      : "bg-white text-[var(--color-brand-900)] border-[var(--color-brand-300)] hover:bg-[var(--color-brand-50)]"
   } has-[:disabled]:cursor-not-allowed has-[:disabled]:bg-[var(--color-brand-100)] has-[:disabled]:text-[var(--color-brand-600)] has-[:disabled]:border-[var(--color-brand-200)]`;
 }
 

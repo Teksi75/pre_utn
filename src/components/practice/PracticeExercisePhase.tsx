@@ -4,7 +4,6 @@ import { BackButton } from "@/components/ui/BackButton";
 import { AnswerForm } from "@/components/practice/AnswerForm";
 import { ExerciseCard } from "@/components/practice/ExerciseCard";
 import { SubmittedAnswerDisplay } from "@/components/exercises/SubmittedAnswerDisplay";
-import { MathWatermark } from "@/components/math-visuals/MathWatermark";
 import type { Exercise } from "@/domain/models/exercise";
 import type { PreviousExerciseSnapshot } from "@/app/practice/previous-snapshot";
 
@@ -61,74 +60,72 @@ export function PracticeExercisePhase({
   onDraftChange,
 }: PracticeExercisePhaseProps) {
   return (
-    <MathWatermark skillId={skillId} variant="card" opacity={0.12}>
-      <div className="space-y-4" aria-live="polite" aria-atomic="false">
-        <BackButton onClick={onBack} />
+    <div className="space-y-4" aria-live="polite" aria-atomic="false">
+      <BackButton onClick={onBack} />
 
-        {/* Previous exercise read-only view */}
-        {isViewingPreviousExercise && previousSnapshot && (
-          <>
-            <div className="flex items-center justify-between">
-              <div className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 bg-amber-100 px-2.5 py-1 rounded-[var(--radius-badge)]">
-                Ejercicio anterior
-              </div>
-              {onReturnToCurrent && (
-                <button
-                  type="button"
-                  onClick={onReturnToCurrent}
-                  className={prevButtonClassName}
-                >
-                  Volver al ejercicio actual →
-                </button>
-              )}
+      {/* Previous exercise read-only view */}
+      {isViewingPreviousExercise && previousSnapshot && (
+        <>
+          <div className="flex items-center justify-between">
+            <div className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 bg-amber-100 px-2.5 py-1 rounded-[var(--radius-badge)]">
+              Ejercicio anterior
             </div>
-
-            <ExerciseCard exercise={previousSnapshot.exercise} />
-            <SubmittedAnswerDisplay
-              exercise={previousSnapshot.exercise}
-              submittedAnswer={previousSnapshot.submittedAnswer}
-              evaluation={previousSnapshot.evaluation}
-              feedback={previousSnapshot.feedback}
-            />
-          </>
-        )}
-
-        {/* Current exercise form (hidden when viewing previous) */}
-        {!isViewingPreviousExercise && exercise && (
-          <>
-            <div className="flex items-center justify-between">
-              <div className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-600 bg-brand-100 px-2.5 py-1 rounded-[var(--radius-badge)]">
-                Ejercicio {exerciseIndex + 1} de {totalExercises}
-              </div>
-              {previousSnapshot && onViewPrevious && (
-                <button
-                  type="button"
-                  onClick={onViewPrevious}
-                  className={prevButtonClassName}
-                >
-                  ← Volver al enunciado
-                </button>
-              )}
-            </div>
-            <ExerciseCard exercise={exercise} />
-            <AnswerForm
-              onSubmit={onSubmit}
-              disabled={isEvaluating}
-              exercise={exercise}
-              draftAnswer={draftAnswer}
-              draftSelectedOption={draftSelectedOption}
-              onDraftChange={onDraftChange}
-            />
-          </>
-        )}
-
-        {/* Empty state */}
-        {!isViewingPreviousExercise && !exercise && (
-          <div className="text-center py-8 text-brand-500">
-            No hay ejercicios disponibles para esta habilidad.
+            {onReturnToCurrent && (
+              <button
+                type="button"
+                onClick={onReturnToCurrent}
+                className={prevButtonClassName}
+              >
+                Volver al ejercicio actual →
+              </button>
+            )}
           </div>
-        )}
-      </div>
-    </MathWatermark>
+
+          <ExerciseCard exercise={previousSnapshot.exercise} />
+          <SubmittedAnswerDisplay
+            exercise={previousSnapshot.exercise}
+            submittedAnswer={previousSnapshot.submittedAnswer}
+            evaluation={previousSnapshot.evaluation}
+            feedback={previousSnapshot.feedback}
+          />
+        </>
+      )}
+
+      {/* Current exercise form (hidden when viewing previous) */}
+      {!isViewingPreviousExercise && exercise && (
+        <>
+          <div className="flex items-center justify-between">
+            <div className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-600 bg-brand-100 px-2.5 py-1 rounded-[var(--radius-badge)]">
+              Ejercicio {exerciseIndex + 1} de {totalExercises}
+            </div>
+            {previousSnapshot && onViewPrevious && (
+              <button
+                type="button"
+                onClick={onViewPrevious}
+                className={prevButtonClassName}
+              >
+                ← Volver al enunciado
+              </button>
+            )}
+          </div>
+          <ExerciseCard exercise={exercise} />
+          <AnswerForm
+            onSubmit={onSubmit}
+            disabled={isEvaluating}
+            exercise={exercise}
+            draftAnswer={draftAnswer}
+            draftSelectedOption={draftSelectedOption}
+            onDraftChange={onDraftChange}
+          />
+        </>
+      )}
+
+      {/* Empty state */}
+      {!isViewingPreviousExercise && !exercise && (
+        <div className="text-center py-8 text-brand-500">
+          No hay ejercicios disponibles para esta habilidad.
+        </div>
+      )}
+    </div>
   );
 }
