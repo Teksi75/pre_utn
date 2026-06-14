@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className="min-h-screen">
+      <body className="min-h-screen flex flex-col">
         <a href="#main-content" className="skip-link">
           Saltar al contenido
         </a>
@@ -30,7 +30,7 @@ export default function RootLayout({
           <Nav />
         </header>
 
-        <main id="main-content" role="main">
+        <main id="main-content" role="main" className="flex-1">
           {children}
         </main>
 
