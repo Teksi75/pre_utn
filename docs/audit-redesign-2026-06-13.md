@@ -367,6 +367,81 @@ Siguiendo la lista de archivos a revisar del spec y lo relevado:
 
 ---
 
+## 11. Resultado de la auditoría F1/F2 (post-sprint)
+
+Ejecutada al cierre del sprint. Cobertura: `globals.css` y los
+componentes tocados por el sprint (StatusPill, FocusSelector,
+DiagnosticProgress, ExerciseAnswerInput, Nav, layout).
+
+### F1 — `prefers-reduced-motion`
+
+- El bloque global `@media (prefers-reduced-motion: reduce)` en
+  `globals.css:240-248` ya estaba bien implementado: cubre
+  `*, *::before, *::after` y neutraliza `animation-duration`,
+  `animation-iteration-count` y `transition-duration` con
+  `!important`. **Sin hallazgos sobre el bloque global.**
+- **Hallazgo en código del sprint:** los `<button>` de skills
+  dentro de `FocusSelector` (línea 199) usaban `transition-all`.
+  Aunque era código preexistente, pasó por la migración de A2.b
+  y el sprint tenía la oportunidad de limpiarlo. **Arreglado
+  en F1 (`c0525f7`):** `transition-all` → `transition-colors`.
+  El botón solo cambia `border` y `bg`, así que es el reemplazo
+  correcto.
+- Los otros 4 usos de `transition-all` en el repo
+  (`WorkedExamplesSection`, `WorkedExampleCard`, `TheoryCard`,
+  y la línea arreglada de `FocusSelector`) son preexistentes.
+  Solo se arregló el de `FocusSelector` por estar en código
+  tocado por el sprint. Los otros quedan como **deuda técnica
+  documentada** para un sprint futuro (cambio de scope).
+- **No agregué keyframes nuevos** durante el sprint, así que
+  la regla `animation-duration: 0.01ms !important` global
+  sigue cubriendo todo lo que renderiza la app.
+
+### F2 — focus visible
+
+- La regla global `*:focus-visible` en `globals.css:151-153` aplica
+  `box-shadow: var(--ring-focus)` a todo elemento focusable. El
+  outline nativo se suprime pero el box-shadow de reemplazo
+  está. **Sin hallazgos sobre el bloque global.**
+- **Componentes del sprint auditados:**
+  - `StatusPill` (`<span>`): decorativo, no focusable. ✅
+  - `DiagnosticProgress` (`<div role="progressbar">`): no
+    focusable (no está en el tab order). ✅
+  - `FocusSelector` `<select>`: usa
+    `focus-visible:shadow-[var(--ring-focus)]`. ✅
+  - `FocusSelector` `<button>` opciones: usa
+    `focus-visible:shadow-[var(--ring-focus)]`. ✅
+  - `ExerciseAnswerInput` `<button>` "Enviar respuesta": usa
+    `focus-visible:shadow-[var(--ring-focus)]`. ✅
+  - `ExerciseAnswerInput` `<label>` opción: usa
+    `focus-within:shadow-[var(--ring-focus)]` (propaga el foco
+    del radio al label). ✅
+  - `Button` (compartido, base): usa
+    `focus-visible:shadow-[var(--ring-focus)]`. ✅
+
+**Conclusión F2:** sin hallazgos, sin cambios de código.
+
+### Hallazgo colateral de F1 (GGA code review)
+
+Al pasar el `FocusSelector` por el code review de GGA en el
+commit de F1, el linter detectó un import no usado:
+`type StatusPillVariant` en la línea 15. Era un residuo de
+A2.b que `tsc --noEmit` no cazaba (el repo no tiene
+`noUnusedLocals: true` en `tsconfig.json`), pero la regla del
+AGENTS.md "Mantener TypeScript estricto" lo considera
+incorrecto. **Arreglado en el mismo commit F1 (`c0525f7`):**
+se quitó el `, type StatusPillVariant` del import.
+
+### Cobertura de regresión
+
+Las dos auditorías quedaron pinneadas en tests estáticos para
+que cualquier refactor futuro las rompa de forma explícita:
+`src/app/__tests__/globals-f1-f2-audit.test.ts` (18 casos).
+
+---
+
+---
+
 ## 10. Próximos pasos propuestos
 
 1. **Aprobación de esta auditoría** (firma de Pablo) — bloqueante.
