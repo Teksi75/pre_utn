@@ -10,14 +10,14 @@ function source(path: string): string {
 
 describe("MathRoutePanel", () => {
   const componentPath =
-    "src/components/home/teacher-home/MathRoutePanel.tsx";
+    "src/components/home/student-home/MathRoutePanel.tsx";
 
   test("is a Client Component (declared with 'use client' directive)", () => {
     const comp = source(componentPath);
     expect(comp).toMatch(/["']use client["']/);
   });
 
-  test("accepts routeUnits prop of type TeacherRouteUnit[] from teacher-home domain", () => {
+  test("accepts routeUnits prop of type TeacherRouteUnit[] from student-home domain", () => {
     const comp = source(componentPath);
     expect(comp).toContain("TeacherRouteUnit");
     expect(comp).toContain("routeUnits");
@@ -71,9 +71,9 @@ describe("MathRoutePanel", () => {
     expect(comp).not.toMatch(/useEffect/);
   });
 
-  test("imports TeacherRouteUnit type from teacher-home domain", () => {
+  test("imports TeacherRouteUnit type from student-home domain", () => {
     const comp = source(componentPath);
-    expect(comp).toContain('from "@/domain/teacher-home"');
+    expect(comp).toContain('from "@/domain/student-home"');
     expect(comp).toContain("TeacherRouteUnit");
   });
 

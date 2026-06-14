@@ -10,14 +10,14 @@ function source(path: string): string {
 
 describe("DecisionBoardPanel", () => {
   const componentPath =
-    "src/components/home/teacher-home/DecisionBoardPanel.tsx";
+    "src/components/home/student-home/DecisionBoardPanel.tsx";
 
   test("is a Client Component (declared with 'use client' directive)", () => {
     const comp = source(componentPath);
     expect(comp).toMatch(/["']use client["']/);
   });
 
-  test("accepts decisions prop of type TeacherHomeAction[] from teacher-home domain", () => {
+  test("accepts decisions prop of type TeacherHomeAction[] from student-home domain", () => {
     const comp = source(componentPath);
     expect(comp).toContain("TeacherHomeAction");
     expect(comp).toContain("decisions");
@@ -61,9 +61,9 @@ describe("DecisionBoardPanel", () => {
     expect(comp).toContain("focus-visible");
   });
 
-  test("imports TeacherHomeAction type from teacher-home domain", () => {
+  test("imports TeacherHomeAction type from student-home domain", () => {
     const comp = source(componentPath);
-    expect(comp).toContain('from "@/domain/teacher-home"');
+    expect(comp).toContain('from "@/domain/student-home"');
     expect(comp).toContain("TeacherHomeAction");
   });
 

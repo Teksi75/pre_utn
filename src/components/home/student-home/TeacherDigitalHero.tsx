@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { Mission } from "@/domain/teacher-home";
+import type { Mission } from "@/domain/student-home";
 
 interface TeacherDigitalHeroProps {
   readonly hero: Mission;
@@ -13,6 +13,11 @@ interface TeacherDigitalHeroProps {
  * client directive.
  *
  * B3 (redesign closeout) tightened the visual contract:
+ *  - The hero title is the institute's brand in wordmark form
+ *    (`INGENIUM`, all-caps), the "loud" reading of the brand.
+ *    The top-left brand mark in the header is the "quiet"
+ *    reading (mixed-case `Ingenium`). The two together form
+ *    the conventional logo+wordmark pattern.
  *  - The title and subtitle read as one text block (close
  *    spacing: mt-2 on the subtitle).
  *  - The subtitle is now text-base (readable) instead of text-sm
@@ -24,6 +29,19 @@ interface TeacherDigitalHeroProps {
  *  - The container keeps the warm glass surface (A1) but adds
  *    a soft accent border + elevated shadow so it reads as a
  *    featured card, not a generic translucent panel.
+ *
+ * B3 closeout revision — copy simplification:
+ *  - The brand is shown twice: brand mark in the header
+ *    (mixed-case) and wordmark in the hero (all-caps). The
+ *    hero subtitle does NOT add a third reading of the brand.
+ *    It is imperative-only.
+ *  - The subtitle is now conditional: the domain
+ *    `buildMission` returns one of two imperatives based on
+ *    whether the student has any practice attempts. No-attempts
+ *    student gets "Empezá por el diagnóstico inicial o seguí
+ *    donde dejaste." Student with at least one attempt gets
+ *    "Seguí donde dejaste o repasá algún tema que ya viste."
+ *  - See AGENTS.md "Marca y voz".
  */
 export function TeacherDigitalHero({ hero }: TeacherDigitalHeroProps) {
   return (

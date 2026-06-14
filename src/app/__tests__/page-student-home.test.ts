@@ -8,7 +8,7 @@ function source(path: string): string {
   return readFileSync(join(repoRoot, path), "utf8");
 }
 
-describe("page.tsx — Teacher Digital Home integration", () => {
+describe("page.tsx — Student Home integration", () => {
   const pagePath = "src/app/page.tsx";
 
   test("does NOT import EngineeringHeroVisual (removed editorial hero)", () => {

@@ -8,30 +8,30 @@ function source(path: string): string {
   return readFileSync(join(repoRoot, path), "utf8");
 }
 
-describe("HomeNextStepClient — integration with TeacherHomeViewModel", () => {
+describe("HomeNextStepClient — integration with StudentHomeViewModel", () => {
   const componentPath = "src/components/home/HomeNextStepClient.tsx";
 
-  test("imports deriveTeacherHomeViewModel from teacher-home domain", () => {
+  test("imports deriveTeacherHomeViewModel from student-home domain", () => {
     const comp = source(componentPath);
     expect(comp).toContain("deriveTeacherHomeViewModel");
   });
 
-  test("imports TeacherDigitalHero from teacher-home components", () => {
+  test("imports TeacherDigitalHero from student-home components", () => {
     const comp = source(componentPath);
     expect(comp).toContain("TeacherDigitalHero");
   });
 
-  test("imports StudentSituationPanel from teacher-home components", () => {
+  test("imports StudentSituationPanel from student-home components", () => {
     const comp = source(componentPath);
     expect(comp).toContain("StudentSituationPanel");
   });
 
-  test("imports MathRoutePanel from teacher-home components", () => {
+  test("imports MathRoutePanel from student-home components", () => {
     const comp = source(componentPath);
     expect(comp).toContain("MathRoutePanel");
   });
 
-  test("imports DecisionBoardPanel from teacher-home components", () => {
+  test("imports DecisionBoardPanel from student-home components", () => {
     const comp = source(componentPath);
     expect(comp).toContain("DecisionBoardPanel");
   });

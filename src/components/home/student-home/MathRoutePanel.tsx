@@ -1,6 +1,6 @@
 "use client";
 
-import type { TeacherRouteUnit } from "@/domain/teacher-home";
+import type { TeacherRouteUnit } from "@/domain/student-home";
 import { StatusPill, type StatusPillVariant } from "@/components/ui/StatusPill";
 
 interface MathRoutePanelProps {

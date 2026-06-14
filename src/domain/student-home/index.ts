@@ -1,9 +1,17 @@
 /**
- * Teacher Digital Home — view-model derivation.
+ * Student Home — view-model derivation.
  *
  * Pure domain function: no React, Next.js, Supabase, or I/O.
  * Receives pre-computed `nextStep` (from `deriveHomeNextStep`) as input
  * alongside progress, diagnostic, and skill catalogs.
+ *
+ * B3 closeout (rename): the home view-model is for the
+ * student. The legacy "Teacher Digital Home" / "teacher-home"
+ * naming is being removed; the directory was renamed to
+ * `student-home/`. TypeScript identifiers (TeacherHomeInput,
+ * TeacherHomeViewModel, deriveTeacherHomeViewModel, etc.) are
+ * intentionally kept in this commit to limit blast radius;
+ * they will be renamed in a follow-up SDD.
  */
 import type { PracticeProgress, Trend } from "../progress/index";
 import { computeMasteryLevel } from "../progress/index";
@@ -101,6 +109,7 @@ export function deriveTeacherHomeViewModel(
 
   const studentSituation = buildStudentSituation(
     progress,
+    diagnosticResult,
     nextStep,
     availableSkills,
     pilotSkills
@@ -143,13 +152,30 @@ function buildTeacherMessage(
 // ── Mission ──────────────────────────────────────────────────────────────────
 
 // B3 (redesign closeout): the hero title is the institute's brand
-// ("Ingenium"), not a personification. The subtitle names the
-// Instituto Ingenium and orients the student at next steps
-// without claiming any personalised guidance the app does not
-// actually provide. See AGENTS.md "Marca y voz".
-const MISSION_TITLE = "Ingenium";
-const MISSION_SUBTITLE =
-  "Material de apoyo del Instituto Ingenium. Empezá por el diagnóstico inicial o seguí donde dejaste.";
+// in wordmark form ("INGENIUM", all-caps), distinct from the
+// brand mark in the header (mixed-case "Ingenium" logo). The
+// hero wordmark is the "loud" reading of the same brand; the
+// brand mark in the header is the "quiet" reading. This is
+// the conventional two-touchpoint pattern (logo + wordmark)
+// and avoids the redundancy of saying the same word twice in
+// the same case. The subtitle does NOT re-state the institute's
+// full name. It speaks to the student with imperatives
+// ("empezá", "seguí", "repasá") and chooses the right one
+// based on whether the student has already started.
+// See AGENTS.md "Marca y voz".
+const MISSION_TITLE = "INGENIUM";
+
+// No previous attempts → student hasn't entered the app yet.
+// Point them at the lowest-friction entry: the diagnostic.
+const MISSION_SUBTITLE_NO_ATTEMPTS =
+  "Empezá por el diagnóstico inicial o seguí donde dejaste.";
+
+// Student has at least one attempt → they have a "previous
+// step" and a "history of seen topics". Name the two real
+// next actions: resume the previous step, or revisit
+// something they have already seen.
+const MISSION_SUBTITLE_HAS_ATTEMPTS =
+  "Seguí donde dejaste o repasá algún tema que ya viste.";
 
 function buildMission(
   progress: PracticeProgress,
@@ -158,7 +184,7 @@ function buildMission(
   if (progress.attempts.length === 0) {
     return {
       title: MISSION_TITLE,
-      subtitle: MISSION_SUBTITLE,
+      subtitle: MISSION_SUBTITLE_NO_ATTEMPTS,
       ctaLabel: "Hacer diagnóstico inicial",
       ctaHref: "/diagnostic",
     };
@@ -166,7 +192,7 @@ function buildMission(
 
   return {
     title: MISSION_TITLE,
-    subtitle: MISSION_SUBTITLE,
+    subtitle: MISSION_SUBTITLE_HAS_ATTEMPTS,
     ctaLabel: nextStep.title,
     ctaHref: nextStep.href,
   };
@@ -176,6 +202,7 @@ function buildMission(
 
 function buildStudentSituation(
   progress: PracticeProgress,
+  diagnosticResult: DiagnosticResult | null | undefined,
   nextStep: HomeNextStep,
   availableSkills: readonly ReadySkill[],
   pilotSkills: readonly PilotSkill[]
@@ -183,6 +210,19 @@ function buildStudentSituation(
   const practicedSkillIds = new Set(
     progress.attempts.map((a) => a.skillId)
   );
+
+  // Diagnostic stats: prefer the input.diagnosticResult that the
+  // caller passed via TeacherHomeInput (it is the source of
+  // truth for the home view), and fall back to whatever is
+  // carried on progress for the case where the caller did not
+  // pass it explicitly. B3 closeout fix: previously this
+  // function read only progress.diagnosticResult, leaving the
+  // input.diagnosticResult parameter unused and creating an
+  // implicit coupling between caller and progress state.
+  const effectiveDiagnosticResult =
+    diagnosticResult ?? progress.diagnosticResult ?? null;
+  const diagnosticCompletedAt =
+    effectiveDiagnosticResult?.completedAt ?? null;
 
   // Diagnostic stats from nextStep's pre-computed summary
   const diagnosticWeak =
@@ -203,8 +243,7 @@ function buildStudentSituation(
   const weakSkillsCount = Math.max(diagnosticWeak, practiceWeakCount);
 
   return {
-    diagnosticCompletedAt:
-      progress.diagnosticResult?.completedAt ?? null,
+    diagnosticCompletedAt,
     weakSkillsCount,
     totalSkillsCount:
       diagnosticTotal > 0 ? diagnosticTotal : pilotSkills.length,

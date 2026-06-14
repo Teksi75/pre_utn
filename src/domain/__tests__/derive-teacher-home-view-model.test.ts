@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { TeacherHomeInput } from "../teacher-home/index";
-import { deriveTeacherHomeViewModel } from "../teacher-home/index";
+import type { TeacherHomeInput } from "../student-home/index";
+import { deriveTeacherHomeViewModel } from "../student-home/index";
 import { deriveHomeNextStep } from "../next-step/index";
 import type { ReadySkill } from "../next-step/index";
 import type { PracticeProgress, PracticeAttempt } from "../progress/index";

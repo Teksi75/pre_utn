@@ -90,6 +90,23 @@ contexto de uso**.
 - **Ingenium es la marca del Instituto de Bárbara Tomba**
   (https://ingenium-web.vercel.app/). No es un "profe digital",
   no es un personaje, no es un LLM conversacional.
+- **Two-touchpoint brand pattern (B3 closeout).** The brand
+  appears twice on the home, in two different typographic
+  roles:
+  1. The **brand mark** in the top-left of the header uses
+     the mixed-case logo (`Ingenium`).
+  2. The **wordmark** in the hero `<h2>` uses the all-caps
+     version (`INGENIUM`).
+  This is the conventional logo+wordmark pattern and avoids
+  the redundancy of saying the same word twice in the same
+  case. **Do not collapse them** into a single reading: the
+  mixed-case logo and the all-caps wordmark carry different
+  visual weight by design.
+- **No third reading.** The hero subtitle must NOT add a
+  third reading of the brand (e.g. "Instituto [brand]").
+  The wordmark already carries the brand at the right level
+  of emphasis; a third reading would crowd the first
+  paragraph of context. The subtitle is imperative-only.
 - **Voz aceptable:** la app es **material de apoyo** del alumno
   que ya está tomando clase con Pablo. La app puede orientar
   ("empezá por el diagnóstico", "seguí practicando", "elegí
@@ -102,11 +119,21 @@ contexto de uso**.
   cumple de forma limitada (basado en errores taggeados) y que
   confunden al alumno sobre qué es la app y qué es la clase.
 - **Lo que la app SÍ puede prometer honestamente:**
-  - "Material de apoyo del Instituto Ingenium" — describe qué es.
-  - "Empezá por el diagnóstico inicial" — acción concreta.
-  - "Seguí donde dejaste" — orientación básica.
+  - "Empezá por el diagnóstico inicial o seguí donde dejaste" —
+    acción concreta para el alumno que aún no arrancó.
+  - "Seguí donde dejaste o repasá algún tema que ya viste" —
+    acción concreta para el alumno que ya empezó, nombrando
+    las dos únicas cosas reales que puede hacer (continuar el
+    paso previo o repasar algo ya visto).
   - "El alumno va encaminado" / "Hay N habilidades que necesitan
     atención" — observado del estado, no promesa.
+  - **No re-estamos la marca en el hero.** La marca del
+    Instituto ya está en el brand mark del header (top-left).
+    Una frase descriptiva del tipo "Material de apoyo del
+    Instituto [marca]" en el subtítulo del hero es
+    redundante y roba espacio al primer párrafo de
+    contexto que el alumno sí necesita leer. El subtítulo
+    del hero es imperativo, no descriptivo.
 
 ### Anti-patrones visuales asociados
 

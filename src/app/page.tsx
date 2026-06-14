@@ -2,20 +2,20 @@ import Link from "next/link";
 import { HomeNextStepClient } from "@/components/home/HomeNextStepClient";
 
 /**
- * Home page — student dashboard for Ingenium.
+ * Home page — student dashboard for the Instituto.
  *
  * The editorial hero and MathWatermark wrapper have been moved into
  * the HomeNextStepClient component. This page now provides the
  * outer layout: dashboard, quick actions, and course context.
  *
- * B3 (redesign closeout): renamed from "teacher digital home
- * dashboard" to drop the "teacher digital" framing. Ingenium
- * is a brand of the Instituto led by Barbara Tomba, not a
- * personified tutor. The app is supporting material for the
- * student who is taking in-person class with the teacher. The
- * future teacher-facing panel (where the profesor can see
- * each student's progress) is a separate product with its own
- * SDD; see AGENTS.md "Marca y voz".
+ * B3 (redesign closeout): the dashboard is for the student.
+ * The brand is carried by the top-left brand mark of the
+ * header (mixed-case logo) and the hero wordmark (all-caps
+ * INGENIUM). The institute's full name is NOT re-stated in
+ * the hero subtitle. The future teacher-facing panel (where
+ * the profesor can see each student's progress) is a
+ * separate product with its own SDD; see AGENTS.md "Marca y
+ * voz".
  */
 export default function Home() {
   return (
