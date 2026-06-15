@@ -6,7 +6,7 @@ describe("parseRichTextSegments", () => {
     const result = parseRichTextSegments("Calculá $3^4$ y explicá el resultado");
     expect(result).toEqual([
       { kind: "text", value: "Calculá " },
-      { kind: "math", value: "3^4" },
+      { kind: "math", value: "3^4", displayMode: false },
       { kind: "text", value: " y explicá el resultado" },
     ]);
   });
@@ -19,9 +19,9 @@ describe("parseRichTextSegments", () => {
   test("handles multiple math segments", () => {
     const result = parseRichTextSegments("$a$ y $b$");
     expect(result).toEqual([
-      { kind: "math", value: "a" },
+      { kind: "math", value: "a", displayMode: false },
       { kind: "text", value: " y " },
-      { kind: "math", value: "b" },
+      { kind: "math", value: "b", displayMode: false },
     ]);
   });
 
@@ -40,7 +40,7 @@ describe("parseRichTextSegments", () => {
   test("math at start of string", () => {
     const result = parseRichTextSegments("$x^2$ al inicio");
     expect(result).toEqual([
-      { kind: "math", value: "x^2" },
+      { kind: "math", value: "x^2", displayMode: false },
       { kind: "text", value: " al inicio" },
     ]);
   });
@@ -49,7 +49,15 @@ describe("parseRichTextSegments", () => {
     const result = parseRichTextSegments("al final $y^3$");
     expect(result).toEqual([
       { kind: "text", value: "al final " },
-      { kind: "math", value: "y^3" },
+      { kind: "math", value: "y^3", displayMode: false },
+    ]);
+  });
+
+  test("display math uses displayMode true", () => {
+    const result = parseRichTextSegments("Resolvé $$x^2+1=0$$");
+    expect(result).toEqual([
+      { kind: "text", value: "Resolvé " },
+      { kind: "math", value: "x^2+1=0", displayMode: true },
     ]);
   });
 });
