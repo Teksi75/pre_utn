@@ -23,8 +23,6 @@ const UNIT_TITLE: Record<number, string> = {
   2: "Polinomios y ecuaciones",
 };
 
-const MAX_VISIBLE_CHIPS = 3;
-
 const AVAILABILITY_LABEL: Record<SkillAvailabilityStatus, string> = {
   "practice-ready": "Práctica disponible",
   "theory-ready": "Teoría disponible",
@@ -50,8 +48,9 @@ function variantForStatus(
  *
  * The Home is a study dashboard, not a catalog. We render 1 card per
  * unit (U1–U6) with: unit number, optional title, mastery pill, progress
- * text (X/Y superados · availability label), up to 3 chips of attempted
- * skills with "+N más" overflow, and a single "Repasar teoría" CTA
+ * text (X/Y superados · availability label), one chip per attempted skill
+ * (no cap, no overflow — with U1=8 and U2=7 pilot skills the list is
+ * short enough to show in full), and a single "Repasar teoría" CTA
  * pointing to /learn/matematica (the full topic catalog).
  *
  * For units with no pilot skills (U3–U6 today), a compact "Próximamente"
@@ -103,8 +102,6 @@ function ComingSoonRow({ unit }: { readonly unit: StudentRouteUnit }) {
 function UnitCard({ unit }: { readonly unit: StudentRouteUnit }) {
   const attempted = unit.skills.filter((s) => s.hasAttempted);
   const total = unit.skills.length;
-  const visible = attempted.slice(0, MAX_VISIBLE_CHIPS);
-  const hidden = attempted.length - visible.length;
   const title = UNIT_TITLE[unit.unitNumber];
 
   return (
@@ -135,7 +132,7 @@ function UnitCard({ unit }: { readonly unit: StudentRouteUnit }) {
           <span className="text-xs text-[var(--color-brand-700)]">
             Temas superados:
           </span>
-          {visible.map((s) => (
+          {attempted.map((s) => (
             <span
               key={s.skillId}
               className="inline-flex items-center rounded-full bg-[var(--color-brand-100)] px-2 py-0.5 text-xs text-[var(--color-brand-800)]"
@@ -143,11 +140,6 @@ function UnitCard({ unit }: { readonly unit: StudentRouteUnit }) {
               {s.label}
             </span>
           ))}
-          {hidden > 0 && (
-            <span className="text-xs text-[var(--color-brand-600)]">
-              +{hidden} más
-            </span>
-          )}
         </div>
       ) : (
         <p className="text-xs italic text-[var(--color-brand-600)]">

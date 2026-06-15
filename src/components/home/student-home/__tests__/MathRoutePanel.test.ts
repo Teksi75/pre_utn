@@ -154,10 +154,17 @@ describe("MathRoutePanel", () => {
     expect(comp).toContain("Temas superados:");
   });
 
-  test("renders the '+N más' overflow indicator with a max-3 chip cap", () => {
+  test("renders ALL attempted skills as chips (no cap, no overflow)", () => {
+    // The cap was removed: with U1=8 and U2=7 pilot skills, the cap of 3
+    // hid the specific skills the student practiced behind a "+N más"
+    // they couldn't see through. Now the full attempted list is shown.
     const comp = source(componentPath);
-    expect(comp).toContain("MAX_VISIBLE_CHIPS");
-    expect(comp).toMatch(/\+\{hidden\} más|\+\{hiddenCount\} más|\+\d+ más/);
+    // The MAX_VISIBLE_CHIPS constant is gone.
+    expect(comp).not.toMatch(/MAX_VISIBLE/);
+    // No overflow indicator remains.
+    expect(comp).not.toMatch(/\+N más|\+\d+ más/);
+    // The chips iterate the full attempted list.
+    expect(comp).toContain("attempted.map");
   });
 
   test("renders the unit-availability subtitle labels (Práctica/Teoría/En preparación)", () => {
