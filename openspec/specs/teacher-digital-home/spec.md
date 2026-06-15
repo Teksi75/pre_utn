@@ -9,7 +9,7 @@ Pedagogical decision dashboard replacing the Home hero/roadmap with deterministi
 | Type | Role |
 |------|------|
 | `StudentHomeInput` | `{ progress: PracticeProgress; diagnosticResult?: DiagnosticResult \| null; availableSkills: readonly ReadySkill[]; pilotSkills: readonly PilotSkill[]; nextStep: HomeNextStep }` |
-| `StudentHomeViewModel` | Output: `readinessPercent`, `masteryGaps`, `nextActions`, `routeUnits`, `suggestedActions`, `studentSituation`, `studentMessage` |
+| `StudentHomeViewModel` | Output: `readinessPercent`, `masteryGaps`, `nextActions`, `routeUnits`, `suggestedActions`, `studentSituation` |
 | `StudentHomeAction` | `{ label: string; href: string; description: string }` — safe link with verified route |
 | `StudentRouteUnit` | `{ unitKey: string; unitNumber: number; status: "mastered" \| "in-progress" \| "not-started"; skillCount: number }` |
 | `StudentSuggestedAction` | `{ skillId: string; skillLabel: string; reason: string }` — suggested action entry |
@@ -67,6 +67,22 @@ The system MUST NOT fabricate progress data. If `PracticeProgress.attempts` is e
 - THEN `readinessPercent` MUST be 0
 - AND `masteryGaps` MUST be empty
 - AND `suggestedActions` MUST recommend diagnostic
+
+### Requirement: No Exposed studentMessage Field
+
+The student-home module MUST NOT expose a `studentMessage` field on `StudentHomeViewModel`. The `StudentHomeViewModel` type and the return value of `deriveStudentHomeViewModel` MUST NOT contain a property named `studentMessage`. This is a regression guard: `studentMessage` was a vestigial field with no consumer in `src/` and is permanently retired.
+
+#### Scenario: Type contract omits studentMessage
+
+- GIVEN the `StudentHomeViewModel` type definition
+- WHEN it is inspected
+- THEN it MUST NOT declare a `studentMessage` property
+
+#### Scenario: Returned view-model omits studentMessage
+
+- GIVEN any valid `StudentHomeInput`
+- WHEN `deriveStudentHomeViewModel` is called
+- THEN the returned object MUST NOT contain a `studentMessage` property
 
 ### Requirement: Skill Label Source Priority
 
@@ -198,6 +214,13 @@ Dashboard cards with visible headings MUST use `aria-labelledby` referencing hea
 - WHEN the Home dashboard renders
 - THEN the surrounding section MUST NOT use `aria-labelledby` pointing to `mission-card-title`
 - AND the mission card MUST NOT regain a visible brand/title heading
+
+#### Scenario: Active dashboard section has accessible name
+
+- GIVEN an active student profile so the dashboard renders
+- WHEN the Home dashboard `<section>` is queried
+- THEN it MUST expose `aria-label="Tu recorrido de aprendizaje"`
+- AND the mission card MUST NOT have regained a visible brand/title heading
 
 ## Non-Goals
 
