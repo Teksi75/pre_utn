@@ -149,7 +149,7 @@ describe("deriveStudentHomeViewModel — Case 2: No invented evidence", () => {
 // ── Case 3: Skill label priority ──────────────────────────────────────────────
 
 describe("deriveStudentHomeViewModel — Case 3: Skill label priority", () => {
-  it("uses catalog labels in routeUnits, not raw skill IDs", () => {
+  it("uses catalog labels in routeUnits, not raw skill IDs in label fields", () => {
     const p = pp({
       attempts: [att("mat.u1.conjuntos_numericos", { correct: true })],
       accuracyBySkill: { "mat.u1.conjuntos_numericos": 1 },
@@ -159,9 +159,17 @@ describe("deriveStudentHomeViewModel — Case 3: Skill label priority", () => {
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
-    // routeUnits should not contain raw skill ID patterns
-    const unitStrings = JSON.stringify(vm.routeUnits);
-    expect(unitStrings).not.toMatch(/mat\.u\d\./);
+    // skillIds are now intentionally present in skills[].skillId (needed for links).
+    // This test verifies they do NOT appear in unitKey or other fields that should
+    // use human-readable labels instead.
+    for (const unit of vm.routeUnits) {
+      expect(unit.unitKey).not.toMatch(/mat\.u\d\./);
+      // skillId is allowed in skills[].skillId but labels must be human-readable
+      for (const skill of unit.skills) {
+        expect(skill.skillId).toMatch(/^mat\.u\d+\./);
+        expect(skill.label).not.toMatch(/^mat\.u\d+\./);
+      }
+    }
   });
 
   it("does not expose raw skill IDs in primaryActions", () => {
@@ -658,5 +666,103 @@ describe("deriveStudentHomeViewModel — Happy path", () => {
     );
     expect(vm.studentSituation.weakSkillsCount).toBe(2);
     expect(vm.studentSituation.totalSkillsCount).toBe(3);
+  });
+});
+
+// ── Skill availability and per-skill list ─────────────────────────────────────
+
+describe("deriveStudentHomeViewModel — skill availability", () => {
+  it("U3-U6 have availability coming-soon and empty skills array", () => {
+    const p = pp({});
+    const vm = deriveStudentHomeViewModel(
+      input(p, pilotSkills.slice(0, 4), pilotSkills)
+    );
+
+    for (const unitNumber of [3, 4, 5, 6]) {
+      const unit = vm.routeUnits.find((u) => u.unitNumber === unitNumber);
+      expect(unit).toBeDefined();
+      expect(unit!.availability).toBe("coming-soon");
+      expect(unit!.skills).toEqual([]);
+      expect(unit!.skillCount).toBe(0);
+    }
+  });
+
+  it("U1 and U2 have non-coming-soon availability and non-empty skills arrays", () => {
+    const p = pp({});
+    const vm = deriveStudentHomeViewModel(
+      input(p, pilotSkills.slice(0, 4), pilotSkills)
+    );
+
+    for (const unitNumber of [1, 2]) {
+      const unit = vm.routeUnits.find((u) => u.unitNumber === unitNumber);
+      expect(unit).toBeDefined();
+      expect(unit!.availability).not.toBe("coming-soon");
+      expect(unit!.skills.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("each skill in skills array has skillId, label, and availability fields", () => {
+    const p = pp({});
+    const vm = deriveStudentHomeViewModel(
+      input(p, pilotSkills.slice(0, 4), pilotSkills)
+    );
+
+    for (const unit of vm.routeUnits) {
+      for (const skill of unit.skills) {
+        expect(skill.skillId).toMatch(/^mat\.u\d+\./);
+        expect(typeof skill.label).toBe("string");
+        expect(skill.label.length).toBeGreaterThan(0);
+        expect(["practice-ready", "theory-ready", "in-preparation", "coming-soon"]).toContain(
+          skill.availability
+        );
+      }
+    }
+  });
+
+  it("unit availability reflects the best state of its constituent skills", () => {
+    const p = pp({});
+    const vm = deriveStudentHomeViewModel(
+      input(p, pilotSkills.slice(0, 4), pilotSkills)
+    );
+
+    for (const unit of vm.routeUnits) {
+      if (unit.skills.length === 0) {
+        expect(unit.availability).toBe("coming-soon");
+      } else {
+        // unit availability must be one of the skill availabilities
+        const skillAvails = unit.skills.map((s) => s.availability);
+        expect(skillAvails).toContain(unit.availability);
+      }
+    }
+  });
+});
+
+// ── Per-skill mastery (drives the "temas superados" chips) ───────────────────
+
+describe("deriveStudentHomeViewModel — per-skill mastery", () => {
+  it("RouteSkill includes a mastered boolean field on every skill", () => {
+    const p = pp({});
+    const vm = deriveStudentHomeViewModel(
+      input(p, pilotSkills.slice(0, 4), pilotSkills)
+    );
+
+    for (const unit of vm.routeUnits) {
+      for (const skill of unit.skills) {
+        expect(typeof skill.mastered).toBe("boolean");
+      }
+    }
+  });
+
+  it("RouteSkill.mastered is false for skills with no attempts", () => {
+    const p = pp({});
+    const vm = deriveStudentHomeViewModel(
+      input(p, pilotSkills.slice(0, 4), pilotSkills)
+    );
+
+    const unit1 = vm.routeUnits.find((u) => u.unitNumber === 1);
+    expect(unit1).toBeDefined();
+    for (const skill of unit1!.skills) {
+      expect(skill.mastered).toBe(false);
+    }
   });
 });

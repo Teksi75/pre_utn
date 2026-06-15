@@ -9,6 +9,8 @@ import type { PracticeProgress, Trend } from "../progress/index";
 import { computeMasteryLevel } from "../progress/index";
 import type { HomeNextStep, ReadySkill } from "../next-step/index";
 import type { PilotSkill } from "../catalog/pilot-skills";
+import type { SkillAvailabilityStatus } from "../catalog/skill-availability";
+import { getSkillAvailability } from "../catalog/skill-availability";
 import type { DiagnosticResult } from "../diagnostic/index";
 import { parseSkillUnit } from "../shared/skill-id";
 
@@ -63,6 +65,24 @@ export interface StudentRouteUnit {
   readonly unitNumber: number;
   readonly status: "mastered" | "in-progress" | "not-started";
   readonly skillCount: number;
+  /** Best available state among the unit's skills (practice-ready > theory-ready > in-preparation > coming-soon). */
+  readonly availability: SkillAvailabilityStatus;
+  /** Per-skill breakdown. Empty for units with no pilot skills (U3-U6 today). */
+  readonly skills: readonly RouteSkill[];
+}
+
+export interface RouteSkill {
+  readonly skillId: string;
+  readonly label: string;
+  readonly availability: SkillAvailabilityStatus;
+  /**
+   * True if the student has mastered this skill (per computeMasteryLevel).
+   * Drives the "temas superados" chips in the MathRoutePanel card.
+   * Orthogonal to `availability`: a skill can be `practice-ready` but
+   * not yet mastered (e.g. the student hasn't attempted it), and a
+   * skill can be mastered but its availability may have changed.
+   */
+  readonly mastered: boolean;
 }
 
 export interface StudentSituation {
@@ -299,6 +319,21 @@ function buildPrimaryActions(
 
 // ── Route units (6 units U1–U6) ──────────────────────────────────────────────
 
+/**
+ * Derive the best-availability of a unit from its constituent pilot skills.
+ *
+ * Precedence: practice-ready > theory-ready > in-preparation > coming-soon
+ * (coming-soon only occurs when skills=[] — handled at call-site).
+ */
+function computeUnitAvailability(skills: readonly PilotSkill[]): SkillAvailabilityStatus {
+  const availabilities = skills.map((s) => getSkillAvailability(s.skillId));
+
+  if (availabilities.some((a) => a === "practice-ready")) return "practice-ready";
+  if (availabilities.some((a) => a === "theory-ready")) return "theory-ready";
+  if (availabilities.every((a) => a === "in-preparation")) return "in-preparation";
+  return "in-preparation";
+}
+
 function buildRouteUnits(
   progress: PracticeProgress,
   pilotSkills: readonly PilotSkill[]
@@ -319,11 +354,14 @@ function buildRouteUnits(
     const skills = byUnit.get(unitNumber) ?? [];
 
     if (skills.length === 0) {
+      // U3–U6 have no pilot skills → honest coming-soon state
       result.push({
         unitKey: `unit-${unitNumber}`,
         unitNumber,
         status: "not-started",
         skillCount: 0,
+        availability: "coming-soon",
+        skills: [],
       });
       continue;
     }
@@ -352,6 +390,13 @@ function buildRouteUnits(
       unitNumber,
       status,
       skillCount: skills.length,
+      availability: computeUnitAvailability(skills),
+      skills: skills.map((s) => ({
+        skillId: s.skillId,
+        label: s.label,
+        availability: getSkillAvailability(s.skillId),
+        mastered: computeMasteryLevel(s.skillId, progress) === "mastered",
+      })),
     });
   }
 
