@@ -251,8 +251,8 @@
       "startedAt": "2026-06-15",
       "completedAt": "2026-06-15",
       "mergedTo": "main",
-      "mergeCommit": "6960f22",
-      "summary": "Remove dead studentMessage field from StudentHomeViewModel; add aria-label to dashboard section. Verification PASS (1860/1860 tests, typecheck, build)."
+      "mergeCommit": null,
+      "summary": "Remove dead studentMessage field from StudentHomeViewModel; add aria-label to dashboard section. Verification PASS (1860/1860 tests, typecheck, build). No merge commit (direct commits to main: 3f048f6 fix, eb514fb chore)."
     },
     "redesign-aesthetic-sprint-v4": {
       "status": "done",
