@@ -350,8 +350,16 @@
       "mergedTo": "main",
       "mergeCommit": "19882e0",
       "summary": "Test-only follow-up: 2 new regression tests for deriveHomeNextStep's effectiveDiagnosticResult param + 3 strengthened sub-assertions in derive-student-home-view-model.test.ts. Verification PASS (1864/1864 tests, typecheck, build). Closes the 2 SUGGESTIONS from fix-student-home-diagnostic-coupling verify-report."
+    },
+    "catalog-readiness-ui": {
+      "status": "in-progress",
+      "branch": "feat/catalog-readiness-ui",
+      "startedAt": "2026-06-15",
+      "summary": "Honest skill availability states for MathRoutePanel: helper getSkillAvailability() (4-state precedence over PILOT_SKILL_UNIT_MAP + getSkillComponents + isSkillReady) + view-model extends StudentRouteUnit with additive availability + skills[] fields + RouteSkillList sibling component + StatusPill variant reuse (available/weak/locked/neutral) + honest link policy (practice-ready→/practice, theory-ready→/learn/matematica/{skillId}, in-preparation+coming-soon no link). U3-U6 show Próximamente. Verification: 1895+ tests, typecheck, build."
     }
   },
-  "activeBranches": [],
+  "activeBranches": [
+    "feat/catalog-readiness-ui"
+  ],
   "lastAudit": "2026-06-14T04:40:00-03:00"
 }
