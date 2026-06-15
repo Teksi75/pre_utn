@@ -10,14 +10,14 @@ import {
 import { loadProgress } from "../../lib/practice-progress";
 import { MathWatermark } from "../math-visuals";
 import { HomeGreeting } from "./HomeGreeting";
-import { TeacherDigitalHero } from "./teacher-home/TeacherDigitalHero";
-import { StudentSituationPanel } from "./teacher-home/StudentSituationPanel";
-import { MathRoutePanel } from "./teacher-home/MathRoutePanel";
-import { DecisionBoardPanel } from "./teacher-home/DecisionBoardPanel";
+import { TeacherDigitalHero } from "./student-home/TeacherDigitalHero";
+import { StudentSituationPanel } from "./student-home/StudentSituationPanel";
+import { MathRoutePanel } from "./student-home/MathRoutePanel";
+import { DecisionBoardPanel } from "./student-home/DecisionBoardPanel";
 import {
   deriveTeacherHomeViewModel,
   type TeacherHomeViewModel,
-} from "../../domain/teacher-home/index";
+} from "../../domain/student-home/index";
 import { useActiveStudent } from "../../hooks/useActiveStudent";
 import { StudentGate } from "../StudentGate";
 import { StudentSwitcher } from "./StudentSwitcher";

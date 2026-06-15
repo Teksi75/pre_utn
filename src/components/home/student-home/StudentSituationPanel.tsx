@@ -1,6 +1,6 @@
 "use client";
 
-import type { StudentSituation } from "@/domain/teacher-home";
+import type { StudentSituation } from "@/domain/student-home";
 
 interface StudentSituationPanelProps {
   readonly situation: StudentSituation;

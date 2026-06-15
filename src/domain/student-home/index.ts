@@ -1,9 +1,17 @@
 /**
- * Teacher Digital Home — view-model derivation.
+ * Student Home — view-model derivation.
  *
  * Pure domain function: no React, Next.js, Supabase, or I/O.
  * Receives pre-computed `nextStep` (from `deriveHomeNextStep`) as input
  * alongside progress, diagnostic, and skill catalogs.
+ *
+ * B3 closeout (rename): the home view-model is for the
+ * student. The legacy "Teacher Digital Home" / "teacher-home"
+ * naming is being removed; the directory was renamed to
+ * `student-home/`. TypeScript identifiers (TeacherHomeInput,
+ * TeacherHomeViewModel, deriveTeacherHomeViewModel, etc.) are
+ * intentionally kept in this commit to limit blast radius;
+ * they will be renamed in a follow-up SDD.
  */
 import type { PracticeProgress, Trend } from "../progress/index";
 import { computeMasteryLevel } from "../progress/index";
@@ -49,7 +57,6 @@ export interface TeacherHomeViewModel {
 }
 
 export interface Mission {
-  readonly title: string;
   readonly subtitle: string;
   readonly ctaLabel: string;
   readonly ctaHref: string;
@@ -101,6 +108,7 @@ export function deriveTeacherHomeViewModel(
 
   const studentSituation = buildStudentSituation(
     progress,
+    diagnosticResult,
     nextStep,
     availableSkills,
     pilotSkills
@@ -142,24 +150,46 @@ function buildTeacherMessage(
 
 // ── Mission ──────────────────────────────────────────────────────────────────
 
+// B3 (redesign closeout, latest revision): the brand is shown
+// ONCE in the layout, in the top-left brand mark of the header
+// (`INGENIUM`, all-caps). The hero panel has no title of its
+// own; it goes straight from the welcome subtitle to the
+// primary CTA. The Mission view-model therefore carries only
+// subtitle + ctaLabel + ctaHref, not title.
+//
+// The subtitle is imperative-only: it speaks to the student
+// with "empezá" / "seguí" / "repasá" and chooses the right
+// one based on whether the student has already started.
+// It does NOT re-state the institute's full name (redundant
+// with the brand mark in the header).
+// See AGENTS.md "Marca y voz".
+
+// No previous attempts → student hasn't entered the app yet.
+// Point them at the lowest-friction entry: the diagnostic.
+const MISSION_SUBTITLE_NO_ATTEMPTS =
+  "Empezá por el diagnóstico inicial o seguí donde dejaste.";
+
+// Student has at least one attempt → they have a "previous
+// step" and a "history of seen topics". Name the two real
+// next actions: resume the previous step, or revisit
+// something they have already seen.
+const MISSION_SUBTITLE_HAS_ATTEMPTS =
+  "Seguí donde dejaste o repasá algún tema que ya viste.";
+
 function buildMission(
   progress: PracticeProgress,
   nextStep: HomeNextStep
 ): Mission {
   if (progress.attempts.length === 0) {
     return {
-      title: "Tu profesor digital",
-      subtitle:
-        "Realizá un diagnóstico inicial para detectar qué áreas necesitan más atención y recibir un plan de práctica personalizado.",
+      subtitle: MISSION_SUBTITLE_NO_ATTEMPTS,
       ctaLabel: "Hacer diagnóstico inicial",
       ctaHref: "/diagnostic",
     };
   }
 
   return {
-    title: "Tu profesor digital",
-    subtitle:
-      "Revisá tu progreso, las áreas con dificultad y las próximas acciones recomendadas.",
+    subtitle: MISSION_SUBTITLE_HAS_ATTEMPTS,
     ctaLabel: nextStep.title,
     ctaHref: nextStep.href,
   };
@@ -169,6 +199,7 @@ function buildMission(
 
 function buildStudentSituation(
   progress: PracticeProgress,
+  diagnosticResult: DiagnosticResult | null | undefined,
   nextStep: HomeNextStep,
   availableSkills: readonly ReadySkill[],
   pilotSkills: readonly PilotSkill[]
@@ -176,6 +207,19 @@ function buildStudentSituation(
   const practicedSkillIds = new Set(
     progress.attempts.map((a) => a.skillId)
   );
+
+  // Diagnostic stats: prefer the input.diagnosticResult that the
+  // caller passed via TeacherHomeInput (it is the source of
+  // truth for the home view), and fall back to whatever is
+  // carried on progress for the case where the caller did not
+  // pass it explicitly. B3 closeout fix: previously this
+  // function read only progress.diagnosticResult, leaving the
+  // input.diagnosticResult parameter unused and creating an
+  // implicit coupling between caller and progress state.
+  const effectiveDiagnosticResult =
+    diagnosticResult ?? progress.diagnosticResult ?? null;
+  const diagnosticCompletedAt =
+    effectiveDiagnosticResult?.completedAt ?? null;
 
   // Diagnostic stats from nextStep's pre-computed summary
   const diagnosticWeak =
@@ -196,8 +240,7 @@ function buildStudentSituation(
   const weakSkillsCount = Math.max(diagnosticWeak, practiceWeakCount);
 
   return {
-    diagnosticCompletedAt:
-      progress.diagnosticResult?.completedAt ?? null,
+    diagnosticCompletedAt,
     weakSkillsCount,
     totalSkillsCount:
       diagnosticTotal > 0 ? diagnosticTotal : pilotSkills.length,

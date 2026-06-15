@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { TeacherHomeAction } from "@/domain/teacher-home";
+import type { TeacherHomeAction } from "@/domain/student-home";
 
 interface DecisionBoardPanelProps {
   readonly decisions: readonly TeacherHomeAction[];

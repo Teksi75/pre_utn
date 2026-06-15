@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { TeacherHomeInput } from "../teacher-home/index";
-import { deriveTeacherHomeViewModel } from "../teacher-home/index";
+import type { TeacherHomeInput } from "../student-home/index";
+import { deriveTeacherHomeViewModel } from "../student-home/index";
 import { deriveHomeNextStep } from "../next-step/index";
 import type { ReadySkill } from "../next-step/index";
 import type { PracticeProgress, PracticeAttempt } from "../progress/index";
@@ -566,8 +566,9 @@ describe("deriveTeacherHomeViewModel — Happy path", () => {
     // teacherMessage
     expect(vm.teacherMessage.length).toBeGreaterThan(0);
 
-    // mission
-    expect(vm.mission.title.length).toBeGreaterThan(0);
+    // mission (B3 closeout latest revision: mission no longer
+    // carries a title field; the brand is shown once in the
+    // top-left brand mark of the Nav)
     expect(vm.mission.ctaLabel.length).toBeGreaterThan(0);
     expect(vm.mission.ctaHref.length).toBeGreaterThan(0);
 

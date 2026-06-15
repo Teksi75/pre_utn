@@ -27,7 +27,7 @@ describe("SkillRoadmap is NOT rendered on Home", () => {
 
   test("MathRoutePanel does NOT render SkillRoadmap (routes display routeUnits only)", () => {
     const panel = source(
-      "src/components/home/teacher-home/MathRoutePanel.tsx"
+      "src/components/home/student-home/MathRoutePanel.tsx"
     );
     expect(panel).not.toMatch(/<SkillRoadmap/);
     expect(panel).not.toContain('import { SkillRoadmap }');
