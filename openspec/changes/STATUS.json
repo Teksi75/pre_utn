@@ -352,14 +352,21 @@
       "summary": "Test-only follow-up: 2 new regression tests for deriveHomeNextStep's effectiveDiagnosticResult param + 3 strengthened sub-assertions in derive-student-home-view-model.test.ts. Verification PASS (1864/1864 tests, typecheck, build). Closes the 2 SUGGESTIONS from fix-student-home-diagnostic-coupling verify-report."
     },
     "catalog-readiness-ui": {
-      "status": "in-progress",
-      "branch": "feat/catalog-readiness-ui",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-06-15",
-      "summary": "Honest skill availability states for MathRoutePanel: helper getSkillAvailability() (4-state precedence over PILOT_SKILL_UNIT_MAP + getSkillComponents + isSkillReady) + view-model extends StudentRouteUnit with additive availability + skills[] fields + RouteSkillList sibling component + StatusPill variant reuse (available/weak/locked/neutral) + honest link policy (practice-ready→/practice, theory-ready→/learn/matematica/{skillId}, in-preparation+coming-soon no link). U3-U6 show Próximamente. Verification: 1895+ tests, typecheck, build."
+      "completedAt": "2026-06-15",
+      "mergedTo": "main",
+      "mergeCommit": "6528d55eedaa89188ae4a3456bc33d3655ca3b91",
+      "delivery": "single-feature-branch with 3 atomic commits, merged with --no-ff",
+      "pr": {
+        "number": 31,
+        "title": "feat: show honest catalog readiness states",
+        "url": "https://github.com/Teksi75/pre_utn/pull/31"
+      },
+      "summary": "Honest skill availability states for MathRoutePanel. 4-state pure-of-catalog adapter (getSkillAvailability) over PILOT_SKILL_UNIT_MAP + getSkillComponents + isSkillReady. View-model grows additive availability + per-skill list (hasAttempted: boolean drives 'temas superados' chips). MathRoutePanel: 1 compact card per unit (no per-skill sub-list); U1-U2 show mastery pill + progress text + 1 chip per attempted skill + 'Repasar teoría' CTA; U3-U6 compact 'Próximamente' row only. Removed RouteSkillList (per-skill rendering is gone from Home; detail lives at /learn/matematica). 3 commits iterated via direct user testing: 1) initial implementation, 2) lower chip threshold + CTA copy, 3) remove chip cap. Verification: 1905/1905 tests, typecheck clean, 7/7 routes built, GGA pre-commit validated, Vercel preview + verify CI green."
     }
   },
-  "activeBranches": [
-    "feat/catalog-readiness-ui"
-  ],
-  "lastAudit": "2026-06-14T04:40:00-03:00"
+  "activeBranches": [],
+  "lastAudit": "2026-06-15T15:58:00-03:00"
 }
