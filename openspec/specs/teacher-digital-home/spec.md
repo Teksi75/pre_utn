@@ -100,11 +100,17 @@ The student home view-model MUST treat a completed diagnostic as evidence the st
 - AND `mission.ctaHref` is NOT `/diagnostic`
 - AND `mission.ctaHref` equals the `href` of the `nextStep` input
 
+**Regression-test assertions (additive to the existing negative checks):**
+- `expect(vm.mission.ctaHref).toBe(nextStep.href)` — locks the positive coupling between the mission CTA and the `nextStep` input.
+
 #### Scenario: completed diagnostic populates diagnosticCompletedAt from the stored result
 
 - GIVEN a `StudentHomeInput` with a `diagnosticResult` whose `completedAt` is `2026-06-12T10:00:00.000Z`
 - WHEN the home view-model is derived
 - THEN `studentSituation.diagnosticCompletedAt` equals `2026-06-12T10:00:00.000Z` (not `null`)
+
+**Regression-test assertions (additive consistency check):**
+- `expect(vm.mission.ctaHref).not.toBe("/diagnostic")` — confirms the CTA moved off the diagnostic route when the timestamp is populated.
 
 #### Scenario: no completed diagnostic still produces the diagnostic CTA
 
@@ -114,11 +120,33 @@ The student home view-model MUST treat a completed diagnostic as evidence the st
 - AND `mission.ctaHref` is `/diagnostic`
 - AND `studentSituation.diagnosticCompletedAt` is `null`
 
+**Regression-test assertions (the two missing sub-assertions):**
+- `expect(vm.mission.ctaLabel).toBe("Hacer diagnóstico inicial")` — exact label, not just a negative check.
+- `expect(vm.studentSituation.diagnosticCompletedAt).toBeNull()` — timestamp reflects the null input.
+
 #### Scenario: stored diagnostic wins over the progress.diagnosticResult fallback
 
 - GIVEN a `StudentHomeInput` whose `diagnosticResult` field has `completedAt = 2026-06-12T10:00:00.000Z` and whose `progress.diagnosticResult` is `null`
 - WHEN the home view-model is derived
 - THEN `studentSituation.diagnosticCompletedAt` equals `2026-06-12T10:00:00.000Z`
+
+### Requirement: deriveHomeNextStep respects effective diagnostic state
+
+`deriveHomeNextStep` MUST use the optional 4th argument `effectiveDiagnosticResult` to override `progress.diagnosticResult` when deciding between the initial diagnostic CTA and the practice step. The `kind` enum on the returned `HomeNextStep` is `"diagnostic" | "practice" | "continue-unit"`. When the 4th argument is omitted, passed as `undefined`, or passed as `null`, the function MUST fall back to `progress.diagnosticResult` (locks the pre-existing default).
+
+#### Scenario: non-null effective diagnostic with zero attempts yields practice kind
+
+- GIVEN a `PracticeProgress` with `attempts = []` and `progress.diagnosticResult = null`
+- AND a non-null `effectiveDiagnosticResult` whose `completedAt` is a non-null ISO timestamp
+- WHEN `deriveHomeNextStep(progress, readySkills, readySkills, effectiveDiagnosticResult)` is called
+- THEN `nextStep.kind` is `"practice"` (NOT `"diagnostic"`)
+
+#### Scenario: null effective diagnostic with zero attempts yields diagnostic kind
+
+- GIVEN a `PracticeProgress` with `attempts = []` and `progress.diagnosticResult = null`
+- AND `effectiveDiagnosticResult` is `null` (or omitted) as the 4th argument
+- WHEN `deriveHomeNextStep(progress, readySkills, readySkills, null)` is called
+- THEN `nextStep.kind` is `"diagnostic"`
 
 ### Requirement: No Exposed studentMessage Field
 
