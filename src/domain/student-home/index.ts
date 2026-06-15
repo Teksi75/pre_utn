@@ -76,13 +76,16 @@ export interface RouteSkill {
   readonly label: string;
   readonly availability: SkillAvailabilityStatus;
   /**
-   * True if the student has mastered this skill (per computeMasteryLevel).
-   * Drives the "temas superados" chips in the MathRoutePanel card.
-   * Orthogonal to `availability`: a skill can be `practice-ready` but
-   * not yet mastered (e.g. the student hasn't attempted it), and a
-   * skill can be mastered but its availability may have changed.
+   * True if the student has at least one practice attempt on this skill.
+   * Drives the "Temas superados" chips in the MathRoutePanel card.
+   *
+   * Note: the unit-level mastery axis (Dominada / En progreso / Sin
+   * empezar) still uses `computeMasteryLevel` directly (5 attempts +
+   * 80% accuracy threshold). This field is the more lenient "engaged
+   * with" signal used by the Home dashboard chips, where the student
+   * expects a recent practice to register immediately.
    */
-  readonly mastered: boolean;
+  readonly hasAttempted: boolean;
 }
 
 export interface StudentSituation {
@@ -395,7 +398,7 @@ function buildRouteUnits(
         skillId: s.skillId,
         label: s.label,
         availability: getSkillAvailability(s.skillId),
-        mastered: computeMasteryLevel(s.skillId, progress) === "mastered",
+        hasAttempted: progress.attempts.some((a) => a.skillId === s.skillId),
       })),
     });
   }

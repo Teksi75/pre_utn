@@ -737,10 +737,10 @@ describe("deriveStudentHomeViewModel — skill availability", () => {
   });
 });
 
-// ── Per-skill mastery (drives the "temas superados" chips) ───────────────────
+// ── Per-skill attempt signal (drives the "temas superados" chips) ────────────
 
-describe("deriveStudentHomeViewModel — per-skill mastery", () => {
-  it("RouteSkill includes a mastered boolean field on every skill", () => {
+describe("deriveStudentHomeViewModel — per-skill attempt signal", () => {
+  it("RouteSkill includes a hasAttempted boolean field on every skill", () => {
     const p = pp({});
     const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
@@ -748,12 +748,12 @@ describe("deriveStudentHomeViewModel — per-skill mastery", () => {
 
     for (const unit of vm.routeUnits) {
       for (const skill of unit.skills) {
-        expect(typeof skill.mastered).toBe("boolean");
+        expect(typeof skill.hasAttempted).toBe("boolean");
       }
     }
   });
 
-  it("RouteSkill.mastered is false for skills with no attempts", () => {
+  it("RouteSkill.hasAttempted is false for skills with no attempts", () => {
     const p = pp({});
     const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
@@ -762,7 +762,23 @@ describe("deriveStudentHomeViewModel — per-skill mastery", () => {
     const unit1 = vm.routeUnits.find((u) => u.unitNumber === 1);
     expect(unit1).toBeDefined();
     for (const skill of unit1!.skills) {
-      expect(skill.mastered).toBe(false);
+      expect(skill.hasAttempted).toBe(false);
     }
+  });
+
+  it("RouteSkill.hasAttempted flips to true after a single practice attempt", () => {
+    const p = pp({
+      attempts: [att("mat.u1.potencias_raices", { correct: true })],
+    });
+    const vm = deriveStudentHomeViewModel(
+      input(p, pilotSkills.slice(0, 4), pilotSkills)
+    );
+
+    const unit1 = vm.routeUnits.find((u) => u.unitNumber === 1);
+    const skill = unit1!.skills.find(
+      (s) => s.skillId === "mat.u1.potencias_raices",
+    );
+    expect(skill).toBeDefined();
+    expect(skill!.hasAttempted).toBe(true);
   });
 });

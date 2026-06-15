@@ -117,9 +117,10 @@ describe("MathRoutePanel", () => {
     expect(comp).not.toMatch(/["']Practicar["']/);
   });
 
-  test("uses 'Ver temas' as the CTA text (NOT 'Ver unidad')", () => {
+  test("uses 'Repasar teoría' as the CTA text (NOT 'Ver temas' or 'Ver unidad')", () => {
     const comp = source(componentPath);
-    expect(comp).toContain("Ver temas");
+    expect(comp).toContain("Repasar teoría");
+    expect(comp).not.toMatch(/["']Ver temas["']/);
     expect(comp).not.toMatch(/["']Ver unidad["']/);
   });
 
@@ -155,7 +156,7 @@ describe("MathRoutePanel", () => {
 
   test("renders the '+N más' overflow indicator with a max-3 chip cap", () => {
     const comp = source(componentPath);
-    expect(comp).toContain("MAX_VISIBLE_MASTERED_CHIPS");
+    expect(comp).toContain("MAX_VISIBLE_CHIPS");
     expect(comp).toMatch(/\+\{hidden\} más|\+\{hiddenCount\} más|\+\d+ más/);
   });
 

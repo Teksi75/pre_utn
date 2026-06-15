@@ -23,7 +23,7 @@ const UNIT_TITLE: Record<number, string> = {
   2: "Polinomios y ecuaciones",
 };
 
-const MAX_VISIBLE_MASTERED_CHIPS = 3;
+const MAX_VISIBLE_CHIPS = 3;
 
 const AVAILABILITY_LABEL: Record<SkillAvailabilityStatus, string> = {
   "practice-ready": "Práctica disponible",
@@ -50,9 +50,9 @@ function variantForStatus(
  *
  * The Home is a study dashboard, not a catalog. We render 1 card per
  * unit (U1–U6) with: unit number, optional title, mastery pill, progress
- * text (X/Y superados · availability label), up to 3 chips of mastered
- * skills with "+N más" overflow, and a single "Ver temas" CTA pointing
- * to /learn/matematica (the full topic catalog).
+ * text (X/Y superados · availability label), up to 3 chips of attempted
+ * skills with "+N más" overflow, and a single "Repasar teoría" CTA
+ * pointing to /learn/matematica (the full topic catalog).
  *
  * For units with no pilot skills (U3–U6 today), a compact "Próximamente"
  * row is rendered instead — no mastery pill, no progress, no count, no
@@ -101,10 +101,10 @@ function ComingSoonRow({ unit }: { readonly unit: StudentRouteUnit }) {
 }
 
 function UnitCard({ unit }: { readonly unit: StudentRouteUnit }) {
-  const mastered = unit.skills.filter((s) => s.mastered);
+  const attempted = unit.skills.filter((s) => s.hasAttempted);
   const total = unit.skills.length;
-  const visible = mastered.slice(0, MAX_VISIBLE_MASTERED_CHIPS);
-  const hidden = mastered.length - visible.length;
+  const visible = attempted.slice(0, MAX_VISIBLE_CHIPS);
+  const hidden = attempted.length - visible.length;
   const title = UNIT_TITLE[unit.unitNumber];
 
   return (
@@ -126,11 +126,11 @@ function UnitCard({ unit }: { readonly unit: StudentRouteUnit }) {
       </div>
 
       <p className="text-xs text-[var(--color-brand-600)]">
-        {mastered.length}/{total} temas superados ·{" "}
+        {attempted.length}/{total} temas superados ·{" "}
         {AVAILABILITY_LABEL[unit.availability]}
       </p>
 
-      {mastered.length > 0 ? (
+      {attempted.length > 0 ? (
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-xs text-[var(--color-brand-700)]">
             Temas superados:
@@ -159,7 +159,7 @@ function UnitCard({ unit }: { readonly unit: StudentRouteUnit }) {
         href="/learn/matematica"
         className="inline-flex items-center text-xs font-medium text-[var(--color-brand-700)] hover:text-[var(--color-brand-900)] underline underline-offset-2 transition-colors min-h-[32px]"
       >
-        Ver temas →
+        Repasar teoría →
       </Link>
     </div>
   );
