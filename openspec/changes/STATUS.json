@@ -332,6 +332,11 @@
         "visualReview": "manual on 1366x768 desktop + 375x812 mobile, user-validated as 'subtle but better' (no behavioral change, only visual consistency)"
       },
       "summary": "Sprint de refinamiento cosm\u00e9tico siguiendo el spec v4 repo-aware (prompt_redisenio_repo_aware_ingenium_v4.md, 1490 l\u00edneas). Cero cambios funcionales. Cero dependencias nuevas. main intacto durante todo el sprint. Hotfix C2.1 cerr\u00f3 un bug de UX que el usuario detect\u00f3 visualmente (la barra de progreso del diagn\u00f3stico ment\u00eda antes de que el alumno respondiera). GGA code review actu\u00f3 como red de seguridad de a11y/strict-TS. DoD del spec v4 cumplido: typecheck/test:run/build verdes, captura visual documentada, footer sticky, sin overflow horizontal en 375px, saludo hydration-safe, CTA principal \u00fanico y dominante, estados visuales comunican por texto+color. El sprint se siente 'sutil pero mejor' por dise\u00f1o: el spec ped\u00eda preferir cambios peque\u00f1os sobre una transformaci\u00f3n grande."
+    },
+    "fix-student-home-diagnostic-coupling": {
+      "status": "in_progress",
+      "branch": "fix/student-home-diagnostic-coupling",
+      "startedAt": "2026-06-15"
     }
   },
   "activeBranches": [],
