@@ -5,6 +5,7 @@ import { isSkillReady } from "../../domain/catalog/readiness";
 import { PILOT_SKILLS } from "../../domain/catalog/pilot-skills";
 import { deriveHomeNextStep } from "../../domain/next-step/index";
 import { loadProgress } from "../../lib/practice-progress";
+import { loadDiagnosticResult } from "../../lib/diagnostic-storage";
 import { MathWatermark } from "../math-visuals";
 import { HomeGreeting } from "./HomeGreeting";
 import { MissionCard } from "./student-home/MissionCard";
@@ -43,6 +44,7 @@ export function HomeNextStepClient() {
       return;
     }
     const progress = loadProgress();
+    const activeDiagnosticResult = loadDiagnosticResult();
     const readySkills = PILOT_SKILLS.filter(
       (skill) => isSkillReady(skill.skillId).ready
     ).map((skill) => ({
@@ -53,12 +55,13 @@ export function HomeNextStepClient() {
     const computedNextStep = deriveHomeNextStep(
       progress,
       readySkills,
-      [...PILOT_SKILLS]
+      [...PILOT_SKILLS],
+      activeDiagnosticResult ?? progress.diagnosticResult ?? null
     );
     setViewModel(
       deriveStudentHomeViewModel({
         progress,
-        diagnosticResult: progress.diagnosticResult ?? null,
+        diagnosticResult: activeDiagnosticResult ?? progress.diagnosticResult ?? null,
         availableSkills: readySkills,
         pilotSkills: [...PILOT_SKILLS],
         nextStep: computedNextStep,

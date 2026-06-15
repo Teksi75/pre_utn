@@ -104,7 +104,7 @@ export function deriveStudentHomeViewModel(
     pilotSkills
   );
 
-  const mission = buildMission(progress, nextStep);
+  const mission = buildMission(progress, nextStep, diagnosticResult);
   const primaryActions = buildPrimaryActions(progress, availableSkills, pilotSkills);
   const routeUnits = buildRouteUnits(progress, pilotSkills);
   const suggestedActions = buildSuggestedActions(
@@ -153,9 +153,12 @@ const MISSION_SUBTITLE_HAS_ATTEMPTS =
 
 function buildMission(
   progress: PracticeProgress,
-  nextStep: HomeNextStep
+  nextStep: HomeNextStep,
+  diagnosticResult: DiagnosticResult | null | undefined
 ): Mission {
-  if (progress.attempts.length === 0) {
+  const hasCompletedDiagnostic =
+    diagnosticResult !== null && diagnosticResult !== undefined;
+  if (progress.attempts.length === 0 && !hasCompletedDiagnostic) {
     return {
       subtitle: MISSION_SUBTITLE_NO_ATTEMPTS,
       ctaLabel: "Hacer diagnóstico inicial",
