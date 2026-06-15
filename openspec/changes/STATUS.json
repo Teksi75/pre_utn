@@ -348,7 +348,7 @@
       "startedAt": "2026-06-15",
       "completedAt": "2026-06-15",
       "mergedTo": "main",
-      "mergeCommit": null,
+      "mergeCommit": "19882e0",
       "summary": "Test-only follow-up: 2 new regression tests for deriveHomeNextStep's effectiveDiagnosticResult param + 3 strengthened sub-assertions in derive-student-home-view-model.test.ts. Verification PASS (1864/1864 tests, typecheck, build). Closes the 2 SUGGESTIONS from fix-student-home-diagnostic-coupling verify-report."
     }
   },
