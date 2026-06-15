@@ -6,6 +6,7 @@ import type { ReadySkill } from "../next-step/index";
 import type { PracticeProgress, PracticeAttempt } from "../progress/index";
 import type { PilotSkill } from "../catalog/pilot-skills";
 import type { SkillId } from "../models/skill";
+import type { DiagnosticResult } from "../diagnostic/index";
 
 // ── Test helpers ──────────────────────────────────────────────────────────────
 
@@ -47,16 +48,17 @@ const pilotSkills: readonly PilotSkill[] = [
   { skillId: "mat.u2.operaciones_polinomios", unitKey: "unit-2", label: "Operaciones con polinomios" },
 ];
 
-/** Build a StudentHomeInput from progress + available/pilot skills. */
+/** Build a StudentHomeInput from progress + available/pilot skills + optional diagnostic override. */
 function input(
   progress: PracticeProgress,
   available: readonly ReadySkill[],
-  pilot: readonly PilotSkill[]
+  pilot: readonly PilotSkill[],
+  diagnosticResultOverride?: DiagnosticResult | null
 ): StudentHomeInput {
-  const nextStep = deriveHomeNextStep(progress, available, pilot);
+  const nextStep = deriveHomeNextStep(progress, available, pilot, diagnosticResultOverride);
   return {
     progress,
-    diagnosticResult: progress.diagnosticResult ?? null,
+    diagnosticResult: diagnosticResultOverride ?? progress.diagnosticResult ?? null,
     availableSkills: available,
     pilotSkills: pilot,
     nextStep,
@@ -192,13 +194,44 @@ describe("deriveStudentHomeViewModel — Case 4: Diagnostic CTA", () => {
     expect(vm.suggestedActions[0].skillId).toBe("diagnostic");
   });
 
-  it("mission CTA points to /diagnostic when no attempts", () => {
-    const p = pp({ attempts: [] });
+  it("mission CTA points to /diagnostic when no attempts and no diagnostic", () => {
+    const p = pp({ attempts: [], diagnosticResult: null });
     const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
     expect(vm.mission.ctaHref).toBe("/diagnostic");
+  });
+
+  it("mission CTA does NOT point to /diagnostic when diagnostic is completed and attempts is empty", () => {
+    const storedDiag = {
+      completedAt: "2026-06-15T12:00:00.000Z",
+      version: 1 as const,
+      estimates: [],
+      suggestions: [],
+    };
+    const p = pp({ attempts: [] });
+    const vm = deriveStudentHomeViewModel(
+      input(p, pilotSkills.slice(0, 4), pilotSkills, storedDiag)
+    );
+
+    expect(vm.mission.ctaLabel).not.toBe("Hacer diagnóstico inicial");
+    expect(vm.mission.ctaHref).not.toBe("/diagnostic");
+  });
+
+  it("studentSituation.diagnosticCompletedAt reflects the stored diagnostic", () => {
+    const storedDiag = {
+      completedAt: "2026-06-15T12:00:00.000Z",
+      version: 1 as const,
+      estimates: [],
+      suggestions: [],
+    };
+    const p = pp({ attempts: [] });
+    const vm = deriveStudentHomeViewModel(
+      input(p, pilotSkills.slice(0, 4), pilotSkills, storedDiag)
+    );
+
+    expect(vm.studentSituation.diagnosticCompletedAt).toBe("2026-06-15T12:00:00.000Z");
   });
 });
 

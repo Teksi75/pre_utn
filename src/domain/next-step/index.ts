@@ -1,5 +1,6 @@
 import type { MasteryLevel, PracticeProgress, Trend } from "../progress/index";
 import { computeMasteryLevel } from "../progress/index";
+import type { DiagnosticResult } from "../diagnostic/index";
 import type { SkillId } from "../models/skill";
 import { parseSkillUnit } from "../shared/skill-id";
 
@@ -56,20 +57,28 @@ export function deriveHomeNextStep(
     "attempts" | "accuracyBySkill" | "trendBySkill" | "diagnosticResult"
   >,
   readySkills: readonly ReadySkill[],
-  pilotSkills: readonly ReadySkill[] = readySkills
+  pilotSkills: readonly ReadySkill[] = readySkills,
+  effectiveDiagnosticResult?: DiagnosticResult | null
 ): HomeNextStep {
   const roadmapSkills = buildRoadmapSkills(progress, pilotSkills);
   const diagnosticSummary = buildDiagnosticSummary(progress);
 
+  const hasCompletedDiagnostic =
+    (effectiveDiagnosticResult ?? progress.diagnosticResult) !== null &&
+    (effectiveDiagnosticResult ?? progress.diagnosticResult) !== undefined;
+
   if (progress.attempts.length === 0) {
-    return {
-      kind: "diagnostic",
-      title: "Hacer diagnóstico inicial",
-      description: "Empezá con un diagnóstico corto para detectar qué conviene practicar primero.",
-      href: "/diagnostic",
-      roadmapSkills,
-      diagnosticSummary,
-    };
+    if (!hasCompletedDiagnostic) {
+      return {
+        kind: "diagnostic",
+        title: "Hacer diagnóstico inicial",
+        description: "Empezá con un diagnóstico corto para detectar qué conviene practicar primero.",
+        href: "/diagnostic",
+        roadmapSkills,
+        diagnosticSummary,
+      };
+    }
+    // hasCompletedDiagnostic && no attempts → fall through to practice step resolution
   }
 
   // The pedagogical chain is encoded by the order of `readySkills` (PILOT_SKILLS).

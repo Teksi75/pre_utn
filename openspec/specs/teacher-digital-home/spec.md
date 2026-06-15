@@ -62,11 +62,63 @@ The system MUST NOT fabricate progress data. If `PracticeProgress.attempts` is e
 
 #### Scenario: Empty progress produces deterministic defaults
 
-- GIVEN a `StudentHomeInput` with `progress.attempts = []`
+- GIVEN a `StudentHomeInput` with `progress.attempts = []` and `diagnosticResult = null`
 - WHEN `deriveStudentHomeViewModel` is called
 - THEN `readinessPercent` MUST be 0
 - AND `masteryGaps` MUST be empty
 - AND `suggestedActions` MUST recommend diagnostic
+
+#### Scenario: Empty progress with a completed diagnostic suppresses the diagnostic CTA
+
+- GIVEN a `StudentHomeInput` with `progress.attempts = []` and a `diagnosticResult` whose `completedAt` is a non-null ISO timestamp
+- WHEN `deriveStudentHomeViewModel` is called
+- THEN `readinessPercent` MUST be 0
+- AND `masteryGaps` MUST be empty
+- AND `suggestedActions` MUST NOT recommend `/diagnostic` as a step
+- AND `mission.ctaLabel` MUST NOT be "Hacer diagnóstico inicial"
+- AND `mission.ctaHref` MUST NOT be `/diagnostic`
+
+#### Scenario: studentSituation reflects the stored diagnostic completion timestamp
+
+- GIVEN a `StudentHomeInput` with a `diagnosticResult` whose `completedAt` is `2026-06-12T10:00:00.000Z`
+- WHEN `deriveStudentHomeViewModel` is called
+- THEN `studentSituation.diagnosticCompletedAt` MUST equal `2026-06-12T10:00:00.000Z`
+
+### Requirement: Diagnostic counts as first interaction
+
+The student home view-model MUST treat a completed diagnostic as evidence the student has started. Concretely:
+
+- When `loadDiagnosticResult()` returns a result with a non-null `completedAt`, the mission CTA MUST NOT point to `/diagnostic` with the label "Hacer diagnóstico inicial"; it MUST point to the next learning step from `nextStep`.
+- `studentSituation.diagnosticCompletedAt` MUST reflect the stored result's `completedAt`, and MUST NOT be `null` when a stored result exists.
+- The hero subtitle and the "TU SITUACIÓN → Diagnóstico" row MUST be derived from the `diagnosticResult` field of `StudentHomeInput` (populated by `loadDiagnosticResult()` at the wiring layer), NOT from `progress.diagnosticResult`.
+
+#### Scenario: completed diagnostic with zero attempts routes the mission CTA to next step
+
+- GIVEN a `StudentHomeInput` with `progress.attempts = []` and a `diagnosticResult` whose `completedAt` is a non-null ISO timestamp
+- WHEN the home view-model is derived
+- THEN `mission.ctaLabel` is NOT "Hacer diagnóstico inicial"
+- AND `mission.ctaHref` is NOT `/diagnostic`
+- AND `mission.ctaHref` equals the `href` of the `nextStep` input
+
+#### Scenario: completed diagnostic populates diagnosticCompletedAt from the stored result
+
+- GIVEN a `StudentHomeInput` with a `diagnosticResult` whose `completedAt` is `2026-06-12T10:00:00.000Z`
+- WHEN the home view-model is derived
+- THEN `studentSituation.diagnosticCompletedAt` equals `2026-06-12T10:00:00.000Z` (not `null`)
+
+#### Scenario: no completed diagnostic still produces the diagnostic CTA
+
+- GIVEN a `StudentHomeInput` with `progress.attempts = []` and `diagnosticResult = null`
+- WHEN the home view-model is derived
+- THEN `mission.ctaLabel` is "Hacer diagnóstico inicial"
+- AND `mission.ctaHref` is `/diagnostic`
+- AND `studentSituation.diagnosticCompletedAt` is `null`
+
+#### Scenario: stored diagnostic wins over the progress.diagnosticResult fallback
+
+- GIVEN a `StudentHomeInput` whose `diagnosticResult` field has `completedAt = 2026-06-12T10:00:00.000Z` and whose `progress.diagnosticResult` is `null`
+- WHEN the home view-model is derived
+- THEN `studentSituation.diagnosticCompletedAt` equals `2026-06-12T10:00:00.000Z`
 
 ### Requirement: No Exposed studentMessage Field
 
