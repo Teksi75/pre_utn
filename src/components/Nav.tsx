@@ -30,7 +30,7 @@ export function Nav() {
           href="/"
           className="flex shrink-0 items-baseline gap-2 text-lg font-bold text-[var(--color-brand-900)] tracking-tight"
         >
-          Ingenium
+          INGENIUM
           <span className="hidden sm:inline text-xs font-normal text-[var(--color-brand-500)] tracking-normal">
             Preuniversitario para Ingenierías
           </span>
@@ -46,10 +46,13 @@ export function Nav() {
           className="flex items-center gap-3 overflow-x-auto min-w-0 [&::-webkit-scrollbar]:hidden"
           style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
         >
-          {/* Active student chip — discreet, right side */}
+          {/* Active student chip — discreet, right side. No emoji:
+              AGENTS.md "Anti-patrones visuales asociados" forbids
+              birrete/capirotada-style indicators because they push
+              the product toward a "profe/tutor" framing. The chip
+              is a neutral status pill. */}
           {student !== null && (
             <span className="hidden sm:inline-flex shrink-0 items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--color-brand-100)] text-xs font-medium text-[var(--color-brand-700)] border border-[var(--color-brand-200)]">
-              <span aria-hidden="true">🎓</span>
               <span>Alumno activo:</span>
               <span className="font-semibold text-[var(--color-brand-900)] not-italic">
                 {student.displayName}

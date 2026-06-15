@@ -90,23 +90,26 @@ contexto de uso**.
 - **Ingenium es la marca del Instituto de Bárbara Tomba**
   (https://ingenium-web.vercel.app/). No es un "profe digital",
   no es un personaje, no es un LLM conversacional.
-- **Two-touchpoint brand pattern (B3 closeout).** The brand
-  appears twice on the home, in two different typographic
-  roles:
-  1. The **brand mark** in the top-left of the header uses
-     the mixed-case logo (`Ingenium`).
-  2. The **wordmark** in the hero `<h2>` uses the all-caps
-     version (`INGENIUM`).
-  This is the conventional logo+wordmark pattern and avoids
-  the redundancy of saying the same word twice in the same
-  case. **Do not collapse them** into a single reading: the
-  mixed-case logo and the all-caps wordmark carry different
-  visual weight by design.
-- **No third reading.** The hero subtitle must NOT add a
-  third reading of the brand (e.g. "Instituto [brand]").
-  The wordmark already carries the brand at the right level
-  of emphasis; a third reading would crowd the first
-  paragraph of context. The subtitle is imperative-only.
+- **Single brand touchpoint on the home (B3 closeout latest
+  revision).** The brand appears **once** in the layout, in
+  the top-left brand mark of the `Nav` component, in the
+  all-caps wordmark form (`INGENIUM`). The hero panel of
+  the home page does NOT carry a brand heading of its own:
+  it goes straight from the welcome subtitle to the
+  primary CTA, so the brand is not repeated and the first
+  paragraph of context the student reads is the imperative
+  that points them at the next step.
+  - Decision rationale: the previous "two-touchpoint
+    pattern" (mixed-case logo in header + all-caps wordmark
+    in hero) was reviewed and rejected. The all-caps
+    wordmark in the header is the single reading the home
+    needs; duplicating the brand in two places on the same
+    screen was a leftover from when the home was being
+    designed as a brand-fronted landing page.
+  - If a future screen needs a different brand reading
+    (e.g. a marketing landing page), that decision lives in
+    that screen's own design and its own SDD, not in this
+    one.
 - **Voz aceptable:** la app es **material de apoyo** del alumno
   que ya está tomando clase con Pablo. La app puede orientar
   ("empezá por el diagnóstico", "seguí practicando", "elegí

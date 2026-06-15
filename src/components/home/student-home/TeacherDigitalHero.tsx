@@ -12,14 +12,14 @@ interface TeacherDigitalHeroProps {
  * accessible CTA button. No domain logic, no hooks beyond the
  * client directive.
  *
- * B3 (redesign closeout) tightened the visual contract:
- *  - The hero title is the institute's brand in wordmark form
- *    (`INGENIUM`, all-caps), the "loud" reading of the brand.
- *    The top-left brand mark in the header is the "quiet"
- *    reading (mixed-case `Ingenium`). The two together form
- *    the conventional logo+wordmark pattern.
- *  - The title and subtitle read as one text block (close
- *    spacing: mt-2 on the subtitle).
+ * B3 closeout (latest revision): the brand is shown ONCE in
+ * the layout, in the top-left brand mark of the header, in
+ * the all-caps wordmark form (`INGENIUM`). The hero panel
+ * does NOT carry a brand wordmark of its own: it goes
+ * straight from the welcome subtitle to the primary CTA,
+ * so the brand is not repeated, and the first paragraph
+ * of context the student reads is the imperative that
+ * points them at the next step.
  *  - The subtitle is now text-base (readable) instead of text-sm
  *    so the student's first paragraph of context does not feel
  *    like a footnote.
@@ -31,31 +31,23 @@ interface TeacherDigitalHeroProps {
  *    featured card, not a generic translucent panel.
  *
  * B3 closeout revision — copy simplification:
- *  - The brand is shown twice: brand mark in the header
- *    (mixed-case) and wordmark in the hero (all-caps). The
- *    hero subtitle does NOT add a third reading of the brand.
- *    It is imperative-only.
- *  - The subtitle is now conditional: the domain
- *    `buildMission` returns one of two imperatives based on
- *    whether the student has any practice attempts. No-attempts
- *    student gets "Empezá por el diagnóstico inicial o seguí
- *    donde dejaste." Student with at least one attempt gets
- *    "Seguí donde dejaste o repasá algún tema que ya viste."
+ *  - The brand appears once in the layout, in the header. The
+ *    hero is a card of content (imperative subtitle + CTA),
+ *    not a second reading of the brand.
+ *  - The subtitle is conditional: the domain `buildMission`
+ *    returns one of two imperatives based on whether the
+ *    student has any practice attempts. No-attempts student
+ *    gets "Empezá por el diagnóstico inicial o seguí donde
+ *    dejaste." Student with at least one attempt gets "Seguí
+ *    donde dejaste o repasá algún tema que ya viste."
  *  - See AGENTS.md "Marca y voz".
  */
 export function TeacherDigitalHero({ hero }: TeacherDigitalHeroProps) {
   return (
     <article
-      aria-labelledby="tdh-hero-title"
       className="app-glass-accent rounded-[var(--radius-card)] border border-[var(--color-accent-soft)] shadow-[var(--shadow-elevated)] p-6 md:p-8"
     >
-      <h2
-        id="tdh-hero-title"
-        className="text-[var(--text-2xl)] md:text-[var(--text-3xl)] font-bold text-[var(--color-brand-900)] tracking-tight"
-      >
-        {hero.title}
-      </h2>
-      <p className="mt-2 text-[var(--text-base)] leading-[var(--leading-relaxed)] text-[var(--color-brand-700)] max-w-2xl">
+      <p className="text-[var(--text-base)] leading-[var(--leading-relaxed)] text-[var(--color-brand-700)] max-w-2xl">
         {hero.subtitle}
       </p>
       <Link

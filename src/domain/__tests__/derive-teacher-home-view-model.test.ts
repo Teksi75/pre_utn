@@ -566,8 +566,9 @@ describe("deriveTeacherHomeViewModel — Happy path", () => {
     // teacherMessage
     expect(vm.teacherMessage.length).toBeGreaterThan(0);
 
-    // mission
-    expect(vm.mission.title.length).toBeGreaterThan(0);
+    // mission (B3 closeout latest revision: mission no longer
+    // carries a title field; the brand is shown once in the
+    // top-left brand mark of the Nav)
     expect(vm.mission.ctaLabel.length).toBeGreaterThan(0);
     expect(vm.mission.ctaHref.length).toBeGreaterThan(0);
 

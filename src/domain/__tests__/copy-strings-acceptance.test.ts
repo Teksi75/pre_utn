@@ -21,15 +21,14 @@ const FORBIDDEN_STRINGS = [
 
 // ── Strings that MUST appear in specific locations ──────────────────────────
 
-// B3 (redesign sprint closeout): the hero title is the institute's
-// brand "Ingenium" (not a personification like "Tu profesor
-// digital" — see AGENTS.md "Marca y voz (Ingenium — Instituto
-// Bárbara Tomba)"). The brand is already shown in the header
-// (top-left brand mark), so the subtitle does NOT re-state it;
-// it speaks to the student with imperatives and chooses the
-// right one based on whether the student has already started.
+// B3 closeout (latest revision): the brand appears ONCE in
+// the layout, in the top-left brand mark of the header, in
+// the all-caps wordmark form ("INGENIUM"). The hero panel
+// does NOT carry a brand wordmark of its own. The Mission
+// view-model therefore carries only subtitle + ctaLabel +
+// ctaHref, no title. The domain contains the two conditional
+// imperatives; the brand mark contains the brand.
 const REQUIRED_DOMAIN_STRINGS = [
-  "Ingenium",
   "Empezá por el diagnóstico inicial o seguí donde dejaste",
   "Seguí donde dejaste o repasá algún tema que ya viste",
 ] as const;
@@ -105,15 +104,17 @@ describe("DecisionBoardPanel — heading must be 'Plan de hoy'", () => {
   });
 });
 
-describe("TeacherDigitalHero — mission.title must use the wordmark 'INGENIUM' (B3 closeout)", () => {
-  test("domain buildMission must produce title containing 'INGENIUM'", () => {
+describe("TeacherDigitalHero — no title, brand mark in header (B3 closeout latest revision)", () => {
+  test("domain buildMission must NOT produce a title field (mission has no title)", () => {
+    // B3 closeout (latest revision): the brand is shown ONCE,
+    // in the top-left brand mark of the header. The hero has
+    // no title of its own. The Mission view-model therefore
+    // does not carry a title field. We assert by checking
+    // the source contains no "title: MISSION_TITLE" pattern
+    // and the Mission interface no longer declares a title.
     const content = source("src/domain/student-home/index.ts");
-    // B3 closeout: the hero title is the institute's brand
-    // wordmark in all-caps, distinct from the brand mark in
-    // the header (which uses the mixed-case "Ingenium" logo).
-    // The two readings of the same brand are intentional: the
-    // header is the logo, the hero is the wordmark.
-    expect(content).toContain('"INGENIUM"');
+    // The Mission interface should not declare a title field.
+    expect(content).not.toMatch(/interface\s+Mission\b[\s\S]*\breadonly\s+title\s*:/);
   });
 
   test("domain buildMission subtitle must NOT mention 'tus estudiantes'", () => {
@@ -133,6 +134,27 @@ describe("TeacherDigitalHero — mission.title must use the wordmark 'INGENIUM' 
     const content = source("src/domain/student-home/index.ts");
     const forbiddenInstituteName = ["Instituto", "Ingenium"].join(" ");
     expect(content).not.toContain(forbiddenInstituteName);
+  });
+});
+
+describe("Nav — brand mark is the all-caps wordmark 'INGENIUM' (B3 closeout latest revision)", () => {
+  const navPath = "src/components/Nav.tsx";
+
+  test("Nav.tsx must contain the wordmark 'INGENIUM'", () => {
+    // B3 closeout (latest revision): the brand mark in the
+    // top-left of the header is the all-caps wordmark. The
+    // domain does not contain the brand; the Nav does.
+    const nav = source(navPath);
+    expect(nav).toContain("INGENIUM");
+  });
+
+  test("Nav.tsx must NOT use the mixed-case 'Ingenium' logo anymore", () => {
+    // Anti-regression: the mixed-case "Ingenium" wordmark
+    // was the old reading of the brand. The header now uses
+    // "INGENIUM" (all-caps). If this test ever fails it
+    // means someone reintroduced the mixed-case wordmark.
+    const nav = source(navPath);
+    expect(nav).not.toContain("Ingenium");
   });
 });
 

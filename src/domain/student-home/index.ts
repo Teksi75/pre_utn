@@ -57,7 +57,6 @@ export interface TeacherHomeViewModel {
 }
 
 export interface Mission {
-  readonly title: string;
   readonly subtitle: string;
   readonly ctaLabel: string;
   readonly ctaHref: string;
@@ -151,19 +150,19 @@ function buildTeacherMessage(
 
 // ── Mission ──────────────────────────────────────────────────────────────────
 
-// B3 (redesign closeout): the hero title is the institute's brand
-// in wordmark form ("INGENIUM", all-caps), distinct from the
-// brand mark in the header (mixed-case "Ingenium" logo). The
-// hero wordmark is the "loud" reading of the same brand; the
-// brand mark in the header is the "quiet" reading. This is
-// the conventional two-touchpoint pattern (logo + wordmark)
-// and avoids the redundancy of saying the same word twice in
-// the same case. The subtitle does NOT re-state the institute's
-// full name. It speaks to the student with imperatives
-// ("empezá", "seguí", "repasá") and chooses the right one
-// based on whether the student has already started.
+// B3 (redesign closeout, latest revision): the brand is shown
+// ONCE in the layout, in the top-left brand mark of the header
+// (`INGENIUM`, all-caps). The hero panel has no title of its
+// own; it goes straight from the welcome subtitle to the
+// primary CTA. The Mission view-model therefore carries only
+// subtitle + ctaLabel + ctaHref, not title.
+//
+// The subtitle is imperative-only: it speaks to the student
+// with "empezá" / "seguí" / "repasá" and chooses the right
+// one based on whether the student has already started.
+// It does NOT re-state the institute's full name (redundant
+// with the brand mark in the header).
 // See AGENTS.md "Marca y voz".
-const MISSION_TITLE = "INGENIUM";
 
 // No previous attempts → student hasn't entered the app yet.
 // Point them at the lowest-friction entry: the diagnostic.
@@ -183,7 +182,6 @@ function buildMission(
 ): Mission {
   if (progress.attempts.length === 0) {
     return {
-      title: MISSION_TITLE,
       subtitle: MISSION_SUBTITLE_NO_ATTEMPTS,
       ctaLabel: "Hacer diagnóstico inicial",
       ctaHref: "/diagnostic",
@@ -191,7 +189,6 @@ function buildMission(
   }
 
   return {
-    title: MISSION_TITLE,
     subtitle: MISSION_SUBTITLE_HAS_ATTEMPTS,
     ctaLabel: nextStep.title,
     ctaHref: nextStep.href,

@@ -22,16 +22,25 @@ describe("TeacherDigitalHero", () => {
     expect(comp).toContain("hero:");
   });
 
-  test("renders an <article> element with aria-labelledby referencing a heading id", () => {
+  test("renders an <article> element (the hero card surface)", () => {
     const comp = source(componentPath);
+    // B3 closeout (latest revision): the hero no longer
+    // carries a brand heading of its own. The article is just
+    // the surface of the hero card (subtitle + CTA). It must
+    // not have an aria-labelledby (there is no heading to
+    // reference).
     expect(comp).toMatch(/<article\b/);
-    expect(comp).toMatch(/aria-labelledby/);
+    expect(comp).not.toContain("aria-labelledby");
   });
 
-  test("renders hero.title as <h2> heading with an id for aria-labelledby", () => {
+  test("does NOT render a brand heading in the hero (brand lives in the Nav)", () => {
+    // B3 closeout (latest revision): the brand is shown ONCE
+    // in the layout, in the top-left brand mark of the Nav
+    // (`INGENIUM`). The hero panel does not carry a brand
+    // heading of its own (no <h2>, no {hero.title}).
     const comp = source(componentPath);
-    expect(comp).toMatch(/<h2\b/);
-    expect(comp).toContain("{hero.title}");
+    expect(comp).not.toMatch(/<h2\b/);
+    expect(comp).not.toContain("{hero.title}");
   });
 
   test("renders hero.subtitle as a <p> element", () => {
@@ -78,16 +87,28 @@ describe("TeacherDigitalHero", () => {
     expect(comp).not.toMatch(/useEffect/);
   });
 
-  test("hero.title in domain is the wordmark 'INGENIUM' (B3 closeout)", () => {
-    // B3 closeout: the hero title is the institute's brand
-    // wordmark in all-caps, distinct from the brand mark in
-    // the header (which uses the mixed-case "Ingenium" logo).
-    // The two readings of the same brand are intentional: the
-    // header is the logo, the hero is the wordmark.
+  test("domain does NOT carry the brand as a constant or field (B3 closeout latest revision)", () => {
+    // B3 closeout (latest revision): the brand is shown ONCE,
+    // in the top-left brand mark of the Nav. The domain does
+    // not carry the brand. The domain's Mission view-model
+    // therefore does not have a title field, and the domain
+    // has no MISSION_TITLE constant.
+    //
+    // We check the structural shape (no title field, no
+    // MISSION_TITLE constant) rather than grep for the literal
+    // brand string, because the JSDoc of the domain legitimately
+    // mentions the brand in its explanatory comments.
+    //
+    // Anti-regression: forbid the previous personification
+    // copy and the older "panel docente / decisiones"
+    // framings.
     const domainSrc = source("src/domain/student-home/index.ts");
-    expect(domainSrc).toContain('"INGENIUM"');
-    // Anti-regression: forbid the previous personification copy and
-    // the older "panel docente / decisiones" framings.
+    expect(domainSrc).not.toMatch(/const\s+MISSION_TITLE\b/);
+    expect(domainSrc).not.toMatch(
+      /interface\s+Mission\b[\s\S]*\breadonly\s+title\s*:/,
+    );
+    // The domain must not contain the previous personification
+    // copy nor the older "panel docente" framings.
     expect(domainSrc).not.toContain("Tu profesor digital");
     expect(domainSrc).not.toContain("Soy Ingenium");
     expect(domainSrc).not.toContain("profe");
@@ -99,11 +120,11 @@ describe("TeacherDigitalHero", () => {
     // The subtitle speaks to the student (imperative "empezá",
     // "seguí"), not to a tutor. It does NOT re-state the
     // institute's full name — the brand is already shown in
-    // the top-left brand mark of the layout, so repeating it
+    // the top-left brand mark of the Nav, so repeating it
     // would crowd the first paragraph of context. It does NOT
     // claim any personalised guidance the app does not provide.
     const domainSrc = source("src/domain/student-home/index.ts");
-    // Forbidden: the brand is already in the brand mark, so the
+    // Forbidden: the brand is already in the Nav, so the
     // hero subtitle must not repeat the institute's full name.
     // The forbidden token is constructed here to avoid having
     // the literal string appear in this source file (GGA runs
@@ -122,21 +143,17 @@ describe("TeacherDigitalHero", () => {
   });
 
   // ── B3 visual refresh: spacing + hierarchy + CTA ────────────────────────
-  test("B3: title and subtitle read as one text block (close spacing)", () => {
+  test("B3: subtitle is base-text (readable) and relaxed", () => {
     const comp = source(componentPath);
-    // The subtitle <p> must have a small top margin so the title
-    // and subtitle feel like a single message but stay
-    // distinguishable. The CTA must be visibly further away.
+    // The subtitle <p> must be base-text and relaxed so it
+    // reads as a paragraph of context, not a footnote.
     const subtitleMatch = comp.match(
       /<p\s+className="([^"]+)"\s*>\s*\{hero\.subtitle\}/,
     );
     expect(subtitleMatch).not.toBeNull();
     const subtitleClasses = subtitleMatch![1]!;
-    // The subtitle is base-text (readable) and relaxed.
     expect(subtitleClasses).toMatch(/text-base|text-\[var\(--text-base\)\]/);
     expect(subtitleClasses).toContain("leading-[var(--leading-relaxed)]");
-    // It still has a top margin (close, not zero) — proves hierarchy.
-    expect(subtitleClasses).toMatch(/mt-\d/);
   });
 
   test("B3: CTA link is the most prominent action, larger than the subtitle margin", () => {
