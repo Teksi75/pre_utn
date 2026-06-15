@@ -17,9 +17,9 @@ describe("MathRoutePanel", () => {
     expect(comp).toMatch(/["']use client["']/);
   });
 
-  test("accepts routeUnits prop of type TeacherRouteUnit[] from student-home domain", () => {
+  test("accepts routeUnits prop of type StudentRouteUnit[] from student-home domain", () => {
     const comp = source(componentPath);
-    expect(comp).toContain("TeacherRouteUnit");
+    expect(comp).toContain("StudentRouteUnit");
     expect(comp).toContain("routeUnits");
   });
 
@@ -71,10 +71,10 @@ describe("MathRoutePanel", () => {
     expect(comp).not.toMatch(/useEffect/);
   });
 
-  test("imports TeacherRouteUnit type from student-home domain", () => {
+  test("imports StudentRouteUnit type from student-home domain", () => {
     const comp = source(componentPath);
     expect(comp).toContain('from "@/domain/student-home"');
-    expect(comp).toContain("TeacherRouteUnit");
+    expect(comp).toContain("StudentRouteUnit");
   });
 
   test("has a named export 'MathRoutePanel'", () => {

@@ -11,14 +11,14 @@ function source(path: string): string {
 describe("HomeNextStepClient — integration with StudentHomeViewModel", () => {
   const componentPath = "src/components/home/HomeNextStepClient.tsx";
 
-  test("imports deriveTeacherHomeViewModel from student-home domain", () => {
+  test("imports deriveStudentHomeViewModel from student-home domain", () => {
     const comp = source(componentPath);
-    expect(comp).toContain("deriveTeacherHomeViewModel");
+    expect(comp).toContain("deriveStudentHomeViewModel");
   });
 
-  test("imports TeacherDigitalHero from student-home components", () => {
+  test("imports MissionCard from student-home components", () => {
     const comp = source(componentPath);
-    expect(comp).toContain("TeacherDigitalHero");
+    expect(comp).toContain("MissionCard");
   });
 
   test("imports StudentSituationPanel from student-home components", () => {
@@ -36,10 +36,10 @@ describe("HomeNextStepClient — integration with StudentHomeViewModel", () => {
     expect(comp).toContain("DecisionBoardPanel");
   });
 
-  test("calls deriveTeacherHomeViewModel with TeacherHomeInput object", () => {
+  test("calls deriveStudentHomeViewModel with StudentHomeInput object", () => {
     const comp = source(componentPath);
-    // Must call with a single object argument: deriveTeacherHomeViewModel({...})
-    expect(comp).toMatch(/deriveTeacherHomeViewModel\s*\(\s*\{/);
+    // Must call with a single object argument: deriveStudentHomeViewModel({...})
+    expect(comp).toMatch(/deriveStudentHomeViewModel\s*\(\s*\{/);
     expect(comp).toContain("progress,");
     expect(comp).toContain("availableSkills:");
     expect(comp).toContain("pilotSkills:");
@@ -56,10 +56,15 @@ describe("HomeNextStepClient — integration with StudentHomeViewModel", () => {
     expect(comp).not.toContain("StudyPlanSection");
   });
 
-  test("passes viewModel.mission to TeacherDigitalHero", () => {
+  test("passes viewModel.mission to MissionCard", () => {
     const comp = source(componentPath);
     // May be viewModel.mission or viewModel!.mission (non-null assertion in active-student branch)
     expect(comp).toMatch(/viewModel!\.mission|viewModel\.mission/);
+  });
+
+  test("does not reference a missing MissionCard heading id", () => {
+    const comp = source(componentPath);
+    expect(comp).not.toContain('aria-labelledby="mission-card-title"');
   });
 
   test("passes viewModel.routeUnits to MathRoutePanel", () => {

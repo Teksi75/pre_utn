@@ -36,7 +36,7 @@ const REQUIRED_DOMAIN_STRINGS = [
 describe("Copy strings — FORBIDDEN strings must not exist", () => {
   const filesToCheck = [
     "src/domain/student-home/index.ts",
-    "src/components/home/student-home/TeacherDigitalHero.tsx",
+    "src/components/home/student-home/MissionCard.tsx",
     "src/components/home/student-home/DecisionBoardPanel.tsx",
     "src/components/home/student-home/MathRoutePanel.tsx",
     "src/components/home/student-home/StudentSituationPanel.tsx",
@@ -90,12 +90,12 @@ describe("StudentSituationPanel — heading must be 'Tu situación'", () => {
   });
 });
 
-describe("DecisionBoardPanel — heading must be 'Plan de hoy'", () => {
+describe("DecisionBoardPanel — heading must be 'Acciones sugeridas'", () => {
   const componentPath = "src/components/home/student-home/DecisionBoardPanel.tsx";
 
-  test("heading text must be 'Plan de hoy'", () => {
+  test("heading text must be 'Acciones sugeridas'", () => {
     const comp = source(componentPath);
-    expect(comp).toContain("Plan de hoy");
+    expect(comp).toContain("Acciones sugeridas");
   });
 
   test("heading must NOT be 'Decisiones recomendadas'", () => {
@@ -104,7 +104,7 @@ describe("DecisionBoardPanel — heading must be 'Plan de hoy'", () => {
   });
 });
 
-describe("TeacherDigitalHero — no title, brand mark in header (B3 closeout latest revision)", () => {
+describe("MissionCard — no title, brand mark in header (B3 closeout latest revision)", () => {
   test("domain buildMission must NOT produce a title field (mission has no title)", () => {
     // B3 closeout (latest revision): the brand is shown ONCE,
     // in the top-left brand mark of the header. The hero has
@@ -158,7 +158,7 @@ describe("Nav — brand mark is the all-caps wordmark 'INGENIUM' (B3 closeout la
   });
 });
 
-describe("TeacherDigitalHero — mission.subtitle is conditional (B3 closeout revision)", () => {
+describe("MissionCard — mission.subtitle is conditional (B3 closeout revision)", () => {
   const domainPath = "src/domain/student-home/index.ts";
 
   test("no-attempts branch uses the diagnostic-first subtitle", () => {

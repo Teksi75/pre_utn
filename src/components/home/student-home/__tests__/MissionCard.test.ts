@@ -8,51 +8,51 @@ function source(path: string): string {
   return readFileSync(join(repoRoot, path), "utf8");
 }
 
-describe("TeacherDigitalHero", () => {
-  const componentPath = "src/components/home/student-home/TeacherDigitalHero.tsx";
+describe("MissionCard", () => {
+  const componentPath = "src/components/home/student-home/MissionCard.tsx";
 
   test("is a Client Component (declared with 'use client' directive)", () => {
     const comp = source(componentPath);
     expect(comp).toMatch(/["']use client["']/);
   });
 
-  test("accepts hero prop of type Mission from student-home domain", () => {
+  test("accepts mission prop of type Mission from student-home domain", () => {
     const comp = source(componentPath);
     expect(comp).toContain("Mission");
-    expect(comp).toContain("hero:");
+    expect(comp).toContain("mission:");
   });
 
-  test("renders an <article> element (the hero card surface)", () => {
+  test("renders an <article> element (the mission card surface)", () => {
     const comp = source(componentPath);
-    // B3 closeout (latest revision): the hero no longer
+    // B3 closeout (latest revision): the mission card no longer
     // carries a brand heading of its own. The article is just
-    // the surface of the hero card (subtitle + CTA). It must
+    // the surface of the mission card (subtitle + CTA). It must
     // not have an aria-labelledby (there is no heading to
     // reference).
     expect(comp).toMatch(/<article\b/);
     expect(comp).not.toContain("aria-labelledby");
   });
 
-  test("does NOT render a brand heading in the hero (brand lives in the Nav)", () => {
+  test("does NOT render a brand heading in the mission card (brand lives in the Nav)", () => {
     // B3 closeout (latest revision): the brand is shown ONCE
     // in the layout, in the top-left brand mark of the Nav
-    // (`INGENIUM`). The hero panel does not carry a brand
-    // heading of its own (no <h2>, no {hero.title}).
+    // (`INGENIUM`). The mission card does not carry a brand
+    // heading of its own (no <h2>, no {mission.title}).
     const comp = source(componentPath);
     expect(comp).not.toMatch(/<h2\b/);
-    expect(comp).not.toContain("{hero.title}");
+    expect(comp).not.toContain("{mission.title}");
   });
 
-  test("renders hero.subtitle as a <p> element", () => {
+  test("renders mission.subtitle as a <p> element", () => {
     const comp = source(componentPath);
-    expect(comp).toContain("{hero.subtitle}");
+    expect(comp).toContain("{mission.subtitle}");
   });
 
-  test("renders a Next.js <Link> as CTA with hero.ctaHref and hero.ctaLabel", () => {
+  test("renders a Next.js <Link> as CTA with mission.ctaHref and mission.ctaLabel", () => {
     const comp = source(componentPath);
     expect(comp).toContain("<Link");
-    expect(comp).toContain("hero.ctaHref");
-    expect(comp).toContain("hero.ctaLabel");
+    expect(comp).toContain("mission.ctaHref");
+    expect(comp).toContain("mission.ctaLabel");
   });
 
   test("CTA link enforces min-h-[44px] touch target", () => {
@@ -76,9 +76,9 @@ describe("TeacherDigitalHero", () => {
     expect(comp).toContain("Mission");
   });
 
-  test("has a named export 'TeacherDigitalHero'", () => {
+  test("has a named export 'MissionCard'", () => {
     const comp = source(componentPath);
-    expect(comp).toMatch(/export function TeacherDigitalHero/);
+    expect(comp).toMatch(/export function MissionCard/);
   });
 
   test("does not import or use React hooks directly (dumb component)", () => {
@@ -148,7 +148,7 @@ describe("TeacherDigitalHero", () => {
     // The subtitle <p> must be base-text and relaxed so it
     // reads as a paragraph of context, not a footnote.
     const subtitleMatch = comp.match(
-      /<p\s+className="([^"]+)"\s*>\s*\{hero\.subtitle\}/,
+      /<p\s+className="([^"]+)"\s*>\s*\{mission\.subtitle\}/,
     );
     expect(subtitleMatch).not.toBeNull();
     const subtitleClasses = subtitleMatch![1]!;
@@ -161,7 +161,7 @@ describe("TeacherDigitalHero", () => {
     // The CTA <Link> sits below the subtitle with a larger
     // margin (mt-6) so the eye lands on it after reading.
     const ctaMatch = comp.match(
-      /<Link\s+href=\{hero\.ctaHref\}[\s\S]*?className="([^"]+)"/,
+      /<Link\s+href=\{mission\.ctaHref\}[\s\S]*?className="([^"]+)"/,
     );
     expect(ctaMatch).not.toBeNull();
     const ctaClasses = ctaMatch![1]!;
@@ -177,12 +177,12 @@ describe("TeacherDigitalHero", () => {
     expect(ctaClasses).toContain("focus-visible:shadow-[var(--ring-focus)]");
   });
 
-  test("B3: hero container is a true card surface (border + shadow on top of glass)", () => {
+  test("B3: mission container is a true card surface (border + shadow on top of glass)", () => {
     const comp = source(componentPath);
     const articleMatch = comp.match(/<article\b[\s\S]*?className="([^"]+)"/);
     expect(articleMatch).not.toBeNull();
     const articleClasses = articleMatch![1]!;
-    // The hero container keeps the warm glass surface from A1
+    // The mission container keeps the warm glass surface from A1
     // but adds an explicit border + shadow so it reads as a
     // featured card, not a generic translucent panel.
     expect(articleClasses).toContain("app-glass-accent");

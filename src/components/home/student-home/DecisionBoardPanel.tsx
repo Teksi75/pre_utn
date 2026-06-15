@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import type { TeacherHomeAction } from "@/domain/student-home";
+import type { StudentHomeAction } from "@/domain/student-home";
 
 interface DecisionBoardPanelProps {
-  readonly decisions: readonly TeacherHomeAction[];
+  readonly decisions: readonly StudentHomeAction[];
 }
 
 /**
@@ -26,7 +26,7 @@ const SECONDARY_LINK_CLASSES =
  */
 export function DecisionBoardPanel({ decisions }: DecisionBoardPanelProps) {
   // Determine kind from href for button label
-  function actionLabel(action: TeacherHomeAction): string {
+  function actionLabel(action: StudentHomeAction): string {
     if (action.href.startsWith("/diagnostic")) return "Hacer diagnóstico →";
     if (action.href.startsWith("/practice")) return "Practicar →";
     if (action.href.startsWith("/learn")) return "Ver material →";
@@ -35,14 +35,14 @@ export function DecisionBoardPanel({ decisions }: DecisionBoardPanelProps) {
 
   return (
     <article
-      aria-labelledby="tdb-decisions-title"
+      aria-labelledby="mission-decisions-title"
       className="app-glass-surface rounded-[var(--radius-card)] p-5"
     >
       <h3
-        id="tdb-decisions-title"
+        id="mission-decisions-title"
         className="text-sm font-semibold uppercase tracking-wide text-[var(--color-brand-700)]"
       >
-        Plan de hoy
+        Acciones sugeridas
       </h3>
 
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -17,9 +17,9 @@ describe("DecisionBoardPanel", () => {
     expect(comp).toMatch(/["']use client["']/);
   });
 
-  test("accepts decisions prop of type TeacherHomeAction[] from student-home domain", () => {
+  test("accepts decisions prop of type StudentHomeAction[] from student-home domain", () => {
     const comp = source(componentPath);
-    expect(comp).toContain("TeacherHomeAction");
+    expect(comp).toContain("StudentHomeAction");
     expect(comp).toContain("decisions");
   });
 
@@ -43,7 +43,7 @@ describe("DecisionBoardPanel", () => {
 
   test("iterates over decisions array and renders each action label, description, and link", () => {
     const comp = source(componentPath);
-    // Iterates over decisions directly (flat array of TeacherHomeAction)
+    // Iterates over decisions directly (flat array of StudentHomeAction)
     expect(comp).toMatch(/decisions\.map/);
     expect(comp).toContain("action.label");
     expect(comp).toContain("action.description");
@@ -61,10 +61,10 @@ describe("DecisionBoardPanel", () => {
     expect(comp).toContain("focus-visible");
   });
 
-  test("imports TeacherHomeAction type from student-home domain", () => {
+  test("imports StudentHomeAction type from student-home domain", () => {
     const comp = source(componentPath);
     expect(comp).toContain('from "@/domain/student-home"');
-    expect(comp).toContain("TeacherHomeAction");
+    expect(comp).toContain("StudentHomeAction");
   });
 
   test("imports Link from next/link", () => {
@@ -83,9 +83,9 @@ describe("DecisionBoardPanel", () => {
     expect(comp).toMatch(/export function DecisionBoardPanel/);
   });
 
-  test("heading text must be 'Plan de hoy' (not 'Decisiones recomendadas')", () => {
+  test("heading text must be 'Acciones sugeridas'", () => {
     const comp = source(componentPath);
-    expect(comp).toContain("Plan de hoy");
+    expect(comp).toContain("Acciones sugeridas");
     expect(comp).not.toContain("Decisiones recomendadas");
   });
 

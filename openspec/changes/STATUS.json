@@ -237,6 +237,11 @@
       },
       "summary": "Complete: PR1 domain/storage/migration plus PR2 cockpit identity UI, local student switcher, Home/Practice/Diagnostic wiring, and Nav active-student chip. Verification PASS: 1733 tests, typecheck, build."
     },
+    "rename-student-home-identifiers": {
+      "status": "in-progress",
+      "branch": "feature/student-home-identifier-rename",
+      "summary": "Mechanical rename: TeacherHomeInput->StudentHomeInput, TeacherDigitalHero->MissionCard, deriveTeacherHomeViewModel->deriveStudentHomeViewModel, etc. SDD archived and verification PASS (1856/1856 tests, typecheck, build); branch not yet merged."
+    },
     "redesign-aesthetic-sprint-v4": {
       "status": "done",
       "branch": null,

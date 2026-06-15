@@ -2,59 +2,76 @@
 
 ## Purpose
 
-Pedagogical decision dashboard replacing the Home hero/roadmap with deterministic domain data: readiness, mastery gaps, recommended next actions, and today's plan. No AI, no chat — pure domain view-model.
+Pedagogical decision dashboard replacing the Home hero/roadmap with deterministic domain data: readiness, mastery gaps, recommended next actions, and suggested actions. No AI, no chat — pure domain view-model.
 
 ## Types
 
 | Type | Role |
 |------|------|
-| `TeacherHomeInput` | `{ progress: PracticeProgress; pilotSkills: readonly PilotSkill[]; readySkills: readonly ReadySkill[]; isReady: (id: string) => ReadinessResult }` |
-| `TeacherHomeViewModel` | Output: `readinessPercent`, `masteryGaps`, `nextActions`, `routeUnits`, `todayPlan`, `studentSituation` |
-| `TeacherHomeAction` | `{ label: string; href: string; description: string }` — safe link with verified route |
-| `TeacherRouteUnit` | `{ unitKey: string; unitNumber: number; status: "mastered" \| "in-progress" \| "not-started"; skillCount: number }` |
-| `TeacherPlanStep` | `{ skillId: string; skillLabel: string; reason: string }` — today plan entry |
+| `StudentHomeInput` | `{ progress: PracticeProgress; diagnosticResult?: DiagnosticResult \| null; availableSkills: readonly ReadySkill[]; pilotSkills: readonly PilotSkill[]; nextStep: HomeNextStep }` |
+| `StudentHomeViewModel` | Output: `readinessPercent`, `masteryGaps`, `nextActions`, `routeUnits`, `suggestedActions`, `studentSituation`, `studentMessage` |
+| `StudentHomeAction` | `{ label: string; href: string; description: string }` — safe link with verified route |
+| `StudentRouteUnit` | `{ unitKey: string; unitNumber: number; status: "mastered" \| "in-progress" \| "not-started"; skillCount: number }` |
+| `StudentSuggestedAction` | `{ skillId: string; skillLabel: string; reason: string }` — suggested action entry |
 
 ## Requirements
 
+### Requirement: No Legacy Home Identifiers in Implementation
+
+The student-home module and its tests MUST NOT contain legacy teacher-home identifiers, except inside archived historical specs. The test suite MUST assert this absence for the targeted module only.
+
+#### Scenario: targeted module is identifier-clean
+
+- GIVEN the `src/domain/student-home/` and `src/components/home/student-home/` trees and their `__tests__/`
+- WHEN scanned for the listed legacy identifiers
+- THEN none of those tokens appear outside historical specs or out-of-scope notes
+
+#### Scenario: rename leaves unrelated teacher references untouched
+
+- GIVEN code or docs outside the student-home module that legitimately use the word "teacher" (e.g., ADR-007 notes, future `/docente` planning)
+- WHEN the rename pass runs
+- THEN those references are NOT modified by this change
+
 ### Requirement: Derive View-Model
 
-The system MUST expose `deriveTeacherHomeViewModel(input: TeacherHomeInput): TeacherHomeViewModel` as a pure function with no I/O, no randomness, no API calls. The `TeacherHomeInput` type contract MUST preserve the implemented pure domain API: `{ progress: PracticeProgress; diagnosticResult?: DiagnosticResult | null; availableSkills: readonly ReadySkill[]; pilotSkills: readonly PilotSkill[]; nextStep: HomeNextStep }`.
-(Previously: type contract was not explicitly aligned with implementation)
+The system MUST expose `deriveStudentHomeViewModel(input: StudentHomeInput): StudentHomeViewModel` as a pure function with no I/O, no randomness, no API calls. The `StudentHomeInput` type contract MUST preserve the implemented pure domain API: `{ progress: PracticeProgress; diagnosticResult?: DiagnosticResult | null; availableSkills: readonly ReadySkill[]; pilotSkills: readonly PilotSkill[]; nextStep: HomeNextStep }`.
 
 #### Scenario: Happy path with progress
 
-- GIVEN a `TeacherHomeInput` with attempts and diagnostic data
-- WHEN `deriveTeacherHomeViewModel` is called
-- THEN it returns a complete `TeacherHomeViewModel` with no undefined fields
+- GIVEN a `StudentHomeInput` with attempts and diagnostic data
+- WHEN `deriveStudentHomeViewModel` is called
+- THEN it returns a complete `StudentHomeViewModel` with no undefined fields
 
 #### Scenario: Missing data tolerance
 
-- GIVEN a `TeacherHomeInput` where `progress.accuracyBySkill` is empty or missing entries
-- WHEN `deriveTeacherHomeViewModel` is called
+- GIVEN a `StudentHomeInput` where `progress.accuracyBySkill` is empty or missing entries
+- WHEN `deriveStudentHomeViewModel` is called
 - THEN it MUST treat missing accuracy as 0 and missing trend as "stable"
 - AND it MUST NOT throw or return partial data
 
 #### Scenario: Input type contract matches implementation
 
-- GIVEN the `TeacherHomeInput` type definition
-- WHEN compared to the implemented `deriveTeacherHomeViewModel` function signature
+- GIVEN the `StudentHomeInput` type definition
+- WHEN compared to the implemented `deriveStudentHomeViewModel` function signature
 - THEN all fields match: `progress`, `diagnosticResult`, `availableSkills`, `pilotSkills`, `nextStep`
 
 ### Requirement: No Invented Evidence
 
 The system MUST NOT fabricate progress data. If `PracticeProgress.attempts` is empty, the view-model MUST reflect zero readiness, no mastery gaps, and a diagnostic CTA.
+(Previously: scenarios used `TeacherHomeInput` / `TeacherHomeViewModel`.)
 
 #### Scenario: Empty progress produces deterministic defaults
 
-- GIVEN a `TeacherHomeInput` with `progress.attempts = []`
-- WHEN `deriveTeacherHomeViewModel` is called
+- GIVEN a `StudentHomeInput` with `progress.attempts = []`
+- WHEN `deriveStudentHomeViewModel` is called
 - THEN `readinessPercent` MUST be 0
 - AND `masteryGaps` MUST be empty
-- AND `todayPlan` MUST recommend diagnostic
+- AND `suggestedActions` MUST recommend diagnostic
 
 ### Requirement: Skill Label Source Priority
 
-The system MUST resolve display labels from `PilotSkill.label` (PILOT_SKILLS catalog). It MUST NOT expose raw skill IDs (e.g., `mat.u1.conjuntos_numericos`) in any `TeacherHomeViewModel` field.
+The system MUST resolve display labels from `PilotSkill.label` (PILOT_SKILLS catalog). It MUST NOT expose raw skill IDs (e.g., `mat.u1.conjuntos_numericos`) in any `StudentHomeViewModel` field.
+(Previously: `TeacherHomeViewModel`.)
 
 #### Scenario: Labels from catalog
 
@@ -69,13 +86,13 @@ A skill is "weak" when `accuracy < 0.7` OR `trend === "needs-review"`. The syste
 #### Scenario: Low accuracy skill appears in gaps
 
 - GIVEN a skill with `accuracyBySkill["mat.u1.potencias_raices"] = 0.5`
-- WHEN `deriveTeacherHomeViewModel` is called
+- WHEN `deriveStudentHomeViewModel` is called
 - THEN the skill MUST appear in `masteryGaps` with its catalog label
 
 #### Scenario: Regressing skill appears in gaps
 
 - GIVEN a skill with `trendBySkill["mat.u1.potencias_raices"] = "needs-review"`
-- WHEN `deriveTeacherHomeViewModel` is called
+- WHEN `deriveStudentHomeViewModel` is called
 - THEN the skill MUST appear in `masteryGaps` regardless of accuracy
 
 ### Requirement: Mastered Definition
@@ -91,16 +108,18 @@ A skill is "mastered" when `accuracy >= 0.8` AND `uniqueAttempts >= 5` AND `tren
 ### Requirement: Decision Priority — Recovery Beats Advance
 
 When both weak skills and unattempted skills exist, the system MUST prioritize recovery (weak skill recommendation) over advancement (new skill recommendation).
+(Previously: scenario used `TeacherHomeInput`.)
 
 #### Scenario: Weak skill wins over new skill
 
-- GIVEN a weak skill with low accuracy AND an unattempted next skill
-- WHEN `deriveTeacherHomeViewModel` computes `nextActions`
+- GIVEN a `StudentHomeInput` with a weak skill with low accuracy AND an unattempted next skill
+- WHEN `deriveStudentHomeViewModel` computes `nextActions`
 - THEN the first action MUST target the weak skill, not the new skill
 
 ### Requirement: Safe Links
 
-All `TeacherHomeAction.href` values MUST come from verified constants (`/diagnostic`, `/practice?skill={id}`, `/learn/matematica`). The system MUST NOT produce hrefs with unverified paths.
+All `StudentHomeAction.href` values MUST come from verified constants (`/diagnostic`, `/practice?skill={id}`, `/learn/matematica`). The system MUST NOT produce hrefs with unverified paths.
+(Previously: `TeacherHomeAction.href`.)
 
 #### Scenario: Practice link uses safe skill param
 
@@ -110,10 +129,11 @@ All `TeacherHomeAction.href` values MUST come from verified constants (`/diagnos
 
 ### Requirement: Route Unit Statuses
 
-`TeacherRouteUnit.status` MUST be derived from constituent skill mastery:
+`StudentRouteUnit.status` MUST be derived from constituent skill mastery:
 - "mastered": ALL skills in unit are mastered
 - "in-progress": ANY skill has attempts but unit is not mastered
 - "not-started": NO skills in unit have attempts
+(Previously: `TeacherRouteUnit.status`.)
 
 #### Scenario: Mixed-unit status derivation
 
@@ -138,9 +158,9 @@ The system MUST extract unit numbers from skill IDs using the shared unit-parsin
 - WHEN inspected
 - THEN it delegates to the shared unit-parsing helper from `src/domain/shared/skill-id.ts`
 
-### Requirement: Today Plan Variants
+### Requirement: Suggested Action Variants
 
-`todayPlan` MUST be one of:
+`suggestedActions` MUST be one of:
 - Diagnostic CTA (no attempts)
 - Weak skill recovery list (when gaps exist)
 - Advance to next ready skill (when no gaps)
@@ -149,7 +169,7 @@ The system MUST extract unit numbers from skill IDs using the shared unit-parsin
 #### Scenario: Diagnostic CTA when no attempts
 
 - GIVEN empty progress
-- WHEN today plan is computed
+- WHEN suggested actions are computed
 - THEN it MUST contain a single step recommending `/diagnostic`
 
 ### Requirement: No SkillRoadmap on Home
@@ -164,13 +184,20 @@ The Home page MUST NOT render `SkillRoadmap`. The component file stays; only the
 
 ### Requirement: UI Accessibility
 
-Dashboard sections MUST use `aria-labelledby` referencing heading IDs. Status text MUST be explicit (not color-only). Mobile layout MUST stack sections vertically without overflow.
+Dashboard cards with visible headings MUST use `aria-labelledby` referencing heading IDs. The mission card MUST NOT add a visible brand/title heading solely to satisfy a label hook; the surrounding dashboard section MUST NOT reference a missing heading ID. Status text MUST be explicit (not color-only). Mobile layout MUST stack sections vertically without overflow.
 
 #### Scenario: Section has aria-labelledby
 
 - GIVEN a dashboard section with heading "Tu estado"
 - WHEN the section renders
 - THEN it MUST have `aria-labelledby` pointing to the heading's `id`
+
+#### Scenario: Mission card has no dangling label reference
+
+- GIVEN the B3 mission card intentionally has no visible title heading
+- WHEN the Home dashboard renders
+- THEN the surrounding section MUST NOT use `aria-labelledby` pointing to `mission-card-title`
+- AND the mission card MUST NOT regain a visible brand/title heading
 
 ## Non-Goals
 
@@ -181,7 +208,7 @@ Dashboard sections MUST use `aria-labelledby` referencing heading IDs. Status te
 
 ## Acceptance Criteria
 
-- [ ] `deriveTeacherHomeViewModel` passes all 11 domain test cases
+- [ ] `deriveStudentHomeViewModel` passes all 11 domain test cases
 - [ ] Home shows dashboard cards, NOT hero/roadmap
 - [ ] No raw skill IDs in UI
 - [ ] All links use verified routes
@@ -196,7 +223,7 @@ Dashboard sections MUST use `aria-labelledby` referencing heading IDs. Status te
 | 1 | Missing data tolerance | No throw on empty maps |
 | 2 | No invented evidence | Empty progress → zero readiness |
 | 3 | Skill label priority | Catalog label, not raw ID |
-| 4 | Initial no-progress | Diagnostic CTA in todayPlan |
+| 4 | Initial no-progress | Diagnostic CTA in suggestedActions |
 | 5 | Weak skill thresholds | accuracy < 0.7 OR needs-review → gap |
 | 6 | Mastered definition | accuracy ≥ 0.8 + 5 attempts + not regressing |
 | 7 | Decision priority | Recovery action before advance action |
@@ -216,25 +243,25 @@ Dashboard sections MUST use `aria-labelledby` referencing heading IDs. Status te
 
 ### Requirement: Home Renders for the Active Local Student
 
-The Home page (`Tu profesor digital`) MUST load its `PracticeProgress` from the per-student adapter and MUST render the view-model for the active local student only. The existing `deriveTeacherHomeViewModel(input: TeacherHomeInput): TeacherHomeViewModel` contract is preserved; the contract change lives in the loader that builds the `PracticeProgress` argument. When the active profile changes, the Home MUST re-derive and re-render with the new student's progress.
+The Home page (`Tu profesor digital`) MUST load its `PracticeProgress` from the per-student adapter and MUST render the view-model for the active local student only. The existing `deriveStudentHomeViewModel(input: StudentHomeInput): StudentHomeViewModel` contract is preserved; the contract change lives in the loader that builds the `PracticeProgress` argument. When the active profile changes, the Home MUST re-derive and re-render with the new student's progress.
 
 #### Scenario: Home shows the active student's progress
 
 - GIVEN an active local profile with progress
 - WHEN the Home page renders
-- THEN `deriveTeacherHomeViewModel` is called with the active student's `PracticeProgress` only
+- THEN `deriveStudentHomeViewModel` is called with the active student's `PracticeProgress` only
 
 #### Scenario: switching student changes visible progress
 
 - GIVEN the user has two profiles with different progress
 - WHEN the user activates the second profile via `Cambiar alumno`
-- THEN the Home re-renders with the second profile's `readinessPercent`, `masteryGaps`, `nextActions`, `routeUnits`, `todayPlan`, and `studentSituation`
+- THEN the Home re-renders with the second profile's `readinessPercent`, `masteryGaps`, `nextActions`, `routeUnits`, `suggestedActions`, and `studentSituation`
 
 #### Scenario: empty state still shows the diagnostic CTA
 
 - GIVEN the active profile has no attempts
 - WHEN the Home page renders
-- THEN `readinessPercent` is 0 AND `masteryGaps` is empty AND `todayPlan` recommends `/diagnostic` (consistent with the existing "No Invented Evidence" requirement)
+- THEN `readinessPercent` is 0 AND `masteryGaps` is empty AND `suggestedActions` recommends `/diagnostic` (consistent with the existing "No Invented Evidence" requirement)
 
 ### Requirement: Identification Card When No Active Profile
 
