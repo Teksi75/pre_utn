@@ -3,8 +3,8 @@
 import Link from "next/link";
 import type { Mission } from "@/domain/student-home";
 
-interface TeacherDigitalHeroProps {
-  readonly hero: Mission;
+interface MissionCardProps {
+  readonly mission: Mission;
 }
 
 /**
@@ -42,19 +42,19 @@ interface TeacherDigitalHeroProps {
  *    donde dejaste o repasá algún tema que ya viste."
  *  - See AGENTS.md "Marca y voz".
  */
-export function TeacherDigitalHero({ hero }: TeacherDigitalHeroProps) {
+export function MissionCard({ mission }: MissionCardProps) {
   return (
     <article
       className="app-glass-accent rounded-[var(--radius-card)] border border-[var(--color-accent-soft)] shadow-[var(--shadow-elevated)] p-6 md:p-8"
     >
       <p className="text-[var(--text-base)] leading-[var(--leading-relaxed)] text-[var(--color-brand-700)] max-w-2xl">
-        {hero.subtitle}
+        {mission.subtitle}
       </p>
       <Link
-        href={hero.ctaHref}
+        href={mission.ctaHref}
         className="mt-6 inline-flex min-h-[44px] items-center rounded-[var(--radius-button)] bg-[var(--color-brand-900)] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-brand-800)] focus-visible:shadow-[var(--ring-focus)]"
       >
-        {hero.ctaLabel} →
+        {mission.ctaLabel} →
       </Link>
     </article>
   );

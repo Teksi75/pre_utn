@@ -4,14 +4,6 @@
  * Pure domain function: no React, Next.js, Supabase, or I/O.
  * Receives pre-computed `nextStep` (from `deriveHomeNextStep`) as input
  * alongside progress, diagnostic, and skill catalogs.
- *
- * B3 closeout (rename): the home view-model is for the
- * student. The legacy "Teacher Digital Home" / "teacher-home"
- * naming is being removed; the directory was renamed to
- * `student-home/`. TypeScript identifiers (TeacherHomeInput,
- * TeacherHomeViewModel, deriveTeacherHomeViewModel, etc.) are
- * intentionally kept in this commit to limit blast radius;
- * they will be renamed in a follow-up SDD.
  */
 import type { PracticeProgress, Trend } from "../progress/index";
 import { computeMasteryLevel } from "../progress/index";
@@ -33,7 +25,7 @@ const MAX_RECOVERY_CARDS = 3;
 
 // ── Public types ─────────────────────────────────────────────────────────────
 
-export interface TeacherHomeInput {
+export interface StudentHomeInput {
   readonly progress: PracticeProgress;
   readonly diagnosticResult?: DiagnosticResult | null;
   readonly availableSkills: readonly ReadySkill[];
@@ -41,19 +33,19 @@ export interface TeacherHomeInput {
   readonly nextStep: HomeNextStep;
 }
 
-export interface TeacherHomeViewModel {
-  /** Contextual message to the teacher. */
-  readonly teacherMessage: string;
+export interface StudentHomeViewModel {
+  /** Contextual message to the student. */
+  readonly studentMessage: string;
   /** Hero / mission panel data. */
   readonly mission: Mission;
   /** Action cards with verified hrefs. */
-  readonly primaryActions: readonly TeacherHomeAction[];
+  readonly primaryActions: readonly StudentHomeAction[];
   /** Exactly 6 units U1–U6 with status and skill counts. */
-  readonly routeUnits: readonly TeacherRouteUnit[];
+  readonly routeUnits: readonly StudentRouteUnit[];
   /** Student stats (diagnostic date, readiness, counts). */
   readonly studentSituation: StudentSituation;
-  /** Today's plan steps. */
-  readonly todayPlan: readonly TeacherPlanStep[];
+  /** Suggested actions derived from current progress evidence. */
+  readonly suggestedActions: readonly StudentSuggestedAction[];
 }
 
 export interface Mission {
@@ -62,13 +54,13 @@ export interface Mission {
   readonly ctaHref: string;
 }
 
-export interface TeacherHomeAction {
+export interface StudentHomeAction {
   readonly label: string;
   readonly href: string;
   readonly description: string;
 }
 
-export interface TeacherRouteUnit {
+export interface StudentRouteUnit {
   readonly unitKey: string;
   readonly unitNumber: number;
   readonly status: "mastered" | "in-progress" | "not-started";
@@ -84,7 +76,7 @@ export interface StudentSituation {
   readonly readinessPercent: number;
 }
 
-export interface TeacherPlanStep {
+export interface StudentSuggestedAction {
   readonly skillId: string;
   readonly skillLabel: string;
   readonly reason: string;
@@ -93,16 +85,16 @@ export interface TeacherPlanStep {
 // ── Public API ───────────────────────────────────────────────────────────────
 
 /**
- * Derive the teacher home view-model from prepared inputs.
+ * Derive the student home view-model from prepared inputs.
  *
  * Pure function — no I/O, no randomness, no side effects.
  *
  * @param input - Progress, diagnostic, skill catalogs, and pre-computed nextStep.
- * @returns Complete TeacherHomeViewModel with all fields populated.
+ * @returns Complete StudentHomeViewModel with all fields populated.
  */
-export function deriveTeacherHomeViewModel(
-  input: TeacherHomeInput
-): TeacherHomeViewModel {
+export function deriveStudentHomeViewModel(
+  input: StudentHomeInput
+): StudentHomeViewModel {
   const { progress, diagnosticResult, availableSkills, pilotSkills, nextStep } =
     input;
 
@@ -114,25 +106,30 @@ export function deriveTeacherHomeViewModel(
     pilotSkills
   );
 
-  const teacherMessage = buildTeacherMessage(progress, studentSituation);
+  const studentMessage = buildStudentMessage(progress, studentSituation);
   const mission = buildMission(progress, nextStep);
   const primaryActions = buildPrimaryActions(progress, availableSkills, pilotSkills);
   const routeUnits = buildRouteUnits(progress, pilotSkills);
-  const todayPlan = buildTodayPlan(progress, availableSkills, pilotSkills, nextStep);
+  const suggestedActions = buildSuggestedActions(
+    progress,
+    availableSkills,
+    pilotSkills,
+    nextStep
+  );
 
   return {
-    teacherMessage,
+    studentMessage,
     mission,
     primaryActions,
     routeUnits,
     studentSituation,
-    todayPlan,
+    suggestedActions,
   };
 }
 
-// ── Teacher message ──────────────────────────────────────────────────────────
+// ── Student message ─────────────────────────────────────────────────────────
 
-function buildTeacherMessage(
+function buildStudentMessage(
   progress: PracticeProgress,
   situation: StudentSituation
 ): string {
@@ -209,13 +206,10 @@ function buildStudentSituation(
   );
 
   // Diagnostic stats: prefer the input.diagnosticResult that the
-  // caller passed via TeacherHomeInput (it is the source of
+  // caller passed via StudentHomeInput (it is the source of
   // truth for the home view), and fall back to whatever is
   // carried on progress for the case where the caller did not
-  // pass it explicitly. B3 closeout fix: previously this
-  // function read only progress.diagnosticResult, leaving the
-  // input.diagnosticResult parameter unused and creating an
-  // implicit coupling between caller and progress state.
+  // pass it explicitly.
   const effectiveDiagnosticResult =
     diagnosticResult ?? progress.diagnosticResult ?? null;
   const diagnosticCompletedAt =
@@ -261,7 +255,7 @@ function buildPrimaryActions(
   progress: PracticeProgress,
   availableSkills: readonly ReadySkill[],
   pilotSkills: readonly PilotSkill[]
-): readonly TeacherHomeAction[] {
+): readonly StudentHomeAction[] {
   // No attempts → diagnostic CTA
   if (progress.attempts.length === 0) {
     return [
@@ -327,7 +321,7 @@ function buildPrimaryActions(
 function buildRouteUnits(
   progress: PracticeProgress,
   pilotSkills: readonly PilotSkill[]
-): readonly TeacherRouteUnit[] {
+): readonly StudentRouteUnit[] {
   // Group pilot skills by unit number
   const byUnit = new Map<number, PilotSkill[]>();
 
@@ -339,7 +333,7 @@ function buildRouteUnits(
   }
 
   // Always produce 6 units U1–U6
-  const result: TeacherRouteUnit[] = [];
+  const result: StudentRouteUnit[] = [];
   for (let unitNumber = 1; unitNumber <= 6; unitNumber++) {
     const skills = byUnit.get(unitNumber) ?? [];
 
@@ -363,7 +357,7 @@ function buildRouteUnits(
       return progress.attempts.some((a) => a.skillId === s.skillId);
     });
 
-    let status: TeacherRouteUnit["status"];
+    let status: StudentRouteUnit["status"];
     if (allMastered) {
       status = "mastered";
     } else if (anyAttempted) {
@@ -383,14 +377,14 @@ function buildRouteUnits(
   return result;
 }
 
-// ── Today plan ───────────────────────────────────────────────────────────────
+// ── Suggested actions ────────────────────────────────────────────────────────
 
-function buildTodayPlan(
+function buildSuggestedActions(
   progress: PracticeProgress,
   availableSkills: readonly ReadySkill[],
   pilotSkills: readonly PilotSkill[],
   nextStep: HomeNextStep
-): readonly TeacherPlanStep[] {
+): readonly StudentSuggestedAction[] {
   // No attempts → diagnostic CTA
   if (progress.attempts.length === 0) {
     return [

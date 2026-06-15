@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { TeacherHomeInput } from "../student-home/index";
-import { deriveTeacherHomeViewModel } from "../student-home/index";
+import type { StudentHomeInput } from "../student-home/index";
+import { deriveStudentHomeViewModel } from "../student-home/index";
 import { deriveHomeNextStep } from "../next-step/index";
 import type { ReadySkill } from "../next-step/index";
 import type { PracticeProgress, PracticeAttempt } from "../progress/index";
@@ -47,12 +47,12 @@ const pilotSkills: readonly PilotSkill[] = [
   { skillId: "mat.u2.operaciones_polinomios", unitKey: "unit-2", label: "Operaciones con polinomios" },
 ];
 
-/** Build a TeacherHomeInput from progress + available/pilot skills. */
+/** Build a StudentHomeInput from progress + available/pilot skills. */
 function input(
   progress: PracticeProgress,
   available: readonly ReadySkill[],
   pilot: readonly PilotSkill[]
-): TeacherHomeInput {
+): StudentHomeInput {
   const nextStep = deriveHomeNextStep(progress, available, pilot);
   return {
     progress,
@@ -65,7 +65,7 @@ function input(
 
 // ── Case 1: Missing data tolerance ────────────────────────────────────────────
 
-describe("deriveTeacherHomeViewModel — Case 1: Missing data tolerance", () => {
+describe("deriveStudentHomeViewModel — Case 1: Missing data tolerance", () => {
   it("does not throw when accuracyBySkill and trendBySkill are empty", () => {
     const p = pp({
       attempts: [
@@ -73,17 +73,17 @@ describe("deriveTeacherHomeViewModel — Case 1: Missing data tolerance", () => 
         att("mat.u1.conjuntos_numericos", { correct: false }),
       ],
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
     expect(vm).toBeDefined();
-    expect(vm.teacherMessage).toBeDefined();
+    expect(vm.studentMessage).toBeDefined();
     expect(vm.mission).toBeDefined();
     expect(vm.primaryActions).toBeDefined();
     expect(vm.routeUnits).toBeDefined();
     expect(vm.studentSituation).toBeDefined();
-    expect(vm.todayPlan).toBeDefined();
+    expect(vm.suggestedActions).toBeDefined();
   });
 
   it("treats missing accuracy as 0 (no throw)", () => {
@@ -93,7 +93,7 @@ describe("deriveTeacherHomeViewModel — Case 1: Missing data tolerance", () => 
         att("mat.u1.conjuntos_numericos", { correct: false }),
       ],
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -102,7 +102,7 @@ describe("deriveTeacherHomeViewModel — Case 1: Missing data tolerance", () => 
 
   it("does not throw with empty availableSkills", () => {
     const p = pp({});
-    const vm = deriveTeacherHomeViewModel(input(p, [], pilotSkills));
+    const vm = deriveStudentHomeViewModel(input(p, [], pilotSkills));
 
     expect(vm).toBeDefined();
     expect(vm.studentSituation.readinessPercent).toBe(0);
@@ -111,10 +111,10 @@ describe("deriveTeacherHomeViewModel — Case 1: Missing data tolerance", () => 
 
 // ── Case 2: No invented evidence / empty progress ─────────────────────────────
 
-describe("deriveTeacherHomeViewModel — Case 2: No invented evidence", () => {
+describe("deriveStudentHomeViewModel — Case 2: No invented evidence", () => {
   it("returns readinessPercent 0 when no attempts exist", () => {
     const p = pp({ attempts: [] });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -124,7 +124,7 @@ describe("deriveTeacherHomeViewModel — Case 2: No invented evidence", () => {
 
   it("does not fabricate mastery gaps when no attempts exist", () => {
     const p = pp({ attempts: [] });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -134,7 +134,7 @@ describe("deriveTeacherHomeViewModel — Case 2: No invented evidence", () => {
 
   it("recommends diagnostic CTA when progress is empty", () => {
     const p = pp({ attempts: [] });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -147,14 +147,14 @@ describe("deriveTeacherHomeViewModel — Case 2: No invented evidence", () => {
 
 // ── Case 3: Skill label priority ──────────────────────────────────────────────
 
-describe("deriveTeacherHomeViewModel — Case 3: Skill label priority", () => {
+describe("deriveStudentHomeViewModel — Case 3: Skill label priority", () => {
   it("uses catalog labels in routeUnits, not raw skill IDs", () => {
     const p = pp({
       attempts: [att("mat.u1.conjuntos_numericos", { correct: true })],
       accuracyBySkill: { "mat.u1.conjuntos_numericos": 1 },
       trendBySkill: { "mat.u1.conjuntos_numericos": "stable" },
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -169,7 +169,7 @@ describe("deriveTeacherHomeViewModel — Case 3: Skill label priority", () => {
       accuracyBySkill: { "mat.u1.intervalos": 0.3 },
       trendBySkill: { "mat.u1.intervalos": "needs-review" },
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -182,20 +182,20 @@ describe("deriveTeacherHomeViewModel — Case 3: Skill label priority", () => {
 
 // ── Case 4: Initial no-progress → Diagnostic CTA ──────────────────────────────
 
-describe("deriveTeacherHomeViewModel — Case 4: Diagnostic CTA", () => {
-  it("todayPlan includes a diagnostic step when no attempts", () => {
+describe("deriveStudentHomeViewModel — Case 4: Diagnostic CTA", () => {
+  it("suggestedActions includes a diagnostic step when no attempts", () => {
     const p = pp({ attempts: [] });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
-    expect(vm.todayPlan.length).toBeGreaterThan(0);
-    expect(vm.todayPlan[0].skillId).toBe("diagnostic");
+    expect(vm.suggestedActions.length).toBeGreaterThan(0);
+    expect(vm.suggestedActions[0].skillId).toBe("diagnostic");
   });
 
   it("mission CTA points to /diagnostic when no attempts", () => {
     const p = pp({ attempts: [] });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -205,7 +205,7 @@ describe("deriveTeacherHomeViewModel — Case 4: Diagnostic CTA", () => {
 
 // ── Case 5: Weak skill thresholds ─────────────────────────────────────────────
 
-describe("deriveTeacherHomeViewModel — Case 5: Weak skill thresholds", () => {
+describe("deriveStudentHomeViewModel — Case 5: Weak skill thresholds", () => {
   it("identifies a skill with accuracy < WEAK_SKILL_THRESHOLD as weak", () => {
     const p = pp({
       attempts: [
@@ -216,7 +216,7 @@ describe("deriveTeacherHomeViewModel — Case 5: Weak skill thresholds", () => {
       accuracyBySkill: { "mat.u1.intervalos": 1 / 3 },
       trendBySkill: { "mat.u1.intervalos": "stable" },
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -239,7 +239,7 @@ describe("deriveTeacherHomeViewModel — Case 5: Weak skill thresholds", () => {
       accuracyBySkill: { "mat.u1.conjuntos_numericos": 0.6 },
       trendBySkill: { "mat.u1.conjuntos_numericos": "needs-review" },
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -252,7 +252,7 @@ describe("deriveTeacherHomeViewModel — Case 5: Weak skill thresholds", () => {
 
 // ── Case 6: Mastered definition ───────────────────────────────────────────────
 
-describe("deriveTeacherHomeViewModel — Case 6: Mastered definition", () => {
+describe("deriveStudentHomeViewModel — Case 6: Mastered definition", () => {
   it("marks a unit as mastered when all skills meet mastery criteria", () => {
     // Single-unit scenario: unit 1 with 2 mastered skills
     const singlePilot: PilotSkill[] = [
@@ -283,7 +283,7 @@ describe("deriveTeacherHomeViewModel — Case 6: Mastered definition", () => {
         "mat.u1.potencias_raices": "stable",
       },
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, singleAvailable, singlePilot)
     );
 
@@ -307,7 +307,7 @@ describe("deriveTeacherHomeViewModel — Case 6: Mastered definition", () => {
       accuracyBySkill: { "mat.u1.conjuntos_numericos": 0.9 },
       trendBySkill: { "mat.u1.conjuntos_numericos": "stable" },
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, singleAvailable, singlePilot)
     );
 
@@ -333,7 +333,7 @@ describe("deriveTeacherHomeViewModel — Case 6: Mastered definition", () => {
       accuracyBySkill: { "mat.u1.conjuntos_numericos": 1 },
       trendBySkill: { "mat.u1.conjuntos_numericos": "needs-review" },
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, singleAvailable, singlePilot)
     );
 
@@ -345,7 +345,7 @@ describe("deriveTeacherHomeViewModel — Case 6: Mastered definition", () => {
 
 // ── Case 7 & 8: Decision priority — Recovery beats advance ────────────────────
 
-describe("deriveTeacherHomeViewModel — Case 7 & 8: Decision priority", () => {
+describe("deriveStudentHomeViewModel — Case 7 & 8: Decision priority", () => {
   it("prioritizes weak skill recovery over new unattempted skill in primaryActions", () => {
     const p = pp({
       attempts: [
@@ -356,7 +356,7 @@ describe("deriveTeacherHomeViewModel — Case 7 & 8: Decision priority", () => {
       accuracyBySkill: { "mat.u1.conjuntos_numericos": 1 / 3 },
       trendBySkill: { "mat.u1.conjuntos_numericos": "stable" },
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -381,7 +381,7 @@ describe("deriveTeacherHomeViewModel — Case 7 & 8: Decision priority", () => {
       accuracyBySkill: { "mat.u1.conjuntos_numericos": 0.85 },
       trendBySkill: { "mat.u1.conjuntos_numericos": "stable" },
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -396,7 +396,7 @@ describe("deriveTeacherHomeViewModel — Case 7 & 8: Decision priority", () => {
 
 // ── Case 9: Safe links ────────────────────────────────────────────────────────
 
-describe("deriveTeacherHomeViewModel — Case 9: Safe links", () => {
+describe("deriveStudentHomeViewModel — Case 9: Safe links", () => {
   it("only produces primaryAction hrefs with verified routes", () => {
     const allowedPrefixes = ["/diagnostic", "/practice", "/learn/matematica"];
 
@@ -412,7 +412,7 @@ describe("deriveTeacherHomeViewModel — Case 9: Safe links", () => {
       accuracyBySkill: { "mat.u1.conjuntos_numericos": 0.85, "mat.u1.intervalos": 0.5 },
       trendBySkill: { "mat.u1.conjuntos_numericos": "stable", "mat.u1.intervalos": "needs-review" },
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -426,7 +426,7 @@ describe("deriveTeacherHomeViewModel — Case 9: Safe links", () => {
 
   it("produces safe mission CTA href", () => {
     const p = pp({});
-    const vm = deriveTeacherHomeViewModel(input(p, [], pilotSkills));
+    const vm = deriveStudentHomeViewModel(input(p, [], pilotSkills));
 
     const allowedPrefixes = ["/diagnostic", "/practice", "/learn/matematica"];
     const allowed = allowedPrefixes.some((prefix) =>
@@ -438,7 +438,7 @@ describe("deriveTeacherHomeViewModel — Case 9: Safe links", () => {
 
 // ── Case 10: Route unit statuses ──────────────────────────────────────────────
 
-describe("deriveTeacherHomeViewModel — Case 10: Route unit statuses", () => {
+describe("deriveStudentHomeViewModel — Case 10: Route unit statuses", () => {
   it("marks a unit as in-progress when some skills have attempts but not all mastered", () => {
     const p = pp({
       attempts: [
@@ -461,7 +461,7 @@ describe("deriveTeacherHomeViewModel — Case 10: Route unit statuses", () => {
         "mat.u2.polinomios_basico": "stable",
       },
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -476,7 +476,7 @@ describe("deriveTeacherHomeViewModel — Case 10: Route unit statuses", () => {
 
   it("marks units as not-started when no skills have attempts", () => {
     const p = pp({ attempts: [] });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -489,7 +489,7 @@ describe("deriveTeacherHomeViewModel — Case 10: Route unit statuses", () => {
 
   it("always produces 6 route units U1-U6", () => {
     const p = pp({});
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -500,10 +500,10 @@ describe("deriveTeacherHomeViewModel — Case 10: Route unit statuses", () => {
 
 // ── Case 11: Unit number extraction ───────────────────────────────────────────
 
-describe("deriveTeacherHomeViewModel — Case 11: Unit number extraction", () => {
+describe("deriveStudentHomeViewModel — Case 11: Unit number extraction", () => {
   it("includes unit 2 in routeUnits with correct unitKey", () => {
     const p = pp({});
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -515,7 +515,7 @@ describe("deriveTeacherHomeViewModel — Case 11: Unit number extraction", () =>
 
   it("includes unit 1 in routeUnits with correct unitKey", () => {
     const p = pp({});
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
@@ -532,7 +532,7 @@ describe("deriveTeacherHomeViewModel — Case 11: Unit number extraction", () =>
     const weirdAvailable: ReadySkill[] = weirdPilot;
 
     const p = pp({});
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, weirdAvailable, weirdPilot)
     );
 
@@ -544,7 +544,7 @@ describe("deriveTeacherHomeViewModel — Case 11: Unit number extraction", () =>
 
 // ── Happy path ────────────────────────────────────────────────────────────────
 
-describe("deriveTeacherHomeViewModel — Happy path", () => {
+describe("deriveStudentHomeViewModel — Happy path", () => {
   it("returns a complete view model with all fields populated", () => {
     const p = pp({
       attempts: [
@@ -559,12 +559,12 @@ describe("deriveTeacherHomeViewModel — Happy path", () => {
       accuracyBySkill: { "mat.u1.conjuntos_numericos": 0.85, "mat.u1.intervalos": 0.3 },
       trendBySkill: { "mat.u1.conjuntos_numericos": "stable", "mat.u1.intervalos": "needs-review" },
     });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 
-    // teacherMessage
-    expect(vm.teacherMessage.length).toBeGreaterThan(0);
+    // studentMessage
+    expect(vm.studentMessage.length).toBeGreaterThan(0);
 
     // mission (B3 closeout latest revision: mission no longer
     // carries a title field; the brand is shown once in the
@@ -582,8 +582,8 @@ describe("deriveTeacherHomeViewModel — Happy path", () => {
     // primaryActions
     expect(vm.primaryActions.length).toBeGreaterThan(0);
 
-    // todayPlan
-    expect(vm.todayPlan.length).toBeGreaterThan(0);
+    // suggestedActions
+    expect(vm.suggestedActions.length).toBeGreaterThan(0);
   });
 
   it("uses diagnostic data when present", () => {
@@ -602,7 +602,7 @@ describe("deriveTeacherHomeViewModel — Happy path", () => {
     };
 
     const p = pp({ diagnosticResult: storedDiag });
-    const vm = deriveTeacherHomeViewModel(
+    const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
 

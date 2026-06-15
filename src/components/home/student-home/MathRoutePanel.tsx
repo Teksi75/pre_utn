@@ -1,10 +1,10 @@
 "use client";
 
-import type { TeacherRouteUnit } from "@/domain/student-home";
+import type { StudentRouteUnit } from "@/domain/student-home";
 import { StatusPill, type StatusPillVariant } from "@/components/ui/StatusPill";
 
 interface MathRoutePanelProps {
-  readonly routeUnits: readonly TeacherRouteUnit[];
+  readonly routeUnits: readonly StudentRouteUnit[];
 }
 
 const UNIT_STATUS_LABEL: Record<string, string> = {
@@ -19,7 +19,7 @@ const UNIT_STATUS_LABEL: Record<string, string> = {
  * so the panel still renders rather than throwing.
  */
 function variantForStatus(
-  status: TeacherRouteUnit["status"],
+  status: StudentRouteUnit["status"],
 ): StatusPillVariant {
   switch (status) {
     case "mastered":
@@ -39,11 +39,11 @@ function variantForStatus(
 export function MathRoutePanel({ routeUnits }: MathRoutePanelProps) {
   return (
     <article
-      aria-labelledby="tmr-route-title"
+      aria-labelledby="mission-route-title"
       className="app-glass-surface rounded-[var(--radius-card)] p-5"
     >
       <h3
-        id="tmr-route-title"
+        id="mission-route-title"
         className="text-sm font-semibold uppercase tracking-wide text-[var(--color-brand-700)]"
       >
         Ruta Matemática

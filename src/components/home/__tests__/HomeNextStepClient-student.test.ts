@@ -70,22 +70,22 @@ describe("HomeNextStepClient — student identity wiring (PR2)", () => {
 
   it("renders dashboard panels only when student is active", () => {
     const src = homeSource();
-    // TeacherDigitalHero, MathRoutePanel etc. should be conditional on student
+    // MissionCard, MathRoutePanel etc. should be conditional on student
     // They appear AFTER the student null check
     const gateIdx = src.indexOf("StudentGate");
-    const heroIdx = src.indexOf("TeacherDigitalHero");
+    const heroIdx = src.indexOf("MissionCard");
     if (gateIdx >= 0 && heroIdx >= 0) {
-      // Hero should appear after a student check, not before StudentGate
-      // At minimum, hero should be inside a conditional that checks student
-      expect(src).toMatch(/student\s*\?|<TeacherDigitalHero/);
+      // MissionCard should appear after a student check, not before StudentGate
+      // At minimum, mission card should be inside a conditional that checks student
+      expect(src).toMatch(/student\s*\?|<MissionCard/);
     }
   });
 
-  it("TeacherDigitalHero appears in a student-conditional zone", () => {
+  it("MissionCard appears in a student-conditional zone", () => {
     const src = homeSource();
-    // Hero must appear after the student null check (in render order)
-    // At minimum: hero appears somewhere AND there is a student null check
-    expect(src).toContain("TeacherDigitalHero");
+    // MissionCard must appear after the student null check (in render order)
+    // At minimum: mission card appears somewhere AND there is a student null check
+    expect(src).toContain("MissionCard");
     expect(src).toMatch(/student\s*===\s*null/);
   });
 

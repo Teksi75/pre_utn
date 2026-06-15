@@ -3,20 +3,17 @@
 import { useEffect, useState } from "react";
 import { isSkillReady } from "../../domain/catalog/readiness";
 import { PILOT_SKILLS } from "../../domain/catalog/pilot-skills";
-import {
-  deriveHomeNextStep,
-  type HomeNextStep,
-} from "../../domain/next-step/index";
+import { deriveHomeNextStep } from "../../domain/next-step/index";
 import { loadProgress } from "../../lib/practice-progress";
 import { MathWatermark } from "../math-visuals";
 import { HomeGreeting } from "./HomeGreeting";
-import { TeacherDigitalHero } from "./student-home/TeacherDigitalHero";
+import { MissionCard } from "./student-home/MissionCard";
 import { StudentSituationPanel } from "./student-home/StudentSituationPanel";
 import { MathRoutePanel } from "./student-home/MathRoutePanel";
 import { DecisionBoardPanel } from "./student-home/DecisionBoardPanel";
 import {
-  deriveTeacherHomeViewModel,
-  type TeacherHomeViewModel,
+  deriveStudentHomeViewModel,
+  type StudentHomeViewModel,
 } from "../../domain/student-home/index";
 import { useActiveStudent } from "../../hooks/useActiveStudent";
 import { StudentGate } from "../StudentGate";
@@ -37,13 +34,11 @@ import { StudentSwitcher } from "./StudentSwitcher";
 export function HomeNextStepClient() {
   const { student, createAndActivate, refresh, isLoading } = useActiveStudent();
   const [showSwitcher, setShowSwitcher] = useState(false);
-  const [nextStep, setNextStep] = useState<HomeNextStep | null>(null);
-  const [viewModel, setViewModel] = useState<TeacherHomeViewModel | null>(null);
+  const [viewModel, setViewModel] = useState<StudentHomeViewModel | null>(null);
 
   // Reload progress when student changes (active profile switched or created)
   useEffect(() => {
     if (student === null) {
-      setNextStep(null);
       setViewModel(null);
       return;
     }
@@ -60,10 +55,8 @@ export function HomeNextStepClient() {
       readySkills,
       [...PILOT_SKILLS]
     );
-    setNextStep(computedNextStep);
-
     setViewModel(
-      deriveTeacherHomeViewModel({
+      deriveStudentHomeViewModel({
         progress,
         diagnosticResult: progress.diagnosticResult ?? null,
         availableSkills: readySkills,
@@ -132,10 +125,7 @@ export function HomeNextStepClient() {
         <StudentSwitcher onClose={() => setShowSwitcher(false)} />
       )}
       <MathWatermark topic="sets" variant="background">
-        <section
-          aria-labelledby="tdh-hero-title"
-          className="space-y-6"
-        >
+        <section className="space-y-6">
           {/* Active student chrome — within the dashboard zone */}
           <div className="flex items-center justify-between">
             <HomeGreeting studentName={student.displayName} />
@@ -148,7 +138,7 @@ export function HomeNextStepClient() {
           </div>
 
           {/* Hero — MAX visual weight */}
-          <TeacherDigitalHero hero={viewModel.mission} />
+          <MissionCard mission={viewModel.mission} />
 
           {/* Grid: route + situation side by side on desktop */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
