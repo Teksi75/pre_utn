@@ -3,10 +3,7 @@
 import { useEffect, useState } from "react";
 import { isSkillReady } from "../../domain/catalog/readiness";
 import { PILOT_SKILLS } from "../../domain/catalog/pilot-skills";
-import {
-  deriveHomeNextStep,
-  type HomeNextStep,
-} from "../../domain/next-step/index";
+import { deriveHomeNextStep } from "../../domain/next-step/index";
 import { loadProgress } from "../../lib/practice-progress";
 import { MathWatermark } from "../math-visuals";
 import { HomeGreeting } from "./HomeGreeting";
@@ -37,13 +34,11 @@ import { StudentSwitcher } from "./StudentSwitcher";
 export function HomeNextStepClient() {
   const { student, createAndActivate, refresh, isLoading } = useActiveStudent();
   const [showSwitcher, setShowSwitcher] = useState(false);
-  const [nextStep, setNextStep] = useState<HomeNextStep | null>(null);
   const [viewModel, setViewModel] = useState<StudentHomeViewModel | null>(null);
 
   // Reload progress when student changes (active profile switched or created)
   useEffect(() => {
     if (student === null) {
-      setNextStep(null);
       setViewModel(null);
       return;
     }
@@ -60,8 +55,6 @@ export function HomeNextStepClient() {
       readySkills,
       [...PILOT_SKILLS]
     );
-    setNextStep(computedNextStep);
-
     setViewModel(
       deriveStudentHomeViewModel({
         progress,
