@@ -436,3 +436,28 @@ describe("deriveHomeNextStep — mixed U1+U2 fallback", () => {
     expect(nextStep.title).toBe("Continuar Unidad 1 parcial");
   });
 });
+
+describe("deriveHomeNextStep — effectiveDiagnosticResult handling", () => {
+  it("returns kind 'practice' when effectiveDiagnosticResult is non-null and attempts is empty", () => {
+    const nextStep = deriveHomeNextStep(
+      progress({ attempts: [] }),
+      readySkills,
+      readySkills,
+      { completedAt: "2026-06-15T12:00:00.000Z", estimates: [], suggestions: [], version: 1 }
+    );
+
+    expect(nextStep.kind).toBe("practice");
+    expect(nextStep.kind).not.toBe("diagnostic");
+  });
+
+  it("returns kind 'diagnostic' when effectiveDiagnosticResult is null and attempts is empty", () => {
+    const nextStep = deriveHomeNextStep(
+      progress({ attempts: [] }),
+      readySkills,
+      readySkills,
+      null
+    );
+
+    expect(nextStep.kind).toBe("diagnostic");
+  });
+});

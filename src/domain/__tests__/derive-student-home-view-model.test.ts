@@ -201,6 +201,8 @@ describe("deriveStudentHomeViewModel — Case 4: Diagnostic CTA", () => {
     );
 
     expect(vm.mission.ctaHref).toBe("/diagnostic");
+    expect(vm.mission.ctaLabel).toBe("Hacer diagnóstico inicial");
+    expect(vm.studentSituation.diagnosticCompletedAt).toBeNull();
   });
 
   it("mission CTA does NOT point to /diagnostic when diagnostic is completed and attempts is empty", () => {
@@ -211,12 +213,14 @@ describe("deriveStudentHomeViewModel — Case 4: Diagnostic CTA", () => {
       suggestions: [],
     };
     const p = pp({ attempts: [] });
+    const nextStep = deriveHomeNextStep(p, pilotSkills.slice(0, 4), pilotSkills, storedDiag);
     const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills, storedDiag)
     );
 
     expect(vm.mission.ctaLabel).not.toBe("Hacer diagnóstico inicial");
     expect(vm.mission.ctaHref).not.toBe("/diagnostic");
+    expect(vm.mission.ctaHref).toBe(nextStep.href);
   });
 
   it("studentSituation.diagnosticCompletedAt reflects the stored diagnostic", () => {
@@ -232,6 +236,7 @@ describe("deriveStudentHomeViewModel — Case 4: Diagnostic CTA", () => {
     );
 
     expect(vm.studentSituation.diagnosticCompletedAt).toBe("2026-06-15T12:00:00.000Z");
+    expect(vm.mission.ctaHref).not.toBe("/diagnostic");
   });
 });
 
