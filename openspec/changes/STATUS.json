@@ -341,6 +341,11 @@
       "mergedTo": "main",
       "mergeCommit": "e3fcb1d",
       "summary": "Wire loadDiagnosticResult() into home dashboard; buildMission selector treats completed diagnostic as first interaction. Closes coupled CTA + Tu Situación bugs. Verification PASS WITH NOTES (1862/1862 tests, typecheck, build)."
+    },
+    "strengthen-diagnostic-coupling-tests": {
+      "status": "in_progress",
+      "branch": "fix/strengthen-diagnostic-coupling-tests",
+      "startedAt": "2026-06-15"
     }
   },
   "activeBranches": [],
