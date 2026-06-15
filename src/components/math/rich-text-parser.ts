@@ -1,30 +1,67 @@
 export type RichTextSegment =
   | { kind: "text"; value: string }
-  | { kind: "math"; value: string };
+  | { kind: "math"; value: string; displayMode: boolean };
 
-const MATH_DELIMITER = /\$([^$]+)\$/g;
+function pushText(segments: RichTextSegment[], value: string): void {
+  if (value.length === 0) return;
+
+  const previous = segments[segments.length - 1];
+  if (previous?.kind === "text") {
+    segments[segments.length - 1] = {
+      kind: "text",
+      value: previous.value + value,
+    };
+    return;
+  }
+
+  segments.push({ kind: "text", value });
+}
 
 /**
- * Splits text on `$...$` delimiters into text and math segments.
+ * Splits text on math delimiters into text and math segments.
+ *
+ * Supported delimiters:
+ * - `$...$` for inline math
+ * - `$$...$$` for display math
+ *
  * Unclosed delimiters and empty delimiters remain plain text.
  */
 export function parseRichTextSegments(text: string): RichTextSegment[] {
   const segments: RichTextSegment[] = [];
-  let lastIndex = 0;
+  let index = 0;
 
-  for (const match of text.matchAll(MATH_DELIMITER)) {
-    const matchStart = match.index!;
-    // Push preceding plain text
-    if (matchStart > lastIndex) {
-      segments.push({ kind: "text", value: text.slice(lastIndex, matchStart) });
+  while (index < text.length) {
+    const delimiterStart = text.indexOf("$", index);
+
+    if (delimiterStart === -1) {
+      pushText(segments, text.slice(index));
+      break;
     }
-    segments.push({ kind: "math", value: match[1] });
-    lastIndex = matchStart + match[0].length;
-  }
 
-  // Remaining plain text
-  if (lastIndex < text.length) {
-    segments.push({ kind: "text", value: text.slice(lastIndex) });
+    if (delimiterStart > index) {
+      pushText(segments, text.slice(index, delimiterStart));
+    }
+
+    const displayMode = text.startsWith("$$", delimiterStart);
+    const delimiter = displayMode ? "$$" : "$";
+    const delimiterLength = delimiter.length;
+    const contentStart = delimiterStart + delimiterLength;
+    const delimiterEnd = text.indexOf(delimiter, contentStart);
+
+    if (delimiterEnd === -1) {
+      pushText(segments, text.slice(delimiterStart));
+      break;
+    }
+
+    const value = text.slice(contentStart, delimiterEnd);
+    if (value.length === 0) {
+      pushText(segments, text.slice(delimiterStart, delimiterEnd + delimiterLength));
+      index = delimiterEnd + delimiterLength;
+      continue;
+    }
+
+    segments.push({ kind: "math", value, displayMode });
+    index = delimiterEnd + delimiterLength;
   }
 
   return segments;
