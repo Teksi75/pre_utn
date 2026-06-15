@@ -78,7 +78,6 @@ describe("deriveStudentHomeViewModel — Case 1: Missing data tolerance", () => 
     );
 
     expect(vm).toBeDefined();
-    expect(vm.studentMessage).toBeDefined();
     expect(vm.mission).toBeDefined();
     expect(vm.primaryActions).toBeDefined();
     expect(vm.routeUnits).toBeDefined();
@@ -542,6 +541,19 @@ describe("deriveStudentHomeViewModel — Case 11: Unit number extraction", () =>
   });
 });
 
+// ── Regression: studentMessage field removed ─────────────────────────────────
+
+describe("deriveStudentHomeViewModel — studentMessage field removed", () => {
+  it("does NOT expose studentMessage on the returned view-model", () => {
+    const p = pp({});
+    const vm = deriveStudentHomeViewModel(
+      input(p, pilotSkills.slice(0, 4), pilotSkills)
+    );
+    // studentMessage was retired — the field must not exist on the VM
+    expect("studentMessage" in vm).toBe(false);
+  });
+});
+
 // ── Happy path ────────────────────────────────────────────────────────────────
 
 describe("deriveStudentHomeViewModel — Happy path", () => {
@@ -562,9 +574,6 @@ describe("deriveStudentHomeViewModel — Happy path", () => {
     const vm = deriveStudentHomeViewModel(
       input(p, pilotSkills.slice(0, 4), pilotSkills)
     );
-
-    // studentMessage
-    expect(vm.studentMessage.length).toBeGreaterThan(0);
 
     // mission (B3 closeout latest revision: mission no longer
     // carries a title field; the brand is shown once in the

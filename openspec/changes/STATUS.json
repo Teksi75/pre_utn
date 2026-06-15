@@ -245,6 +245,12 @@
       "mergeCommit": "003b617",
       "summary": "Mechanical rename: TeacherHomeInput->StudentHomeInput, TeacherDigitalHero->MissionCard, deriveTeacherHomeViewModel->deriveStudentHomeViewModel, etc. SDD archived and verification PASS (1856/1856 tests, typecheck, build)."
     },
+    "close-student-home-tech-debt": {
+      "status": "in-progress",
+      "branch": "fix/close-student-home-tech-debt",
+      "startedAt": "2026-06-15",
+      "summary": "Remove dead studentMessage field from StudentHomeViewModel; add aria-label to dashboard section."
+    },
     "redesign-aesthetic-sprint-v4": {
       "status": "done",
       "branch": null,

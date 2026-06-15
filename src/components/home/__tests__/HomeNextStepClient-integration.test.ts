@@ -92,4 +92,17 @@ describe("HomeNextStepClient — integration with StudentHomeViewModel", () => {
     const comp = source(componentPath);
     expect(comp).not.toContain('id="home-roadmap-title"');
   });
+
+  test("dashboard section has aria-label accessible name 'Tu recorrido de aprendizaje'", () => {
+    const comp = source(componentPath);
+    expect(comp).toContain('aria-label="Tu recorrido de aprendizaje"');
+  });
+
+  test("mission card has no visible brand/title heading (B3 guard)", () => {
+    const comp = source(componentPath);
+    // The B3 single-touchpoint rule: brand appears once in the header
+    // (top-left wordmark). The mission card must NOT regain a heading
+    // that re-introduces the brand in the hero zone.
+    expect(comp).not.toMatch(/<h[1-6][^>]*>.*INGENIUM/i);
+  });
 });

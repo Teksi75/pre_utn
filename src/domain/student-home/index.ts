@@ -34,8 +34,6 @@ export interface StudentHomeInput {
 }
 
 export interface StudentHomeViewModel {
-  /** Contextual message to the student. */
-  readonly studentMessage: string;
   /** Hero / mission panel data. */
   readonly mission: Mission;
   /** Action cards with verified hrefs. */
@@ -106,7 +104,6 @@ export function deriveStudentHomeViewModel(
     pilotSkills
   );
 
-  const studentMessage = buildStudentMessage(progress, studentSituation);
   const mission = buildMission(progress, nextStep);
   const primaryActions = buildPrimaryActions(progress, availableSkills, pilotSkills);
   const routeUnits = buildRouteUnits(progress, pilotSkills);
@@ -118,31 +115,12 @@ export function deriveStudentHomeViewModel(
   );
 
   return {
-    studentMessage,
     mission,
     primaryActions,
     routeUnits,
     studentSituation,
     suggestedActions,
   };
-}
-
-// ── Student message ─────────────────────────────────────────────────────────
-
-function buildStudentMessage(
-  progress: PracticeProgress,
-  situation: StudentSituation
-): string {
-  if (progress.attempts.length === 0) {
-    return "Sin datos de práctica todavía. Empezá con un diagnóstico para obtener un panorama inicial.";
-  }
-  if (situation.weakSkillsCount > 0) {
-    return `Hay ${situation.weakSkillsCount} habilidades que necesitan atención. Revisá las acciones recomendadas.`;
-  }
-  if (situation.readinessPercent >= 80) {
-    return "El alumno va bien encaminado. Revisá las áreas específicas para seguir avanzando.";
-  }
-  return "Progreso en curso. Continuá practicando para consolidar las habilidades.";
 }
 
 // ── Mission ──────────────────────────────────────────────────────────────────

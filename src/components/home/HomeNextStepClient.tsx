@@ -125,7 +125,7 @@ export function HomeNextStepClient() {
         <StudentSwitcher onClose={() => setShowSwitcher(false)} />
       )}
       <MathWatermark topic="sets" variant="background">
-        <section className="space-y-6">
+        <section aria-label="Tu recorrido de aprendizaje" className="space-y-6">
           {/* Active student chrome — within the dashboard zone */}
           <div className="flex items-center justify-between">
             <HomeGreeting studentName={student.displayName} />
