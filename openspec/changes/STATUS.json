@@ -339,7 +339,7 @@
       "startedAt": "2026-06-15",
       "completedAt": "2026-06-15",
       "mergedTo": "main",
-      "mergeCommit": null,
+      "mergeCommit": "e3fcb1d",
       "summary": "Wire loadDiagnosticResult() into home dashboard; buildMission selector treats completed diagnostic as first interaction. Closes coupled CTA + Tu Situación bugs. Verification PASS WITH NOTES (1862/1862 tests, typecheck, build)."
     }
   },
