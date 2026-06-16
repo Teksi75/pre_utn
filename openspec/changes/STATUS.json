@@ -351,6 +351,12 @@
       "mergeCommit": "19882e0",
       "summary": "Test-only follow-up: 2 new regression tests for deriveHomeNextStep's effectiveDiagnosticResult param + 3 strengthened sub-assertions in derive-student-home-view-model.test.ts. Verification PASS (1864/1864 tests, typecheck, build). Closes the 2 SUGGESTIONS from fix-student-home-diagnostic-coupling verify-report."
     },
+    "update-readme-github-status": {
+      "status": "in-progress",
+      "branch": "feat/update-readme-github-status",
+      "startedAt": "2026-06-15",
+      "summary": "Update README.md: U1/U2 complete, U2 path, STATUS.json source of truth, recent changes note."
+    },
     "catalog-readiness-ui": {
       "status": "done",
       "branch": null,

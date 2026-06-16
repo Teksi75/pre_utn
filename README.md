@@ -6,12 +6,14 @@ App publicada: https://pre-utn.vercel.app/
 
 ## Estado real del MVP
 
-- Matemática es el primer módulo activo.
-- Física queda para una segunda fase.
-- Unidad 1 está en construcción: no es todavía un curso completo.
-- Las rutas actuales permiten aprender, practicar y diagnosticar sobre el catálogo disponible, pero solo deben tratarse como transitables las skills que tengan teoría, ejemplos, práctica, feedback y readiness real.
+Matemática es el módulo activo. Física queda para una segunda fase.
 
-Skills de Unidad 1 realmente transitables hoy:
+| Unidad | Skills | Estado |
+|--------|--------|--------|
+| Unidad 1 — Conjuntos, Reales, Intervalos, Potencias, Racionalización, Valor absoluto, Logaritmos, Complejos | 8 | Completa |
+| Unidad 2 — Polinomios, Operaciones, Ruffini, Factorización, Gauss, MCM/MCD, Ecuaciones | 7 | Completa |
+
+**Unidad 1 — Skills transitables hoy:**
 
 | Skill | Estado |
 |-------|--------|
@@ -22,10 +24,19 @@ Skills de Unidad 1 realmente transitables hoy:
 | Racionalización | Listo |
 | Valor absoluto | Listo |
 | Logaritmos | Listo |
+| Complejos | Listo |
 
-Temas de Unidad 1 que todavía faltan completar como recorrido transitable:
+**Unidad 2 — Skills transitables hoy:**
 
-- (ninguno — las 8 skills están en estado "Listo")
+| Skill | Estado |
+|-------|--------|
+| Polinomios básico | Listo |
+| Operaciones con polinomios | Listo |
+| Ruffino y resto | Listo |
+| Factorización | Listo |
+| Gauss | Listo |
+| MCM y MCD de polinomios | Listo |
+| Ecuaciones fraccionarias | Listo |
 
 ## Fuente de verdad
 
@@ -37,6 +48,7 @@ Este README es una puerta de entrada y un mapa de navegación. No es la fuente n
 | Mapa de contenidos | `utn-ingreso-app-spec/docs/pedagogy/05-math-content-map.md` |
 | Mapa de skills | `utn-ingreso-app-spec/docs/pedagogy/06-skill-map.md` |
 | Estado de implementación SDD | `openspec/changes/` vigentes |
+| Estado SDD portable (multi-PC) | `openspec/changes/STATUS.json` |
 | Contenido cargado en la app | `content/matematica/` |
 | Catálogo y readiness técnico | `src/domain/catalog/` |
 | Scripts reales | `package.json` |
@@ -66,6 +78,20 @@ La fuente pedagógica es el material canónico y las specs activas. La fuente t�
 | 7 | Complejos | Listo |
 
 `En construcción` significa que ya existe una parte del recorrido, pero todavía no alcanza readiness completo. `Pendiente` puede incluir ejercicios sueltos o referencias parciales, pero todavía no tiene recorrido pedagógico completo y validado para el alumno.
+
+## Camino actual de Unidad 2
+
+| Paso | Tema | Estado |
+|------|------|--------|
+| 0 | Polinomios básico | Listo |
+| 1 | Operaciones con polinomios | Listo |
+| 2 | Ruffino y resto | Listo |
+| 3 | Factorización | Listo |
+| 4 | Gauss | Listo |
+| 5 | MCM y MCD de polinomios | Listo |
+| 6 | Ecuaciones fraccionarias | Listo |
+
+**Cambios recientes:** identidad de alumno con persistencia local + switcher; rediseño visual sprint v4; UI de catalog readiness.
 
 ## Cómo correr
 
