@@ -78,5 +78,162 @@
         "pedagogicalIntent": "La resolución modelo muestra el caso donde la simplificación algebraica produce una identidad, y enfatiza que la verificación del dominio contra los denominadores originales es OBLIGATORIA antes de declarar la solución."
       }
     ]
+  },
+  {
+    "id": "ex.u2.polinomios_basico.desafio-01",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Si $P(x) = 2x^3 - 5x + 7$, ¿cuál es el valor de $P(3) - P(-2)$?",
+    "expectedAnswer": "$45$",
+    "options": [
+      "$45$",
+      "$-45$",
+      "$47$",
+      "$-47$"
+    ],
+    "commonErrorTags": [
+      "u2_signo_operacion"
+    ],
+    "pedagogicalNote": "Se evalúa por separado: $P(3) = 2(3)^3 - 5(3) + 7 = 54 - 15 + 7 = 46$ y $P(-2) = 2(-2)^3 - 5(-2) + 7 = -16 + 10 + 7 = 1$. La diferencia pedida es $P(3) - P(-2) = 46 - 1 = 45$. El paso crítico es el signo de $-5(-2) = +10$ dentro de $P(-2)$; un error de signo ahí cambia toda la cuenta. El distractor $-45$ invierte el orden de la resta y calcula $P(-2) - P(3)$. El distractor $47$ suma en vez de restar: $46 + 1 = 47$. El distractor $-47$ combina ambos errores (invierte la resta y suma). Los tres distractores son errores de signo u orden sobre la operación final, todos cubiertos por el mismo error de signo operativo.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-polinomios-basico"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Polinomios — Valor numérico y evaluación con signo",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere evaluar un polinomio en dos valores de distinto signo y luego combinar los resultados con una resta, integrando el manejo de signos en potencias de base negativa con el cálculo del valor numérico."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Polinomios — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren los errores típicos de evaluación con signo (invertir la resta, sumar en vez de restar, combinar ambos errores), sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.polinomios_basico.desafio-02",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "El polinomio $P(x) = (x-1)(x-2)(x+3)$ tiene raíces $r_1, r_2, r_3$. ¿Cuál es el valor de $r_1 + r_2 + r_3$?",
+    "expectedAnswer": "$0$",
+    "options": [
+      "$0$",
+      "$6$",
+      "$-7$",
+      "$-6$"
+    ],
+    "commonErrorTags": [
+      "u2_signo_operacion",
+      "u2_termino_semejante"
+    ],
+    "pedagogicalNote": "Para aplicar la relación coeficientes-raíces primero se desarrolla: $(x-1)(x-2) = x^2 - 3x + 2$ y luego $(x^2 - 3x + 2)(x+3) = x^3 + 3x^2 - 3x^2 - 9x + 2x + 6 = x^3 - 7x + 6$. Al combinar términos semejantes, $3x^2$ y $-3x^2$ se cancelan, de modo que el coeficiente de $x^2$ es $0$. Por las fórmulas de Vieta, $r_1 + r_2 + r_3 = -\\frac{\\text{coef. de } x^2}{\\text{coef. de } x^3} = -\\frac{0}{1} = 0$, lo que se confirma con las raíces $1 + 2 + (-3) = 0$. El distractor $6$ confunde la suma de raíces con el término constante (que corresponde a $-r_1 r_2 r_3$). El distractor $-7$ confunde la suma con el coeficiente de $x$ (que corresponde a $r_1 r_2 + r_1 r_3 + r_2 r_3$). El distractor $-6$ es el opuesto del término constante.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-polinomios-basico"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Polinomios — Relación coeficientes-raíces (fórmulas de Vieta)",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Pide obtener la suma de las raíces a partir de los coeficientes, lo que obliga a desarrollar el producto, combinar términos semejantes y leer el coeficiente de $x^2$ correctamente. Integra productos notables, reducción de términos y la relación coeficientes-raíces."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Polinomios — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores confunden la suma de raíces con el término constante, con el coeficiente de $x$ y con su opuesto, sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.desafio-01",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Al desarrollar $(2x-1)(x+3)(x-2)$, ¿cuál es el coeficiente del término $x$?",
+    "expectedAnswer": "$-13$",
+    "options": [
+      "$-13$",
+      "$13$",
+      "$5$",
+      "$7$"
+    ],
+    "commonErrorTags": [
+      "u2_signo_operacion",
+      "u2_termino_semejante",
+      "u2_termino_faltante"
+    ],
+    "pedagogicalNote": "Primero $(2x-1)(x+3) = 2x^2 + 6x - x - 3 = 2x^2 + 5x - 3$. Luego $(2x^2 + 5x - 3)(x-2) = 2x^3 - 4x^2 + 5x^2 - 10x - 3x + 6 = 2x^3 + x^2 - 13x + 6$. El coeficiente de $x$ es $-13$, que proviene de combinar los términos semejantes $-10x - 3x$. El distractor $13$ invierte el signo al combinar $-10x - 3x$, por ejemplo tratándolo como $-10x + 3x$ o perdiendo el signo del producto $-3 \\cdot x$. El distractor $5$ se queda con el coeficiente $5x$ del primer producto y omite la segunda multiplicación por $(x-2)$, dejando faltantes los términos cruzados. El distractor $7$ surge de un error de signo al combinar, tomando $|-10| - |-3| = 7$ y perdiendo los signos de ambos términos.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-operaciones-polinomios"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Operaciones con polinomios — Multiplicación y coeficiente de un término",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere multiplicar tres polinomios aplicando la distributiva en cada paso, combinar términos semejantes sin perder signos e identificar el coeficiente de un grado específico. Integra multiplicación de polinomios, reducción de términos y lectura de coeficientes."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Operaciones con polinomios — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren los errores típicos de multiplicación (error de signo al combinar, omitir la segunda multiplicación, combinar términos no semejantes), sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.desafio-02",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Dado $P(x) = (x+1)(x-2) = x^2 - x - 2$ y $Q(x) = x^2 + ax + b$, si $P(x) + Q(x) = 2x^2 - x - 3$, ¿cuál es el valor de $a + b$?",
+    "expectedAnswer": "$-1$",
+    "options": [
+      "$-1$",
+      "$1$",
+      "$-3$",
+      "$0$"
+    ],
+    "commonErrorTags": [
+      "u2_signo_operacion",
+      "u2_termino_semejante",
+      "u2_aislamiento_variable"
+    ],
+    "pedagogicalNote": "Se suma término a término combinando los semejantes: $P(x) + Q(x) = (x^2 - x - 2) + (x^2 + ax + b) = 2x^2 + (a-1)x + (b-2)$. Igualando con $2x^2 - x - 3$ se obtiene $a - 1 = -1 \\Rightarrow a = 0$ y $b - 2 = -3 \\Rightarrow b = -1$, de modo que $a + b = -1$. El distractor $1$ surge de un error de signo al despejar, por ejemplo resolver $a - 1 = -1$ como $a = -1$ o sumar mal los coeficientes. El distractor $-3$ confunde $b$ con el lado derecho de su ecuación: el alumno responde $-3$ sin despejar $b - 2 = -3 \\Rightarrow b = -1$. El distractor $0$ es el valor de $a$ solamente: el alumno identifica $a = 0$ y olvida sumar $b$.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-operaciones-polinomios"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Operaciones con polinomios — Suma de polinomios e identificación de coeficientes",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Pide sumar dos polinomios, igualar el resultado con uno dado y despejar dos coeficientes por comparación de términos del mismo grado. Integra suma de polinomios, combinación de términos semejantes y resolución de un sistema lineal de dos incógnitas."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Operaciones con polinomios — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren los errores típicos de suma e identificación (error de signo al despejar, confundir un coeficiente con el valor pedido, omitir una incógnita), sin copiar ningún item del examen."
+      }
+    ]
   }
 ]
