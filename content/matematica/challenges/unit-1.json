@@ -156,5 +156,165 @@
         "pedagogicalIntent": "El distractor [-4,10] testa la confusión más común: creer que |x-a| > b significa 'dentro del intervalo' cuando en realidad significa 'afuera del intervalo'. Los corchetes en la tercera opción testean el error de cerrar intervalos en desigualdades estrictas."
       }
     ]
+  },
+  {
+    "id": "ex.u1.potencias_raices.desafio-01",
+    "skillId": "mat.u1.potencias_raices",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "El valor de la expresión $((-2)^3)^2 \\cdot (-2^{-2})$ es:",
+    "expectedAnswer": "$-16$",
+    "options": [
+      "$-16$",
+      "$64$",
+      "$16$",
+      "$8$"
+    ],
+    "commonErrorTags": [
+      "u1_orden_operaciones",
+      "u1_signo_parentesis",
+      "u1_potencia_de_potencia"
+    ],
+    "pedagogicalNote": "Se resuelve por partes respetando la prioridad de paréntesis y exponentes. Primero $(-2)^3 = -8$; luego $((-2)^3)^2 = (-8)^2 = 64$, donde la propiedad $(a^m)^n = a^{m \\cdot n}$ da $(-2)^6 = 64$. Después $-2^{-2} = -(2^{-2}) = -\\frac{1}{4}$: el exponente aplica solo al 2 y el signo menos queda fuera del paréntesis. Finalmente $64 \\cdot (-\\frac{1}{4}) = -16$. El distractor $64$ surge de ignorar el factor final $(-2^{-2})$; el distractor $16$ viene de tratar $-2^{-2}$ como $(-2)^{-2} = \\frac{1}{4}$, confundiendo $-a^n$ con $(-a)^n$ e invirtiendo el signo; el distractor $8$ aparece al calcular $((-2)^3)^2$ como $(-2)^{3+2} = (-2)^5 = -32$ (suma exponentes en vez de multiplicarlos) y luego multiplicar por $-\\frac{1}{4}$.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-potencias-raices"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Potenciación — Signo de la base negativa, paréntesis y prioridad de exponentes",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere que el alumno combine la propiedad de potencia de potencia $(a^m)^n = a^{m \\cdot n}$ con la jerarquía entre el signo menos unario y el exponente, distinguiendo $-a^n$ de $(-a)^n$. Integra prioridad de paréntesis, signos de potencias de base negativa y exponentes enteros negativos."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Potenciación — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: cada distractor es un casi-acierto derivado de un error específico de signo o de propiedad de potencias, sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u1.potencias_raices.desafio-02",
+    "skillId": "mat.u1.potencias_raices",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Simplifica la expresión $\\dfrac{\\sqrt[3]{a^2} \\cdot \\sqrt[6]{a^4}}{\\sqrt{a}}$ asumiendo $a > 0$. El resultado es:",
+    "expectedAnswer": "$a^{5/6}$",
+    "options": [
+      "$a^{5/6}$",
+      "$a^{11/6}$",
+      "$a^{4/3}$",
+      "$a^{1/6}$"
+    ],
+    "commonErrorTags": [
+      "u1_cociente_potencias",
+      "u1_orden_operaciones",
+      "u1_producto_potencias"
+    ],
+    "pedagogicalNote": "Se reescribe cada raíz como potencia fraccionaria: $\\sqrt[3]{a^2} = a^{2/3}$, $\\sqrt[6]{a^4} = a^{4/6} = a^{2/3}$ y $\\sqrt{a} = a^{1/2}$. El numerador es un producto de misma base, por lo que se suman los exponentes: $a^{2/3} \\cdot a^{2/3} = a^{4/3}$. Al dividir por $a^{1/2}$ se restan los exponentes: $a^{4/3 - 1/2} = a^{8/6 - 3/6} = a^{5/6}$. El distractor $a^{11/6}$ surge de SUMAR los exponentes del cociente en vez de restarlos ($4/3 + 1/2 = 11/6$); el distractor $a^{4/3}$ aparece al quedarse solo con el numerador y olvidar dividir por $\\sqrt{a}$; el distractor $a^{1/6}$ viene de tomar un único factor del numerador, calculando $a^{2/3} / a^{1/2} = a^{1/6}$ y omitiendo el segundo factor $\\sqrt[6]{a^4}$ del producto.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-potencias-raices"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Radicación — Raíz como potencia fraccionaria y propiedades",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Integra la equivalencia entre raíz enésima y potencia fraccionaria $\\sqrt[n]{a^m} = a^{m/n}$ con las propiedades de producto y cociente de potencias de igual base. El alumno debe convertir tres raíces de distinto índice a un común exponente racional y operar."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Radicación — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad calibrada al nivel del examen de ingreso: los distractores son resultados de errores típicos de aritmética de exponentes racionales (sumar en vez de restar, omitir factores), sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u1.racionalizacion.desafio-01",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Al racionalizar $\\dfrac{1}{\\sqrt{3} + \\sqrt{2}}$, el resultado simplificado es:",
+    "expectedAnswer": "$\\sqrt{3} - \\sqrt{2}$",
+    "options": [
+      "$\\sqrt{3} - \\sqrt{2}$",
+      "$\\sqrt{3} + \\sqrt{2}$",
+      "$\\sqrt{6}$",
+      "$\\dfrac{1}{\\sqrt{5}}$"
+    ],
+    "commonErrorTags": [
+      "u1_rac_conjugado_incorrecto",
+      "u1_rac_pierde_equivalencia",
+      "u1_rac_factor_incorrecto"
+    ],
+    "pedagogicalNote": "Para racionalizar un denominador con dos raíces se multiplica numerador y denominador por el conjugado del denominador. El conjugado de $\\sqrt{3} + \\sqrt{2}$ es $\\sqrt{3} - \\sqrt{2}$, es decir, se cambia el signo del segundo término. Así: $\\dfrac{1}{\\sqrt{3}+\\sqrt{2}} \\cdot \\dfrac{\\sqrt{3}-\\sqrt{2}}{\\sqrt{3}-\\sqrt{2}} = \\dfrac{\\sqrt{3}-\\sqrt{2}}{(\\sqrt{3})^2 - (\\sqrt{2})^2} = \\dfrac{\\sqrt{3}-\\sqrt{2}}{3-2} = \\sqrt{3}-\\sqrt{2}$. El distractor $\\sqrt{3}+\\sqrt{2}$ conserva el mismo signo: el alumno no usa el conjugado sino el mismo binomio, con lo cual el denominador no se vuelve racional; el distractor $\\sqrt{6}$ surge de multiplicar $\\sqrt{3} \\cdot \\sqrt{2}$ como si eso racionalizara, perdiendo la equivalencia de la fracción; el distractor $\\dfrac{1}{\\sqrt{5}}$ viene de tratar $\\sqrt{3}+\\sqrt{2}$ como $\\sqrt{3+2} = \\sqrt{5}$, creyendo que la raíz distribuye sobre la suma, y dejar el denominador sin racionalizar.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-racionalizacion"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Racionalización — Conjugado del denominador binómico",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Aplica la técnica del conjugado sobre un denominador con dos raíces cuadradas, requiriendo el producto notable de diferencia de cuadrados $(a-b)(a+b)=a^2-b^2$ para volver racional el denominador. Integra propiedades de radicación y productos notables."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Racionalización — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: cada distractor es un casi-acierto que representa un error frecuente de conjugado o de propiedad de raíces, sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u1.racionalizacion.desafio-02",
+    "skillId": "mat.u1.racionalizacion",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Al racionalizar $\\dfrac{\\sqrt{2}}{\\sqrt{3} - 1}$, el resultado simplificado es:",
+    "expectedAnswer": "$\\dfrac{\\sqrt{6} + \\sqrt{2}}{2}$",
+    "options": [
+      "$\\dfrac{\\sqrt{6} + \\sqrt{2}}{2}$",
+      "$\\sqrt{6} - \\sqrt{2}$",
+      "$\\sqrt{6} + 1$",
+      "$\\dfrac{\\sqrt{6} - 1}{2}$"
+    ],
+    "commonErrorTags": [
+      "u1_rac_signo_conjugado",
+      "u1_rac_pierde_equivalencia",
+      "u1_signo_racionalizacion"
+    ],
+    "pedagogicalNote": "Se multiplica numerador y denominador por el conjugado del denominador, $\\sqrt{3} + 1$. En el numerador: $\\sqrt{2}(\\sqrt{3} + 1) = \\sqrt{2}\\sqrt{3} + \\sqrt{2} = \\sqrt{6} + \\sqrt{2}$. En el denominador, por diferencia de cuadrados: $(\\sqrt{3})^2 - 1^2 = 3 - 1 = 2$. El resultado es $\\dfrac{\\sqrt{6} + \\sqrt{2}}{2}$. El distractor $\\sqrt{6} - \\sqrt{2}$ surge de multiplicar el numerador por el binomio original $\\sqrt{3} - 1$ en vez de por el conjugado $\\sqrt{3} + 1$, conservando el signo incorrecto; el distractor $\\sqrt{6} + 1$ aparece al distribuir $\\sqrt{2}$ solo sobre $\\sqrt{3}$ y no sobre el 1, además de omitir el denominador 2, perdiendo la equivalencia; el distractor $\\dfrac{\\sqrt{6} - 1}{2}$ conserva el denominador pero cambia el signo del término constante, escribiendo $-1$ en vez de $+\\sqrt{2}$, error de signo típico al aplicar el conjugado.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-racionalizacion"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Racionalización — Conjugado con término racional en el denominador",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Extiende la técnica del conjugado a un denominador que mezcla una raíz con un término racional, requiriendo distribuir el numerador sobre el conjugado y aplicar diferencia de cuadrados. Integra distributiva, productos notables y simplificación de radicales."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Racionalización — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores combinan errores de signo del conjugado, omisión del denominador y distribución incompleta, sin copiar ningún item del examen."
+      }
+    ]
   }
 ]
