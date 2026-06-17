@@ -332,9 +332,9 @@ export function usePracticeFlow() {
       // Start the solving timer when the exercise is shown
       exerciseStartTimeRef.current = performance.now();
     } else {
-      resetToSelect();
+      setPhase("complete");
     }
-  }, [exerciseIndex, exercises, resetToSelect]);
+  }, [exerciseIndex, exercises]);
 
   const viewPreviousExercise = useCallback(() => {
     setIsViewingPreviousExercise(true);
