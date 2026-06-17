@@ -14,6 +14,33 @@ import type { AccessibleSkill } from "@/domain/catalog/accessibility";
 import { skillLabel } from "@/lib/skill-label";
 import { StatusPill } from "@/components/ui/StatusPill";
 import type { SkillId } from "@/domain/models/skill";
+import type { MasteryLevel } from "@/domain/progress";
+
+interface MasteryPillInfo {
+  readonly label: string;
+  readonly variant: "success" | "weak" | "active";
+}
+
+/**
+ * Maps a MasteryLevel to the pill info to render on the left side of a
+ * skill row. Returns null when the skill has not been started — no pill
+ * is rendered in that case.
+ */
+function getMasteryPillInfo(
+  masteryLevel: MasteryLevel
+): MasteryPillInfo | null {
+  switch (masteryLevel) {
+    case "mastered":
+      return { label: "Dominada", variant: "success" };
+    case "review":
+      return { label: "Necesita repaso", variant: "weak" };
+    case "practicing":
+    case "learning":
+      return { label: "En práctica", variant: "active" };
+    case "not-started":
+      return null;
+  }
+}
 
 const UNITS = [1, 2, 3, 4, 5, 6] as const;
 
@@ -177,6 +204,10 @@ export function FocusSelector({
               const missingPrereqLabel = missingPrereqLabelMap.get(skillId);
               // Three visual states: available, blocked-by-prereq, no-content.
               const blockedByPrereq = !isReady && Boolean(missingPrereqLabel);
+              const accessibleSkill = accessibleSkills?.get(skillId);
+              const masteryPillInfo = accessibleSkill
+                ? getMasteryPillInfo(accessibleSkill.masteryLevel)
+                : null;
 
               return (
                 <button
@@ -207,8 +238,19 @@ export function FocusSelector({
                   }`}
                 >
                   <span className="flex items-center justify-between gap-3">
-                    <span className="flex-1">
-                      <span className="block">{skillLabel(skillId)}</span>
+                    <span className="flex-1 min-w-0">
+                      <span className="flex items-center gap-2 flex-wrap">
+                        {masteryPillInfo !== null && (
+                          <StatusPill
+                            variant={masteryPillInfo.variant}
+                            data-testid="mastery-pill"
+                            className="shrink-0"
+                          >
+                            {masteryPillInfo.label}
+                          </StatusPill>
+                        )}
+                        <span className="min-w-0 truncate">{skillLabel(skillId)}</span>
+                      </span>
                       {blockedByPrereq && missingPrereqLabel && (
                         <span
                           id={`skill-prereq-${index}`}
@@ -219,15 +261,15 @@ export function FocusSelector({
                       )}
                     </span>
                     {isReady ? (
-                      <StatusPill variant="available" className="shrink-0">
+                      <StatusPill variant="available" className="shrink-0" data-testid="availability-pill">
                         Disponible
                       </StatusPill>
                     ) : blockedByPrereq ? (
-                      <StatusPill variant="locked" className="shrink-0">
+                      <StatusPill variant="locked" className="shrink-0" data-testid="availability-pill">
                         Bloqueada
                       </StatusPill>
                     ) : (
-                      <StatusPill variant="neutral" className="shrink-0">
+                      <StatusPill variant="neutral" className="shrink-0" data-testid="availability-pill">
                         Próximamente
                       </StatusPill>
                     )}
