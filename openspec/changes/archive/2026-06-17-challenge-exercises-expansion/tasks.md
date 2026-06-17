@@ -101,10 +101,10 @@ Chain strategy: stacked-to-main
 
 ## Phase 5: Closeout
 
-- [ ] 5.1 Update `openspec/changes/STATUS.json`: add entry for `challenge-exercises-expansion` with `status: "done"`, `mergedTo: "main"`, `branch: null`.
-- [ ] 5.2 Commit STATUS.json update.
-- [ ] 5.3 Run `sdd-verify` against the 5 spec requirements + 14 scenarios.
-- [ ] 5.4 Run `sdd-archive` to sync delta specs to `openspec/specs/challenge-exercises/`.
+- [x] 5.1 Update `openspec/changes/STATUS.json`: add entry for `challenge-exercises-expansion` with `status: "done"`, `mergedTo: "main"`, `branch: null`.
+- [x] 5.2 Commit STATUS.json update.
+- [x] 5.3 Run `sdd-verify` against the 5 spec requirements + 14 scenarios.
+- [x] 5.4 Run `sdd-archive` to sync delta specs to `openspec/specs/challenge-exercises/`.
 - [ ] 5.5 Delete all 4 batch feature branches (local + remote) per AGENTS.md branch policy.
 
 ---
