@@ -83,19 +83,19 @@ Chain strategy: stacked-to-main
 
 ## Phase 4: Batch D — U2 final skills (4 skills, 8 challenges, ~320 lines)
 
-- [ ] 4.1 Branch `feat/challenge-exercises-expansion-batch-d` from main (after Batch C merged).
-- [ ] 4.2 Author `ex.u2.ruffini_resto.desafio-01` (Ruffini quotient coefficients; MC 4 comma-list options; difficulty 4; canonicalTrace UNIDAD2).
-- [ ] 4.3 Author `ex.u2.ruffini_resto.desafio-02` (Remainder Theorem `P(-2)`; MC 4 numeric options; difficulty 4).
-- [ ] 4.4 Author `ex.u2.factorizacion.desafio-01` (common factor with mixed powers; MC 4 LaTeX options; difficulty 4).
-- [ ] 4.5 Author `ex.u2.factorizacion.desafio-02` (nested difference of squares `x⁴-81`; MC 4 LaTeX options; difficulty 4).
-- [ ] 4.6 Author `ex.u2.gauss.desafio-01` (full factorization via Gauss+Ruffini+TCP; MC 4 LaTeX options; difficulty 4; canonicalTrace UNIDAD2 + calibrated-from-exam).
-- [ ] 4.7 Author `ex.u2.gauss.desafio-02` (rational root candidate set; MC 4 set options; difficulty 4).
-- [ ] 4.8 Author `ex.u2.mcm_mcd_polinomios.desafio-01` (MCM of factored polys; MC 4 LaTeX options; difficulty 4).
-- [ ] 4.9 Author `ex.u2.mcm_mcd_polinomios.desafio-02` (MCD of factored polys; MC 4 LaTeX options; difficulty 4).
-- [ ] 4.10 Append the 8 entries to `content/matematica/challenges/unit-2.json`.
-- [ ] 4.11 Run `pnpm run test` + `pnpm run typecheck` + `pnpm run build`.
-- [ ] 4.12 Manual content audit (distractors, no-copy, Spanish, real tags).
-- [ ] 4.13 Open PR D; merge to main with `--no-ff`.
+- [x] 4.1 Branch `feat/challenge-exercises-expansion-batch-d` from main (after Batch C merged).
+- [x] 4.2 Author `ex.u2.ruffini_resto.desafio-01` (Ruffini quotient coefficients; MC 4 comma-list options; difficulty 4; canonicalTrace UNIDAD2).
+- [x] 4.3 Author `ex.u2.ruffini_resto.desafio-02` (Remainder Theorem `P(-2)`; MC 4 numeric options; difficulty 4).
+- [x] 4.4 Author `ex.u2.factorizacion.desafio-01` (common factor with mixed powers; MC 4 LaTeX options; difficulty 4).
+- [x] 4.5 Author `ex.u2.factorizacion.desafio-02` (nested difference of squares `x⁴-81`; MC 4 LaTeX options; difficulty 4).
+- [x] 4.6 Author `ex.u2.gauss.desafio-01` (full factorization via Gauss+Ruffini+TCP; MC 4 LaTeX options; difficulty 4; canonicalTrace UNIDAD2 + calibrated-from-exam).
+- [x] 4.7 Author `ex.u2.gauss.desafio-02` (rational root candidate set; MC 4 set options; difficulty 4).
+- [x] 4.8 Author `ex.u2.mcm_mcd_polinomios.desafio-01` (MCM of factored polys; MC 4 LaTeX options; difficulty 4).
+- [x] 4.9 Author `ex.u2.mcm_mcd_polinomios.desafio-02` (MCD of factored polys; MC 4 LaTeX options; difficulty 4).
+- [x] 4.10 Append the 8 entries to `content/matematica/challenges/unit-2.json`.
+- [x] 4.11 Run `pnpm run test` + `pnpm run typecheck` + `pnpm run build`.
+- [x] 4.12 Manual content audit (distractors, no-copy, Spanish, real tags).
+- [x] 4.13 Open PR D; merge to main with `--no-ff`.
 
 ---
 
