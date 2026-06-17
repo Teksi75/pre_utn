@@ -51,14 +51,14 @@ Chain strategy: stacked-to-main
 
 ## Phase 2: Batch B — U1 middle skills (intervalos, logaritmos)
 
-- [ ] 2.1 Branch `feat/challenge-exercises-expansion-batch-b` from main (after Batch A merged).
-- [ ] 2.2 Author `ex.u1.intervalos.desafio-01` (union `[-2,4) ∪ (1,6]`; MC 4 interval options; difficulty 4; canonicalTrace UNIDAD1).
-- [ ] 2.3 Author `ex.u1.intervalos.desafio-02` (reverse-engineer B from `A ∩ B` and A; MC 4 options; difficulty 4).
-- [ ] 2.4 Author `ex.u1.logaritmos.desafio-01` (`log_2 x + log_4 x + log_8 x = 11`; MC 4 options; difficulty 4; canonicalTrace UNIDAD1 + TEMA 1 Q3 calibrated-from-exam).
-- [ ] 2.5 Author `ex.u1.logaritmos.desafio-02` (express `log 12` in terms of `a=log2, b=log3`; MC 4 options; difficulty 4).
-- [ ] 2.6 Run `pnpm run test` + `pnpm run typecheck` + `pnpm run build`.
-- [ ] 2.7 Manual content audit: distractor→commonErrorTag mapping; no verbatim exam copy.
-- [ ] 2.8 Open PR B; merge to main with `--no-ff`.
+- [x] 2.1 Branch `feat/challenge-exercises-expansion-batch-b` from main (after Batch A merged).
+- [x] 2.2 Author `ex.u1.intervalos.desafio-01` (union `[-2,4) ∪ (1,6]`; MC 4 interval options; difficulty 4; canonicalTrace UNIDAD1).
+- [x] 2.3 Author `ex.u1.intervalos.desafio-02` (reverse-engineer B from `A ∩ B` and A; MC 4 options; difficulty 4).
+- [x] 2.4 Author `ex.u1.logaritmos.desafio-01` (`log_2 x + log_4 x + log_8 x = 11`; MC 4 options; difficulty 4; canonicalTrace UNIDAD1 + TEMA 1 Q3 calibrated-from-exam).
+- [x] 2.5 Author `ex.u1.logaritmos.desafio-02` (express `log 12` in terms of `a=log2, b=log3`; MC 4 options; difficulty 4).
+- [x] 2.6 Run `pnpm run test` + `pnpm run typecheck` + `pnpm run build`.
+- [x] 2.7 Manual content audit: distractor→commonErrorTag mapping; no verbatim exam copy.
+- [x] 2.8 Open PR B; merge to main with `--no-ff`.
 
 ---
 
