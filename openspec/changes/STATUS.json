@@ -393,12 +393,13 @@
       "summary": "Mastery status pills in FocusSelector: Dominada / Necesita repaso / En práctica (no pill for not-started). Two separate pills: mastery level (left, inline with skill name) + availability (right). 2053/2053 tests, typecheck, build green."
     },
     "challenge-exercises-expansion": {
-      "status": "in-progress",
+      "status": "done",
       "branch": null,
       "startedAt": "2026-06-17",
-      "mergedTo": null,
+      "completedAt": "2026-06-17",
+      "mergedTo": "main",
       "delivery": "auto-chain; stacked-to-main; 5 PRs (PR 0 micro typo fix + PR A/B/C/D content batches)",
-      "summary": "Expand challenge exercises to remaining 12 pilot skills (5 U1 + 7 U2). 24 new challenges, 2 per skill, all difficulty 4, all multiple-choice with 4 LaTeX options. Content-only: no loader/store/UI/mastery changes. Planning complete (explore+proposal+spec+design+tasks), ready for apply."
+      "summary": "Expanded challenge exercises to all 15 pilot skills (8 U1 + 7 U2). 24 new challenges added (2 per skill), all difficulty 4, all multiple-choice with 4 LaTeX options, Spanish pedagogicalNote. Content-only: no loader/store/UI/mastery changes. Total: 30 challenge entries across unit-1.json (16) and unit-2.json (14). 2053 tests, typecheck, build green."
     }
   },
   "activeBranches": [],
