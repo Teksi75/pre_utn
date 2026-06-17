@@ -84,4 +84,62 @@ describe("FocusSelector", () => {
     expect(comp).not.toContain("console.log");
     expect(comp).not.toMatch(/\bTODO\b/);
   });
+
+  // -------------------------------------------------------------------
+  // Mastery pill tests (practice-skill-status-indicators)
+  // -------------------------------------------------------------------
+
+  test("getMasteryPillInfo returns null for not-started", () => {
+    const comp = source(componentPath);
+    expect(comp).toMatch(/case\s+["']not-started["']:\s*\n\s*return\s+null/);
+  });
+
+  test("getMasteryPillInfo returns 'Dominada' for mastered", () => {
+    const comp = source(componentPath);
+    expect(comp).toMatch(/case\s+["']mastered["']/);
+    expect(comp).toContain('"Dominada"');
+    expect(comp).toContain('variant: "success"');
+  });
+
+  test("getMasteryPillInfo returns 'Necesita repaso' for review", () => {
+    const comp = source(componentPath);
+    expect(comp).toMatch(/case\s+["']review["']/);
+    expect(comp).toContain('"Necesita repaso"');
+    expect(comp).toContain('variant: "weak"');
+  });
+
+  test("getMasteryPillInfo returns 'En práctica' for practicing", () => {
+    const comp = source(componentPath);
+    expect(comp).toMatch(/case\s+["']practicing["']/);
+    expect(comp).toContain('"En práctica"');
+    expect(comp).toContain('variant: "active"');
+  });
+
+  test("getMasteryPillInfo returns 'En práctica' for learning", () => {
+    const comp = source(componentPath);
+    expect(comp).toMatch(/case\s+["']learning["']/);
+    // learning shares the same return as practicing
+    expect(comp).toContain('"En práctica"');
+  });
+
+  test("mastery pill renders with data-testid='mastery-pill'", () => {
+    const comp = source(componentPath);
+    expect(comp).toContain('data-testid="mastery-pill"');
+  });
+
+  test("availability pill renders with data-testid='availability-pill'", () => {
+    const comp = source(componentPath);
+    expect(comp).toContain('data-testid="availability-pill"');
+  });
+
+  test("mastery pill and availability pill are separate elements", () => {
+    const comp = source(componentPath);
+    // Both testids must exist — they are on different StatusPill instances
+    const masteryMatches = comp.match(/data-testid="mastery-pill"/g);
+    const availabilityMatches = comp.match(/data-testid="availability-pill"/g);
+    expect(masteryMatches).toBeTruthy();
+    expect(availabilityMatches).toBeTruthy();
+    expect(masteryMatches!.length).toBeGreaterThanOrEqual(1);
+    expect(availabilityMatches!.length).toBeGreaterThanOrEqual(1);
+  });
 });
