@@ -30,9 +30,9 @@ Chain strategy: stacked-to-main
 
 ## Phase 0: Hygiene micro-PR (prerequisite, separate from batches)
 
-- [ ] 0.1 Branch `fix/challenge-complejos-typo` from main. Read `content/matematica/challenges/unit-1.json`, locate `ex.u1.complejos.desafio-01.pedagogicalIntent`, replace the `来源于` fragment with Spanish text that preserves the original intent.
-- [ ] 0.2 Audit the other 5 existing challenge entries for non-Spanish fragments; fix any found.
-- [ ] 0.3 Run `pnpm run test` + `pnpm run typecheck`; merge micro-PR to main with `--no-ff`.
+- [x] 0.1 Branch `fix/challenge-complejos-typo` from main. Read `content/matematica/challenges/unit-1.json`, locate `ex.u1.complejos.desafio-01.pedagogicalIntent`, replace the `来源于` fragment with Spanish text that preserves the original intent.
+- [x] 0.2 Audit the other 5 existing challenge entries for non-Spanish fragments; fix any found.
+- [x] 0.3 Run `pnpm run test` + `pnpm run typecheck`; merge micro-PR to main with `--no-ff`.
 
 ---
 
