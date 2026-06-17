@@ -1,0 +1,82 @@
+[
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.desafio-01",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Al resolver $\\frac{1}{x - 2} = \\frac{2}{x + 3}$, el conjunto solución es:",
+    "expectedAnswer": "$\\{7\\}$",
+    "options": [
+      "$\\{7\\}$",
+      "$\\{-\\frac{1}{2}\\}$",
+      "$\\{2, -3\\}$",
+      "No tiene solución"
+    ],
+    "commonErrorTags": [
+      "u2_fraccionaria_pierde_denominador",
+      "u2_fraccionaria_acepta_extranjera",
+      "u2_fraccionaria_cancela_sin_restriccion"
+    ],
+    "pedagogicalNote": "Dominio: x ≠ 2 y x ≠ -3. Multiplicando por (x-2)(x+3): (x+3) = 2(x-2) → x+3 = 2x-4 → x = 7. Verificación: x=7 da 1/5 = 2/10 ✓. La solución es {7}. Los distractores: {2,-3} son los valores prohibidos que un alumno podría 'resolver' algebraicamente sin verificar dominio; 'no tiene solución' sería incorrecto porque 7 sí pertenece al dominio.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-ecuaciones-fraccionarias"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 15: Ecuaciones Fraccionarias — Dominio y Método de Resolución",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Este ejercicio integra tres pasos críticos: (1) determinación correcta del dominio excluyendo x=2 y x=-3, (2) multiplicación por el denominador común sin perder términos, (3) verificación de la solución obtained contra el dominio original."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Ecuaciones Fraccionarias — Ejercicio de resolution",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Nivel de item de examen. El distractor {2,-3} representa el error de 'resolver' igualando numeradores sin verificar que sean válidos en el dominio."
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.desafio-02",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Al resolver $\\frac{1}{x - 1} + \\frac{1}{x + 1} = \\frac{2x}{x^2 - 1}$, el conjunto solución es:",
+    "expectedAnswer": "No tiene solución (x = 1 y x = -1 están excluidos del dominio)",
+    "options": [
+      "No tiene solución (x = 1 y x = -1 están excluidos del dominio)",
+      "$\\mathbb{R} \\setminus \\{-1, 1\\}$",
+      "$\\emptyset$ sin justificación",
+      "$\\mathbb{R}$"
+    ],
+    "commonErrorTags": [
+      "u2_fraccionaria_cancela_sin_restriccion",
+      "u2_fraccionaria_acepta_extranjera",
+      "u2_fraccionaria_pierde_denominador"
+    ],
+    "pedagogicalNote": "Dominio: x ≠ 1 y x ≠ -1 (anulan denominadores). MCD = (x-1)(x+1) = x²-1. Multiplicando: (x+1)+(x-1) = 2x → 2x = 2x (identidad). La ecuación se satisface para TODO x excepto los excluidos. Sin embargo, ambos valores prohibidos (1 y -1) anulan los denominadores originales, así que no hay solución. El distractor ℝ \\ {-1,1} seria la solución algebraica si no existieran restricciones, pero las restricciones son parte de la ecuación original.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-ecuaciones-fraccionarias"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 15: Ecuaciones Fraccionarias — Identidades y Restricciones",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Este ejercicio demuestra que una ecuación aparentemente con solución universal (2x = 2x) en realidad no tiene solución porque el dominio está vacío. El alumno debe entender que las restricciones del dominio no son pasos opcionales sino parte integral de la ecuación."
+      },
+      {
+        "path": "material_canonico/Matemática/Resolución_MATEMÁTICA_TEMA 2.pdf",
+        "section": "Ecuaciones Fraccionarias — Casos especiales",
+        "sourceUse": "solution-pattern",
+        "pedagogicalIntent": "La resolución modelo muestra el caso donde la simplificación algebraica produce una identidad, y enfatiza que la verificación del dominio contra los denominadores originales es OBLIGATORIA antes de declarar la solución."
+      }
+    ]
+  }
+]

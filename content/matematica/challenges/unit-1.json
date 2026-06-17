@@ -1,0 +1,160 @@
+[
+  {
+    "id": "ex.u1.complejos.desafio-01",
+    "skillId": "mat.u1.complejos",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Si $z = a + bi$ satisface $z^2 = 3 + 4i$, ¿cuál de las siguientes es una solución correcta para $z$?",
+    "expectedAnswer": "$z = 2 + i$",
+    "options": [
+      "$z = 2 + i$",
+      "$z = 2 - i$",
+      "$z = -2 + i$",
+      "$z = 1 + 2i$"
+    ],
+    "commonErrorTags": [
+      "u1_complejos_signo_i_cuadrado",
+      "u1_complejos_mala_separacion_real_imaginaria"
+    ],
+    "pedagogicalNote": "Igualando partes reales e imaginarias: a² - b² = 3, 2ab = 4 → ab = 2. Resolviendo: a² = 4, b² = 1, b = 2/a → b = ±1. Con a = 2, b = 1 da z = 2 + i. El distractor 2-i invierte el signo de b; 1+2i no satisface ab=2.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-complejos"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Números Complejos — Forma Binómica y Operaciones",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere que el alumno despeje un sistema de dos ecuaciones con dos incógnitas来源于 binomio al cuadrado. Integra operaciones con i, separación real/imaginaria y resolución de sistema."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Complejos — Ejercicio de resolución",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Nivel de dificultad comparable a item de examen de ingreso. El distractor 1+2i simula error de separar a²-b²=3 y 2ab=4 como si fueran independientes del sistema."
+      }
+    ]
+  },
+  {
+    "id": "ex.u1.complejos.desafio-02",
+    "skillId": "mat.u1.complejos",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Al resolver $z^2 + 4z + 5 = 0$ en $\\mathbb{C}$, las soluciones son:",
+    "expectedAnswer": "$z = -2 + i$ o $z = -2 - i$",
+    "options": [
+      "$z = -2 + i$ o $z = -2 - i$",
+      "$z = 2 + i$ o $z = 2 - i$",
+      "$z = -2 + i$ o $z = -2 + i$",
+      "$z = -2$ o $z = -5$"
+    ],
+    "commonErrorTags": [
+      "u1_complejos_signo_i_cuadrado",
+      "u1_complejos_formula_cuadratica"
+    ],
+    "pedagogicalNote": "Fórmula cuadrática: z = [-4 ± √(16 - 20)]/2 = [-4 ± √(-4)]/2 = [-4 ± 2i]/2 = -2 ± i. Error frecuente: confundir √(-4) = -2i en vez de 2i, u omitir que hay DOS soluciones por el ±.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-complejos"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Números Complejos — Resolución de Ecuaciones Cuadráticas",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Aplica la fórmula cuadrática en contexto de números complejos, requiriendo dominio del producto Notable (a+bi)² y el manejo correcto de i² = -1."
+      },
+      {
+        "path": "material_canonico/Matemática/Resolución_MATEMÁTICA_TEMA 2.pdf",
+        "section": "Complejos — Resolución de ecuaciones",
+        "sourceUse": "solution-pattern",
+        "pedagogicalIntent": "La resolución modelo muestra completar el cuadrado y verificar con la fórmula cuadrática. El distractor 2±i surge de usar +4 en vez de -4 en el discriminante."
+      }
+    ]
+  },
+  {
+    "id": "ex.u1.valor_absoluto.desafio-01",
+    "skillId": "mat.u1.valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "El conjunto solución de $|2x + 3| \\leq 7$ es:",
+    "expectedAnswer": "$[-5, 2]$",
+    "options": [
+      "$[-5, 2]$",
+      "$[-2, 5]$",
+      "$(-5, 2)$",
+      "$(-\\infty, -5] \\cup [2, \\infty)$"
+    ],
+    "commonErrorTags": [
+      "u1_abs_desigualdad_invertida",
+      "u1_abs_interseccion_en_union",
+      "u1_abs_extremo_cerrado_perdido"
+    ],
+    "pedagogicalNote": "Desigualdad compuesta: -7 ≤ 2x+3 ≤ 7 → restar 3: -10 ≤ 2x ≤ 4 → dividir por 2: -5 ≤ x ≤ 2. La solución es [-5, 2]. Distractor [-2,5] invierte los límites; (-5,2) pierde los corchetes (extremos abiertos, incluyendo valores que SÍ satisfacen la desigualdad); la última es la complementaria.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-valor-absoluto"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Valor absoluto — Desigualdades con valor absoluto",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere transformar una desigualdad con valor absoluto en una desigualdad compuesta, resolverla y expresar el resultado como intervalo cerrado. Integra la definición de valor absoluto como distancia."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 2 RESPUESTAS.pdf",
+        "section": "Valor Absoluto — Desigualdad",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Nivel de item de examen. El distractor (-5,2) con paréntesis testa si el alumno recuerda que ≤ implica extremos cerrados. La última opción testa la confusión entre solución y complementaria."
+      }
+    ]
+  },
+  {
+    "id": "ex.u1.valor_absoluto.desafio-02",
+    "skillId": "mat.u1.valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "El conjunto solución de $|x - 3| > 7$ es:",
+    "expectedAnswer": "$(-\\infty, -4) \\cup (10, \\infty)$",
+    "options": [
+      "$(-\\infty, -4) \\cup (10, \\infty)$",
+      "$[-4, 10]$",
+      "$(-\\infty, -4] \\cup [10, \\infty)$",
+      "$(4, 10)$"
+    ],
+    "commonErrorTags": [
+      "u1_abs_desigualdad_invertida",
+      "u1_abs_interseccion_en_union",
+      "u1_abs_extremo_cerrado_perdido"
+    ],
+    "pedagogicalNote": "Desigualdad estricta: |x-3| > 7 equivale a x-3 > 7 o x-3 < -7. Caso 1: x > 10 (abierto, no incluye 10 porque > es estricto). Caso 2: x < -4 (abierto, no incluye -4). La solución es (-∞, -4) ∪ (10, ∞). Distractor [-4,10] confunde > con < (da la región interior en vez de exterior). El tercero usa corchetes erroneamente en una desigualdad estricta.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-valor-absoluto"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Valor absoluto — Desigualdades con valor absoluto (caso >)",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Distingue el caso |x-a| > b (unión de dos semirrectas) del caso |x-a| < b (intervalo). El alumno debe recordar que > produce intervalos abiertos en los extremos y que se usa unión, no intersección."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Valor Absoluto — Desigualdad estricta",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "El distractor [-4,10] testa la confusión más común: creer que |x-a| > b significa 'dentro del intervalo' cuando en realidad significa 'afuera del intervalo'. Los corchetes en la tercera opción testean el error de cerrar intervalos en desigualdades estrictas."
+      }
+    ]
+  }
+]

@@ -15,6 +15,8 @@ import { skillLabel } from "@/lib/skill-label";
 import type { SkillId } from "@/domain/models/skill";
 import { StudentGate } from "@/components/StudentGate";
 import { useActiveStudent } from "@/hooks/useActiveStudent";
+import { ChallengeFlow } from "@/components/practice/challenges/ChallengeFlow";
+import { hasChallengesForSkill, queryChallengesBySkill } from "@/domain/catalog/challenges/index";
 
 const TOTAL_PHASES = 4;
 
@@ -213,11 +215,19 @@ export default function PracticePage() {
 
       {flow.phase === "complete" && (
         <ViewTransition enter="slide-up" exit="slide-down" default="none">
-          <PracticeCompletePhase
-            skillId={flow.selectedSkillId ?? undefined}
-            totalExercises={flow.exercises.length}
-            onBackToSelector={flow.resetToSelect}
-          />
+          {flow.selectedSkillId && hasChallengesForSkill(flow.selectedSkillId) ? (
+            <ChallengeFlow
+              challenges={queryChallengesBySkill(flow.selectedSkillId)}
+              skillId={flow.selectedSkillId as SkillId}
+              onDone={flow.resetToSelect}
+            />
+          ) : (
+            <PracticeCompletePhase
+              skillId={flow.selectedSkillId ?? undefined}
+              totalExercises={flow.exercises.length}
+              onBackToSelector={flow.resetToSelect}
+            />
+          )}
         </ViewTransition>
       )}
     </div>
