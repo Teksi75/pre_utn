@@ -471,5 +471,161 @@
         "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: cada distractor es un casi-acierto que representa una confusión frecuente entre las propiedades de los logaritmos (producto vs suma, potencia vs producto), sin copiar ningún item del examen."
       }
     ]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.desafio-01",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Clasifica $\\sqrt[3]{-8}$ en el menor conjunto de números reales al que pertenece.",
+    "expectedAnswer": "$\\mathbb{Z}$",
+    "options": [
+      "$\\mathbb{Z}$",
+      "$\\mathbb{Q}$",
+      "$\\mathbb{R}$ pero no $\\mathbb{Q}$",
+      "$\\mathbb{N}$"
+    ],
+    "commonErrorTags": [
+      "u1_conjunto_minimo",
+      "u1_toda_raiz_irracional",
+      "u1_confunde_natural_entero"
+    ],
+    "pedagogicalNote": "Como $\\sqrt[3]{-8} = -2$ (pues $(-2)^3 = -8$), el número es un entero negativo. El menor conjunto de la cadena $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$ que lo contiene es $\\mathbb{Z}$. El distractor $\\mathbb{Q}$ es un superconjunto válido, pero no es el menor: el alumno elige un conjunto más amplio en vez del más pequeño. El distractor \"$\\mathbb{R}$ pero no $\\mathbb{Q}$\" supone que toda raíz es irracional y que la raíz cúbica de un negativo no puede ser racional, cuando en realidad $-2 \\in \\mathbb{Q}$. El distractor $\\mathbb{N}$ olvida que los naturales (por la convención sin cero) no incluyen a los negativos: $-2 \\notin \\mathbb{N}$.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-conjuntos-numericos"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Conjuntos numéricos — Clasificación y cadena de inclusión",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere que el alumno reconozca que una raíz cúbica de un entero negativo puede dar un entero ($\\sqrt[3]{-8} = -2$) y elija el menor conjunto de la cadena de inclusión que lo contiene. Integra la equivalencia entre forma radical y forma entera con el razonamiento de conjunto mínimo."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Conjuntos numéricos — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren los errores típicos de clasificación (elegir un superconjunto, creer que toda raíz es irracional, ubicar un negativo en los naturales), sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u1.conjuntos_numericos.desafio-02",
+    "skillId": "mat.u1.conjuntos_numericos",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Dado $A = \\{x \\in \\mathbb{Z} : \\sqrt{x} \\in \\mathbb{Z}\\}$, ¿cuál de las siguientes opciones describe correctamente $A$?",
+    "expectedAnswer": "$\\{0, 1, 4, 9, 16, \\ldots\\}$",
+    "options": [
+      "$\\{0, 1, 4, 9, 16, \\ldots\\}$",
+      "$\\{-4, -1, 0, 1, 4, 9, \\ldots\\}$",
+      "$\\{0, 1, 2, 3, 4, \\ldots\\}$",
+      "$\\{0, 1, 4, 9\\}$"
+    ],
+    "commonErrorTags": [
+      "u1_raiz_negativa_en_reales",
+      "u1_raiz_cuadrada_exacta_es_racional"
+    ],
+    "pedagogicalNote": "Para que $\\sqrt{x}$ sea real se requiere $x \\geq 0$, y para que además pertenezca a $\\mathbb{Z}$, $x$ debe ser un cuadrado perfecto: $\\sqrt{0} = 0$, $\\sqrt{1} = 1$, $\\sqrt{4} = 2$, $\\sqrt{9} = 3$, $\\sqrt{16} = 4$, etc. Por eso $A = \\{0, 1, 4, 9, 16, \\ldots\\}$. El distractor $\\{-4, -1, 0, 1, 4, 9, \\ldots\\}$ incluye negativos, pero $\\sqrt{-4}$ no es un número real (y por tanto no pertenece a $\\mathbb{Z}$). El distractor $\\{0, 1, 2, 3, 4, \\ldots\\}$ conserva sólo la condición $x \\geq 0$ y olvida que $\\sqrt{x}$ debe ser entero: $\\sqrt{2}$ y $\\sqrt{3}$ no son enteros. El distractor $\\{0, 1, 4, 9\\}$ trata el conjunto como finito, pero $16, 25, 36, \\ldots$ también cumplen la condición.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-conjuntos-numericos"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Conjuntos numéricos — Conjuntos por comprensión y cuadrados perfectos",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Pide interpretar un conjunto definido por comprensión con un cuantificador acotado a $\\mathbb{Z}$, exigiendo al mismo tiempo la restricción de dominio ($\\sqrt{x}$ real exige $x \\geq 0$) y el reconocimiento de los cuadrados perfectos. Integra notación por comprensión, dominio de la raíz y clasificación de enteros."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Conjuntos numéricos — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren los errores típicos de comprensión por extensión (incluir negativos cuya raíz no es real, ignorar el predicado de la raíz entera, tratar el conjunto como finito), sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u1.propiedades_operaciones_reales.desafio-01",
+    "skillId": "mat.u1.propiedades_operaciones_reales",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "¿Cuál de las siguientes igualdades NO es siempre verdadera para todos los reales $a, b, c$?",
+    "expectedAnswer": "$(a+b)^2 = a^2 + b^2$",
+    "options": [
+      "$(a+b)^2 = a^2 + b^2$",
+      "$a + b = b + a$",
+      "$a(bc) = (ab)c$",
+      "$a(b+c) = ab + ac$"
+    ],
+    "commonErrorTags": [
+      "u1_propiedad_operacion"
+    ],
+    "pedagogicalNote": "La igualdad $(a+b)^2 = a^2 + b^2$ es FALSA en general: el cuadrado de un binomio es $(a+b)^2 = a^2 + 2ab + b^2$, y al omitir el término cruzado $2ab$ se comete el error típico de distribuir el cuadrado sobre la suma como si fuera un producto elemento a elemento. Las otras tres son propiedades siempre verdaderas: $a+b = b+a$ (conmutativa de la suma), $a(bc) = (ab)c$ (asociativa del producto) y $a(b+c) = ab + ac$ (distributiva). Como la pregunta pide la igualdad que NO es siempre verdadera, la respuesta correcta es la falsa. Los tres distractores son propiedades válidas presentadas como opciones: atrapan al alumno que confunde la consigna 'NO siempre verdadera' y elige una propiedad que sí reconoce como verdadera.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-propiedades-operaciones-reales"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Propiedades de las operaciones en los reales — Identificación de propiedades y cuadrado de binomio",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere discriminar cuál de varias igualdades no se cumple para todo real, enfrentando la falsa distributiva del cuadrado $(a+b)^2 = a^2 + b^2$ contra propiedades verdaderas (conmutativa, asociativa, distributiva). Integra el cuadrado de un binomio con la identificación de propiedades de los reales."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Propiedades de las operaciones — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores son propiedades verdaderas presentadas como posibles respuestas, atrapando al alumno que confunde la consigna 'NO siempre verdadera', sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u1.propiedades_operaciones_reales.desafio-02",
+    "skillId": "mat.u1.propiedades_operaciones_reales",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Si $a * b = a + b - ab$ para todos los reales, ¿cuál es el valor de $3 * (4 * 5)$?",
+    "expectedAnswer": "$25$",
+    "options": [
+      "$25$",
+      "$-25$",
+      "$7$",
+      "$-11$"
+    ],
+    "commonErrorTags": [
+      "u1_orden_operaciones",
+      "u1_agrupacion_signo"
+    ],
+    "pedagogicalNote": "Primero se calcula el paréntesis interno respetando la definición: $4 * 5 = 4 + 5 - 4 \\cdot 5 = 9 - 20 = -11$. Luego $3 * (-11) = 3 + (-11) - 3 \\cdot (-11) = 3 - 11 + 33 = 25$. El distractor $-25$ surge de un error de signo al agrupar $3 - 11 + 33$, por ejemplo al calcular $3 - (11 + 33)$ o al invertir el signo del producto $-3 \\cdot (-11)$. El distractor $7$ aparece al calcular $3 + 4 = 7$, ignorando la definición de la operación y tratando $*$ como una suma simple. El distractor $-11$ corresponde al resultado del paréntesis interno: el alumno se queda con ese valor y olvida aplicar la operación externa con el $3$.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-propiedades-operaciones-reales"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD1_matemática.pdf",
+        "section": "Propiedades de las operaciones en los reales — Operación binaria no estándar",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Pide aplicar una operación binaria definida ad hoc respetando la prioridad de paréntesis y la distributiva del producto sobre la suma. Integra la lectura de una definición operacional, el orden de operaciones y el manejo de signos al agrupar."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Propiedades de las operaciones — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren los errores típicos de operación no estándar (error de signo al agrupar, ignorar la definición y sumar, olvidar la operación externa), sin copiar ningún item del examen."
+      }
+    ]
   }
 ]
