@@ -56,16 +56,16 @@ Decompose the `challenge-smoke-e2e` change into 6 independently-verifiable, stac
 
 **Goal:** Complete the Playwright infrastructure. The config and helpers depend on the fixture builders (same source truth for `PracticeProgressMap` shape), but are independent of the vitest tests.
 
-- [x] 1b.1 Branch `feat/challenge-smoke-e2e-pr1b-config` from main (after PR1a merged).
-- [x] 1b.2 Add `@playwright/test` to `devDependencies`; run `pnpm install`. Add `test:e2e` + `test:e2e:install` scripts to `package.json`.
-- [x] 1b.3 Create `playwright.config.ts` at project root: `port 3100`, `chromium`, `webServer.command: "pnpm start --port 3100"`, `testDir: "tests/e2e"`, `trace: "retain-on-failure"`, `headless: true`, `webServer.timeout: 120_000`. — Also added `testMatch: "**/*.spec.ts"` (completes design.md D3 on the Playwright side; without it Playwright loads the vitest `*.test.ts` companions and crashes) and `.gitignore` entries for Playwright outputs.
-- [x] 1b.4 Create `tests/e2e/helpers/selectors.ts`: central selector constants — `OPT_IN_HEADING`, `INTENTAR_BTN`, `FINALIZAR_BTN`, `COUNTER_REGEX`, `STATUS_BANNER_ROLE`, `READINESS_LABEL`, `DONE_HEADER`, `CONTINUE_BTN`. Pure constants, no logic.
-- [x] 1b.5 Create `tests/e2e/helpers/practice-flow.ts`: implement `drivePracticeFlow(page, { skillId, exerciseAnswers })` and `driveChallengeFlow(page, { skillId })` using the pseudocode from design.md. No TDD (Playwright-based; tested via canary in PR2). — Noted design gap: `?skill=` auto-selects (usePracticeFlow.ts:208-236); driver handles both auto-select and a manual-selection fallback (skillLabel optional).
-- [x] 1b.6 Create `tests/e2e/README.md`: document conventions (`*.spec.ts` naming, `tests/e2e/` location, why separate from Vitest), how to run (`pnpm test:e2e`, `pnpm test:e2e:install`), how to debug (Playwright trace viewer), and the Chromium-only MVP note.
-- [x] 1b.7 Create `tests/e2e/specs/_placeholder.spec.ts`: single empty `test('placeholder', () => {})` so `pnpm test:e2e` boots without crashing on an empty test dir.
-- [x] 1b.8 Update `openspec/changes/STATUS.json`: add `challenge-smoke-e2e` entry with `status: "in_progress"`, `branch: null`. — Entry pre-existed from PR1a; added the `pr1b` block and set `branch: "feat/challenge-smoke-e2e-pr1b-config"` while PR1b is in flight.
-- [x] 1b.9 Run `pnpm test:e2e --grep "placeholder"` — sanity check that Playwright boots without crashing. — 1 passed (3.7s); webServer auto-boots on :3100. Required `test:e2e:install` first (Chromium ~297 MB downloaded).
-- [x] 1b.10 Open PR 1b; merge to main with `--no-ff`. — PR #34 opened (https://github.com/Teksi75/pre_utn/pull/34); merge deferred to user/orchestrator review (per task: do not merge).
+- [ ] 1b.1 Branch `feat/challenge-smoke-e2e-pr1b-config` from main (after PR1a merged).
+- [ ] 1b.2 Add `@playwright/test` to `devDependencies`; run `pnpm install`. Add `test:e2e` + `test:e2e:install` scripts to `package.json`.
+- [ ] 1b.3 Create `playwright.config.ts` at project root: `port 3100`, `chromium`, `webServer.command: "pnpm start --port 3100"`, `testDir: "tests/e2e"`, `trace: "retain-on-failure"`, `headless: true`, `webServer.timeout: 120_000`.
+- [ ] 1b.4 Create `tests/e2e/helpers/selectors.ts`: central selector constants — `OPT_IN_HEADING`, `INTENTAR_BTN`, `FINALIZAR_BTN`, `COUNTER_REGEX`, `STATUS_BANNER_ROLE`, `READINESS_LABEL`, `DONE_HEADER`, `CONTINUE_BTN`. Pure constants, no logic.
+- [ ] 1b.5 Create `tests/e2e/helpers/practice-flow.ts`: implement `drivePracticeFlow(page, { skillId, exerciseAnswers })` and `driveChallengeFlow(page, { skillId })` using the pseudocode from design.md. No TDD (Playwright-based; tested via canary in PR2).
+- [ ] 1b.6 Create `tests/e2e/README.md`: document conventions (`*.spec.ts` naming, `tests/e2e/` location, why separate from Vitest), how to run (`pnpm test:e2e`, `pnpm test:e2e:install`), how to debug (Playwright trace viewer), and the Chromium-only MVP note.
+- [ ] 1b.7 Create `tests/e2e/specs/_placeholder.spec.ts`: single empty `test('placeholder', () => {})` so `pnpm test:e2e` boots without crashing on an empty test dir.
+- [ ] 1b.8 Update `openspec/changes/STATUS.json`: add `challenge-smoke-e2e` entry with `status: "in_progress"`, `branch: null`.
+- [ ] 1b.9 Run `pnpm test:e2e --grep "placeholder"` — sanity check that Playwright boots without crashing.
+- [ ] 1b.10 Open PR 1b; merge to main with `--no-ff`.
 
 ---
 
