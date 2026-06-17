@@ -38,14 +38,14 @@ Chain strategy: stacked-to-main
 
 ## Phase 1: Batch A — U1 early skills (potencias_raices, racionalizacion)
 
-- [ ] 1.1 Branch `feat/challenge-exercises-expansion-batch-a` from main (after Phase 0 merged).
-- [ ] 1.2 Author `ex.u1.potencias_raices.desafio-01` (signs/parenthesization/precedence; MC 4 options; difficulty 4; canonicalTrace UNIDAD1 + Resolución TEMA 2; commonErrorTags from real taxonomy) and append to `content/matematica/challenges/unit-1.json`.
-- [ ] 1.3 Author `ex.u1.potencias_raices.desafio-02` (rational exponent equivalence; MC 4 LaTeX options `$a^{...}$`; difficulty 4; canonicalTrace UNIDAD1 + calibrated-from-exam).
-- [ ] 1.4 Author `ex.u1.racionalizacion.desafio-01` (conjugate of `√3+√2`; MC 4 LaTeX options; difficulty 4; canonicalTrace UNIDAD1).
-- [ ] 1.5 Author `ex.u1.racionalizacion.desafio-02` (conjugate of `√3-1`; MC 4 LaTeX options; difficulty 4).
-- [ ] 1.6 Run `pnpm run test` + `pnpm run typecheck` + `pnpm run build` (loader validates at init).
-- [ ] 1.7 Verify each distractor maps to a real `commonErrorTag` (manual content audit).
-- [ ] 1.8 Open PR A; merge to main with `--no-ff` after review.
+- [x] 1.1 Branch `feat/challenge-exercises-expansion-batch-a` from main (after Phase 0 merged).
+- [x] 1.2 Author `ex.u1.potencias_raices.desafio-01` (signs/parenthesization/precedence; MC 4 options; difficulty 4; canonicalTrace UNIDAD1 + Resolución TEMA 2; commonErrorTags from real taxonomy) and append to `content/matematica/challenges/unit-1.json`.
+- [x] 1.3 Author `ex.u1.potencias_raices.desafio-02` (rational exponent equivalence; MC 4 LaTeX options `$a^{...}$`; difficulty 4; canonicalTrace UNIDAD1 + calibrated-from-exam).
+- [x] 1.4 Author `ex.u1.racionalizacion.desafio-01` (conjugate of `√3+√2`; MC 4 LaTeX options; difficulty 4; canonicalTrace UNIDAD1).
+- [x] 1.5 Author `ex.u1.racionalizacion.desafio-02` (conjugate of `√3-1`; MC 4 LaTeX options; difficulty 4).
+- [x] 1.6 Run `pnpm run test` + `pnpm run typecheck` + `pnpm run build` (loader validates at init).
+- [x] 1.7 Verify each distractor maps to a real `commonErrorTag` (manual content audit).
+- [x] 1.8 Open PR A; merge to main with `--no-ff` after review.
 
 ---
 
