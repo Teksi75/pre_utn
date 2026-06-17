@@ -235,5 +235,314 @@
         "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren los errores típicos de suma e identificación (error de signo al despejar, confundir un coeficiente con el valor pedido, omitir una incógnita), sin copiar ningún item del examen."
       }
     ]
+  },
+  {
+    "id": "ex.u2.ruffini_resto.desafio-01",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Si $P(x) = x^4 - 6x^3 + 11x^2 - 6x$, ¿cuáles son los coeficientes del cociente al dividir $P(x)$ por $(x-1)$?",
+    "expectedAnswer": "$1, -5, 6, 0$",
+    "options": [
+      "$1, -5, 6, 0$",
+      "$1, -5, 6$",
+      "$1, -5, 5, 0$",
+      "$1, 4, 6, 0$"
+    ],
+    "commonErrorTags": [
+      "u2_termino_faltante",
+      "u2_termino_semejante",
+      "u2_signo_operacion"
+    ],
+    "pedagogicalNote": "Se aplica Ruffini con raíz $a=1$ (divisor $x-1$). Los coeficientes completos de $P(x)$ son $[1, -6, 11, -6, 0]$, incluyendo el término constante $0$. Se baja $1$, luego $1 \\cdot 1 + (-6) = -5$, $1 \\cdot (-5) + 11 = 6$, $1 \\cdot 6 + (-6) = 0$, resto $1 \\cdot 0 + 0 = 0$. El cociente es $x^3 - 5x^2 + 6x + 0$ con coeficientes $1, -5, 6, 0$. El distractor $1, -5, 6$ omite el coeficiente constante $0$ del cociente, que es legítimo pero incompleto: el cociente tiene grado $3$ y sus cuatro coeficientes incluyen el término de grado $0$. El distractor $1, -5, 5, 0$ comete un error aritmético al sumar $11 + (-5) = 5$ en vez de $6$ (error de combinación de términos). El distractor $1, 4, 6, 0$ invierte el signo del segundo coeficiente, calculando $-6 + 1$ como $4$ en vez de $-5$ (error de signo operativo en la primera suma de Ruffini).",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-ruffini-resto"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Ruffini — Cociente y coeficientes completos",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere aplicar el algoritmo de Ruffini escribiendo todos los coeficientes incluido el término constante cero, realizar las sumas sucesivas sin error de signo y leer el cociente como una lista completa de coeficientes. Integra la regla de Ruffini con el manejo de términos faltantes y el control de signos en cada paso."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Ruffini — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren los errores típicos de Ruffini (omitir el coeficiente cero, error de suma, error de signo en el primer paso), sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.ruffini_resto.desafio-02",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "El resto de dividir $P(x) = x^5 - 3x^4 + 2x^3 - 7x + 1$ por $(x+2)$ es:",
+    "expectedAnswer": "$-81$",
+    "options": [
+      "$-81$",
+      "$-83$",
+      "$-79$",
+      "$-1$"
+    ],
+    "commonErrorTags": [
+      "u2_signo_operacion",
+      "u2_termino_semejante",
+      "u2_termino_faltante"
+    ],
+    "pedagogicalNote": "Por el Teorema del Resto, dividir por $(x+2)$ equivale a evaluar $P(-2)$. Se calcula cada término: $(-2)^5 = -32$, $-3 \\cdot (-2)^4 = -3 \\cdot 16 = -48$, $2 \\cdot (-2)^3 = 2 \\cdot (-8) = -16$, $-7 \\cdot (-2) = 14$, $+1$. Sumando: $-32 - 48 - 16 + 14 + 1 = -81$. El distractor $-83$ surge de un error de signo en el término constante, usando $-1$ en vez de $+1$. El distractor $-79$ proviene de un error aritmético al combinar los términos de la suma (por ejemplo $-32 - 48 - 16 + 14 + 3 = -79$). El distractor $-1$ corresponde a quedarse solo con el término constante negado, omitiendo todos los términos con $x$; es el error de no completar la evaluación del polinomio.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-ruffini-resto"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Teorema del Resto — Evaluación directa P(a)",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Demuestra que el resto de una división por $(x-a)$ se obtiene evaluando $P(a)$ sin necesidad de realizar la división completa. Integra potencias de base negativa, manejo de signos en la distributiva y suma de varios términos con signos alternados."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Teorema del Resto — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren los errores típicos de evaluación (error de signo en el último término, error de suma, omisión de todos los términos con variable), sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.factorizacion.desafio-01",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Factoriza completamente $12x^3 y^2 - 18x^2 y^3 + 6x^2 y$.",
+    "expectedAnswer": "$6x^2 y(2xy - 3y^2 + 1)$",
+    "options": [
+      "$6x^2 y(2xy - 3y^2 + 1)$",
+      "$6xy(2x^2 y - 3xy^2 + x)$",
+      "$6x^2(2xy - 3y^2 + 1)$",
+      "$2x^2 y(6y - 9y^2 + 3)$"
+    ],
+    "commonErrorTags": [
+      "u2_factorizacion_incompleta"
+    ],
+    "pedagogicalNote": "El factor común máximo se obtiene del MCD de los coeficientes $\\text{mcd}(12, 18, 6) = 6$ y de las potencias mínimas de cada variable: $x^{\\min(3,2,2)} = x^2$ e $y^{\\min(2,3,1)} = y$. Así el factor común es $6x^2 y$. Dividiendo cada término: $12x^3 y^2 / (6x^2 y) = 2xy$, $-18x^2 y^3 / (6x^2 y) = -3y^2$, $6x^2 y / (6x^2 y) = 1$. Resultado: $6x^2 y(2xy - 3y^2 + 1)$. El distractor $6xy(2x^2 y - 3xy^2 + x)$ extrae un factor común insuficiente ($6xy$ en vez de $6x^2 y$), dejando un $x$ extra dentro de cada término. El distractor $6x^2(2xy - 3y^2 + 1)$ omite la variable $y$ del factor común, dejando los términos sin la división correcta por $y$. El distractor $2x^2 y(6y - 9y^2 + 3)$ extrae un coeficiente insuficiente ($2$ en vez de $6$), dejando coeficientes no simplificados dentro del paréntesis. Los tres distractores son variantes de una factorización incompleta: no extraer el factor común máximo.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-factorizacion"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Factorización — Factor común con potencias mixtas",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere identificar el factor común máximo combinando el MCD de los coeficientes numéricos con las potencias mínimas de cada variable, y luego dividir cada término por ese factor. Integra MCD numérico, leyes de exponentes en la división y factor común polinómico."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Factorización — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren las tres formas de extraer un factor común insuficiente (poco $x$, poco $y$, poco coeficiente), sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.factorizacion.desafio-02",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Factoriza $x^4 - 81$ completamente.",
+    "expectedAnswer": "$(x-3)(x+3)(x^2+9)$",
+    "options": [
+      "$(x-3)(x+3)(x^2+9)$",
+      "$(x^2-9)^2$",
+      "$(x-3)^2(x+3)^2$",
+      "$(x-3)(x+3)(x-9)(x+9)$"
+    ],
+    "commonErrorTags": [
+      "u2_caso_incorrecto"
+    ],
+    "pedagogicalNote": "Se reconoce $x^4 - 81$ como una diferencia de cuadrados: $x^4 - 81 = (x^2)^2 - 9^2 = (x^2 - 9)(x^2 + 9)$. El primer factor $x^2 - 9$ es otra diferencia de cuadrados: $(x-3)(x+3)$. El segundo factor $x^2 + 9$ es una suma de cuadrados, irreducible en los reales. La factorización completa es $(x-3)(x+3)(x^2+9)$. El distractor $(x^2-9)^2$ trata la diferencia de cuadrados como un cuadrado perfecto, confundiendo $a^2 - b^2$ con $(a-b)^2$. El distractor $(x-3)^2(x+3)^2$ comete el mismo error pero después de un primer paso correcto, escribiendo $((x-3)(x+3))^2 = (x^2-9)^2$ en vez de continuar la factorización. El distractor $(x-3)(x+3)(x-9)(x+9)$ aplica diferencia de cuadrados a la suma $x^2 + 9$ factorizándola como $(x-9)(x+9) = x^2 - 81$, lo cual es incorrecto: una suma de cuadrados no se factoriza en los reales. Los tres distractores son aplicaciones erróneas del caso de factoreo.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-factorizacion"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Factorización — Diferencia de cuadrados anidada",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere reconocer una diferencia de cuadrados con potencias mayores, aplicar la fórmula dos veces de forma anidada y reconocer que la suma de cuadrados resultante es irreducible en los reales. Integra diferencia de cuadrados iterada con el criterio de parada de la factorización."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Factorización — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren los errores típicos de caso de factoreo (confundir diferencia de cuadrados con cuadrado perfecto, aplicar diferencia de cuadrados a una suma de cuadrados), sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.gauss.desafio-01",
+    "skillId": "mat.u2.gauss",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "¿Cuál es la factorización completa de $P(x) = 2x^3 + 3x^2 - 8x + 3$?",
+    "expectedAnswer": "$(x-1)(2x-1)(x+3)$",
+    "options": [
+      "$(x-1)(2x-1)(x+3)$",
+      "$(x-1)(2x+1)(x+3)$",
+      "$(x+1)(2x-1)(x+3)$",
+      "$(x-1)(2x-1)(x-3)$"
+    ],
+    "commonErrorTags": [
+      "u2_signo_factorizacion"
+    ],
+    "pedagogicalNote": "Por el teorema de Gauss, los candidatos a raíces racionales son $\\pm 1, \\pm 3, \\pm \\frac{1}{2}, \\pm \\frac{3}{2}$. Se prueba $P(1) = 2 + 3 - 8 + 3 = 0$, así que $x=1$ es raíz y $(x-1)$ es factor. Se aplica Ruffini con $a=1$ sobre los coeficientes $[2, 3, -8, 3]$: se baja $2$, $2 \\cdot 1 + 3 = 5$, $5 \\cdot 1 + (-8) = -3$, resto $-3 \\cdot 1 + 3 = 0$. El cociente es $2x^2 + 5x - 3$, que se factoriza como $(2x-1)(x+3)$ (producto $2x^2+6x-x-3 = 2x^2+5x-3$). La factorización completa es $(x-1)(2x-1)(x+3)$. El distractor $(x-1)(2x+1)(x+3)$ invierte el signo del factor lineal $2x-1$ a $2x+1$, cambiando la raíz de $\\frac{1}{2}$ a $-\\frac{1}{2}$. El distractor $(x+1)(2x-1)(x+3)$ invierte el signo del primer factor $x-1$ a $x+1$, cambiando la raíz de $1$ a $-1$. El distractor $(x-1)(2x-1)(x-3)$ invierte el signo del último factor $x+3$ a $x-3$, cambiando la raíz de $-3$ a $3$. Los tres distractores tienen los valores absolutos correctos pero invierten el signo de un factor.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-gauss"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Teorema de Gauss — Factorización completa (Ruffini + TCP)",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere aplicar el teorema de Gauss para encontrar una raíz racional, dividir por Ruffini para obtener el cociente cuadrático y factorizarlo por el caso trinomio cuadrático. Integra los tres métodos en un solo ejercicio y exige mantener los signos correctos en cada factor."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Teorema de Gauss — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren las tres formas de invertir el signo de un factor manteniendo los valores absolutos correctos, sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.gauss.desafio-02",
+    "skillId": "mat.u2.gauss",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Según el teorema de Gauss, ¿cuál es el conjunto de candidatos a raíces racionales de $P(x) = 6x^4 - 7x^3 + x + 2$?",
+    "expectedAnswer": "$\\pm 1, \\pm 2, \\pm \\frac{1}{2}, \\pm \\frac{1}{3}, \\pm \\frac{2}{3}, \\pm \\frac{1}{6}$",
+    "options": [
+      "$\\pm 1, \\pm 2, \\pm \\frac{1}{2}, \\pm \\frac{1}{3}, \\pm \\frac{2}{3}, \\pm \\frac{1}{6}$",
+      "$\\pm 1, \\pm 2$",
+      "$\\pm 1, \\pm 2, \\pm 3, \\pm 6$",
+      "$\\pm 1, \\pm 2, \\pm 3, \\pm 6, \\pm \\frac{1}{2}, \\pm \\frac{1}{3}, \\pm \\frac{1}{6}$"
+    ],
+    "commonErrorTags": [
+      "u2_factorizacion_incompleta",
+      "u2_caso_incorrecto"
+    ],
+    "pedagogicalNote": "Por el teorema de Gauss, los candidatos a raíces racionales son $\\pm p/q$ donde $p$ divide al término independiente y $q$ divide al coeficiente principal, con $\\text{mcd}(p,q)=1$. Aquí $a_0 = 2$ así que $p \\in \\{1, 2\\}$, y $a_n = 6$ así que $q \\in \\{1, 2, 3, 6\\}$. Los candidatos irreducibles son $\\pm 1, \\pm 2, \\pm \\frac{1}{2}, \\pm \\frac{1}{3}, \\pm \\frac{2}{3}, \\pm \\frac{1}{6}$. El distractor $\\pm 1, \\pm 2$ lista solo los divisores del término independiente $p$, ignorando los denominadores $q$; es una factorización incompleta del conjunto de candidatos. El distractor $\\pm 1, \\pm 2, \\pm 3, \\pm 6$ confunde los divisores del coeficiente principal $q$ con los candidatos, listándolos como enteros en vez de usarlos como denominadores; aplica mal el teorema. El distractor que incluye $\\pm 3, \\pm 6$ como candidatos enteros y omite $\\pm \\frac{2}{3}$ combina ambos errores: agrega divisores de $q$ como si fueran candidatos y deja el conjunto incompleto.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-gauss"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Teorema de Gauss — Candidatos a raíces racionales",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere identificar el término independiente y el coeficiente principal, enumerar sus divisores, formar todas las fracciones irreducibles $p/q$ con sus signos y eliminar duplicados. Integra teoría de divisibilidad, fracciones irreducibles y el teorema de Gauss en su forma enumerativa."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Teorema de Gauss — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren los errores típicos de enumeración de candidatos (ignorar los denominadores, confundir divisores de $q$ con candidatos, mezclar ambos errores), sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.mcm_mcd_polinomios.desafio-01",
+    "skillId": "mat.u2.mcm_mcd_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Dados $P(x) = (x-1)^2 (x+2)$ y $Q(x) = (x-1) (x+2)^3$, ¿cuál es el MCM?",
+    "expectedAnswer": "$(x-1)^2 (x+2)^3$",
+    "options": [
+      "$(x-1)^2 (x+2)^3$",
+      "$(x-1)(x+2)$",
+      "$(x-1)^2 (x+2)^2$",
+      "$(x-1)^3 (x+2)^4$"
+    ],
+    "commonErrorTags": [
+      "u2_confunde_mcm_mcd"
+    ],
+    "pedagogicalNote": "El MCM de dos polinomios factorizados se obtiene tomando cada factor común con su MAYOR exponente. Para $(x-1)$: $\\max(2, 1) = 2$. Para $(x+2)$: $\\max(1, 3) = 3$. Así el MCM es $(x-1)^2 (x+2)^3$. El distractor $(x-1)(x+2)$ toma el MENOR exponente de cada factor, calculando el MCD en vez del MCM. El distractor $(x-1)^2 (x+2)^2$ toma un exponente intermedio incorrecto para $(x+2)$, ni el máximo ni el mínimo. El distractor $(x-1)^3 (x+2)^4$ suma los exponentes de cada factor ($2+1=3$ y $1+3=4$) en vez de tomar el máximo, confundiendo el MCM con el producto de los polinomios. Los tres distractores confunden la regla del MCM con otras operaciones sobre los exponentes.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-mcm-mcd-polinomios"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "MCM de polinomios — Exponente máximo por factor",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere reconocer los factores comunes entre dos polinomios ya factorizados, aplicar la regla del máximo exponente para cada factor y distinguir el MCM del MCD. Integra factorización con la operación de mínimo común múltiplo polinómico."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "MCM/MCD de polinomios — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren las confusiones típicas entre MCM y MCD (tomar el mínimo, tomar un valor intermedio, sumar exponentes), sin copiar ningún item del examen."
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.mcm_mcd_polinomios.desafio-02",
+    "skillId": "mat.u2.mcm_mcd_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Dados $P(x) = (x-2)(x+1)^2$ y $Q(x) = (x-2)^3 (x-3)$, ¿cuál es el MCD?",
+    "expectedAnswer": "$(x-2)$",
+    "options": [
+      "$(x-2)$",
+      "$(x-2)(x+1)^2(x-3)$",
+      "$(x-2)^3$",
+      "$1$"
+    ],
+    "commonErrorTags": [
+      "u2_confunde_mcm_mcd"
+    ],
+    "pedagogicalNote": "El MCD de dos polinomios factorizados se obtiene tomando solo los factores COMUNES a ambos, cada uno con su MENOR exponente. El único factor común entre $P(x) = (x-2)(x+1)^2$ y $Q(x) = (x-2)^3(x-3)$ es $(x-2)$. Su exponente en $P$ es $1$ y en $Q$ es $3$, así que el MCD es $(x-2)^{\\min(1,3)} = (x-2)$. Los factores $(x+1)$ y $(x-3)$ no son comunes y no aparecen en el MCD. El distractor $(x-2)(x+1)^2(x-3)$ toma todos los factores con su mayor exponente, calculando el MCM en vez del MCD. El distractor $(x-2)^3$ toma el mayor exponente del factor común en vez del menor, confundiendo la regla del MCD con la del MCM. El distractor $1$ afirma que no hay factores comunes, cuando $(x-2)$ aparece en ambos polinomios. Los tres distractores confunden la regla del MCD con otras operaciones.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-mcm-mcd-polinomios"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "MCD de polinomios — Factor común con exponente mínimo",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere identificar qué factores son comunes a ambos polinomios, descartar los que no lo son y aplicar la regla del mínimo exponente a los comunes. Integra factorización con la operación de máximo común divisor polinómico y la distinción entre factores comunes y propios."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "MCM/MCD de polinomios — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores recorren las confusiones típicas entre MCD y MCM (tomar el máximo exponente, incluir factores no comunes, negar la existencia de factores comunes), sin copiar ningún item del examen."
+      }
+    ]
   }
 ]
