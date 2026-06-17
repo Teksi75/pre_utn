@@ -403,7 +403,7 @@
     },
     "challenge-smoke-e2e": {
       "status": "in-progress",
-      "branch": null,
+      "branch": "feat/challenge-smoke-e2e-pr1b-config",
       "startedAt": "2026-06-17",
       "mergedTo": "main",
       "mergeCommit": "e3149aa",
@@ -414,6 +414,11 @@
         "mergedTo": "main",
         "mergeCommit": "e3149aa",
         "summary": "PR1a - Fixtures + vitest: 3 fixture builders (practice-progress, student-profile, advanced-practice) with strict TDD. 388 inserciones en 6 archivos, 10 nuevos vitest tests (2063 total). Repo moved from C:\\Users\\pablo\\OneDrive\\Desarrollo\\pre_utn to C:\\dev\\pre_utn to avoid OneDrive .git/objects corruption. Housekeeping commit (33b6397) tracked 5 SDD artifacts in main before PR1a merge."
+      },
+      "pr1b": {
+        "branch": "feat/challenge-smoke-e2e-pr1b-config",
+        "status": "in-progress",
+        "summary": "PR1b - Config + helpers + README + placeholder: @playwright/test devDep, playwright.config.ts (port 3100, chromium), tests/e2e/helpers/{selectors,practice-flow}.ts, tests/e2e/README.md, tests/e2e/specs/_placeholder.spec.ts. Sanity check passes (placeholder spec boots). To be merged before PR2."
       },
       "summary": "Playwright E2E smoke suite for the challenge flow. 6 PRs chained stacked-to-main: PR1a merged (fixtures + vitest, 2063 tests), PR1b-PR4b pending (config + helpers + 9 spec files). Zero source code changes. Cero CI wiring. Chromium-only. Repo at C:\\dev\\pre_utn (moved from OneDrive)."
     }
