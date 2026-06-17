@@ -33,7 +33,7 @@
       },
       {
         "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
-        "section": "Ecuaciones Fraccionarias — Ejercicio de resolution",
+        "section": "Ecuaciones Fraccionarias — Ejercicio de resolución",
         "sourceUse": "calibrated-from-exam",
         "pedagogicalIntent": "Nivel de item de examen. El distractor {2,-3} representa el error de 'resolver' igualando numeradores sin verificar que sean válidos en el dominio."
       }
