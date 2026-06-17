@@ -374,6 +374,31 @@
         "url": "https://github.com/Teksi75/pre_utn/pull/31"
       },
       "summary": "Honest skill availability states for MathRoutePanel. 4-state pure-of-catalog adapter (getSkillAvailability) over PILOT_SKILL_UNIT_MAP + getSkillComponents + isSkillReady. View-model grows additive availability + per-skill list (hasAttempted: boolean drives 'temas superados' chips). MathRoutePanel: 1 compact card per unit (no per-skill sub-list); U1-U2 show mastery pill + progress text + 1 chip per attempted skill + 'Repasar teoría' CTA; U3-U6 compact 'Próximamente' row only. Removed RouteSkillList (per-skill rendering is gone from Home; detail lives at /learn/matematica). 3 commits iterated via direct user testing: 1) initial implementation, 2) lower chip threshold + CTA copy, 3) remove chip cap. Verification: 1905/1905 tests, typecheck clean, 7/7 routes built, GGA pre-commit validated, Vercel preview + verify CI green."
+    },
+    "challenge-exercises": {
+      "status": "done",
+      "branch": null,
+      "startedAt": "2026-06-16",
+      "completedAt": "2026-06-16",
+      "mergedTo": "main",
+      "delivery": "feature-branch-chain (5 PRs)",
+      "summary": "Optional challenge exercises after standard practice. content/matematica/challenges/ directory, isolated loader, advanced store pre-utn.advanced-practice.v1, encapsulated UI, opt-in flow post-complete, advanced readiness per skill. 3 pilot skills with 6 challenges total. Challenges do NOT affect base mastery. 2041+ tests, typecheck, build green."
+    },
+    "practice-skill-status-indicators": {
+      "status": "done",
+      "branch": null,
+      "startedAt": "2026-06-16",
+      "completedAt": "2026-06-16",
+      "mergedTo": "main",
+      "summary": "Mastery status pills in FocusSelector: Dominada / Necesita repaso / En práctica (no pill for not-started). Two separate pills: mastery level (left, inline with skill name) + availability (right). 2053/2053 tests, typecheck, build green."
+    },
+    "challenge-exercises-expansion": {
+      "status": "in-progress",
+      "branch": null,
+      "startedAt": "2026-06-17",
+      "mergedTo": null,
+      "delivery": "auto-chain; stacked-to-main; 5 PRs (PR 0 micro typo fix + PR A/B/C/D content batches)",
+      "summary": "Expand challenge exercises to remaining 12 pilot skills (5 U1 + 7 U2). 24 new challenges, 2 per skill, all difficulty 4, all multiple-choice with 4 LaTeX options. Content-only: no loader/store/UI/mastery changes. Planning complete (explore+proposal+spec+design+tasks), ready for apply."
     }
   },
   "activeBranches": [],
