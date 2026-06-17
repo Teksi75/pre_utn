@@ -64,20 +64,20 @@ Chain strategy: stacked-to-main
 
 ## Phase 3: Batch C — U1 remaining + U2 early (4 skills, 8 challenges, ~320 lines)
 
-- [ ] 3.1 Branch `feat/challenge-exercises-expansion-batch-c` from main (after Batch B merged).
-- [ ] 3.2 Author `ex.u1.conjuntos_numericos.desafio-01` (classify `∛(-8)`; MC 4 set options ℕ/ℤ/ℚ/ℝ; difficulty 4; canonicalTrace UNIDAD1).
-- [ ] 3.3 Author `ex.u1.conjuntos_numericos.desafio-02` (set builder with quantifier; MC 4 set-description options; difficulty 4).
-- [ ] 3.4 Author `ex.u1.propiedades_operaciones_reales.desafio-01` (identify false property; MC 4 options; difficulty 4).
-- [ ] 3.5 Author `ex.u1.propiedades_operaciones_reales.desafio-02` (binary op `a*b = a+b-ab`; MC 4 numeric options; difficulty 4).
-- [ ] 3.6 Append the 4 U1 entries to `content/matematica/challenges/unit-1.json`.
-- [ ] 3.7 Author `ex.u2.polinomios_basico.desafio-01` (`P(3)-P(-2)`; MC 4 numeric options; difficulty 4; canonicalTrace UNIDAD2).
-- [ ] 3.8 Author `ex.u2.polinomios_basico.desafio-02` (Vieta sum of roots; MC 4 numeric options; difficulty 4).
-- [ ] 3.9 Author `ex.u2.operaciones_polinomios.desafio-01` (coefficient of x in product; MC 4 options; difficulty 4).
-- [ ] 3.10 Author `ex.u2.operaciones_polinomios.desafio-02` (sum of polynomials, find `a+b`; MC 4 options; difficulty 4).
-- [ ] 3.11 Append the 4 U2 entries to `content/matematica/challenges/unit-2.json`.
-- [ ] 3.12 Run `pnpm run test` + `pnpm run typecheck` + `pnpm run build`.
-- [ ] 3.13 Manual content audit (distractors, no-copy, Spanish pedagogicalNote).
-- [ ] 3.14 Open PR C; merge to main with `--no-ff`.
+- [x] 3.1 Branch `feat/challenge-exercises-expansion-batch-c` from main (after Batch B merged).
+- [x] 3.2 Author `ex.u1.conjuntos_numericos.desafio-01` (classify `∛(-8)`; MC 4 set options ℕ/ℤ/ℚ/ℝ; difficulty 4; canonicalTrace UNIDAD1).
+- [x] 3.3 Author `ex.u1.conjuntos_numericos.desafio-02` (set builder with quantifier; MC 4 set-description options; difficulty 4).
+- [x] 3.4 Author `ex.u1.propiedades_operaciones_reales.desafio-01` (identify false property; MC 4 options; difficulty 4).
+- [x] 3.5 Author `ex.u1.propiedades_operaciones_reales.desafio-02` (binary op `a*b = a+b-ab`; MC 4 numeric options; difficulty 4).
+- [x] 3.6 Append the 4 U1 entries to `content/matematica/challenges/unit-1.json`.
+- [x] 3.7 Author `ex.u2.polinomios_basico.desafio-01` (`P(3)-P(-2)`; MC 4 numeric options; difficulty 4; canonicalTrace UNIDAD2).
+- [x] 3.8 Author `ex.u2.polinomios_basico.desafio-02` (Vieta sum of roots; MC 4 numeric options; difficulty 4).
+- [x] 3.9 Author `ex.u2.operaciones_polinomios.desafio-01` (coefficient of x in product; MC 4 options; difficulty 4).
+- [x] 3.10 Author `ex.u2.operaciones_polinomios.desafio-02` (sum of polynomials, find `a+b`; MC 4 options; difficulty 4).
+- [x] 3.11 Append the 4 U2 entries to `content/matematica/challenges/unit-2.json`.
+- [x] 3.12 Run `pnpm run test` + `pnpm run typecheck` + `pnpm run build`.
+- [x] 3.13 Manual content audit (distractors, no-copy, Spanish pedagogicalNote).
+- [x] 3.14 Open PR C; merge to main with `--no-ff`.
 
 ---
 
