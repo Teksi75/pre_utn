@@ -10,6 +10,8 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install chromium",
     "typecheck": "tsc --noEmit",
     "audit:branches": "bash scripts/audit-branches.sh"
   },
@@ -25,6 +27,7 @@
     "@types/node": "^20",
     "@types/react": "^19.2.16",
     "@types/react-dom": "^19",
+    "@playwright/test": "^1.61.0",
     "@vitest/coverage-v8": "^4.1.8",
     "tailwindcss": "^4",
     "typescript": "^5",
