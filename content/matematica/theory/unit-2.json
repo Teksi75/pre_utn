@@ -82,17 +82,27 @@
       {
         "id": "concept-ruffini-procedimiento",
         "title": "1. Regla de Ruffini: procedimiento",
-        "body": "Para dividir P(x) por (x−a) usando Ruffini: (1) se escriben los coeficientes de P(x) en orden decreciente, incluyendo ceros para grados faltantes; (2) se escribe el valor a a la izquierda; (3) se baja el primer coeficiente; (4) se multiplica por a y se suma al siguiente coeficiente, repitiendo hasta el último. El último número obtenido es el resto; los anteriores son los coeficientes del cociente (de un grado menor que P)."
+        "bodyParagraphs": [
+          "Para dividir $P(x)$ por $(x−a)$ usando Ruffini: (1) se escriben los coeficientes de $P(x)$ en orden decreciente, incluyendo ceros para grados faltantes; (2) se escribe el valor $a$ a la izquierda; (3) se baja el primer coeficiente; (4) se multiplica por $a$ y se suma al siguiente coeficiente, repitiendo hasta el último.",
+          "El último número obtenido es el resto; los anteriores son los coeficientes del cociente (de un grado menor que $P$)."
+        ]
       },
       {
         "id": "concept-teorema-resto",
         "title": "2. Teorema del resto",
-        "body": "El residuo de dividir P(x) por (x−a) es igual a P(a). Esto significa que NO es necesario hacer la división para conocer el resto: basta evaluar el polinomio en x=a. Si el resto es cero, entonces (x−a) es factor de P(x), y a es raíz del polinomio. Ejemplo: para P(x)=x³−2x+1 dividido por (x−2), el resto es P(2)=8−4+1=5."
+        "bodyParagraphs": [
+          "El residuo de dividir $P(x)$ por $(x−a)$ es igual a $P(a)$.",
+          "Esto significa que NO es necesario hacer la división para conocer el resto: basta evaluar el polinomio en $x=a$. Si el resto es cero, entonces $(x−a)$ es factor de $P(x)$, y $a$ es raíz del polinomio.",
+          "Ejemplo: para $P(x)=x³−2x+1$ dividido por $(x−2)$, el resto es $P(2)=8−4+1=5$."
+        ]
       },
       {
         "id": "concept-ruffini-signo",
         "title": "3. Atención al signo de a en Ruffini",
-        "body": "Error frecuente: al dividir por (x−a) se usa a en la regla de Ruffini. Pero si el divisor es (x+a), debe usarse −a. Esto es porque (x+a)=(x−(−a)). Confundir el signo produce cociente y resto incorrectos. Verificar siempre: escribir el divisor como (x−a) e identificar correctamente el valor de a."
+        "bodyParagraphs": [
+          "Error frecuente: al dividir por $(x−a)$ se usa $a$ en la regla de Ruffini. Pero si el divisor es $(x+a)$, debe usarse $−a$. Esto es porque $(x+a)=(x−(−a))$. Confundir el signo produce cociente y resto incorrectos.",
+          "Verificar siempre: escribir el divisor como $(x−a)$ e identificar correctamente el valor de $a$."
+        ]
       }
     ],
     "canonicalTrace": [

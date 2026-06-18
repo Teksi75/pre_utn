@@ -60,7 +60,17 @@ export function TheoryCard({ node }: TheoryCardProps) {
               <RichText text={concept.title} />
             </h3>
             <div className="mt-1 text-sm text-brand-700 leading-[var(--leading-relaxed)]">
-              <RichText text={concept.body} />
+              {concept.bodyParagraphs && concept.bodyParagraphs.length > 0 ? (
+                <div className="space-y-2">
+                  {concept.bodyParagraphs.map((p, i) => (
+                    <div key={i}>
+                      <RichText text={p} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <RichText text={concept.body} />
+              )}
             </div>
             {concept.intervalRepresentations && concept.intervalRepresentations.length > 0 && (
               <div className="mt-3 space-y-2">

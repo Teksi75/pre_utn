@@ -155,4 +155,40 @@ describe("TheoryNode", () => {
       }
     });
   });
+
+  describe("ConceptBlock bodyParagraphs", () => {
+    test("accepts a concept with valid bodyParagraphs alongside body", () => {
+      const node = makeNode({
+        concepts: [
+          makeConcept({
+            id: "concept-paragraphs",
+            bodyParagraphs: ["Párrafo 1.", "Párrafo 2."],
+          }),
+        ],
+      });
+      const result = validateTheoryNode(node);
+      expect(result.ok).toBe(true);
+    });
+
+    test("accepts a concept with only the legacy body field (regression)", () => {
+      const node = makeNode({
+        concepts: [
+          makeConcept({
+            id: "concept-legacy",
+            body: "Texto legacy sin bodyParagraphs.",
+          }),
+        ],
+      });
+      const result = validateTheoryNode(node);
+      expect(result.ok).toBe(true);
+    });
+
+    test("makeConcept helper propagates bodyParagraphs override", () => {
+      const concept = makeConcept({
+        id: "concept-ruffini",
+        bodyParagraphs: ["P(x).", "(x−a)."],
+      });
+      expect(concept.bodyParagraphs).toEqual(["P(x).", "(x−a)."]);
+    });
+  });
 });

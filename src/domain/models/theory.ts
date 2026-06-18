@@ -25,6 +25,17 @@ export interface ConceptBlock {
   readonly id: string;
   readonly title: string;
   readonly body: string;
+  /**
+   * Optional array of paragraph chunks. When present and non-empty, the
+   * renderer MUST use this array (one block wrapper per chunk, e.g. `<div>`)
+   * instead of the legacy single-string `body`. Parser normalizes `[]` to
+   * `undefined` and rejects any element that is not a non-empty string.
+   *
+   * The renderer uses `<div>` wrappers (not `<p>`) to avoid invalid HTML
+   * nesting when a chunk contains display math (`$$...$$`) that produces
+   * block-level KaTeX output.
+   */
+  readonly bodyParagraphs?: readonly string[];
   /** Optional interval representations for visual examples. */
   readonly intervalRepresentations?: readonly IntervalRepresentation[];
 }

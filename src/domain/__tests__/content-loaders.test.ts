@@ -14,6 +14,7 @@ import {
   loadFeedbackContent,
   loadTheoryContent,
   loadExampleContent,
+  parseConceptBlock,
 } from "../catalog/content-loaders";
 import type { Exercise } from "../models/exercise";
 
@@ -277,6 +278,178 @@ describe("loadSkillBank — narrow catch", () => {
     expect(result).toHaveProperty("exercises");
     expect(result).toHaveProperty("diagnostics");
     expect(Array.isArray(result.diagnostics)).toBe(true);
+  });
+});
+
+describe("parseConceptBlock — bodyParagraphs model", () => {
+  // Note: parseConceptBlock is exported from content-loaders for testability.
+  const baseRaw: Record<string, unknown> = {
+    id: "concept-ruffini-procedimiento",
+    title: "1. Regla de Ruffini: procedimiento",
+    body: "legacy fallback body",
+  };
+
+  test("preserves valid bodyParagraphs array alongside body", () => {
+    const raw = {
+      ...baseRaw,
+      bodyParagraphs: ["Para dividir P(x) por (x−a):", "Resto es P(a)."],
+    };
+    const result = parseConceptBlock(raw, "theory-ruffini-resto", 0);
+    expect(result.bodyParagraphs).toEqual([
+      "Para dividir P(x) por (x−a):",
+      "Resto es P(a).",
+    ]);
+  });
+
+  test("legacy concept with only body still parses", () => {
+    const result = parseConceptBlock(baseRaw, "theory-ruffini-resto", 0);
+    expect(result.body).toBe("legacy fallback body");
+    expect(result.bodyParagraphs).toBeUndefined();
+  });
+
+  test("empty array normalizes to undefined", () => {
+    const result = parseConceptBlock(
+      { ...baseRaw, bodyParagraphs: [] },
+      "theory-ruffini-resto",
+      0
+    );
+    expect(result.bodyParagraphs).toBeUndefined();
+  });
+
+  test("empty string element throws with offending index in error", () => {
+    expect(() =>
+      parseConceptBlock(
+        { ...baseRaw, bodyParagraphs: ["OK", ""] },
+        "theory-ruffini-resto",
+        0
+      )
+    ).toThrow(/bodyParagraphs\[1\]/);
+  });
+
+  test("non-string element throws with offending index in error", () => {
+    expect(() =>
+      parseConceptBlock(
+        { ...baseRaw, bodyParagraphs: ["OK", 42] },
+        "theory-ruffini-resto",
+        0
+      )
+    ).toThrow(/bodyParagraphs\[1\]/);
+  });
+
+  test("non-array bodyParagraphs throws a parse error instead of silently falling back", () => {
+    expect(() =>
+      parseConceptBlock(
+        { ...baseRaw, bodyParagraphs: "not-an-array" },
+        "theory-ruffini-resto",
+        0
+      )
+    ).toThrow(/bodyParagraphs/);
+    expect(() =>
+      parseConceptBlock(
+        { ...baseRaw, bodyParagraphs: 123 },
+        "theory-ruffini-resto",
+        0
+      )
+    ).toThrow(/bodyParagraphs/);
+  });
+
+  test("body is optional when bodyParagraphs is present (migrated concept shape)", () => {
+    // Migrated concepts drop `body` and rely on `bodyParagraphs`. The
+    // parser MUST accept this shape; absence of `body` is not an error
+    // when `bodyParagraphs` is non-empty.
+    const { body: _body, ...rawWithoutBody } = baseRaw;
+    const result = parseConceptBlock(
+      { ...rawWithoutBody, bodyParagraphs: ["Párrafo 1.", "Párrafo 2."] },
+      "theory-ruffini-resto",
+      0
+    );
+    expect(result.bodyParagraphs).toEqual(["Párrafo 1.", "Párrafo 2."]);
+  });
+
+  test("neither body nor bodyParagraphs throws a parse error", () => {
+    const { body: _body, ...rawWithoutBody } = baseRaw;
+    expect(() => parseConceptBlock(rawWithoutBody, "theory-ruffini-resto", 0)).toThrow(
+      /expected non-empty string \(or bodyParagraphs\)/
+    );
+  });
+});
+
+describe("issue-36-theory-readability — Ruffini migration acceptance", () => {
+  // Spec anchor: the 3 Ruffini concepts in unit-2.json MUST migrate to
+  // `bodyParagraphs` with `body` removed. This test loads the live JSON
+  // and verifies the migration.
+  test("Ruffini concepts use bodyParagraphs and have no body field", () => {
+    const nodes = loadTheoryContent("unit-2");
+    const ruffini = nodes.find((n) => n.skillId === "mat.u2.ruffini_resto");
+    expect(ruffini).toBeDefined();
+    const ids = ruffini!.concepts.map((c) => c.id);
+    expect(ids).toEqual([
+      "concept-ruffini-procedimiento",
+      "concept-teorema-resto",
+      "concept-ruffini-signo",
+    ]);
+    for (const concept of ruffini!.concepts) {
+      expect(concept.bodyParagraphs).toBeDefined();
+      expect(concept.bodyParagraphs!.length).toBeGreaterThan(0);
+      // body must NOT be present on migrated concepts (drift prevention)
+      // The parser falls back to "" when body is missing; we verify the
+      // migrated concepts have an empty body since `body` was removed.
+      expect(concept.body).toBe("");
+    }
+  });
+
+  test("concept-ruffini-procedimiento has 2 paragraphs (steps + remainder)", () => {
+    const nodes = loadTheoryContent("unit-2");
+    const ruffini = nodes.find((n) => n.skillId === "mat.u2.ruffini_resto")!;
+    const c = ruffini.concepts.find((x) => x.id === "concept-ruffini-procedimiento")!;
+    expect(c.bodyParagraphs).toHaveLength(2);
+  });
+
+  test("concept-teorema-resto has 3 paragraphs (definition + implication + example)", () => {
+    const nodes = loadTheoryContent("unit-2");
+    const ruffini = nodes.find((n) => n.skillId === "mat.u2.ruffini_resto")!;
+    const c = ruffini.concepts.find((x) => x.id === "concept-teorema-resto")!;
+    expect(c.bodyParagraphs).toHaveLength(3);
+  });
+
+  test("concept-ruffini-signo has 2 paragraphs (warning + verification rule)", () => {
+    const nodes = loadTheoryContent("unit-2");
+    const ruffini = nodes.find((n) => n.skillId === "mat.u2.ruffini_resto")!;
+    const c = ruffini.concepts.find((x) => x.id === "concept-ruffini-signo")!;
+    expect(c.bodyParagraphs).toHaveLength(2);
+  });
+
+  test("math expressions preserved verbatim in migrated paragraphs", () => {
+    const nodes = loadTheoryContent("unit-2");
+    const ruffini = nodes.find((n) => n.skillId === "mat.u2.ruffini_resto")!;
+    const procedimento = ruffini.concepts.find(
+      (x) => x.id === "concept-ruffini-procedimiento"
+    )!;
+    const teorema = ruffini.concepts.find(
+      (x) => x.id === "concept-teorema-resto"
+    )!;
+    const signo = ruffini.concepts.find((x) => x.id === "concept-ruffini-signo")!;
+    // $P(x)$ must appear in procedimento (verbatim)
+    const allProcedureText = procedimento.bodyParagraphs!.join(" ");
+    expect(allProcedureText).toContain("$P(x)$");
+    expect(allProcedureText).toContain("$(x");
+    // $P(a)$ and $P(2)=8−4+1=5$ (U+2212) must appear in teorema-resto
+    const allTeoremaText = teorema.bodyParagraphs!.join(" ");
+    expect(allTeoremaText).toContain("$P(a)$");
+    expect(allTeoremaText).toContain("$P(2)=8\u{2212}4+1=5$");
+    // $(x+a)$ and $(x−a)$ (U+2212) must appear in signo
+    const allSignoText = signo.bodyParagraphs!.join(" ");
+    expect(allSignoText).toContain("$(x+a)$");
+    expect(allSignoText).toContain("$(x\u{2212}a)$");
+  });
+
+  test("unit-1.json concepts still use legacy body field (untouched)", () => {
+    // Regression: the migration MUST NOT touch unit-1 concepts.
+    const nodes = loadTheoryContent("unit-1");
+    const first = nodes[0];
+    const firstConcept = first.concepts[0];
+    expect(firstConcept.body).toBeTruthy();
+    expect(firstConcept.bodyParagraphs).toBeUndefined();
   });
 });
 

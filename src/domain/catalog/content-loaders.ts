@@ -238,14 +238,69 @@ function parseCanonicalTraceArray(raw: Record<string, unknown>, id: string): rea
 }
 
 /** Runtime-parse a ConceptBlock from a raw object. */
-function parseConceptBlock(raw: Record<string, unknown>, parentId: string, index: number): ConceptBlock {
+export function parseConceptBlock(raw: Record<string, unknown>, parentId: string, index: number): ConceptBlock {
   const id = typeof raw.id === "string" ? raw.id : `${parentId}-concept-${index}`;
-  return {
+  const bodyParagraphs = parseOptionalBodyParagraphs(raw, id);
+  // body is optional when bodyParagraphs is present (migrated concepts);
+  // still required when bodyParagraphs is absent (legacy concepts).
+  const body = parseOptionalStringField(raw, "body");
+  if (body === undefined && bodyParagraphs === undefined) {
+    failParse("body", id, "expected non-empty string (or bodyParagraphs)");
+  }
+  const result: ConceptBlock = {
     id,
     title: parseStringField(raw, "title", id),
-    body: parseStringField(raw, "body", id),
+    body: body ?? "",
     intervalRepresentations: parseOptionalIntervalRepresentations(raw, "intervalRepresentations", id),
   };
+  return bodyParagraphs ? { ...result, bodyParagraphs } : result;
+}
+
+/**
+ * Runtime-parse an optional non-empty string field. Returns the string
+ * when present and non-empty (after trim), `undefined` when absent,
+ * null, empty, or whitespace-only. Throws if the value is present but
+ * not a string.
+ */
+function parseOptionalStringField(
+  raw: Record<string, unknown>,
+  field: string
+): string | undefined {
+  const v = raw[field];
+  if (v === undefined || v === null) return undefined;
+  if (typeof v !== "string") {
+    failParse(field, "(unknown)", `expected string, got ${typeof v}`);
+  }
+  if (v.trim().length === 0) return undefined;
+  return v;
+}
+
+/**
+ * Runtime-parse the optional `bodyParagraphs` field of a ConceptBlock.
+ * Validates that every element is a non-empty string. Returns `undefined`
+ * when the field is absent (missing or null) or an empty array (treated as
+ * absent to prevent drift). Fails fast (throws) when the field is present
+ * but not an array, or when any element is not a non-empty string, with
+ * the offending index in the error message.
+ *
+ * Exported for unit testing.
+ */
+export function parseOptionalBodyParagraphs(
+  raw: Record<string, unknown>,
+  contextId: string
+): readonly string[] | undefined {
+  const v = raw.bodyParagraphs;
+  if (v === undefined || v === null) return undefined;
+  if (!Array.isArray(v)) {
+    failParse("bodyParagraphs", contextId, "expected array (or undefined)");
+  }
+  if (v.length === 0) return undefined;
+  return v.map((p, i) => {
+    if (typeof p !== "string" || p.trim().length === 0) {
+      failParse(`bodyParagraphs[${i}]`, contextId, "expected non-empty string");
+    }
+    return p;
+  });
 }
 
 /** Runtime-parse an IntervalVisualExample from a raw object. */
