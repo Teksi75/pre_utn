@@ -403,10 +403,10 @@
     },
     "challenge-smoke-e2e": {
       "status": "in-progress",
-      "branch": "feat/challenge-smoke-e2e-pr1b-config",
+      "branch": null,
       "startedAt": "2026-06-17",
       "mergedTo": "main",
-      "mergeCommit": "e3149aa",
+      "mergeCommit": "159b473",
       "delivery": "chained-prs-stacked-to-main (6 PRs: PR1a, PR1b, PR2, PR3, PR4a, PR4b)",
       "pr1a": {
         "branch": "feat/challenge-smoke-e2e-pr1a-fixtures",
@@ -417,12 +417,28 @@
       },
       "pr1b": {
         "branch": "feat/challenge-smoke-e2e-pr1b-config",
-        "status": "in-progress",
-        "summary": "PR1b - Config + helpers + README + placeholder: @playwright/test devDep, playwright.config.ts (port 3100, chromium), tests/e2e/helpers/{selectors,practice-flow}.ts, tests/e2e/README.md, tests/e2e/specs/_placeholder.spec.ts. Sanity check passes (placeholder spec boots). To be merged before PR2."
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "8c4e89c",
+        "summary": "PR1b - Config + helpers + README + placeholder: @playwright/test devDep, playwright.config.ts (port 3100, chromium), tests/e2e/helpers/{selectors,practice-flow}.ts, tests/e2e/README.md, tests/e2e/specs/_placeholder.spec.ts. Sanity check passes (placeholder spec boots). Merged before PR2."
       },
-      "summary": "Playwright E2E smoke suite for the challenge flow. 6 PRs chained stacked-to-main: PR1a merged (fixtures + vitest, 2063 tests), PR1b-PR4b pending (config + helpers + 9 spec files). Zero source code changes. Cero CI wiring. Chromium-only. Repo at C:\\dev\\pre_utn (moved from OneDrive)."
+      "pr2": {
+        "branch": "feat/challenge-smoke-e2e-pr2-canary",
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "8d82839f",
+        "summary": "PR2 - Canary: potencias_raices.spec.ts (real flow, no fixture). Validated drivePracticeFlow + driveChallengeFlow end-to-end. 8 issues identified and resolved (sdd/challenge-smoke-e2e/archive-pr2 in engram). Housekeeping commit ea3b57c tracked PR2 tasks. Merged before PR3."
+      },
+      "pr3": {
+        "branch": "feat/challenge-smoke-e2e-pr3-u1-samples",
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "159b473",
+        "summary": "PR3 - 3 U1 sample specs (intervalos, conjuntos_numericos, logaritmos). Encounter order != catalog order for logaritmos (debug spec discovered real order: 1, 11, 2, 6, 7, 8, 9, 10, 3, 4, 5). Helper improvements: ANSWER_FORM_TRUE_FALSE selector + answerTrueFalse() (fail-fast post-submit). Continue button detection tightened to button.w-full:not([type=submit]).last() (skip retry button and form submit). All 3 specs use test.setTimeout(180_000) to match PRACTICE_FLOW_TIMEOUT_MS. 6/6 e2e tests pass in 5.5 min. 481 ins / 13 del. PR #39."
+      },
+      "summary": "Playwright E2E smoke suite for the challenge flow. 6 PRs chained stacked-to-main: PR1a/PR1b/PR2/PR3 merged (4 of 6). PR4a (polinomios_basico, operaciones_polinomios, factorizacion) + PR4b (gauss, mcm_mcd_polinomios) pending. Zero source code changes. Zero CI wiring. Chromium-only. Repo at C:\\dev\\pre_utn (moved from OneDrive). Verifications: 2063 vitest + 7 e2e (1 canary + 6 PR3) passing, typecheck clean, build green."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-17T17:50:00-03:00"
+  "lastAudit": "2026-06-18T10:30:00-03:00"
 }

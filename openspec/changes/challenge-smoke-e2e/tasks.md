@@ -86,13 +86,25 @@ Decompose the `challenge-smoke-e2e` change into 6 independently-verifiable, stac
 
 **Goal:** 3 U1 sample specs using the fixture + helpers. Each is compact (~80-110 lines) because `driveChallengeFlow` handles the heavy lifting.
 
-- [ ] 3.1 Branch `feat/challenge-smoke-e2e-pr3-u1` from main (after PR2 merged).
-- [ ] 3.2 Write `tests/e2e/specs/intervalos.spec.ts`: fixture for `mat.u1.intervalos`, `drivePracticeFlow` → opt-in → `driveChallengeFlow`, assert E1 (opt-in + 2 challenges) + E2 (navigate to challenge) + E3 (2 challenges) + E4 (skip closes opt-in) + E5 (readiness displayed) + store independence.
-- [ ] 3.3 Write `tests/e2e/specs/conjuntos_numericos.spec.ts`: same shape as 3.2 for `mat.u1.conjuntos_numericos`.
-- [ ] 3.4 Write `tests/e2e/specs/logaritmos.spec.ts`: same shape as 3.2 for `mat.u1.logaritmos`.
-- [ ] 3.5 Run all 3 locally (`pnpm test:e2e -- "intervalos|conjuntos_numericos|logaritmos"`). Iterate until green.
-- [ ] 3.6 Run `pnpm test:run` — confirm regression-free.
-- [ ] 3.7 Open PR 3; merge to main with `--no-ff`.
+- [x] 3.1 Branch `feat/challenge-smoke-e2e-pr3-u1` from main (after PR2 merged). → actual: `feat/challenge-smoke-e2e-pr3-u1-samples`.
+- [x] 3.2 Write `tests/e2e/specs/intervalos.spec.ts`: fixture for `mat.u1.intervalos`, `drivePracticeFlow` → opt-in → `driveChallengeFlow`, assert E1 (opt-in + 2 challenges) + E2 (navigate to challenge) + E3 (2 challenges) + E4 (skip closes opt-in) + E5 (readiness displayed) + store independence.
+- [x] 3.3 Write `tests/e2e/specs/conjuntos_numericos.spec.ts`: same shape as 3.2 for `mat.u1.conjuntos_numericos`.
+- [x] 3.4 Write `tests/e2e/specs/logaritmos.spec.ts`: same shape as 3.2 for `mat.u1.logaritmos`.
+- [x] 3.5 Run all 3 locally (`pnpm test:e2e -- "intervalos|conjuntos_numericos|logaritmos"`). 6/6 passed in 5.5 min.
+- [x] 3.6 Run `pnpm test:run` — 2063/2063 passed (no regressions).
+- [x] 3.7 Open PR 3; merge to main with `--merge` (preserves history; fast-forward because no concurrent main commits). Branch deleted. → PR #39, commit `159b473`.
+
+### PR3 helper deltas (necessary, documented in commit)
+
+- `selectors.ts`: `ANSWER_FORM_TRUE_FALSE` constant.
+- `practice-flow.ts`: `answerTrueFalse()` with post-submit fail-fast contract.
+- `practice-flow.ts`: continue button detection tightened to `button.w-full:not([type="submit"]).last()` (defensive: skip retry button and form submit).
+- 3 sample specs: `test.setTimeout(180_000)` to match `PRACTICE_FLOW_TIMEOUT_MS`.
+
+### PR3 follow-up (NOT in this PR; deferred)
+
+- KaTeX/LaTeX matcher for MC radio options (no `aria-label` exposed by KaTeX). Specs use "first option" fallback for flow-only assertions. Will need a richer matcher for correctness assertions in PR4a/4b or beyond.
+- Continue button selector still relies on `w-full` class. A `data-testid` would be cleaner but requires a `src/**` change (out of PR scope).
 
 ---
 
