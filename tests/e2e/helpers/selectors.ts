@@ -28,3 +28,12 @@ export const UNIT_SELECT = "#unit-select"; // FocusSelector.tsx:174
 
 // Exercise answer input (reused by base practice + challenges)
 export const ANSWER_FORM_MC = '[data-testid="answer-form-multiple-choice"]';
+// Text-based answer form (numerical, fill-blank, symbolic share this form).
+// See src/components/exercises/ExerciseAnswerInput.tsx:250.
+export const ANSWER_FORM_TEXT = '[data-testid="answer-form-text"]';
+// Input inside the text-based answer form. Use a *relative* selector (not
+// `#exercise-answer`) because the parent component can pass a custom
+// `inputId` prop (e.g. `AnswerForm.tsx:34` passes `inputId="answer-input"`
+// for the standard practice flow; `ChallengeExerciseCard.tsx` may pass
+// another). The relative selector covers all of them.
+export const ANSWER_INPUT = 'input[type="text"]';
