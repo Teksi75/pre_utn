@@ -137,12 +137,29 @@ Decompose the `challenge-smoke-e2e` change into 6 independently-verifiable, stac
 
 **Goal:** 2 remaining U2 specs. Both straightforward (no prereq bypass).
 
-- [ ] 4b.1 Branch `feat/challenge-smoke-e2e-pr4b-u2-second` from main (after PR4a merged).
-- [ ] 4b.2 Write `tests/e2e/specs/gauss.spec.ts`: fixture for `mat.u2.gauss`, assert E1–E5 + store independence.
-- [ ] 4b.3 Write `tests/e2e/specs/mcm_mcd_polinomios.spec.ts`: fixture for `mat.u2.mcm_mcd_polinomios`, same 5-scenario shape.
-- [ ] 4b.4 Run both locally (`pnpm test:e2e -- "gauss|mcm_mcd_polinomios"`). Iterate until green.
-- [ ] 4b.5 Run `pnpm test:run` — confirm regression-free.
-- [ ] 4b.6 Open PR 4b; merge to main with `--no-ff`.
+- [x] 4b.1 Branch `feat/challenge-smoke-e2e-pr4b-u2-final-samples` from main (after PR4a merged).
+- [x] 4b.2 Write `tests/e2e/specs/gauss.spec.ts`: fixture for `mat.u2.gauss` with prereq bypass `accuracyBySkill: { "mat.u2.ruffini_resto": 0.8 }`. Assert all 5 scenarios E1–E5.
+- [x] 4b.3 Write `tests/e2e/specs/mcm_mcd_polinomios.spec.ts`: fixture for `mat.u2.mcm_mcd_polinomios` with prereq bypass `accuracyBySkill: { "mat.u2.factorizacion": 0.8 }`. Includes `exerciseAnswers: ["x(x-2)(x+3)"]` to override the wrong first option on mcm.1. Same 5-scenario shape.
+- [x] 4b.4 Run both locally (`pnpm test:e2e -- "gauss|mcm_mcd_polinomios"`). 4/4 passed in 1.0 min.
+- [x] 4b.5 Run `pnpm test:run` — 2063/2063 passed (no regressions).
+- [x] 4b.6 Open PR 4b; merge to main with `--merge` (fast-forward). Branch deleted. → PR #41, merge commit `3c1b5aa`.
+
+### PR4b scope notes
+
+- **No helper changes**. U2 only uses MC + TEXT forms (both already handled by PR3 helper). No new form types discovered.
+- **Encounter order = catalog order** for both `gauss` and `mcm_mcd_polinomios` (unlike `logaritmos` in PR3).
+- **Prereq correction caught by sub-agent**: `gauss` requires `ruffini_resto` (skill-catalog.ts:116), NOT `operaciones_polinomios`. Verified in catalog + accessibility check.
+- **Recovery-flow risk caught by sub-agent**: `mcm_mcd_polinomios.1` has its correct answer at option `[1]`, not option `[0]`. Without `exerciseAnswers` override, the helper's "first option" fallback would pick the wrong answer ("x" — the MCD only), triggering `PracticeRecoveryPhase` and a 180s timeout loop. The spec uses `exerciseAnswers: ["x(x-2)(x+3)"]` to override at encounter index 0. The other 3 MC exercises use the first-option fallback (their first options are correct).
+- **Sub-agent delegation** (per user request):
+  - `sdd-explore-chinos` → discovery: encounter order, form types, prereq verification. Caught the prereq correction and the recovery-flow risk before the spec was written.
+  - `sdd-apply-chinos` → implementation: wrote the 2 spec files + ran e2e tests locally.
+  - `sdd-verify-chinos` → fresh-context review: confirmed spec coverage, fixture correctness, encounter order documentation, helper changes (none), diff budget, GGA, test run, recovery-flow concern. Verdict: SAFE TO MERGE.
+- **Diff**: 2 files, +253 lines (under 400-line budget by ~37%).
+- **Validations**: vitest 2063/2063, typecheck 0 errors, build clean, e2e 4/4 in 1.0 min, git fsck clean.
+
+### Chain complete
+
+All 6 PRs of the `challenge-smoke-e2e` change are now merged. Total e2e coverage: 1 canary + 6 U1 sample specs + 7 U2 sample specs = **14 e2e tests** + 2063 vitest tests, all green. Zero `src/**` changes across the entire chain. The change is ready for archive.
 
 ---
 

@@ -402,11 +402,12 @@
       "summary": "Expanded challenge exercises to all 15 pilot skills (8 U1 + 7 U2). 24 new challenges added (2 per skill), all difficulty 4, all multiple-choice with 4 LaTeX options, Spanish pedagogicalNote. Content-only: no loader/store/UI/mastery changes. Total: 30 challenge entries across unit-1.json (16) and unit-2.json (14). 2053 tests, typecheck, build green."
     },
     "challenge-smoke-e2e": {
-      "status": "in-progress",
+      "status": "done",
       "branch": null,
       "startedAt": "2026-06-17",
+      "completedAt": "2026-06-18",
       "mergedTo": "main",
-      "mergeCommit": "d469cf8",
+      "mergeCommit": "3c1b5aa",
       "delivery": "chained-prs-stacked-to-main (6 PRs: PR1a, PR1b, PR2, PR3, PR4a, PR4b)",
       "pr1a": {
         "branch": "feat/challenge-smoke-e2e-pr1a-fixtures",
@@ -443,9 +444,16 @@
         "mergeCommit": "d469cf8",
         "summary": "PR4a - 3 U2 sample specs (polinomios_basico, operaciones_polinomios, factorizacion). No helper changes needed (U2 only uses MC + TEXT forms, both already handled by PR3 helper). Encounter order = catalog order for all 3 U2 skills (unlike logaritmos). Prereq seeds: polinomios_basico (none), operaciones_polinomios (accuracyBySkill: { polinomios_basico: 0.8 }), factorizacion (accuracyBySkill: { operaciones_polinomios: 0.8, ruffini_resto: 0.8 }). 6/6 e2e tests pass in 1.7 min. 370 ins / 0 del. PR #40."
       },
-      "summary": "Playwright E2E smoke suite for the challenge flow. 6 PRs chained stacked-to-main: PR1a/PR1b/PR2/PR3/PR4a merged (5 of 6). PR4b (gauss, mcm_mcd_polinomios) pending. Zero source code changes. Zero CI wiring. Chromium-only. Repo at C:\\dev\\pre_utn (moved from OneDrive). Verifications: 2063 vitest + 13 e2e (1 canary + 6 PR3 + 6 PR4a) passing, typecheck clean, build green."
+      "pr4b": {
+        "branch": "feat/challenge-smoke-e2e-pr4b-u2-final-samples",
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "3c1b5aa",
+        "summary": "PR4b - 2 final U2 sample specs (gauss, mcm_mcd_polinomios). Used explicit sub-agent delegation per user request: sdd-explore-chinos for discovery (caught prereq correction: gauss requires ruffini_resto NOT operaciones_polinomios; caught recovery-flow risk: mcm.1 has correct answer at option[1] not option[0]), sdd-apply-chinos for implementation, sdd-verify-chinos for fresh-context review (verdict: SAFE TO MERGE). Prereq seeds: gauss (accuracyBySkill: { ruffini_resto: 0.8 }), mcm_mcd_polinomios (accuracyBySkill: { factorizacion: 0.8 } + exerciseAnswers: [x(x-2)(x+3)] for mcm.1 to avoid recovery loop). 4/4 e2e tests pass in 1.0 min. 253 ins / 0 del. PR #41."
+      },
+      "summary": "Playwright E2E smoke suite for the challenge flow. ALL 6 PRs merged stacked-to-main (PR1a, PR1b, PR2, PR3, PR4a, PR4b). Total: 1 canary + 13 sample specs = 14 e2e tests + 2063 vitest tests, all green. Zero source code changes. Zero CI wiring. Chromium-only. Repo at C:\\dev\\pre_utn (moved from OneDrive). Change is DONE and ready for archive."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-18T12:30:00-03:00"
+  "lastAudit": "2026-06-18T15:00:00-03:00"
 }
