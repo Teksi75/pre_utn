@@ -406,7 +406,7 @@
       "branch": null,
       "startedAt": "2026-06-17",
       "mergedTo": "main",
-      "mergeCommit": "159b473",
+      "mergeCommit": "d469cf8",
       "delivery": "chained-prs-stacked-to-main (6 PRs: PR1a, PR1b, PR2, PR3, PR4a, PR4b)",
       "pr1a": {
         "branch": "feat/challenge-smoke-e2e-pr1a-fixtures",
@@ -436,9 +436,16 @@
         "mergeCommit": "159b473",
         "summary": "PR3 - 3 U1 sample specs (intervalos, conjuntos_numericos, logaritmos). Encounter order != catalog order for logaritmos (debug spec discovered real order: 1, 11, 2, 6, 7, 8, 9, 10, 3, 4, 5). Helper improvements: ANSWER_FORM_TRUE_FALSE selector + answerTrueFalse() (fail-fast post-submit). Continue button detection tightened to button.w-full:not([type=submit]).last() (skip retry button and form submit). All 3 specs use test.setTimeout(180_000) to match PRACTICE_FLOW_TIMEOUT_MS. 6/6 e2e tests pass in 5.5 min. 481 ins / 13 del. PR #39."
       },
-      "summary": "Playwright E2E smoke suite for the challenge flow. 6 PRs chained stacked-to-main: PR1a/PR1b/PR2/PR3 merged (4 of 6). PR4a (polinomios_basico, operaciones_polinomios, factorizacion) + PR4b (gauss, mcm_mcd_polinomios) pending. Zero source code changes. Zero CI wiring. Chromium-only. Repo at C:\\dev\\pre_utn (moved from OneDrive). Verifications: 2063 vitest + 7 e2e (1 canary + 6 PR3) passing, typecheck clean, build green."
+      "pr4a": {
+        "branch": "feat/challenge-smoke-e2e-pr4a-u2-samples",
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "d469cf8",
+        "summary": "PR4a - 3 U2 sample specs (polinomios_basico, operaciones_polinomios, factorizacion). No helper changes needed (U2 only uses MC + TEXT forms, both already handled by PR3 helper). Encounter order = catalog order for all 3 U2 skills (unlike logaritmos). Prereq seeds: polinomios_basico (none), operaciones_polinomios (accuracyBySkill: { polinomios_basico: 0.8 }), factorizacion (accuracyBySkill: { operaciones_polinomios: 0.8, ruffini_resto: 0.8 }). 6/6 e2e tests pass in 1.7 min. 370 ins / 0 del. PR #40."
+      },
+      "summary": "Playwright E2E smoke suite for the challenge flow. 6 PRs chained stacked-to-main: PR1a/PR1b/PR2/PR3/PR4a merged (5 of 6). PR4b (gauss, mcm_mcd_polinomios) pending. Zero source code changes. Zero CI wiring. Chromium-only. Repo at C:\\dev\\pre_utn (moved from OneDrive). Verifications: 2063 vitest + 13 e2e (1 canary + 6 PR3 + 6 PR4a) passing, typecheck clean, build green."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-18T10:30:00-03:00"
+  "lastAudit": "2026-06-18T12:30:00-03:00"
 }

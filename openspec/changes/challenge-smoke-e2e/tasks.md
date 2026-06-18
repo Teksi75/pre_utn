@@ -112,13 +112,24 @@ Decompose the `challenge-smoke-e2e` change into 6 independently-verifiable, stac
 
 **Goal:** 3 U2 specs. `factorizacion` uses prereq bypass via `accuracyBySkill['operaciones_polinomios'] = 0.8` in the fixture.
 
-- [ ] 4a.1 Branch `feat/challenge-smoke-e2e-pr4a-u2-first` from main (after PR3 merged).
-- [ ] 4a.2 Write `tests/e2e/specs/polinomios_basico.spec.ts`: fixture for `mat.u2.polinomios_basico`, assert all 5 scenarios E1–E5 + store independence.
-- [ ] 4a.3 Write `tests/e2e/specs/operaciones_polinomios.spec.ts`: same shape for `mat.u2.operaciones_polinomios`.
-- [ ] 4a.4 Write `tests/e2e/specs/factorizacion.spec.ts`: fixture seeds `accuracyBySkill['mat.u2.operaciones_polinomios'] = 0.8` (prereq bypass, per D8). Same 5-scenario assertion shape.
-- [ ] 4a.5 Run all 3 locally (`pnpm test:e2e -- "polinomios_basico|operaciones_polinomios|factorizacion"`). Iterate until green.
-- [ ] 4a.6 Run `pnpm test:run` — confirm regression-free.
-- [ ] 4a.7 Open PR 4a; merge to main with `--no-ff`.
+- [x] 4a.1 Branch `feat/challenge-smoke-e2e-pr4a-u2-samples` from main (after PR3 merged).
+- [x] 4a.2 Write `tests/e2e/specs/polinomios_basico.spec.ts`: fixture for `mat.u2.polinomios_basico`, assert all 5 scenarios E1–E5 + store independence.
+- [x] 4a.3 Write `tests/e2e/specs/operaciones_polinomios.spec.ts`: same shape for `mat.u2.operaciones_polinomios`.
+- [x] 4a.4 Write `tests/e2e/specs/factorizacion.spec.ts`: fixture seeds `accuracyBySkill['mat.u2.operaciones_polinomios'] = 0.8` (prereq bypass, per D8) AND `accuracyBySkill['mat.u2.ruffini_resto'] = 0.8` (factorizacion has both as prereqs per skill-catalog.ts:115). Same 5-scenario assertion shape.
+- [x] 4a.5 Run all 3 locally (`pnpm test:e2e -- "polinomios_basico|operaciones_polinomios|factorizacion"`). 6/6 passed in 1.7 min.
+- [x] 4a.6 Run `pnpm test:run` — 2063/2063 passed (no regressions).
+- [x] 4a.7 Open PR 4a; merge to main with `--merge` (fast-forward, preserves history; no concurrent main commits). Branch deleted. → PR #40, merge commit `d469cf8`.
+
+### PR4a scope notes
+
+- **No helper changes**. U2 only uses MC and TEXT forms (both already handled by PR3 helper). No new form types discovered.
+- **Encounter order = catalog order** for all 3 U2 skills (unlike `logaritmos` which had a shuffle). Encounter discovery was done via a single debug spec that covered all 3 skills, then deleted before commit.
+- **Prereq seeds**:
+  - `polinomios_basico`: none.
+  - `operaciones_polinomios`: `accuracyBySkill: { "mat.u2.polinomios_basico": 0.8 }` (threshold 0.7, per start-skill.test.ts:142).
+  - `factorizacion`: `accuracyBySkill: { "mat.u2.operaciones_polinomios": 0.8, "mat.u2.ruffini_resto": 0.8 }` (both prereqs per skill-catalog.ts:115).
+- **Diff**: 3 files, +370 lines (under 400-line budget by ~14%).
+- **Validations**: vitest 2063/2063, typecheck 0 errors, build clean, e2e 6/6 in 1.7 min, git fsck clean, GGA pre-commit passed.
 
 ---
 
