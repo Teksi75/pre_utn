@@ -73,12 +73,12 @@ Decompose the `challenge-smoke-e2e` change into 6 independently-verifiable, stac
 
 **Goal:** Real-flow canary, no fixture shortcut. Validates that `drivePracticeFlow` + `driveChallengeFlow` work end-to-end against the production bundle.
 
-- [ ] 2.1 Branch `feat/challenge-smoke-e2e-pr2-canary` from main (after PR1b merged).
-- [ ] 2.2 Write `tests/e2e/specs/potencias_raices.spec.ts`: drives `/practice?skill=mat.u1.potencias_raices` from theory through 6 exercises to `ChallengeOptInBlock`, clicks "Intentar desafíos", answers both challenges with known-correct MC options, asserts opt-in, asserts 2 challenges available, asserts readiness score displayed. No fixture (fresh localStorage). Asserts E1, E2, E3, E5 (skip = E4 not asserted in canary).
-- [ ] 2.3 Run the canary locally (`pnpm test:e2e -- "potencias_raices"`). Iterate on selectors / wait conditions until it passes. This is the integration调试.
-- [ ] 2.4 Remove `tests/e2e/specs/_placeholder.spec.ts` (replaced by the real canary).
-- [ ] 2.5 Run `pnpm test:run` — confirm ≥ 2053 tests still passing (no regression).
-- [ ] 2.6 Open PR 2; merge to main with `--no-ff`.
+- [x] 2.1 Branch `feat/challenge-smoke-e2e-pr2-canary` from main (after PR1b merged).
+- [x] 2.2 Write `tests/e2e/specs/potencias_raices.spec.ts`: drives `/practice?skill=mat.u1.potencias_raices` from theory through 6 exercises to `ChallengeOptInBlock`, clicks "Intentar desafíos", answers both challenges with known-correct MC options, asserts opt-in, asserts 2 challenges available, asserts readiness score displayed. No fixture (fresh localStorage). Asserts E1, E2, E3, E5 (skip = E4 not asserted in canary).
+- [x] 2.3 Run the canary locally (`pnpm test:e2e -- "potencias_raices"`). Iterate on selectors / wait conditions until it passes. This is the integration调试.
+- [x] 2.4 Remove `tests/e2e/specs/_placeholder.spec.ts` (replaced by the real canary).
+- [x] 2.5 Run `pnpm test:run` — confirm ≥ 2053 tests still passing (no regression).
+- [x] 2.6 Open PR 2; merge to main with `--no-ff` — PR #35 merged via commit 8d82839f on 2026-06-18.
 
 ---
 
