@@ -31,6 +31,8 @@ export const ANSWER_FORM_MC = '[data-testid="answer-form-multiple-choice"]';
 // Text-based answer form (numerical, fill-blank, symbolic share this form).
 // See src/components/exercises/ExerciseAnswerInput.tsx:250.
 export const ANSWER_FORM_TEXT = '[data-testid="answer-form-text"]';
+// True/false answer form. See src/components/exercises/ExerciseAnswerInput.tsx:211.
+export const ANSWER_FORM_TRUE_FALSE = '[data-testid="answer-form-true-false"]';
 // Input inside the text-based answer form. Use a *relative* selector (not
 // `#exercise-answer`) because the parent component can pass a custom
 // `inputId` prop (e.g. `AnswerForm.tsx:34` passes `inputId="answer-input"`

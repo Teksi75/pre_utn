@@ -29,6 +29,7 @@ import type { Page } from "@playwright/test";
 import {
   ANSWER_FORM_MC,
   ANSWER_FORM_TEXT,
+  ANSWER_FORM_TRUE_FALSE,
   ANSWER_INPUT,
   COUNTER_REGEX,
   CONTINUE_BTN,
@@ -228,6 +229,37 @@ async function answerNumerical(
   }
 }
 
+async function answerTrueFalse(
+  page: Page,
+  answer: "Verdadero" | "Falso" | undefined,
+  ordinal: number,
+): Promise<void> {
+  const form = page.locator(ANSWER_FORM_TRUE_FALSE);
+  await form.waitFor({ state: "visible", timeout: 10_000 });
+  // True/false form renders two radios named "Verdadero" / "Falso"
+  // (per src/components/exercises/ExerciseAnswerInput.tsx:220-235). If the
+  // caller passed a specific answer, click that one. Otherwise fall back
+  // to the first radio (Verdadero). The spec only asserts FLOW, not
+  // correctness, so the fallback is acceptable.
+  if (answer === "Verdadero" || answer === "Falso") {
+    const radio = form.getByRole("radio", { name: new RegExp(`^${answer}$`) });
+    await radio.click();
+  } else {
+    await form.getByRole("radio").first().click();
+  }
+  const submitButton = form.getByRole("button", { name: /Enviar respuesta/ });
+  await submitButton.click();
+  await page.waitForTimeout(SUBMIT_SETTLE_MS);
+  // Verify the attempt registered. If not, fail fast with full state.
+  const after = await readFixtureState(page);
+  if (after.activeAttempts <= ordinal) {
+    const debug = await readDebugSnapshot(page);
+    throw new Error(
+      `answerTrueFalse: submit did not register an attempt for exercise #${ordinal} (expected attempts > ${ordinal}). activeAttempts=${after.activeAttempts}, practiceActiveId=${after.practiceActiveId}, url=${debug.url}, mainTextPreview=${JSON.stringify(debug.mainTextPreview)}`,
+    );
+  }
+}
+
 /** Drive the base practice flow for `skillId` until the challenge opt-in
  *  appears. Assumes `profiles.v1` was seeded via `addInitScript`. */
 export async function drivePracticeFlow(
@@ -314,6 +346,21 @@ export async function drivePracticeFlow(
       continue;
     }
 
+    // True/false form. Same priority as MC/text — appears standalone,
+    // not nested inside the other forms. Falls back to first radio
+    // (Verdadero) if no answer is supplied.
+    if (await page.locator(ANSWER_FORM_TRUE_FALSE).first().isVisible()) {
+      const answer = exerciseAnswers?.[exerciseIndex];
+      // Allow "Verdadero" or "Falso" (with a fallback to first radio).
+      const tf: "Verdadero" | "Falso" | undefined =
+        answer === "Verdadero" || answer === "Falso" ? answer : undefined;
+      await answerTrueFalse(page, tf, exerciseIndex);
+      exerciseIndex += 1;
+      stuckSince = 0;
+      await page.waitForTimeout(TRANSITION_SETTLE_MS);
+      continue;
+    }
+
     if (await page.locator(ANSWER_FORM_MC).first().isVisible()) {
       await answerMultipleChoice(page, exerciseAnswers?.[exerciseIndex]);
       exerciseIndex += 1;
@@ -322,23 +369,35 @@ export async function drivePracticeFlow(
       continue;
     }
 
-    // Feedback continue button. The continue button is the only <button>
-    // inside <main> with `className="w-full"` (per
+    // Feedback continue button. The continue button is one of the
+    // <button>s inside <main> with `className="w-full"` (per
     // src/components/practice/PracticeFeedbackPhase.tsx:194). Its label
     // changes per state ("Ver guía de recuperación →" / "Siguiente
     // ejercicio" / "Volver a selección") so we identify it by class
-    // instead of text. This avoids matching the BackButton
-    // ("← Volver a selección") which sits earlier in the DOM and would
-    // reset the flow if clicked.
+    // instead of text. The submit button inside an answer form also
+    // has `className="w-full"` AND `type="submit"`, so we exclude it
+    // via `:not([type="submit"])`. The retry button (when shown) also
+    // has `w-full` but appears BEFORE the continue button in the DOM
+    // (the continue button is rendered last per
+    // PracticeFeedbackPhase.tsx:194), so `.last()` picks the right
+    // one. We also exclude the BackButton ("← Volver a selección").
     {
-      const continueButton = page.locator("main").locator("button.w-full").first();
-      if (await continueButton.isVisible().catch(() => false)) {
-        const text = (await continueButton.textContent().catch(() => ""))?.trim() ?? "";
-        console.log(`[drivePracticeFlow][clicking continue button text="${text}"]`);
-        await continueButton.click();
-        await page.waitForTimeout(TRANSITION_SETTLE_MS);
-        stuckSince = 0;
-        continue;
+      const continueButtons = page
+        .locator("main")
+        .locator('button.w-full:not([type="submit"])');
+      const lastIdx = (await continueButtons.count()) - 1;
+      if (lastIdx >= 0) {
+        const continueButton = continueButtons.nth(lastIdx);
+        if (await continueButton.isVisible().catch(() => false)) {
+          const text = (await continueButton.textContent().catch(() => ""))?.trim() ?? "";
+          if (text !== "← Volver a selección") {
+            console.log(`[drivePracticeFlow][clicking continue button text="${text}"]`);
+            await continueButton.click();
+            await page.waitForTimeout(TRANSITION_SETTLE_MS);
+            stuckSince = 0;
+            continue;
+          }
+        }
       }
     }
 
