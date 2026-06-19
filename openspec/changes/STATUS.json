@@ -507,7 +507,7 @@
       "startedAt": "2026-06-19",
       "completedAt": "2026-06-19",
       "mergedTo": "main",
-      "mergeCommit": "569bd85",
+      "mergeCommit": "22f2a68",
       "pr": 43,
       "closes": 38,
       "summary": "Expanded factorization worked examples from 5 to 9 covering Cases 1-7. Disclosure rendering now uses conditional intrinsic-height content with aria-expanded instead of pixel ceilings. E2E covers Learn order, Practice order, and 375px responsive reachability. Verification green: 2136 tests, typecheck, build, CI and Vercel."
