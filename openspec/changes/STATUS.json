@@ -468,8 +468,14 @@
       "completedAt": "2026-06-18",
       "mergedTo": "main",
       "summary": "Content-only migration of 38 long theory concepts (body > 350 chars) from single-string body to bodyParagraphs array. 21 in unit-1.json + 17 new in unit-2.json (plus 3 Ruffini shipped in #36). No model/parser/renderer changes. Verification PASS: 2096 tests, clean typecheck and build. Manual visual spot-checks completed and approved by user."
+    },
+    "issue-42-powers-same-degree": {
+      "status": "in-progress",
+      "branch": "feat/issue-42-powers-same-degree",
+      "startedAt": "2026-06-18",
+      "summary": "Content-only pedagogical bridge for Caso 6: expand concept-fac-potencias-igual-grado from 2 to 6 bodyParagraphs, add 3 worked examples (Ruffini, disminución, diferencia), and reuse u2_ruffini_signo_a feedback mapping for the non-monic root mistake. No new error tag, no new base exercises, no new challenge."
     }
   },
-  "activeBranches": [],
+  "activeBranches": ["feat/issue-42-powers-same-degree"],
   "lastAudit": "2026-06-18T20:42:00-03:00"
 }
