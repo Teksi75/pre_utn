@@ -62,7 +62,7 @@ export default function LearnMatematicaPage() {
                         {displayName}
                       </span>
                       <span className="block text-sm text-brand-500 mt-2 leading-[var(--leading-relaxed)]">
-                        {node.concepts?.[0]?.title ?? "Teoría del tema"}
+                        {node.concepts.length === 1 ? "1 tema" : `${node.concepts.length} temas`}
                       </span>
                     </Link>
                   );

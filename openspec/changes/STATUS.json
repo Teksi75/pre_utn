@@ -511,6 +511,14 @@
       "pr": 43,
       "closes": 38,
       "summary": "Expanded factorization worked examples from 5 to 9 covering Cases 1-7. Disclosure rendering now uses conditional intrinsic-height content with aria-expanded instead of pixel ceilings. E2E covers Learn order, Practice order, and 375px responsive reachability. Verification green: 2136 tests, typecheck, build, CI and Vercel."
+    },
+    "section-card-topic-count": {
+      "status": "done",
+      "branch": null,
+      "startedAt": "2026-06-19",
+      "completedAt": "2026-06-19",
+      "mergedTo": "main",
+      "summary": "Section cards on /learn/matematica show title + 'N tema(s)' instead of first subtopic. Inline JSX substitution + content rename ('División de polinomios'). 6 source-level tests initially; post-apply review replaced them with 6 behavior-level tests using react-dom/server + mocked wrappers (next/link, MathWatermark, DirectionalTransition). 2142 tests, typecheck, build green. Archive clarified: verify/report.md marked SUPERSEDED by verify-report.md."
     }
   },
   "activeBranches": [],

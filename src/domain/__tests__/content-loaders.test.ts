@@ -152,6 +152,35 @@ describe("Unit-2 content loaders", () => {
       expect(skillIds).toContain("mat.u2.operaciones_polinomios");
       expect(skillIds).toContain("mat.u2.ruffini_resto");
     });
+
+    test("'concept-op-division' uses the canonical 'División de polinomios' title (rename regression guard)", () => {
+      // Regression guard for the section-card-topic-count content rename:
+      // the concept title was shortened from
+      // "3. División larga de polinomios (procedimiento)" to
+      // "3. División de polinomios". This is a focused data assertion
+      // that goes through the domain loader (loadTheoryContent) and
+      // asserts on the parsed ConceptBlock.title field — it does NOT
+      // read the JSON file directly, so it is not a source-regex test.
+      const theory = loadTheoryContent("unit-2");
+      const operaciones = theory.find(
+        (n) => n.skillId === "mat.u2.operaciones_polinomios",
+      );
+      expect(
+        operaciones,
+        "operaciones_polinomios node not found in unit-2 theory",
+      ).toBeDefined();
+      const divisionConcept = operaciones!.concepts.find(
+        (c) => c.id === "concept-op-division",
+      );
+      expect(
+        divisionConcept,
+        "concept-op-division not found in operaciones_polinomios.concepts",
+      ).toBeDefined();
+      // Positive: the renamed title is in effect.
+      expect(divisionConcept!.title).toBe("3. División de polinomios");
+      // Negative: the old verbose form must not leak back in.
+      expect(divisionConcept!.title).not.toMatch(/División larga de polinomios/);
+    });
   });
 
   describe("loadExampleContent", () => {

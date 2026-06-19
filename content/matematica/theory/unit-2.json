@@ -62,7 +62,7 @@
       },
       {
         "id": "concept-op-division",
-        "title": "3. División larga de polinomios (procedimiento)",
+        "title": "3. División de polinomios",
         "bodyParagraphs": [
           "La división de polinomios sigue un algoritmo similar a la división numérica: se divide el primer término del dividendo por el primer término del divisor, se multiplica el cociente parcial por el divisor, se resta del dividendo, y se repite con el resto hasta que el grado del resto sea menor que el grado del divisor.",
           "La división se expresa como: Dividendo = Divisor × Cociente + Resto, con grado(Resto) < grado(Divisor)."
