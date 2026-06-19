@@ -470,12 +470,21 @@
       "summary": "Content-only migration of 38 long theory concepts (body > 350 chars) from single-string body to bodyParagraphs array. 21 in unit-1.json + 17 new in unit-2.json (plus 3 Ruffini shipped in #36). No model/parser/renderer changes. Verification PASS: 2096 tests, clean typecheck and build. Manual visual spot-checks completed and approved by user."
     },
     "issue-42-powers-same-degree": {
-      "status": "in-progress",
-      "branch": "feat/issue-42-powers-same-degree",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-06-18",
-      "summary": "Content-only pedagogical bridge for Caso 6: expand concept-fac-potencias-igual-grado from 2 to 6 bodyParagraphs, add 3 worked examples (Ruffini, disminución, diferencia), and reuse u2_ruffini_signo_a feedback mapping for the non-monic root mistake. No new error tag, no new base exercises, no new challenge."
+      "completedAt": "2026-06-18",
+      "mergedTo": "main",
+      "mergeCommit": "3c36dca",
+      "delivery": "single-feature-branch with 4 atomic commits, merged with --no-ff",
+      "summary": "Content-only Caso 6 bridge: expanded concept-fac-potencias-igual-grado to 6 bodyParagraphs + 3 worked examples + 1 feedback mapping reusing u2_ruffini_signo_a. 175+/4−, 6 files, all gates green, verify PASS WITH WARNINGS. Latent R19 feedback shadowing flagged for follow-up.",
+      "verify": "PASS WITH WARNINGS (0 CRITICAL, 2 WARNING: feedback shadowing latent, GGA bypassed on Windows)",
+      "followUps": [
+        "factorizacion-exercises change: address R19 feedback shadowing (find() → findLast() or skillId discrimination) before activating factorizacion exercises that use u2_ruffini_signo_a",
+        "Linux GGA re-validation: Codex CLI hook parser ambiguity on Windows; rerun on Linux before next cross-PC sync if possible"
+      ]
     }
   },
-  "activeBranches": ["feat/issue-42-powers-same-degree"],
-  "lastAudit": "2026-06-18T20:42:00-03:00"
+  "activeBranches": [],
+  "lastAudit": "2026-06-18T22:15:00-03:00"
 }
