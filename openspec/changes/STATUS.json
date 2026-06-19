@@ -502,14 +502,17 @@
       "refines": "issue-42-powers-same-degree (commit 3c36dca)"
     },
     "expand-factorizacion-worked-examples": {
-      "status": "in-progress",
-      "branch": "feat/issue-38-factorizacion-examples",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-06-19",
-      "summary": "Phase 1+2+3 complete (uncommitted→c4eebf5). Content: 9 factorization examples covering Cases 1-7. Disclosure: conditional rendering replacing pixel ceilings, aria-expanded. E2E: Learn 9 cards, Practice order, 375px responsive. 2136 tests, typecheck, build green. Pending: PR creation and merge to main."
+      "completedAt": "2026-06-19",
+      "mergedTo": "main",
+      "mergeCommit": "569bd85",
+      "pr": 43,
+      "closes": 38,
+      "summary": "Expanded factorization worked examples from 5 to 9 covering Cases 1-7. Disclosure rendering now uses conditional intrinsic-height content with aria-expanded instead of pixel ceilings. E2E covers Learn order, Practice order, and 375px responsive reachability. Verification green: 2136 tests, typecheck, build, CI and Vercel."
     }
   },
-  "activeBranches": [
-    "feat/issue-38-factorizacion-examples"
-  ],
+  "activeBranches": [],
   "lastAudit": "2026-06-18T22:15:00-03:00"
 }
