@@ -505,7 +505,7 @@
       "status": "in-progress",
       "branch": "feat/issue-38-factorizacion-examples",
       "startedAt": "2026-06-19",
-      "summary": "Planning complete. Approved delivery uses three PRs stacked to main: planning, content, then disclosure; implementation remains pending in subsequent PRs."
+      "summary": "Phase 1+2+3 complete (uncommitted→c4eebf5). Content: 9 factorization examples covering Cases 1-7. Disclosure: conditional rendering replacing pixel ceilings, aria-expanded. E2E: Learn 9 cards, Practice order, 375px responsive. 2136 tests, typecheck, build green. Pending: PR creation and merge to main."
     }
   },
   "activeBranches": [
