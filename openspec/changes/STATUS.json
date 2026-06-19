@@ -485,10 +485,21 @@
       ]
     },
     "refine-issue-42-ruffini-monic-callout": {
-      "status": "in-progress",
-      "branch": "refine/issue-42-ruffini-monic-callout",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-06-18",
-      "summary": "Refine P4 of concept-fac-potencias-igual-grado: KaTeX array table + explicit resto=0 + Importante callout for monic factor reconciliation. Content-only, no model/renderer changes."
+      "completedAt": "2026-06-18",
+      "mergedTo": "main",
+      "mergeCommit": "492f25f",
+      "delivery": "single-feature-branch with 2 atomic commits, merged to main",
+      "summary": "Refinement of Ruffini step in concept-fac-potencias-igual-grado: 5 bodyParagraphs replace the 700-char P4. KaTeX \\begin{array} table + 'resto es 0' explicit + cociente + 'Importante:' callout on monic factor. 9/9 spec compliance, gates green, 0 regressions, 12 net lines of content.",
+      "verify": "PASS WITH NOTES (0 WARNING, 1 CRITICAL procedural aceptada: TDD Cycle Evidence table ausente por ser content-only; validación via JSON.parse + voice gate + content-loaders + Playwright visual)",
+      "followUps": [
+        "factorizacion-exercises change (futuro): abordar R19 feedback shadowing de issue-42-powers-same-degree (find() → findLast() o discriminación por skillId)",
+        "Linux GGA re-validation: cuando esté disponible",
+        "Considerar eliminar warning no-fatal de KaTeX sobre '\\\\' en display-mode array (cosmético, no bloquea render)"
+      ],
+      "refines": "issue-42-powers-same-degree (commit 3c36dca)"
     }
   },
   "activeBranches": [],
