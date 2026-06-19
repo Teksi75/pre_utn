@@ -483,6 +483,12 @@
         "factorizacion-exercises change: address R19 feedback shadowing (find() → findLast() or skillId discrimination) before activating factorizacion exercises that use u2_ruffini_signo_a",
         "Linux GGA re-validation: Codex CLI hook parser ambiguity on Windows; rerun on Linux before next cross-PC sync if possible"
       ]
+    },
+    "refine-issue-42-ruffini-monic-callout": {
+      "status": "in-progress",
+      "branch": "refine/issue-42-ruffini-monic-callout",
+      "startedAt": "2026-06-18",
+      "summary": "Refine P4 of concept-fac-potencias-igual-grado: KaTeX array table + explicit resto=0 + Importante callout for monic factor reconciliation. Content-only, no model/renderer changes."
     }
   },
   "activeBranches": [],
