@@ -539,9 +539,13 @@ describe("migrate-all-theory-paragraphs — full catalog smoke", () => {
   test("unit-2: all 17 new long concepts use bodyParagraphs and have no body field", () => {
     expect(MIGRATED_U2_IDS).toHaveLength(17);
     // issue-42-powers-same-degree: concept-fac-potencias-igual-grado is the
-    // only concept in unit-2 that may carry 5-6 paragraphs (the spec for the
+    // only concept in unit-2 that may carry 5-10 paragraphs (the spec for the
     // Caso 6 pedagogical bridge). All other migrated concepts stay within
     // the 2-4 paragraph cap from the original migration contract.
+    // refine-issue-42-ruffini-monic-callout: the cap relaxes from 5-6 to 5-10
+    // for this concept to accommodate the KaTeX array table, the "resto es 0"
+    // closure, the explicit cociente line, the "Importante:" monic-factor
+    // callout, and the divide-by-2 reconciliation.
     const EXPANDED_U2_IDS = new Set(["concept-fac-potencias-igual-grado"]);
     for (const id of MIGRATED_U2_IDS) {
       const concept = findConcept("unit-2", id);
@@ -549,8 +553,8 @@ describe("migrate-all-theory-paragraphs — full catalog smoke", () => {
       expect(concept!.bodyParagraphs, `${id} should have bodyParagraphs`).toBeDefined();
       expect(concept!.bodyParagraphs!.length, `${id} should have >=2 paragraphs`).toBeGreaterThanOrEqual(2);
       if (EXPANDED_U2_IDS.has(id)) {
-        // Spec: 5-6 paragraphs for the Caso 6 bridge.
-        expect(concept!.bodyParagraphs!.length, `${id} should have <=6 paragraphs`).toBeLessThanOrEqual(6);
+        // Spec: 5-10 paragraphs for the Caso 6 bridge with Ruffini visual table.
+        expect(concept!.bodyParagraphs!.length, `${id} should have <=10 paragraphs`).toBeLessThanOrEqual(10);
       } else {
         expect(concept!.bodyParagraphs!.length, `${id} should have <=4 paragraphs`).toBeLessThanOrEqual(4);
       }

@@ -208,13 +208,17 @@ describe("Copy strings — Caso 6 feedback mapping reuses u2_ruffini_signo_a", (
   });
 });
 
-describe("Copy strings — concept-fac-potencias-igual-grado has the 5-6 paragraph bridge", () => {
+describe("Copy strings — concept-fac-potencias-igual-grado has the 5-10 paragraph bridge", () => {
   // issue-42-powers-same-degree: the Caso 6 concept body must be expanded
   // to 5-6 paragraphs (the spec for the pedagogical bridge). The original
   // migration had 2 paragraphs, which is below the new minimum.
+  // refine-issue-42-ruffini-monic-callout: the cap relaxes to 5-10 to
+  // accommodate the KaTeX array table + explicit "resto es 0" closure +
+  // cociente line + "Importante:" monic-factor callout + divide-by-2
+  // reconciliation.
   const theoryPath = "content/matematica/theory/unit-2.json";
 
-  test("theory/unit-2.json concept-fac-potencias-igual-grado has 5 or 6 bodyParagraphs", () => {
+  test("theory/unit-2.json concept-fac-potencias-igual-grado has 5-10 bodyParagraphs", () => {
     // Parse the JSON file to walk the structure reliably (regex is too
     // fragile: the bodyParagraphs themselves can contain `[...]` notation
     // like "[8, 0, 0, 27]" which a non-greedy regex would misread).
@@ -233,7 +237,7 @@ describe("Copy strings — concept-fac-potencias-igual-grado has the 5-6 paragra
     expect(target!.bodyParagraphs, "bodyParagraphs must be present").toBeDefined();
     const len = target!.bodyParagraphs!.length;
     expect(len).toBeGreaterThanOrEqual(5);
-    expect(len).toBeLessThanOrEqual(6);
+    expect(len).toBeLessThanOrEqual(10);
   });
 });
 
