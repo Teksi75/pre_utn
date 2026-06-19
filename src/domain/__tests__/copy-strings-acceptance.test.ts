@@ -19,6 +19,19 @@ const FORBIDDEN_STRINGS = [
   "Decisiones recomendadas",
 ] as const;
 
+// issue-42-powers-same-degree: Ingenium voice gate for the Caso 6 content.
+// The full list of forbidden strings from AGENTS.md (brand-and-voice
+// section) plus the issue's "Tests de caracterización obsoletos" rules.
+// These MUST NOT appear in the new theory, examples, or feedback content.
+const FORBIDDEN_CONTENT_STRINGS = [
+  "profe digital",
+  "tu profesor",
+  "plan personalizado",
+  "te marco qué practicar",
+  "vamos a armar un plan a tu medida",
+  "soy tu tutor",
+] as const;
+
 // ── Strings that MUST appear in specific locations ──────────────────────────
 
 // B3 closeout (latest revision): the brand appears ONCE in
@@ -155,6 +168,72 @@ describe("Nav — brand mark is the all-caps wordmark 'INGENIUM' (B3 closeout la
     // means someone reintroduced the mixed-case wordmark.
     const nav = source(navPath);
     expect(nav).not.toContain("Ingenium");
+  });
+});
+
+describe("Copy strings — FORBIDDEN content strings (Ingenium voice gate) must not exist in math content", () => {
+  // issue-42-powers-same-degree: the new content for Caso 6 (theory
+  // paragraphs, worked examples, feedback mapping) must be voice-clean.
+  // This gate enforces the AGENTS.md brand-and-voice section across the
+  // three content files the change touches. If any new content reintroduces
+  // a forbidden string the test fails, the change author fixes the copy,
+  // and the PR does not merge.
+  const contentFilesToCheck = [
+    "content/matematica/theory/unit-2.json",
+    "content/matematica/examples/unit-2.json",
+    "content/matematica/feedback/unit-2.json",
+  ];
+
+  for (const forbidden of FORBIDDEN_CONTENT_STRINGS) {
+    for (const file of contentFilesToCheck) {
+      test(`${file} must NOT contain "${forbidden}"`, () => {
+        const content = source(file);
+        expect(content).not.toContain(forbidden);
+      });
+    }
+  }
+});
+
+describe("Copy strings — Caso 6 feedback mapping reuses u2_ruffini_signo_a", () => {
+  // issue-42-powers-same-degree: the new feedback entry must key to the
+  // existing errorTag and target the Ruffini worked example as recovery.
+  const feedbackPath = "content/matematica/feedback/unit-2.json";
+
+  test("feedback/unit-2.json contains a mapping with errorTag 'u2_ruffini_signo_a' targeting example-factorizacion-3", () => {
+    const content = source(feedbackPath);
+    // Look for the JSON object that pairs the tag with the new recovery
+    // target. We assert on the literal pairing to avoid coupling to the
+    // exact message text (which may evolve with pedagogy).
+    expect(content).toMatch(/"errorTag":\s*"u2_ruffini_signo_a"[\s\S]*?"recoveryTarget":\s*"example-factorizacion-3"/);
+  });
+});
+
+describe("Copy strings — concept-fac-potencias-igual-grado has the 5-6 paragraph bridge", () => {
+  // issue-42-powers-same-degree: the Caso 6 concept body must be expanded
+  // to 5-6 paragraphs (the spec for the pedagogical bridge). The original
+  // migration had 2 paragraphs, which is below the new minimum.
+  const theoryPath = "content/matematica/theory/unit-2.json";
+
+  test("theory/unit-2.json concept-fac-potencias-igual-grado has 5 or 6 bodyParagraphs", () => {
+    // Parse the JSON file to walk the structure reliably (regex is too
+    // fragile: the bodyParagraphs themselves can contain `[...]` notation
+    // like "[8, 0, 0, 27]" which a non-greedy regex would misread).
+    const content = source(theoryPath);
+    const parsed: unknown = JSON.parse(content);
+    const nodes = parsed as Array<{
+      conceptBlocks: Array<{
+        id: string;
+        bodyParagraphs?: string[];
+      }>;
+    }>;
+    const target = nodes
+      .flatMap((n) => n.conceptBlocks ?? [])
+      .find((c) => c.id === "concept-fac-potencias-igual-grado");
+    expect(target, "concept block not found").toBeDefined();
+    expect(target!.bodyParagraphs, "bodyParagraphs must be present").toBeDefined();
+    const len = target!.bodyParagraphs!.length;
+    expect(len).toBeGreaterThanOrEqual(5);
+    expect(len).toBeLessThanOrEqual(6);
   });
 });
 
