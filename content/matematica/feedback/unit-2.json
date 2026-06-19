@@ -18,6 +18,12 @@
     "recoveryTarget": "example-ruffini-resto-1"
   },
   {
+    "errorTag": "u2_ruffini_signo_a",
+    "type": "corrective",
+    "message": "Para aplicar Ruffini primero identificá el divisor lineal, después resolvés divisor = 0 para obtener la raíz de Ruffini. Si el divisor es 2x + 3, entonces 2x + 3 = 0 ⇒ x = −3/2, y ese −3/2 (no −3 ni 3) es el que va a la izquierda de la tabla. Si colocás un número distinto al que sale de divisor = 0, todo el cociente y el resto salen incorrectos, aunque el resto parezca andar.",
+    "recoveryTarget": "example-factorizacion-3"
+  },
+  {
     "errorTag": "u2_grado_incorrecto",
     "type": "conceptual",
     "message": "El grado de un polinomio es el MAYOR exponente de la variable con coeficiente distinto de cero, NO la cantidad de términos. En 3x⁴ + 2x² − 1 hay tres términos pero el grado es 4 (por el término 3x⁴). Tampoco se suman los exponentes: el grado no es 4+2=6.",
