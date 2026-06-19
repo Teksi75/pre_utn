@@ -124,29 +124,49 @@
     ]
   },
   {
-    "id": "example-factorizacion-1",
+    "id": "example-factorizacion-6",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Factorizar x² − 16 usando el caso de diferencia de cuadrados",
+    "problem": "Caso 1 — Factor común: factorizar 6x³ − 9x²",
     "steps": [
-      { "order": 1, "explanation": "Identificamos que x² es el cuadrado de x (a = x) y 16 es el cuadrado de 4 (b = 4). La expresión es una diferencia (resta) de cuadrados perfectos." },
-      { "order": 2, "explanation": "Aplicamos la fórmula de diferencia de cuadrados: a² − b² = (a − b)(a + b). Sustituimos a = x, b = 4." },
-      { "order": 3, "explanation": "Resultado: x² − 16 = (x − 4)(x + 4). Verificamos expandiendo: (x − 4)(x + 4) = x² + 4x − 4x − 16 = x² − 16 ✓. El orden de los factores no altera el producto." }
+      { "order": 1, "explanation": "Buscamos el máximo factor común: entre 6 y 9 es 3, y entre x³ y x² la menor potencia es x²." },
+      { "order": 2, "explanation": "Extraemos 3x² y dividimos cada término: 6x³ ÷ 3x² = 2x; −9x² ÷ 3x² = −3." },
+      { "order": 3, "explanation": "Resultado: 6x³ − 9x² = 3x²(2x − 3). Verificación por expansión: 3x²·2x − 3x²·3 = 6x³ − 9x² ✓." }
     ],
-    "finalAnswer": "(x − 4)(x + 4)",
-    "pedagogicalNote": "La diferencia de cuadrados siempre produce dos binomios conjugados. Error frecuente: escribir (x − 4)² = x² − 8x + 16, que es un trinomio cuadrado perfecto, no una diferencia de cuadrados.",
+    "finalAnswer": "3x²(2x − 3)",
+    "pedagogicalNote": "Error frecuente: extraer solo 3 o solo x². El factor común debe incluir simultáneamente el máximo divisor numérico y la menor potencia compartida.",
     "canonicalTrace": [
       {
         "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
-        "section": "Cap. 13 (págs. 11-12): Diferencia de cuadrados",
+        "section": "Cap. 13 (pág. 9): Caso 1 — Factor común",
         "sourceUse": "adapted",
-        "pedagogicalIntent": "Enseñar el reconocimiento y factorización de diferencia de cuadrados, enfatizando que los factores son conjugados (mismos números, signos opuestos)"
+        "pedagogicalIntent": "Reconocer y extraer el máximo factor común numérico y literal antes de aplicar casos más complejos"
+      }
+    ]
+  },
+  {
+    "id": "example-factorizacion-7",
+    "skillId": "mat.u2.factorizacion",
+    "problem": "Caso 2 — Factor común por grupos: factorizar x³ + 3x² + 2x + 6",
+    "steps": [
+      { "order": 1, "explanation": "Agrupamos términos para obtener el mismo binomio: (x³ + 3x²) + (2x + 6)." },
+      { "order": 2, "explanation": "Extraemos el factor común de cada grupo: x²(x + 3) + 2(x + 3)." },
+      { "order": 3, "explanation": "Extraemos el binomio común. Resultado: x³ + 3x² + 2x + 6 = (x + 3)(x² + 2). Verificación por expansión: x(x² + 2) + 3(x² + 2) = x³ + 3x² + 2x + 6 ✓." }
+    ],
+    "finalAnswer": "(x + 3)(x² + 2)",
+    "pedagogicalNote": "Error frecuente: agrupar sin comprobar que aparezca el mismo factor en ambos grupos. Si los binomios no coinciden, hay que revisar la agrupación o los signos.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 13 (págs. 9-10): Caso 2 — Factor común por grupos",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Mostrar que una agrupación útil produce un factor binomial idéntico en cada bloque"
       }
     ]
   },
   {
     "id": "example-factorizacion-2",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Factorizar x² + 6x + 9 usando el caso de trinomio cuadrado perfecto",
+    "problem": "Caso 3 — Factorizar x² + 6x + 9 usando el caso de trinomio cuadrado perfecto",
     "steps": [
       { "order": 1, "explanation": "Verificamos si es un trinomio cuadrado perfecto: ¿dos términos son cuadrados perfectos? x² = (x)² y 9 = (3)². Sí." },
       { "order": 2, "explanation": "¿El término del medio es el doble producto de las bases? 2 · x · 3 = 6x. Sí, coincide con el término medio dado." },
@@ -164,9 +184,49 @@
     ]
   },
   {
+    "id": "example-factorizacion-8",
+    "skillId": "mat.u2.factorizacion",
+    "problem": "Caso 4 — Cuatrinomio cubo perfecto: factorizar x³ + 6x² + 12x + 8",
+    "steps": [
+      { "order": 1, "explanation": "Identificamos los cubos de los extremos: x³ = x³ y 8 = 2³; las bases candidatas son a = x y b = 2." },
+      { "order": 2, "explanation": "Comprobamos los términos interiores de (a + b)³: 3a²b = 3·x²·2 = 6x² y 3ab² = 3·x·2² = 12x." },
+      { "order": 3, "explanation": "Resultado: x³ + 6x² + 12x + 8 = (x + 2)³. Verificación por expansión: (x + 2)³ = x³ + 6x² + 12x + 8 ✓." }
+    ],
+    "finalAnswer": "(x + 2)³",
+    "pedagogicalNote": "Error frecuente: mirar solo los extremos. También deben verificarse ambos términos interiores y sus coeficientes 3; de lo contrario, el cuatrinomio no es un cubo perfecto.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 13 (pág. 11): Caso 4 — Cuatrinomio cubo perfecto",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Reconocer el desarrollo completo de un cubo de binomio mediante sus cuatro términos"
+      }
+    ]
+  },
+  {
+    "id": "example-factorizacion-1",
+    "skillId": "mat.u2.factorizacion",
+    "problem": "Caso 5 — Factorizar x² − 16 usando el caso de diferencia de cuadrados",
+    "steps": [
+      { "order": 1, "explanation": "Identificamos que x² es el cuadrado de x (a = x) y 16 es el cuadrado de 4 (b = 4). La expresión es una diferencia (resta) de cuadrados perfectos." },
+      { "order": 2, "explanation": "Aplicamos la fórmula de diferencia de cuadrados: a² − b² = (a − b)(a + b). Sustituimos a = x, b = 4." },
+      { "order": 3, "explanation": "Resultado: x² − 16 = (x − 4)(x + 4). Verificamos expandiendo: (x − 4)(x + 4) = x² + 4x − 4x − 16 = x² − 16 ✓. El orden de los factores no altera el producto." }
+    ],
+    "finalAnswer": "(x − 4)(x + 4)",
+    "pedagogicalNote": "La diferencia de cuadrados siempre produce dos binomios conjugados. Error frecuente: escribir (x − 4)² = x² − 8x + 16, que es un trinomio cuadrado perfecto, no una diferencia de cuadrados.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 13 (págs. 11-12): Diferencia de cuadrados",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar el reconocimiento y factorización de diferencia de cuadrados, enfatizando que los factores son conjugados (mismos números, signos opuestos)"
+      }
+    ]
+  },
+  {
     "id": "example-factorizacion-3",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Factorizar 8x³ + 27 usando el caso de suma de cubos con la regla de Ruffini (divisor no mónico 2x + 3)",
+    "problem": "Caso 6 — Factorizar 8x³ + 27 usando el caso de suma de cubos con la regla de Ruffini (divisor no mónico 2x + 3)",
     "steps": [
       { "order": 1, "explanation": "Reconocemos la suma de cubos: 8x³ = (2x)³ y 27 = 3³, así que n = 3 (impar) y la suma se divide por (2x + 3). Ese 2x + 3 es el primer factor de la factorización." },
       { "order": 2, "explanation": "Para usar Ruffini necesitamos el valor de x que anula el divisor. Resolvemos 2x + 3 = 0 ⇒ x = −3/2. Ese −3/2 es el número que va a la izquierda de la tabla de Ruffini (NO −3 ni 3, sino −3/2)." },
@@ -188,16 +248,16 @@
   {
     "id": "example-factorizacion-4",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Factorizar 8x³ + 27 usando el método de disminución de exponentes (sin dividir)",
+    "problem": "Caso 6 — Factorizar 8x³ + 27 usando el método de disminución de exponentes (sin dividir)",
     "steps": [
       { "order": 1, "explanation": "Reconocemos las bases: 8x³ = (2x)³ (la base del cubo es 2x, NO 2 ni 8) y 27 = 3³. Entonces a = 2x y b = 3, con n = 3 (impar) y suma de cubos." },
       { "order": 2, "explanation": "Aplicamos la fórmula de suma de cubos directamente, sin dividir: a³ + b³ = (a + b)(a² − ab + b²). No usamos Ruffini en este método." },
       { "order": 3, "explanation": "Primer factor: (a + b) = 2x + 3." },
       { "order": 4, "explanation": "Segundo factor: a² − ab + b² = (2x)² − (2x)(3) + 3² = 4x² − 6x + 9. Ojo con los signos: es a² MENOS ab MÁS b² (alternados + − +)." },
-      { "order": 5, "explanation": "Factorización: (2x + 3)(4x² − 6x + 9). Verificación: idéntica a la del ejemplo por Ruffini, da 8x³ + 27 ✓." }
+      { "order": 5, "explanation": "Factorización: (2x + 3)(4x² − 6x + 9). Verificación por expansión: (2x + 3)(4x² − 6x + 9) = 8x³ − 12x² + 18x + 12x² − 18x + 27 = 8x³ + 27 ✓." }
     ],
     "finalAnswer": "(2x + 3)(4x² − 6x + 9)",
-    "pedagogicalNote": "La clave de este método es identificar bien las bases a y b ANTES de tocar la fórmula: a es la base del cubo del primer término (2x, no 2) y b es la base del cubo del segundo término (3). Disminución de exponentes es más rápido que Ruffini cuando las bases son evidentes, y nunca requiere dividir el polinomio. Ambos métodos dan el mismo resultado.",
+    "pedagogicalNote": "Error frecuente: identificar mal las bases a y b antes de usar la fórmula. La base del primer cubo es 2x, no 2, y la del segundo es 3. Disminución de exponentes es más rápido que Ruffini cuando las bases son evidentes, y ambos métodos dan el mismo resultado.",
     "canonicalTrace": [
       {
         "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
@@ -210,7 +270,7 @@
   {
     "id": "example-factorizacion-5",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Factorizar x⁴ − 16 usando el caso de diferencia de potencias con n = 4 (par)",
+    "problem": "Caso 6 — Factorizar x⁴ − 16 usando el caso de diferencia de potencias con n = 4 (par)",
     "steps": [
       { "order": 1, "explanation": "Reconocemos diferencia de cuartas potencias: x⁴ − 16 = (x)⁴ − (2)⁴, con a = x, b = 2 y n = 4 (par). Por la regla (b) del caso 6, a⁴ − b⁴ es divisible por (a + b) cuando n es par." },
       { "order": 2, "explanation": "Aplicamos la fórmula directa para diferencia de cuartas: a⁴ − b⁴ = (a² − b²)(a² + b²). Esta es la forma 'disminución de exponentes' para n = 4: bajamos los exponentes de 4 a 2 y aparecen DOS factores, uno diferencia y otro suma." },
@@ -226,6 +286,26 @@
         "section": "Cap. 13 (págs. 12-13): Suma o diferencia de potencias — caso diferencia con n par + Cap. 13 (págs. 11-12): Diferencia de cuadrados",
         "sourceUse": "adapted",
         "pedagogicalIntent": "Mostrar el caso diferencia de potencias con n > 3, explicar por qué aparece un factor suma de cuadrados irreducible en ℝ, y enlazar con la diferencia de cuadrados como caso auxiliar"
+      }
+    ]
+  },
+  {
+    "id": "example-factorizacion-9",
+    "skillId": "mat.u2.factorizacion",
+    "problem": "Caso 7 — Trinomio cuadrático: factorizar 2x² + 7x + 3",
+    "steps": [
+      { "order": 1, "explanation": "Identificamos a = 2, b = 7 y c = 3. Calculamos el discriminante: Δ = b² − 4ac = 7² − 4·2·3 = 25." },
+      { "order": 2, "explanation": "Calculamos las raíces: x = (−7 ± √25)/4. Así obtenemos x₁ = −1/2 y x₂ = −3." },
+      { "order": 3, "explanation": "Reconstruimos con el coeficiente principal: 2(x + 1/2)(x + 3) = (2x + 1)(x + 3). Resultado: 2x² + 7x + 3 = (2x + 1)(x + 3). Verificación por expansión: (2x + 1)(x + 3) = 2x² + 6x + x + 3 = 2x² + 7x + 3 ✓." }
+    ],
+    "finalAnswer": "(2x + 1)(x + 3)",
+    "pedagogicalNote": "Error frecuente: escribir solo (x − x₁)(x − x₂) y olvidar el coeficiente principal a. Como a = 2, debe conservarse al reconstruir la factorización.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 13 (págs. 13-14): Caso 7 — Trinomio de segundo grado",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Factorizar un trinomio no mónico a partir de sus raíces sin perder el coeficiente principal"
       }
     ]
   },

@@ -26,17 +26,13 @@ export function WorkedExamplesSection({ examples }: WorkedExamplesSectionProps) 
         {showExamples ? "Ocultar ejemplos resueltos" : "Ver ejemplos resueltos"}
       </button>
 
-      <div
-        className="overflow-hidden transition-all duration-[var(--duration-normal)]"
-        style={{ maxHeight: showExamples ? "3000px" : "0px" }}
-        aria-hidden={!showExamples}
-      >
+      {showExamples ? (
         <div className="mt-4 space-y-4">
           {examples.map((example) => (
             <WorkedExampleCard key={example.id} example={example} />
           ))}
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

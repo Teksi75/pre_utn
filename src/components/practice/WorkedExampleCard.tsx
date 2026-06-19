@@ -32,61 +32,60 @@ export function WorkedExampleCard({ example }: WorkedExampleCardProps) {
       {/* Steps toggle */}
       <button
         onClick={() => setShowSteps(!showSteps)}
+        aria-expanded={showSteps}
         className="mt-4 w-full text-sm font-medium text-brand-600 hover:text-brand-800 bg-brand-50 hover:bg-brand-100 min-h-[44px] px-4 py-2.5 rounded-[var(--radius-button)] transition-colors focus-visible:shadow-[var(--ring-focus)]"
       >
         {showSteps ? "Ocultar resolución" : "Ver resolución paso a paso"}
       </button>
 
-      <div
-        className="overflow-hidden transition-all duration-[var(--duration-normal)]"
-        style={{ maxHeight: showSteps ? '1200px' : '0px' }}
-        aria-hidden={!showSteps}
-      >
-        <div className="mt-3 space-y-2">
-          {sortedSteps.map((step) => (
-            <div key={step.order}>
-              <div className="flex gap-3 text-sm text-brand-700">
-                <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-brand-100 text-brand-600 text-xs font-medium">
-                  {step.order}
-                </span>
-                <div className="leading-[var(--leading-relaxed)]">
-                  <RichText text={step.explanation} />
+      {showSteps ? (
+        <>
+          <div className="mt-3 space-y-2">
+            {sortedSteps.map((step) => (
+              <div key={step.order}>
+                <div className="flex gap-3 text-sm text-brand-700">
+                  <span className="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-brand-100 text-brand-600 text-xs font-medium">
+                    {step.order}
+                  </span>
+                  <div className="leading-[var(--leading-relaxed)]">
+                    <RichText text={step.explanation} />
+                  </div>
                 </div>
+                {step.intervalRepresentations && step.intervalRepresentations.length > 0 && (
+                  <div className="ml-9 mt-2 space-y-2">
+                    {step.intervalRepresentations.map((rep) => (
+                      <IntervalNumberLine
+                        key={rep.id}
+                        interval={rep}
+                        className="rounded-[var(--radius-card)] border border-brand-200 bg-brand-50 p-3"
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-              {step.intervalRepresentations && step.intervalRepresentations.length > 0 && (
-                <div className="ml-9 mt-2 space-y-2">
-                  {step.intervalRepresentations.map((rep) => (
-                    <IntervalNumberLine
-                      key={rep.id}
-                      interval={rep}
-                      className="rounded-[var(--radius-card)] border border-brand-200 bg-brand-50 p-3"
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Final answer */}
-        <div className="mt-3 pt-3 border-t border-brand-100">
-          <div className="text-sm font-semibold text-brand-900">
-            Respuesta: <RichText text={example.finalAnswer} />
+            ))}
           </div>
-        </div>
 
-        {/* Pedagogical note */}
-        {example.pedagogicalNote ? (
-          <div className="mt-2 p-3 bg-amber-50 rounded-[var(--radius-card)] border border-amber-200">
-            <div className="text-xs font-medium text-amber-800 mb-1">
-              Tip pedagógico:
-            </div>
-            <div className="text-sm text-amber-700 leading-[var(--leading-relaxed)]">
-              <RichText text={example.pedagogicalNote} />
+          {/* Final answer */}
+          <div className="mt-3 pt-3 border-t border-brand-100">
+            <div className="text-sm font-semibold text-brand-900">
+              Respuesta: <RichText text={example.finalAnswer} />
             </div>
           </div>
-        ) : null}
-      </div>
+
+          {/* Pedagogical note */}
+          {example.pedagogicalNote ? (
+            <div className="mt-2 p-3 bg-amber-50 rounded-[var(--radius-card)] border border-amber-200">
+              <div className="text-xs font-medium text-amber-800 mb-1">
+                Tip pedagógico:
+              </div>
+              <div className="text-sm text-amber-700 leading-[var(--leading-relaxed)]">
+                <RichText text={example.pedagogicalNote} />
+              </div>
+            </div>
+          ) : null}
+        </>
+      ) : null}
     </div>
   );
 }
