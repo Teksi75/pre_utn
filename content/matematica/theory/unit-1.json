@@ -6,22 +6,37 @@
       {
         "id": "concept-conjuntos-introduccion",
         "title": "1. ¿Para qué sirven los conjuntos numéricos?",
-        "body": "Idea principal: los conjuntos numéricos ordenan los tipos de números que usamos para contar, medir, comparar y resolver ecuaciones. Ejemplo: $5$ alcanza para contar, $-3$ aparece cuando hay deuda o temperatura bajo cero, $2/5$ representa una parte, y $\\sqrt{2}$ aparece en medidas geométricas. Los conjuntos numéricos no son cajas aisladas: forman una jerarquía."
+        "bodyParagraphs": [
+          "Idea principal: los conjuntos numéricos ordenan los tipos de números que usamos para contar, medir, comparar y resolver ecuaciones. Ejemplo: $5$ alcanza para contar, $-3$ aparece cuando hay deuda o temperatura bajo cero, $2/5$ representa una parte, y $\\sqrt{2}$ aparece en medidas geométricas.",
+          "Los conjuntos numéricos no son cajas aisladas: forman una jerarquía."
+        ]
       },
       {
         "id": "concept-lenguaje-basico-conjuntos",
         "title": "2. Lenguaje básico de conjuntos",
-        "body": "Idea principal: un conjunto reúne elementos. Para decir que un número **está dentro** de un conjunto usamos el símbolo $\\in$ (pertenencia). Ejemplo: $5 \\in \\mathbb{N}$ se lee \"5 pertenece a los naturales\". Si un número **no está** en un conjunto, usamos $\\notin$: $-3 \\notin \\mathbb{N}$ se lee \"−3 no pertenece a los naturales\". Para decir que un conjunto **está contenido** en otro usamos $\\subset$ (inclusión): $\\mathbb{N} \\subset \\mathbb{Z}$ significa que todo natural es también entero. La diferencia clave: $\\in$ relaciona un **número** con un **conjunto**, mientras que $\\subset$ relaciona un **conjunto** con otro **conjunto**. Otros símbolos útiles: $\\varnothing$ para el conjunto vacío y $U$ para el conjunto universal."
+        "bodyParagraphs": [
+          "Idea principal: un conjunto reúne elementos. Para decir que un número **está dentro** de un conjunto usamos el símbolo $\\in$ (pertenencia). Ejemplo: $5 \\in \\mathbb{N}$ se lee \"5 pertenece a los naturales\". Si un número **no está** en un conjunto, usamos $\\notin$: $-3 \\notin \\mathbb{N}$ se lee \"−3 no pertenece a los naturales\".",
+          "Para decir que un conjunto **está contenido** en otro usamos $\\subset$ (inclusión): $\\mathbb{N} \\subset \\mathbb{Z}$ significa que todo natural es también entero. La diferencia clave: $\\in$ relaciona un **número** con un **conjunto**, mientras que $\\subset$ relaciona un **conjunto** con otro **conjunto**.",
+          "Otros símbolos útiles: $\\varnothing$ para el conjunto vacío y $U$ para el conjunto universal."
+        ]
       },
       {
         "id": "concept-pertenencia-vs-inclusion",
         "title": "3. Pertenencia ($\\in$) vs. Inclusión ($\\subset$): una distinción clave",
-        "body": "Idea principal: confundir $\\in$ con $\\subset$ es uno de los errores más frecuentes. Regla práctica: si a la izquierda del símbolo hay un **número** (como $5$, $-3$, $\\sqrt{2}$), usá $\\in$ o $\\notin$. Si a la izquierda hay un **conjunto** (como $\\mathbb{N}$, $\\mathbb{Z}$, $\\{1,2\\}$), usá $\\subset$ o $\\not\\subset$. Ejemplos correctos: $5 \\in \\mathbb{Z}$ (el número 5 pertenece a los enteros), $\\mathbb{N} \\subset \\mathbb{Z}$ (los naturales están contenidos en los enteros), $-3 \\in \\mathbb{Z}$ (−3 es un entero), $\\{5\\} \\subset \\mathbb{Z}$ (el conjunto que contiene al 5 es subconjunto de los enteros). Ejemplos incorrectos: $5 \\subset \\mathbb{Z}$ (5 no es un conjunto, no podés usar $\\subset$), $\\mathbb{N} \\in \\mathbb{Z}$ (los naturales no son un elemento de los enteros, son un subconjunto). Truco: si podés poner llaves alrededor del lado izquierdo ($\\{5\\}$), entonces el símbolo correcto es $\\subset$; si no tiene sentido poner llaves, es $\\in$."
+        "bodyParagraphs": [
+          "Idea principal: confundir $\\in$ con $\\subset$ es uno de los errores más frecuentes. Regla práctica: si a la izquierda del símbolo hay un **número** (como $5$, $-3$, $\\sqrt{2}$), usá $\\in$ o $\\notin$. Si a la izquierda hay un **conjunto** (como $\\mathbb{N}$, $\\mathbb{Z}$, $\\{1,2\\}$), usá $\\subset$ o $\\not\\subset$.",
+          "Ejemplos correctos: $5 \\in \\mathbb{Z}$ (el número 5 pertenece a los enteros), $\\mathbb{N} \\subset \\mathbb{Z}$ (los naturales están contenidos en los enteros), $-3 \\in \\mathbb{Z}$ (−3 es un entero), $\\{5\\} \\subset \\mathbb{Z}$ (el conjunto que contiene al 5 es subconjunto de los enteros).",
+          "Ejemplos incorrectos: $5 \\subset \\mathbb{Z}$ (5 no es un conjunto, no podés usar $\\subset$), $\\mathbb{N} \\in \\mathbb{Z}$ (los naturales no son un elemento de los enteros, son un subconjunto).",
+          "Truco: si podés poner llaves alrededor del lado izquierdo ($\\{5\\}$), entonces el símbolo correcto es $\\subset$; si no tiene sentido poner llaves, es $\\in$."
+        ]
       },
       {
         "id": "concept-operaciones-conjuntos",
         "title": "4. Operaciones entre conjuntos",
-        "body": "Idea principal: los conjuntos también se combinan. Unión: $A \\cup B$ reúne lo que está en $A$ o en $B$. Intersección: $A \\cap B$ reúne lo común. Diferencia: $A - B$ toma lo que está en $A$ pero no en $B$. Complemento: $A^c$ reúne lo que no está en $A$ dentro del universo $U$. Ejemplo: si $A=\\{1,2,3\\}$ y $B=\\{3,4\\}$, entonces $A \\cup B=\\{1,2,3,4\\}$ y $A \\cap B=\\{3\\}$."
+        "bodyParagraphs": [
+          "Idea principal: los conjuntos también se combinan. Unión: $A \\cup B$ reúne lo que está en $A$ o en $B$. Intersección: $A \\cap B$ reúne lo común. Diferencia: $A - B$ toma lo que está en $A$ pero no en $B$. Complemento: $A^c$ reúne lo que no está en $A$ dentro del universo $U$.",
+          "Ejemplo: si $A=\\{1,2,3\\}$ y $B=\\{3,4\\}$, entonces $A \\cup B=\\{1,2,3,4\\}$ y $A \\cap B=\\{3\\}$."
+        ]
       },
       {
         "id": "concept-familia-conjuntos-numericos",
@@ -36,7 +51,10 @@
       {
         "id": "concept-mapa-inclusion",
         "title": "7. Mapa de inclusión",
-        "body": "Idea principal: la cadena base es $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$. Los irracionales se representan como $\\mathbb{I}$, también pertenecen a $\\mathbb{R}$, pero están separados de $\\mathbb{Q}$: $\\mathbb{I} = \\mathbb{R} \\setminus \\mathbb{Q}$. Más adelante se amplía a $\\mathbb{R} \\subset \\mathbb{C}$. Ejemplo: $5 \\in \\mathbb{N}$, entonces también $5 \\in \\mathbb{Z}$, $5 \\in \\mathbb{Q}$ y $5 \\in \\mathbb{R}$."
+        "bodyParagraphs": [
+          "Idea principal: la cadena base es $\\mathbb{N} \\subset \\mathbb{Z} \\subset \\mathbb{Q} \\subset \\mathbb{R}$. Los irracionales se representan como $\\mathbb{I}$, también pertenecen a $\\mathbb{R}$, pero están separados de $\\mathbb{Q}$: $\\mathbb{I} = \\mathbb{R} \\setminus \\mathbb{Q}$. Más adelante se amplía a $\\mathbb{R} \\subset \\mathbb{C}$.",
+          "Ejemplo: $5 \\in \\mathbb{N}$, entonces también $5 \\in \\mathbb{Z}$, $5 \\in \\mathbb{Q}$ y $5 \\in \\mathbb{R}$."
+        ]
       },
       {
         "id": "concept-racionales-definicion",
@@ -66,12 +84,18 @@
       {
         "id": "concept-error-comun-correccion",
         "title": "13. Error común: ideas que hay que corregir",
-        "body": "Todo decimal es irracional: falso; $0{,}75=3/4$. Toda raíz es irracional: falso; $\\sqrt{4}=2$. Un racional no es real: falso; $\\mathbb{Q} \\subset \\mathbb{R}$. Los conjuntos numéricos son grupos separados: falso; hay inclusión. El cero siempre pertenece a $\\mathbb{N}$: falso; depende de la convención. Un número negativo no puede ser racional: falso; $-3=-3/1 \\in \\mathbb{Q}$."
+        "bodyParagraphs": [
+          "Todo decimal es irracional: falso; $0{,}75=3/4$. Toda raíz es irracional: falso; $\\sqrt{4}=2$. Un racional no es real: falso; $\\mathbb{Q} \\subset \\mathbb{R}$.",
+          "Los conjuntos numéricos son grupos separados: falso; hay inclusión. El cero siempre pertenece a $\\mathbb{N}$: falso; depende de la convención. Un número negativo no puede ser racional: falso; $-3=-3/1 \\in \\mathbb{Q}$."
+        ]
       },
       {
         "id": "concept-cierre-dominio",
         "title": "14. Lo que tenés que dominar antes de practicar",
-        "body": "Cierre: antes de pasar a práctica tenés que reconocer los símbolos $\\in$, $\\notin$, $\\subset$, $\\cup$, $\\cap$; diferenciar pertenencia de inclusión; ubicar $\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$, $\\mathbb{I}$, $\\mathbb{R}$ y $\\mathbb{C}$; clasificar un número por el conjunto más pequeño; y explicar por qué $\\sqrt{-4}$ no pertenece a $\\mathbb{R}$ aunque se estudie más adelante en $\\mathbb{C}$."
+        "bodyParagraphs": [
+          "Cierre: antes de pasar a práctica tenés que reconocer los símbolos $\\in$, $\\notin$, $\\subset$, $\\cup$, $\\cap$; diferenciar pertenencia de inclusión; ubicar $\\mathbb{N}$, $\\mathbb{Z}$, $\\mathbb{Q}$, $\\mathbb{I}$, $\\mathbb{R}$ y $\\mathbb{C}$;",
+          "clasificar un número por el conjunto más pequeño; y explicar por qué $\\sqrt{-4}$ no pertenece a $\\mathbb{R}$ aunque se estudie más adelante en $\\mathbb{C}$."
+        ]
       }
     ],
     "notation": [
@@ -253,7 +277,10 @@
       {
         "id": "concept-fraccion-equivalente",
         "title": "Fracciones equivalentes",
-        "body": "Dos fracciones $\\frac{a}{b}$ y $\\frac{c}{d}$ son equivalentes cuando $a \\cdot d = b \\cdot c$. Esto significa que representan el mismo número racional. Si multiplicás numerador y denominador de $\\frac{a}{b}$ por el MISMO factor no nulo $\\frac{k}{k}$, obtenés una fracción equivalente. Racionalizar usa esta propiedad: elegís $k$ de manera que el denominador deje de tener raíces."
+        "bodyParagraphs": [
+          "Dos fracciones $\\frac{a}{b}$ y $\\frac{c}{d}$ son equivalentes cuando $a \\cdot d = b \\cdot c$. Esto significa que representan el mismo número racional.",
+          "Si multiplicás numerador y denominador de $\\frac{a}{b}$ por el MISMO factor no nulo $\\frac{k}{k}$, obtenés una fracción equivalente. Racionalizar usa esta propiedad: elegís $k$ de manera que el denominador deje de tener raíces."
+        ]
       },
       {
         "id": "concept-multiplicar-num-y-den",
@@ -268,7 +295,10 @@
       {
         "id": "concept-coeficiente-en-denominador",
         "title": "Coeficiente en el denominador: $k\\sqrt{a}$",
-        "body": "Si el denominador es $k\\sqrt{a}$ con $k \\neq 0$, multiplicás por $\\frac{\\sqrt{a}}{\\sqrt{a}}$ igual que antes. El coeficiente $k$ se preserva y sólo desaparece la raíz. Ejemplo: $\\frac{5}{2\\sqrt{3}} \\cdot \\frac{\\sqrt{3}}{\\sqrt{3}} = \\frac{5\\sqrt{3}}{2 \\cdot 3} = \\frac{5\\sqrt{3}}{6}$. No dividas $5$ por $2$ antes de racionalizar: mantené el coeficiente entero hasta simplificar al final."
+        "bodyParagraphs": [
+          "Si el denominador es $k\\sqrt{a}$ con $k \\neq 0$, multiplicás por $\\frac{\\sqrt{a}}{\\sqrt{a}}$ igual que antes. El coeficiente $k$ se preserva y sólo desaparece la raíz.",
+          "Ejemplo: $\\frac{5}{2\\sqrt{3}} \\cdot \\frac{\\sqrt{3}}{\\sqrt{3}} = \\frac{5\\sqrt{3}}{2 \\cdot 3} = \\frac{5\\sqrt{3}}{6}$. No dividas $5$ por $2$ antes de racionalizar: mantené el coeficiente entero hasta simplificar al final."
+        ]
       },
       {
         "id": "concept-raiz-de-indice-mayor",
@@ -278,7 +308,10 @@
       {
         "id": "concept-binomio-conjugado",
         "title": "Caso de binomio con raíz: el conjugado",
-        "body": "Cuando el denominador es un binomio con una raíz, como $\\sqrt{a} \\pm b$, multiplicás por su conjugado $\\sqrt{a} \\mp b$ (cambiás el signo del segundo término). El producto $(\\sqrt{a} + b)(\\sqrt{a} - b) = a - b^2$ es una DIFERENCIA DE CUADRADOS, así que la raíz desaparece. Ejemplo: $\\frac{1}{\\sqrt{5} - 2} \\cdot \\frac{\\sqrt{5} + 2}{\\sqrt{5} + 2} = \\frac{\\sqrt{5} + 2}{5 - 4} = \\sqrt{5} + 2$."
+        "bodyParagraphs": [
+          "Cuando el denominador es un binomio con una raíz, como $\\sqrt{a} \\pm b$, multiplicás por su conjugado $\\sqrt{a} \\mp b$ (cambiás el signo del segundo término). El producto $(\\sqrt{a} + b)(\\sqrt{a} - b) = a - b^2$ es una DIFERENCIA DE CUADRADOS, así que la raíz desaparece.",
+          "Ejemplo: $\\frac{1}{\\sqrt{5} - 2} \\cdot \\frac{\\sqrt{5} + 2}{\\sqrt{5} + 2} = \\frac{\\sqrt{5} + 2}{5 - 4} = \\sqrt{5} + 2$."
+        ]
       },
       {
         "id": "concept-diferencia-de-cuadrados",
@@ -288,7 +321,10 @@
       {
         "id": "concept-binomio-doble-conjugado",
         "title": "Conjugado con dos raíces: $\\sqrt{a} \\pm \\sqrt{b}$",
-        "body": "Si el denominador es $\\sqrt{a} + \\sqrt{b}$, multiplicás por $\\sqrt{a} - \\sqrt{b}$ (cambio de signo de UNA sola raíz, no de ambas). Aplicando la diferencia de cuadrados: $(\\sqrt{a} + \\sqrt{b})(\\sqrt{a} - \\sqrt{b}) = a - b$, que es un número entero. Ejemplo: $\\frac{2}{\\sqrt{3} + \\sqrt{2}} \\cdot \\frac{\\sqrt{3} - \\sqrt{2}}{\\sqrt{3} - \\sqrt{2}} = \\frac{2(\\sqrt{3} - \\sqrt{2})}{3 - 2} = 2(\\sqrt{3} - \\sqrt{2})$."
+        "bodyParagraphs": [
+          "Si el denominador es $\\sqrt{a} + \\sqrt{b}$, multiplicás por $\\sqrt{a} - \\sqrt{b}$ (cambio de signo de UNA sola raíz, no de ambas). Aplicando la diferencia de cuadrados: $(\\sqrt{a} + \\sqrt{b})(\\sqrt{a} - \\sqrt{b}) = a - b$, que es un número entero.",
+          "Ejemplo: $\\frac{2}{\\sqrt{3} + \\sqrt{2}} \\cdot \\frac{\\sqrt{3} - \\sqrt{2}}{\\sqrt{3} - \\sqrt{2}} = \\frac{2(\\sqrt{3} - \\sqrt{2})}{3 - 2} = 2(\\sqrt{3} - \\sqrt{2})$."
+        ]
       },
       {
         "id": "concept-error-multiplicar-solo-denominador",
@@ -308,7 +344,10 @@
       {
         "id": "concept-cierre-racionalizacion",
         "title": "Lo que tenés que dominar antes de practicar",
-        "body": "Antes de pasar a práctica tenés que: identificar el factor racionalizante correcto para cada tipo de denominador (raíz cuadrada, raíz de índice mayor, binomio con raíz), multiplicar numerador y denominador por ESE factor (no por otro), distribuir el producto en el numerador cuando es un binomio, y simplificar el resultado. Atención a los dos errores frecuentes: multiplicar sólo el denominador y 'esconder' la raíz con exponente negativo."
+        "bodyParagraphs": [
+          "Antes de pasar a práctica tenés que: identificar el factor racionalizante correcto para cada tipo de denominador (raíz cuadrada, raíz de índice mayor, binomio con raíz), multiplicar numerador y denominador por ESE factor (no por otro), distribuir el producto en el numerador cuando es un binomio, y simplificar el resultado.",
+          "Atención a los dos errores frecuentes: multiplicar sólo el denominador y 'esconder' la raíz con exponente negativo."
+        ]
       }
     ],
     "notation": [
@@ -438,7 +477,10 @@
       {
         "id": "concept-conversion-log-exponencial",
         "title": "Conversión entre forma logarítmica y exponencial",
-        "body": "Las dos formas son equivalentes: $\\log_a(b) = c \\Leftrightarrow a^c = b$. Para convertir de logarítmica a exponencial, la base del logaritmo se convierte en la base de la potencia, el resultado del logaritmo se convierte en el exponente, y el argumento del logaritmo se convierte en el resultado de la potencia. Ejemplo: $\\log_5(25) = 2$ se convierte en $5^2 = 25$."
+        "bodyParagraphs": [
+          "Las dos formas son equivalentes: $\\log_a(b) = c \\Leftrightarrow a^c = b$. Para convertir de logarítmica a exponencial, la base del logaritmo se convierte en la base de la potencia, el resultado del logaritmo se convierte en el exponente, y el argumento del logaritmo se convierte en el resultado de la potencia.",
+          "Ejemplo: $\\log_5(25) = 2$ se convierte en $5^2 = 25$."
+        ]
       },
       {
         "id": "concept-condiciones-existencia",
@@ -570,17 +612,26 @@
       {
         "id": "concept-i-definicion",
         "title": "1. La unidad imaginaria i",
-        "body": "Idea principal: $i$ es un número que NO es real. Se define por la propiedad $i^2 = -1$. Esto resuelve el problema de que en los reales no existe ningún número cuyo cuadrado sea negativo. $i$ no es una variable ni una constante real: es un nuevo tipo de número, llamado unidad imaginaria. A partir de $i$ se construye todo el conjunto $\\mathbb{C}$ de los números complejos."
+        "bodyParagraphs": [
+          "Idea principal: $i$ es un número que NO es real. Se define por la propiedad $i^2 = -1$. Esto resuelve el problema de que en los reales no existe ningún número cuyo cuadrado sea negativo.",
+          "$i$ no es una variable ni una constante real: es un nuevo tipo de número, llamado unidad imaginaria. A partir de $i$ se construye todo el conjunto $\\mathbb{C}$ de los números complejos."
+        ]
       },
       {
         "id": "concept-forma-estandar",
         "title": "2. Forma estándar $a+bi$",
-        "body": "Idea principal: todo número complejo se puede escribir como $a+bi$, donde $a$ y $b$ son números reales. $a$ se llama parte real y $b$ se llama parte imaginaria. La forma $a+bi$ es la forma estándar o binómica. Ejemplos: $3+2i$ tiene parte real $3$ e imaginaria $2$; $-5i$ equivale a $0-5i$ (parte real $0$); $7$ equivale a $7+0i$ (parte imaginaria $0$)."
+        "bodyParagraphs": [
+          "Idea principal: todo número complejo se puede escribir como $a+bi$, donde $a$ y $b$ son números reales. $a$ se llama parte real y $b$ se llama parte imaginaria. La forma $a+bi$ es la forma estándar o binómica.",
+          "Ejemplos: $3+2i$ tiene parte real $3$ e imaginaria $2$; $-5i$ equivale a $0-5i$ (parte real $0$); $7$ equivale a $7+0i$ (parte imaginaria $0$)."
+        ]
       },
       {
         "id": "concept-partes-real-imaginaria",
         "title": "3. Identificación de $\\operatorname{Re}(z)$ e $\\operatorname{Im}(z)$",
-        "body": "Idea principal: para un complejo $z = a+bi$, la parte real es $\\operatorname{Re}(z) = a$ y la parte imaginaria es $\\operatorname{Im}(z) = b$ (solo el coeficiente, sin la $i$). Ambas partes son números reales. Ejemplo: si $z = 4-3i$, entonces $\\operatorname{Re}(z)=4$ y $\\operatorname{Im}(z)=-3$. Error frecuente: confundir y decir que $\\operatorname{Im}(z) = -3i$ en vez de $-3$."
+        "bodyParagraphs": [
+          "Idea principal: para un complejo $z = a+bi$, la parte real es $\\operatorname{Re}(z) = a$ y la parte imaginaria es $\\operatorname{Im}(z) = b$ (solo el coeficiente, sin la $i$). Ambas partes son números reales.",
+          "Ejemplo: si $z = 4-3i$, entonces $\\operatorname{Re}(z)=4$ y $\\operatorname{Im}(z)=-3$. Error frecuente: confundir y decir que $\\operatorname{Im}(z) = -3i$ en vez de $-3$."
+        ]
       },
       {
         "id": "concept-igualdad",
@@ -590,27 +641,42 @@
       {
         "id": "concept-suma-resta",
         "title": "5. Suma y resta de complejos",
-        "body": "Idea principal: para sumar o restar números complejos, se combinan las partes reales entre sí y las partes imaginarias entre sí, por separado. $(a+bi) + (c+di) = (a+c) + (b+d)i$. $(a+bi) - (c+di) = (a-c) + (b-d)i$. Ejemplo: $(3+2i) + (5-4i) = 8-2i$. Error frecuente: sumar la parte real con la imaginaria como si fueran términos semejantes ($3+5=8$, $2i-4i=-2i$ es correcto; pero $3+2i+5$ como $10i$ es incorrecto)."
+        "bodyParagraphs": [
+          "Idea principal: para sumar o restar números complejos, se combinan las partes reales entre sí y las partes imaginarias entre sí, por separado. $(a+bi) + (c+di) = (a+c) + (b+d)i$. $(a+bi) - (c+di) = (a-c) + (b-d)i$.",
+          "Ejemplo: $(3+2i) + (5-4i) = 8-2i$. Error frecuente: sumar la parte real con la imaginaria como si fueran términos semejantes ($3+5=8$, $2i-4i=-2i$ es correcto; pero $3+2i+5$ como $10i$ es incorrecto)."
+        ]
       },
       {
         "id": "concept-multiplicacion",
         "title": "6. Multiplicación de complejos",
-        "body": "Idea principal: se aplica la propiedad distributiva y se reemplaza $i^2$ por $-1$. $(a+bi)(c+di) = ac + adi + bci + bdi^2$. Como $i^2 = -1$, el término $bdi^2$ se convierte en $-bd$. Reagrupando: $(ac - bd) + (ad + bc)i$. Ejemplo: $(2+3i)(1-2i) = 2 - 4i + 3i - 6i^2 = 2 - i - 6(-1) = 2 - i + 6 = 8 - i$. Error frecuente: olvidar que $i^2 = -1$ y dejar el término con $i^2$ sin reemplazar, o usar $i^2 = 1$."
+        "bodyParagraphs": [
+          "Idea principal: se aplica la propiedad distributiva y se reemplaza $i^2$ por $-1$. $(a+bi)(c+di) = ac + adi + bci + bdi^2$. Como $i^2 = -1$, el término $bdi^2$ se convierte en $-bd$. Reagrupando: $(ac - bd) + (ad + bc)i$.",
+          "Ejemplo: $(2+3i)(1-2i) = 2 - 4i + 3i - 6i^2 = 2 - i - 6(-1) = 2 - i + 6 = 8 - i$. Error frecuente: olvidar que $i^2 = -1$ y dejar el término con $i^2$ sin reemplazar, o usar $i^2 = 1$."
+        ]
       },
       {
         "id": "concept-conjugado",
         "title": "7. Conjugado de un número complejo",
-        "body": "Idea principal: el conjugado de $z = a+bi$ es $\\overline{z} = a-bi$. Solo cambia el signo de la parte imaginaria, la parte real queda igual. Propiedades importantes: $z \\cdot \\overline{z} = a^2 + b^2$ (un número real no negativo), $\\overline{z_1 + z_2} = \\overline{z_1} + \\overline{z_2}$, y $\\overline{z_1 \\cdot z_2} = \\overline{z_1} \\cdot \\overline{z_2}$. Ejemplo: el conjugado de $3+4i$ es $3-4i$, y $(3+4i)(3-4i) = 9+16 = 25$."
+        "bodyParagraphs": [
+          "Idea principal: el conjugado de $z = a+bi$ es $\\overline{z} = a-bi$. Solo cambia el signo de la parte imaginaria, la parte real queda igual. Propiedades importantes: $z \\cdot \\overline{z} = a^2 + b^2$ (un número real no negativo), $\\overline{z_1 + z_2} = \\overline{z_1} + \\overline{z_2}$, y $\\overline{z_1 \\cdot z_2} = \\overline{z_1} \\cdot \\overline{z_2}$.",
+          "Ejemplo: el conjugado de $3+4i$ es $3-4i$, y $(3+4i)(3-4i) = 9+16 = 25$."
+        ]
       },
       {
         "id": "concept-division",
         "title": "8. División de números complejos",
-        "body": "Idea principal: para dividir $\\frac{a+bi}{c+di}$, se multiplica numerador y denominador por el conjugado del denominador: $\\frac{a+bi}{c+di} \\cdot \\frac{c-di}{c-di} = \\frac{(a+bi)(c-di)}{c^2+d^2}$. El denominador se convierte en un número real positivo, y el numerador se resuelve con la multiplicación de complejos. Ejemplo: $\\frac{3+2i}{1-i} = \\frac{(3+2i)(1+i)}{(1-i)(1+i)} = \\frac{3+3i+2i+2i^2}{1+1} = \\frac{3+5i-2}{2} = \\frac{1+5i}{2} = \\frac{1}{2} + \\frac{5}{2}i$."
+        "bodyParagraphs": [
+          "Idea principal: para dividir $\\frac{a+bi}{c+di}$, se multiplica numerador y denominador por el conjugado del denominador: $\\frac{a+bi}{c+di} \\cdot \\frac{c-di}{c-di} = \\frac{(a+bi)(c-di)}{c^2+d^2}$. El denominador se convierte en un número real positivo, y el numerador se resuelve con la multiplicación de complejos.",
+          "Ejemplo: $\\frac{3+2i}{1-i} = \\frac{(3+2i)(1+i)}{(1-i)(1+i)} = \\frac{3+3i+2i+2i^2}{1+1} = \\frac{3+5i-2}{2} = \\frac{1+5i}{2} = \\frac{1}{2} + \\frac{5}{2}i$."
+        ]
       },
       {
         "id": "concept-potencias-i",
         "title": "9. Potencias de $i$: un ciclo de 4",
-        "body": "Idea principal: las potencias de $i$ siguen un ciclo de período 4: $i^1 = i$, $i^2 = -1$, $i^3 = -i$, $i^4 = 1$, y luego se repite: $i^5 = i$, $i^6 = -1$, etc. Para calcular $i^n$, dividís el exponente $n$ por $4$ y usás el resto: resto $0 \\to 1$, resto $1 \\to i$, resto $2 \\to -1$, resto $3 \\to -i$. Ejemplo: $i^{23}$: $23 \\div 4 = 5$ con resto $3$, así que $i^{23} = i^3 = -i$."
+        "bodyParagraphs": [
+          "Idea principal: las potencias de $i$ siguen un ciclo de período 4: $i^1 = i$, $i^2 = -1$, $i^3 = -i$, $i^4 = 1$, y luego se repite: $i^5 = i$, $i^6 = -1$, etc.",
+          "Para calcular $i^n$, dividís el exponente $n$ por $4$ y usás el resto: resto $0 \\to 1$, resto $1 \\to i$, resto $2 \\to -1$, resto $3 \\to -i$. Ejemplo: $i^{23}$: $23 \\div 4 = 5$ con resto $3$, así que $i^{23} = i^3 = -i$."
+        ]
       }
     ],
     "notation": [

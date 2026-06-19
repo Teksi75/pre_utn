@@ -444,12 +444,198 @@ describe("issue-36-theory-readability — Ruffini migration acceptance", () => {
   });
 
   test("unit-1.json concepts still use legacy body field (untouched)", () => {
-    // Regression: the migration MUST NOT touch unit-1 concepts.
+    // Regression: the migration MUST NOT touch SHORT unit-1 concepts.
+    // Long unit-1 concepts (body > 350 chars) are migrated in
+    // `migrate-all-theory-paragraphs`. Short concepts must keep `body`.
     const nodes = loadTheoryContent("unit-1");
-    const first = nodes[0];
-    const firstConcept = first.concepts[0];
-    expect(firstConcept.body).toBeTruthy();
-    expect(firstConcept.bodyParagraphs).toBeUndefined();
+    const firstNode = nodes[0];
+    // `concept-familia-conjuntos-numericos` is a short concept (not migrated).
+    const shortConcept = firstNode.concepts.find(
+      (c) => c.id === "concept-familia-conjuntos-numericos"
+    );
+    expect(shortConcept).toBeDefined();
+    expect(shortConcept!.body).toBeTruthy();
+    expect(shortConcept!.bodyParagraphs).toBeUndefined();
+  });
+});
+
+describe("migrate-all-theory-paragraphs — full catalog smoke", () => {
+  // Spec anchor: every long concept (body > 350 chars) in unit-1.json and
+  // unit-2.json MUST use `bodyParagraphs` (2+ non-empty chunks) and MUST
+  // NOT keep `body`. Short concepts (body <= 350 chars) MUST keep `body`
+  // and MUST NOT have `bodyParagraphs`.
+  //
+  // Inventory (per the tasks artifact):
+  //   unit-1: 21 migrated concepts (across 5 theory nodes)
+  //   unit-2: 17 new migrated concepts (plus 3 Ruffini shipped in #36) = 20 total
+
+  const MIGRATED_U1_IDS: readonly string[] = [
+    "concept-conjuntos-introduccion",
+    "concept-lenguaje-basico-conjuntos",
+    "concept-pertenencia-vs-inclusion",
+    "concept-operaciones-conjuntos",
+    "concept-mapa-inclusion",
+    "concept-error-comun-correccion",
+    "concept-cierre-dominio",
+    "concept-fraccion-equivalente",
+    "concept-coeficiente-en-denominador",
+    "concept-binomio-conjugado",
+    "concept-binomio-doble-conjugado",
+    "concept-cierre-racionalizacion",
+    "concept-conversion-log-exponencial",
+    "concept-i-definicion",
+    "concept-forma-estandar",
+    "concept-partes-real-imaginaria",
+    "concept-suma-resta",
+    "concept-multiplicacion",
+    "concept-conjugado",
+    "concept-division",
+    "concept-potencias-i",
+  ];
+
+  const MIGRATED_U2_IDS: readonly string[] = [
+    "concept-op-multiplicacion",
+    "concept-op-division",
+    "concept-fac-factor-comun",
+    "concept-fac-grupos",
+    "concept-fac-tcp",
+    "concept-fac-cubo-perfecto",
+    "concept-fac-potencias-igual-grado",
+    "concept-fac-trinomio-segundo-grado",
+    "concept-gauss-enunciado",
+    "concept-gauss-algoritmo",
+    "concept-gauss-ejemplo",
+    "concept-mcm-mcd-definicion",
+    "concept-mcm-mcd-algoritmo",
+    "concept-mcm-mcd-ejemplo",
+    "concept-ec-frac-dominio",
+    "concept-ec-frac-procedimiento",
+    "concept-ec-frac-sin-solucion",
+  ];
+
+  function findConcept(unitKey: "unit-1" | "unit-2", conceptId: string) {
+    const nodes = loadTheoryContent(unitKey);
+    for (const node of nodes) {
+      const found = node.concepts.find((c) => c.id === conceptId);
+      if (found) return found;
+    }
+    return undefined;
+  }
+
+  test("unit-1: all 21 long concepts use bodyParagraphs and have no body field", () => {
+    expect(MIGRATED_U1_IDS).toHaveLength(21);
+    for (const id of MIGRATED_U1_IDS) {
+      const concept = findConcept("unit-1", id);
+      expect(concept, `concept ${id} not found in unit-1`).toBeDefined();
+      // Migrated concepts: bodyParagraphs defined, body removed
+      expect(concept!.bodyParagraphs, `${id} should have bodyParagraphs`).toBeDefined();
+      expect(concept!.bodyParagraphs!.length, `${id} should have >=2 paragraphs`).toBeGreaterThanOrEqual(2);
+      expect(concept!.bodyParagraphs!.length, `${id} should have <=4 paragraphs`).toBeLessThanOrEqual(4);
+      // No concept may have both body and bodyParagraphs
+      expect(concept!.body, `${id} should have empty body`).toBe("");
+    }
+  });
+
+  test("unit-2: all 17 new long concepts use bodyParagraphs and have no body field", () => {
+    expect(MIGRATED_U2_IDS).toHaveLength(17);
+    for (const id of MIGRATED_U2_IDS) {
+      const concept = findConcept("unit-2", id);
+      expect(concept, `concept ${id} not found in unit-2`).toBeDefined();
+      expect(concept!.bodyParagraphs, `${id} should have bodyParagraphs`).toBeDefined();
+      expect(concept!.bodyParagraphs!.length, `${id} should have >=2 paragraphs`).toBeGreaterThanOrEqual(2);
+      expect(concept!.bodyParagraphs!.length, `${id} should have <=4 paragraphs`).toBeLessThanOrEqual(4);
+      expect(concept!.body, `${id} should have empty body`).toBe("");
+    }
+  });
+
+  test("unit-2: all Ruffini concepts still use bodyParagraphs (no regression)", () => {
+    // The 3 Ruffini concepts were migrated in issue-36 (#e20b7a9).
+    // They MUST still be migrated after this change.
+    for (const id of [
+      "concept-ruffini-procedimiento",
+      "concept-teorema-resto",
+      "concept-ruffini-signo",
+    ]) {
+      const concept = findConcept("unit-2", id);
+      expect(concept, `Ruffini concept ${id} not found`).toBeDefined();
+      expect(concept!.bodyParagraphs).toBeDefined();
+      expect(concept!.bodyParagraphs!.length).toBeGreaterThanOrEqual(2);
+      expect(concept!.body).toBe("");
+    }
+  });
+
+  test("every bodyParagraphs chunk is a non-empty string", () => {
+    const allIds = [...MIGRATED_U1_IDS, ...MIGRATED_U2_IDS];
+    for (const id of allIds) {
+      const unitKey = MIGRATED_U1_IDS.includes(id) ? "unit-1" : "unit-2";
+      const concept = findConcept(unitKey, id)!;
+      for (let i = 0; i < concept.bodyParagraphs!.length; i++) {
+        const chunk = concept.bodyParagraphs![i];
+        expect(typeof chunk, `${id}[${i}] should be string`).toBe("string");
+        expect(chunk.trim().length, `${id}[${i}] should be non-empty`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  test("no concept has both body and bodyParagraphs set", () => {
+    const allIds = [...MIGRATED_U1_IDS, ...MIGRATED_U2_IDS];
+    for (const id of allIds) {
+      const unitKey = MIGRATED_U1_IDS.includes(id) ? "unit-1" : "unit-2";
+      const concept = findConcept(unitKey, id)!;
+      const hasBody = concept.body.length > 0;
+      const hasParagraphs = Array.isArray(concept.bodyParagraphs) && concept.bodyParagraphs.length > 0;
+      expect(hasBody && hasParagraphs, `${id} has both body and bodyParagraphs`).toBe(false);
+    }
+  });
+
+  test("short concepts in unit-1 still use legacy body field (untouched)", () => {
+    // Sanity check: a known short concept must NOT have bodyParagraphs.
+    const nodes = loadTheoryContent("unit-1");
+    const allU1Concepts = nodes.flatMap((n) => n.concepts);
+    const short = allU1Concepts.filter(
+      (c) => !MIGRATED_U1_IDS.includes(c.id)
+    );
+    expect(short.length, "expected some short concepts in unit-1").toBeGreaterThan(0);
+    for (const c of short) {
+      expect(c.body.length, `${c.id} (short) should have non-empty body`).toBeGreaterThan(0);
+      expect(c.bodyParagraphs, `${c.id} (short) should NOT have bodyParagraphs`).toBeUndefined();
+    }
+  });
+
+  test("short concepts in unit-2 still use legacy body field (untouched)", () => {
+    const nodes = loadTheoryContent("unit-2");
+    const allU2Concepts = nodes.flatMap((n) => n.concepts);
+    const short = allU2Concepts.filter(
+      (c) => !MIGRATED_U2_IDS.includes(c.id) && ![
+        "concept-ruffini-procedimiento",
+        "concept-teorema-resto",
+        "concept-ruffini-signo",
+      ].includes(c.id)
+    );
+    expect(short.length, "expected some short concepts in unit-2").toBeGreaterThan(0);
+    for (const c of short) {
+      expect(c.body.length, `${c.id} (short) should have non-empty body`).toBeGreaterThan(0);
+      expect(c.bodyParagraphs, `${c.id} (short) should NOT have bodyParagraphs`).toBeUndefined();
+    }
+  });
+
+  test("migrated concept preserves KaTeX tokens verbatim in bodyParagraphs", () => {
+    // Spec anchor: KaTeX tokens like $\\in$, $\\subset$, $\\sqrt{2}$ must be
+    // preserved character-for-character in the migrated paragraphs.
+    const pertenencia = findConcept("unit-1", "concept-pertenencia-vs-inclusion")!;
+    const all = pertenencia.bodyParagraphs!.join(" ");
+    expect(all).toContain("$\\in$");
+    expect(all).toContain("$\\subset$");
+    expect(all).toContain("$\\sqrt{2}$");
+    expect(all).toContain("$\\mathbb{N}$");
+  });
+
+  test("migrated concept fac-trinomio-segundo-grado preserves polynomial KaTeX", () => {
+    const tsg = findConcept("unit-2", "concept-fac-trinomio-segundo-grado")!;
+    const all = tsg.bodyParagraphs!.join(" ");
+    // Source uses Unicode superscript ² — preserved verbatim per spec.
+    expect(all).toContain("ax² + bx + c");
+    expect(all).toContain("(x − 2)(x − 3)");
   });
 });
 
