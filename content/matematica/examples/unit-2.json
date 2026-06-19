@@ -164,6 +164,72 @@
     ]
   },
   {
+    "id": "example-factorizacion-3",
+    "skillId": "mat.u2.factorizacion",
+    "problem": "Factorizar 8x³ + 27 usando el caso de suma de cubos con la regla de Ruffini (divisor no mónico 2x + 3)",
+    "steps": [
+      { "order": 1, "explanation": "Reconocemos la suma de cubos: 8x³ = (2x)³ y 27 = 3³, así que n = 3 (impar) y la suma se divide por (2x + 3). Ese 2x + 3 es el primer factor de la factorización." },
+      { "order": 2, "explanation": "Para usar Ruffini necesitamos el valor de x que anula el divisor. Resolvemos 2x + 3 = 0 ⇒ x = −3/2. Ese −3/2 es el número que va a la izquierda de la tabla de Ruffini (NO −3 ni 3, sino −3/2)." },
+      { "order": 3, "explanation": "Escribimos los coeficientes completos de 8x³ + 27: [8, 0, 0, 27] (hay ceros para x² y para x). Tabla de Ruffini con −3/2: bajamos 8; 8·(−3/2) = −12, −12 + 0 = −12; −12·(−3/2) = 18, 18 + 0 = 18; 18·(−3/2) = −27, −27 + 27 = 0." },
+      { "order": 4, "explanation": "El cociente de Ruffini es [8, −12, 18] con resto 0, es decir 8x² − 12x + 18. Pero ese cociente está calculado respecto al divisor mónico (x + 3/2). Como el divisor original era 2x + 3 = 2·(x + 3/2), hay que dividir el cociente por 2: (8x² − 12x + 18) / 2 = 4x² − 6x + 9." },
+      { "order": 5, "explanation": "Factorización completa: (2x + 3)(4x² − 6x + 9). Verificación expandiendo: (2x + 3)(4x² − 6x + 9) = 8x³ − 12x² + 18x + 12x² − 18x + 27 = 8x³ + 27 ✓." }
+    ],
+    "finalAnswer": "(2x + 3)(4x² − 6x + 9)",
+    "pedagogicalNote": "Error frecuente: usar 3 o −3 en la tabla de Ruffini en vez de −3/2. El número que va a la izquierda sale SIEMPRE de resolver divisor = 0, no de mirar el término independiente del polinomio. Otro error: olvidar dividir el cociente de Ruffini por 2 cuando el divisor original tenía coeficiente principal distinto de 1.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 13 (págs. 12-13): Suma o diferencia de potencias de igual grado + Cap. 10: Regla de Ruffini",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar el puente entre divisor lineal y número de Ruffini cuando el divisor NO es mónico, y mostrar la reconciliación entre el cociente que sale de Ruffini (respecto del divisor mónico) y el factor original (no mónico)"
+      }
+    ]
+  },
+  {
+    "id": "example-factorizacion-4",
+    "skillId": "mat.u2.factorizacion",
+    "problem": "Factorizar 8x³ + 27 usando el método de disminución de exponentes (sin dividir)",
+    "steps": [
+      { "order": 1, "explanation": "Reconocemos las bases: 8x³ = (2x)³ (la base del cubo es 2x, NO 2 ni 8) y 27 = 3³. Entonces a = 2x y b = 3, con n = 3 (impar) y suma de cubos." },
+      { "order": 2, "explanation": "Aplicamos la fórmula de suma de cubos directamente, sin dividir: a³ + b³ = (a + b)(a² − ab + b²). No usamos Ruffini en este método." },
+      { "order": 3, "explanation": "Primer factor: (a + b) = 2x + 3." },
+      { "order": 4, "explanation": "Segundo factor: a² − ab + b² = (2x)² − (2x)(3) + 3² = 4x² − 6x + 9. Ojo con los signos: es a² MENOS ab MÁS b² (alternados + − +)." },
+      { "order": 5, "explanation": "Factorización: (2x + 3)(4x² − 6x + 9). Verificación: idéntica a la del ejemplo por Ruffini, da 8x³ + 27 ✓." }
+    ],
+    "finalAnswer": "(2x + 3)(4x² − 6x + 9)",
+    "pedagogicalNote": "La clave de este método es identificar bien las bases a y b ANTES de tocar la fórmula: a es la base del cubo del primer término (2x, no 2) y b es la base del cubo del segundo término (3). Disminución de exponentes es más rápido que Ruffini cuando las bases son evidentes, y nunca requiere dividir el polinomio. Ambos métodos dan el mismo resultado.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 13 (págs. 12-13): Suma o diferencia de potencias de igual grado — método directo por fórmula",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Mostrar la alternativa a Ruffini: reconocer bases a y b y aplicar la fórmula a³ + b³ = (a + b)(a² − ab + b²) directamente, sin división"
+      }
+    ]
+  },
+  {
+    "id": "example-factorizacion-5",
+    "skillId": "mat.u2.factorizacion",
+    "problem": "Factorizar x⁴ − 16 usando el caso de diferencia de potencias con n = 4 (par)",
+    "steps": [
+      { "order": 1, "explanation": "Reconocemos diferencia de cuartas potencias: x⁴ − 16 = (x)⁴ − (2)⁴, con a = x, b = 2 y n = 4 (par). Por la regla (b) del caso 6, a⁴ − b⁴ es divisible por (a + b) cuando n es par." },
+      { "order": 2, "explanation": "Aplicamos la fórmula directa para diferencia de cuartas: a⁴ − b⁴ = (a² − b²)(a² + b²). Esta es la forma 'disminución de exponentes' para n = 4: bajamos los exponentes de 4 a 2 y aparecen DOS factores, uno diferencia y otro suma." },
+      { "order": 3, "explanation": "Sustituimos a = x, b = 2: (x² − 4)(x² + 4). La diferencia (x² − 4) es a su vez una diferencia de cuadrados (caso 5): x² − 4 = (x − 2)(x + 2)." },
+      { "order": 4, "explanation": "La suma (x² + 4) NO se factoriza en ℝ (es suma de cuadrados, caso 5 solo aplica a DIFERENCIA). Queda como factor irreducible." },
+      { "order": 5, "explanation": "Factorización completa: (x − 2)(x + 2)(x² + 4). Verificación: (x − 2)(x + 2) = x² − 4; (x² − 4)(x² + 4) = x⁴ − 16 ✓." }
+    ],
+    "finalAnswer": "(x − 2)(x + 2)(x² + 4)",
+    "pedagogicalNote": "x⁴ − 16 es diferencia de cuartas potencias (n = 4 par). La fórmula a⁴ − b⁴ = (a² − b²)(a² + b²) lleva a un factor diferencia de cuadrados y un factor suma de cuadrados; el primero se vuelve a factorear como caso 5, el segundo NO se sigue factoreando en ℝ. No confundir suma de cuadrados (x² + 4) con diferencia de cuadrados (x² − 4): solo la diferencia se factoriza.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Cap. 13 (págs. 12-13): Suma o diferencia de potencias — caso diferencia con n par + Cap. 13 (págs. 11-12): Diferencia de cuadrados",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Mostrar el caso diferencia de potencias con n > 3, explicar por qué aparece un factor suma de cuadrados irreducible en ℝ, y enlazar con la diferencia de cuadrados como caso auxiliar"
+      }
+    ]
+  },
+  {
     "id": "example-gauss-1",
     "skillId": "mat.u2.gauss",
     "problem": "Usar el Teorema de Gauss para encontrar las raíces racionales de P(x) = 2x³ + 3x² − 8x + 3",
