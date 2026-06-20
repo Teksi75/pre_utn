@@ -3,12 +3,40 @@ import {
   areLinesCoincident,
   areLinesParallel,
   lineToStandardForm,
+  linearScale,
   pointSatisfiesLine,
   solveLinearSystem,
 } from "../layout";
 import type { CartesianLineData } from "../types";
 
 describe("layout helpers", () => {
+  describe("linearScale", () => {
+    test("maps values across a finite domain", () => {
+      const s = linearScale([0, 10], [0, 100]);
+      expect(s.valueToPx(5)).toBe(50);
+    });
+
+    test("maps endpoints across a finite domain", () => {
+      const s = linearScale([0, 10], [0, 100]);
+      expect(s.valueToPx(0)).toBe(0);
+      expect(s.valueToPx(10)).toBe(100);
+    });
+
+    test("returns the midpoint for a zero-length domain", () => {
+      const s = linearScale([5, 5], [0, 100]);
+      expect(s.valueToPx(5)).toBe(50);
+      expect(s.valueToPx(7)).toBe(50);
+    });
+
+    test("returns a finite midpoint for an overflowed finite-extreme domain", () => {
+      const s = linearScale([-Number.MAX_VALUE, Number.MAX_VALUE], [20, 80]);
+      expect(Number.isFinite(s.valueToPx(-Number.MAX_VALUE))).toBe(true);
+      expect(Number.isFinite(s.valueToPx(0))).toBe(true);
+      expect(Number.isFinite(s.valueToPx(Number.MAX_VALUE))).toBe(true);
+      expect(s.valueToPx(Number.MAX_VALUE)).toBe(50);
+    });
+  });
+
   describe("lineToStandardForm", () => {
     test.each([
       [{ form: "slope-intercept", slope: 2, intercept: -1 } as const, { a: 2, b: -1, c: 1 }],

@@ -10,8 +10,11 @@ export function linearScale(domain: readonly [number, number], range: readonly [
   const [d0, d1] = domain;
   const [r0, r1] = range;
   const span = d1 - d0;
+  const finiteSpan = Number.isFinite(span) && span !== 0;
+  const safeMidpoint = Number.isFinite(r0) && Number.isFinite(r1) ? (r0 + r1) / 2 : 0;
   return {
-    valueToPx: (v: number) => (span === 0 ? (r0 + r1) / 2 : r0 + ((v - d0) / span) * (r1 - r0)),
+    valueToPx: (v: number) =>
+      finiteSpan ? r0 + ((v - d0) / span) * (r1 - r0) : safeMidpoint,
   };
 }
 
