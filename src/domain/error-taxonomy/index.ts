@@ -743,17 +743,92 @@ const TAXONOMY: readonly ErrorTag[] = [
     ],
   },
 
-  // Unit 3: Inequalities and absolute value
+  // Unit 3: Ecuaciones y sistemas — error tags backed by the Unit 3 SDD sequence.
+  // First-implementation scope: 8 tags, one per U3 skill (per spec U3-TAG-001).
+  {
+    id: "u3_aislamiento_incorrecto",
+    unit: 3,
+    description:
+      "Error al aislar la variable: aplica operaciones inversas en orden incorrecto, o pierde un signo al mover un término entre lados de la ecuación lineal.",
+    examples: [
+      "Resolver 2x + 5 = 13 como x = 13 - 5 (pierde el coeficiente 2) en vez de x = (13 - 5) / 2 = 4",
+      "En 3x = 7 - x, escribir 3x = 7 (pierde el -x del lado derecho) en vez de 4x = 7",
+    ],
+  },
+  {
+    id: "u3_factorizacion_cuadratica",
+    unit: 3,
+    description:
+      "Error al factorizar la cuadrática para encontrar las raíces: factoriza con un signo invertido, pierde una raíz, u omite el término independiente en el producto de binomios.",
+    examples: [
+      "Resolver x² - 5x + 6 = 0 como (x - 1)(x - 6) = 0 (signos cruzados invertidos) en vez de (x - 2)(x - 3) = 0",
+      "Decir que x² = 9 tiene una sola raíz x = 3 (omisión de la raíz negativa)",
+    ],
+  },
   {
     id: "u3_signo_desigualdad",
     unit: 3,
     description:
-      "Error al multiplicar o dividir por negativo: olvida invertir el sentido de la desigualdad.",
+      "Error al multiplicar o dividir por un número negativo: olvida invertir el sentido de la desigualdad lineal.",
     examples: [
       "-2x > 4 → x > -2 en vez de x < -2",
       "(-3)x ≤ 9 → x ≤ -3 en vez de x ≥ -3",
     ],
   },
+  {
+    id: "u3_dos_valores_absoluto",
+    unit: 3,
+    description:
+      "Error al resolver inecuaciones con valor absoluto: trata |ax + b| < c como una única solución lineal, sin descomponer en la conjunción (caso <) o disyunción (caso >) correspondiente.",
+    examples: [
+      "Resolver |x - 2| < 5 como x - 2 < 5 → x < 7 (omite la otra mitad -x + 2 < 5 → x > -3)",
+      "Resolver |2x + 1| ≥ 3 como 2x + 1 ≥ 3 → x ≥ 1 (omite la rama 2x + 1 ≤ -3 → x ≤ -2)",
+    ],
+  },
+  {
+    id: "u3_pendiente_o_ordenada",
+    unit: 3,
+    description:
+      "Error al trabajar con la ecuación de la recta: confunde la pendiente con la ordenada al origen, intercambia coordenadas al calcular la pendiente, o confunde pendiente con dirección de la recta.",
+    examples: [
+      "Dados (1, 2) y (3, 6), calcular la pendiente como (3 - 1) / (6 - 2) = 1/2 en vez de (6 - 2) / (3 - 1) = 2",
+      "Escribir y = 3x + 2 como pendiente 2 y ordenada 3 (intercambia los coeficientes)",
+    ],
+  },
+  {
+    id: "u3_sustitucion_o_eliminacion",
+    unit: 3,
+    description:
+      "Error al resolver sistemas de ecuaciones por sustitución o eliminación: pierde un término al sustituir, sustituye en la ecuación equivocada, o suma/resta con el signo invertido al eliminar.",
+    examples: [
+      "En x + y = 5 y 2x - y = 1, sumar las ecuaciones como x + y + 2x + y = 6 (no cambia el signo de -y) en vez de x + y + 2x - y = 6 → 3x = 6",
+      "Sustituir x = 5 - y en 2x - y = 1 como 2(5 - y) = 1 (no sustituye en la segunda ecuación completa) en vez de 2(5 - y) - y = 1 → 10 - 3y = 1 → y = 3",
+    ],
+  },
+  {
+    id: "u3_igualdad_exponenciales",
+    unit: 3,
+    description:
+      "Error al resolver ecuaciones exponenciales: trata bases distintas como si fueran iguales sin unificarlas, o no iguala los exponentes después de llevar a la misma base.",
+    examples: [
+      "Resolver 2^x = 8 como x = 8 (trata 2 y 8 como la misma base) en vez de x = 3",
+      "En 4^x = 32, escribir 4^x = 2^x (sin unificar a la misma base 2) en vez de (2²)^x = 2^5 → 2x = 5 → x = 5/2",
+    ],
+  },
+  {
+    id: "u3_propiedad_logaritmo",
+    unit: 3,
+    description:
+      "Error al aplicar propiedades de logaritmos: confunde log(a + b) con log a + log b, usa cambio de base mal, o pierde un coeficiente al sacar el exponente.",
+    examples: [
+      "Simplificar log(a · b) como log a · log b en vez de log a + log b",
+      "Aplicar log(a^n) como (log a)^n en vez de n · log a",
+    ],
+  },
+
+  // Legacy U3 tag — pre-existed before the SDD Unit 3 activation.
+  // Kept for backward compatibility with any existing content that
+  // references it. Not part of the U3 first-sprint detector set.
   {
     id: "u3_direccion_desigualdad",
     unit: 3,

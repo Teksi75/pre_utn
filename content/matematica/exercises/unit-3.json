@@ -1,0 +1,472 @@
+[
+  {
+    "id": "ex.u3.ecuaciones_lineales.2",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "type": "numerical",
+    "difficulty": 1,
+    "prompt": "Resuelve 3x + 4 = 19",
+    "expectedAnswer": "5",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Aísla el término con x restando 4 en ambos lados y luego divide por 3. Error frecuente: olvidar dividir por el coeficiente y decir x = 15."
+  },
+  {
+    "id": "ex.u3.ecuaciones_lineales.3",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Resuelve -5x + 7 = -3",
+    "expectedAnswer": "2",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Pasa el 7 restando a ambos lados (-3 - 7 = -10) y divide entre -5. Error frecuente: olvidar el signo negativo al dividir (-10 / -5 = 2) y dar -2."
+  },
+  {
+    "id": "ex.u3.ecuaciones_lineales.4",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Resuelve 4x + 1 = 2x + 9",
+    "expectedAnswer": "4",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Agrupa los términos con x de un lado (4x - 2x = 9 - 1) y divide entre 2. Error frecuente: sumar 2x en vez de restar y obtener 6x + 1 = 9."
+  },
+  {
+    "id": "ex.u3.ecuaciones_lineales.5",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "type": "numerical",
+    "difficulty": 1,
+    "prompt": "Resuelve -2x - 6 = 4",
+    "expectedAnswer": "-5",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Pasa el -6 sumando (4 + 6 = 10) y divide entre -2: x = 10 / -2 = -5. Distractor común: olvidar el cambio de signo del -2."
+  },
+  {
+    "id": "ex.u3.ecuaciones_cuadraticas.2",
+    "skillId": "mat.u3.ecuaciones_cuadraticas",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "Resuelve x² = 9",
+    "expectedAnswer": "x = -3, x = 3",
+    "options": [
+      "x = 3",
+      "x = -3",
+      "x = -3, x = 3",
+      "x = 9"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "La ecuación cuadrática admite DOS raíces: x = ±√9. Error frecuente: olvidar la raíz negativa y dar solo x = 3."
+  },
+  {
+    "id": "ex.u3.ecuaciones_cuadraticas.3",
+    "skillId": "mat.u3.ecuaciones_cuadraticas",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve (x - 2)² = 16",
+    "expectedAnswer": "x = -2, x = 6",
+    "options": [
+      "x = 6",
+      "x = -2",
+      "x = -2, x = 6",
+      "x = 4"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Por cuadrados perfectos: x - 2 = ±√16 = ±4, dando x = 6 o x = -2. Error frecuente: tomar solo la raíz positiva y decir x = 6."
+  },
+  {
+    "id": "ex.u3.ecuaciones_cuadraticas.4",
+    "skillId": "mat.u3.ecuaciones_cuadraticas",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resuelve x² - 6x + 9 = 0",
+    "expectedAnswer": "x = 3 (raíz doble)",
+    "options": [
+      "x = 3 (raíz doble)",
+      "x = -3, x = 3",
+      "x = 0, x = 6",
+      "x = 9"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Trinomio cuadrado perfecto: (x - 3)² = 0, por lo tanto x = 3 con multiplicidad 2. Distractor: asumir dos raíces distintas cuando el discriminante es cero."
+  },
+  {
+    "id": "ex.u3.ecuaciones_cuadraticas.5",
+    "skillId": "mat.u3.ecuaciones_cuadraticas",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve x² - 7x + 12 = 0",
+    "expectedAnswer": "x = 3, x = 4",
+    "options": [
+      "x = 3, x = 4",
+      "x = -3, x = -4",
+      "x = 3, x = -4",
+      "x = -3, x = 4"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Factoriza: (x - 3)(x - 4) = 0, dando x = 3 o x = 4. Error frecuente: factorizar con un signo invertido como (x + 3)(x + 4)."
+  },
+  {
+    "id": "ex.u3.inecuaciones_lineales.2",
+    "skillId": "mat.u3.inecuaciones_lineales",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resuelve -2x + 3 < 7",
+    "expectedAnswer": "x > -2",
+    "options": [
+      "x > -2",
+      "x < -2",
+      "x > 2",
+      "x < 2"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Pasa el 3 restando a ambos lados (-2x < 4) y divide entre -2: la inecuación cambia de sentido, x > -2. Error frecuente: olvidar invertir el signo al dividir por negativo."
+  },
+  {
+    "id": "ex.u3.inecuaciones_lineales.3",
+    "skillId": "mat.u3.inecuaciones_lineales",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resuelve 5x - 10 ≤ 0",
+    "expectedAnswer": "x ≤ 2",
+    "options": [
+      "x ≤ 2",
+      "x ≥ 2",
+      "x ≤ -2",
+      "x ≥ -2"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Pasa el -10 sumando (5x ≤ 10) y divide entre 5 (positivo, el sentido no cambia): x ≤ 2. Distractor común: invertir el signo sin dividir por negativo."
+  },
+  {
+    "id": "ex.u3.inecuaciones_lineales.4",
+    "skillId": "mat.u3.inecuaciones_lineales",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve -3x > 12",
+    "expectedAnswer": "x < -4",
+    "options": [
+      "x < -4",
+      "x > -4",
+      "x < 4",
+      "x > 4"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Divide entre -3 (negativo): la inecuación cambia de sentido, x < -4. Error frecuente: olvidar invertir el signo y dar x > -4."
+  },
+  {
+    "id": "ex.u3.inecuaciones_lineales.5",
+    "skillId": "mat.u3.inecuaciones_lineales",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resuelve 2(x - 3) ≥ 4",
+    "expectedAnswer": "x ≥ 5",
+    "options": [
+      "x ≥ 5",
+      "x ≤ 5",
+      "x ≥ 1",
+      "x ≤ 1"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Distribuye y despeja: 2x - 6 ≥ 4 → 2x ≥ 10 → x ≥ 5. Error frecuente: olvidar distribuir el 2 al restar el 3 y decir x - 3 ≥ 2."
+  },
+  {
+    "id": "ex.u3.inecuaciones_valor_absoluto.2",
+    "skillId": "mat.u3.inecuaciones_valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resuelve |x| < 3",
+    "expectedAnswer": "-3 < x < 3",
+    "options": [
+      "-3 < x < 3",
+      "x < 3",
+      "x > -3",
+      "-3 ≤ x ≤ 3"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "|x| < 3 equivale a -3 < x < 3 (abierto en ambos extremos). Error frecuente: confundir < con ≤ y dar -3 ≤ x ≤ 3, o cerrar solo un extremo."
+  },
+  {
+    "id": "ex.u3.inecuaciones_valor_absoluto.3",
+    "skillId": "mat.u3.inecuaciones_valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resuelve |x| ≥ 5",
+    "expectedAnswer": "x ≤ -5 o x ≥ 5",
+    "options": [
+      "x ≤ -5 o x ≥ 5",
+      "-5 ≤ x ≤ 5",
+      "x ≤ 5",
+      "x ≥ 5"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "|x| ≥ 5 equivale a x ≤ -5 o x ≥ 5 (unión de dos rayos). Error frecuente: confundir la desigualdad con |x| ≤ 5 y dar el segmento cerrado equivocado."
+  },
+  {
+    "id": "ex.u3.inecuaciones_valor_absoluto.4",
+    "skillId": "mat.u3.inecuaciones_valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve |x - 2| < 4",
+    "expectedAnswer": "-2 < x < 6",
+    "options": [
+      "-2 < x < 6",
+      "x < 6",
+      "x > -2",
+      "-2 ≤ x ≤ 6"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "|x - 2| < 4 equivale a -4 < x - 2 < 4, sumando 2 en toda la cadena: -2 < x < 6. Error frecuente: olvidar el desplazamiento y dar -4 < x < 4."
+  },
+  {
+    "id": "ex.u3.inecuaciones_valor_absoluto.5",
+    "skillId": "mat.u3.inecuaciones_valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve |2x + 1| ≤ 5",
+    "expectedAnswer": "-3 ≤ x ≤ 2",
+    "options": [
+      "-3 ≤ x ≤ 2",
+      "x ≤ 2",
+      "x ≥ -3",
+      "-2 ≤ x ≤ 3"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "|2x + 1| ≤ 5 equivale a -5 ≤ 2x + 1 ≤ 5 → -6 ≤ 2x ≤ 4 → -3 ≤ x ≤ 2. Error frecuente: olvidar dividir el término central por 2."
+  },
+  {
+    "id": "ex.u3.recta.2",
+    "skillId": "mat.u3.recta",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "La recta pasa por (1, 2) y (4, 8). ¿Cuál es su pendiente?",
+    "expectedAnswer": "2",
+    "options": [
+      "2",
+      "3",
+      "-2",
+      "1/2"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Pendiente = (8 - 2) / (4 - 1) = 6 / 3 = 2. Error frecuente: invertir el cálculo y dar 1/2 o confundir Δx con Δy."
+  },
+  {
+    "id": "ex.u3.recta.3",
+    "skillId": "mat.u3.recta",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Una recta tiene pendiente 3 y pasa por (0, -1). ¿Cuál es su ordenada al origen?",
+    "expectedAnswer": "-1",
+    "options": [
+      "-1",
+      "3",
+      "0",
+      "1"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "La ordenada al origen b es el valor de y cuando x = 0. Por el dato (0, -1), b = -1. Distractor: confundir ordenada al origen con la pendiente."
+  },
+  {
+    "id": "ex.u3.recta.4",
+    "skillId": "mat.u3.recta",
+    "type": "numerical",
+    "difficulty": 1,
+    "prompt": "La recta pasa por (0, 0) y (5, 15). ¿Cuál es su pendiente?",
+    "expectedAnswer": "3",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Como la recta pasa por el origen, pendiente = 15 / 5 = 3. Forma y = 3x."
+  },
+  {
+    "id": "ex.u3.recta.5",
+    "skillId": "mat.u3.recta",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Una recta tiene pendiente -2 y ordenada al origen 4. ¿Cuál es su ecuación?",
+    "expectedAnswer": "y = -2x + 4",
+    "options": [
+      "y = -2x + 4",
+      "y = 2x + 4",
+      "y = -2x - 4",
+      "y = 4x - 2"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Forma pendiente-ordenada: y = mx + b, con m = -2 y b = 4. Error frecuente: cambiar el signo de la pendiente o de la ordenada."
+  },
+  {
+    "id": "ex.u3.sistemas.2",
+    "skillId": "mat.u3.sistemas",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resuelve el sistema: x + y = 5, x - y = 1",
+    "expectedAnswer": "x = 3, y = 2",
+    "options": [
+      "x = 3, y = 2",
+      "x = 2, y = 3",
+      "x = 4, y = 1",
+      "x = 1, y = 4"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Suma ambas ecuaciones: 2x = 6 → x = 3. Sustituye: 3 + y = 5 → y = 2. Error frecuente: invertir el par (x, y) en la respuesta."
+  },
+  {
+    "id": "ex.u3.sistemas.3",
+    "skillId": "mat.u3.sistemas",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve el sistema: 2x + y = 10, 3x - y = 5",
+    "expectedAnswer": "x = 3, y = 4",
+    "options": [
+      "x = 3, y = 4",
+      "x = 4, y = 3",
+      "x = 2, y = 6",
+      "x = 5, y = 0"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Suma ambas ecuaciones para eliminar y: 5x = 15 → x = 3. Sustituye: 2(3) + y = 10 → y = 4. Error frecuente: elegir el par (x, y) invertido en las opciones."
+  },
+  {
+    "id": "ex.u3.sistemas.4",
+    "skillId": "mat.u3.sistemas",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve el sistema: 2x + 3y = 12, x - y = 1",
+    "expectedAnswer": "x = 3, y = 2",
+    "options": [
+      "x = 3, y = 2",
+      "x = 2, y = 3",
+      "x = 1, y = 4",
+      "x = 4, y = 1"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "De la segunda: x = y + 1. Sustituye en la primera: 2(y + 1) + 3y = 12 → 5y = 10 → y = 2 → x = 3."
+  },
+  {
+    "id": "ex.u3.sistemas.5",
+    "skillId": "mat.u3.sistemas",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Resuelve el sistema: 3x + 2y = 16, x + y = 5",
+    "expectedAnswer": "x = 6, y = -1",
+    "options": [
+      "x = 6, y = -1",
+      "x = 2, y = 3",
+      "x = 4, y = 2",
+      "x = 5, y = 0"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Multiplica la segunda por 2 y resta: 3x + 2y - 2x - 2y = 16 - 10 → x = 6 → y = -1. Error frecuente: dar una solución positiva cuando el sistema fuerza y negativa."
+  },
+  {
+    "id": "ex.u3.exponenciales.2",
+    "skillId": "mat.u3.exponenciales",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "Resuelve 2^x = 8",
+    "expectedAnswer": "x = 3",
+    "options": [
+      "x = 3",
+      "x = 2",
+      "x = 4",
+      "x = 8"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Como 8 = 2³, la solución es x = 3. Error frecuente: confundir la base con el exponente y dar x = 8."
+  },
+  {
+    "id": "ex.u3.exponenciales.3",
+    "skillId": "mat.u3.exponenciales",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve 3^(2x) = 27",
+    "expectedAnswer": "x = 3/2",
+    "options": [
+      "x = 3/2",
+      "x = 3",
+      "x = 2",
+      "x = 9/2"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "27 = 3³, por lo tanto 2x = 3 → x = 3/2. Error frecuente: asumir que 2x = 27 sin igualar primero las bases."
+  },
+  {
+    "id": "ex.u3.exponenciales.4",
+    "skillId": "mat.u3.exponenciales",
+    "type": "numerical",
+    "difficulty": 1,
+    "prompt": "Resuelve 5^x = 125",
+    "expectedAnswer": "3",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Como 125 = 5³, la solución es x = 3."
+  },
+  {
+    "id": "ex.u3.exponenciales.5",
+    "skillId": "mat.u3.exponenciales",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve 2^x = 1/8",
+    "expectedAnswer": "x = -3",
+    "options": [
+      "x = -3",
+      "x = 3",
+      "x = -1/3",
+      "x = 1/8"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "1/8 = 2^(-3), por lo tanto x = -3. Error frecuente: olvidar el exponente negativo cuando la base es menor que 1."
+  },
+  {
+    "id": "ex.u3.logaritmicas.2",
+    "skillId": "mat.u3.logaritmicas",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "Calcula log₂(8)",
+    "expectedAnswer": "3",
+    "options": [
+      "3",
+      "2",
+      "4",
+      "8"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "log₂(8) = 3 porque 2³ = 8. Error frecuente: confundir el argumento con la base."
+  },
+  {
+    "id": "ex.u3.logaritmicas.3",
+    "skillId": "mat.u3.logaritmicas",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Calcula log(100)",
+    "expectedAnswer": "2",
+    "options": [
+      "2",
+      "10",
+      "100",
+      "1"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "log(100) = log(10²) = 2 por la propiedad del exponente. Distractor común: confundir log con la identidad 10^x y dar x = 100."
+  },
+  {
+    "id": "ex.u3.logaritmicas.4",
+    "skillId": "mat.u3.logaritmicas",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resuelve log₃(x) = 2",
+    "expectedAnswer": "x = 9",
+    "options": [
+      "x = 9",
+      "x = 6",
+      "x = 3",
+      "x = 2"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "Por definición, log₃(x) = 2 → x = 3² = 9. Error frecuente: confundir x con 3 · 2."
+  },
+  {
+    "id": "ex.u3.logaritmicas.5",
+    "skillId": "mat.u3.logaritmicas",
+    "type": "numerical",
+    "difficulty": 1,
+    "prompt": "Calcula log₂(32)",
+    "expectedAnswer": "5",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Como 32 = 2⁵, log₂(32) = 5."
+  }
+]

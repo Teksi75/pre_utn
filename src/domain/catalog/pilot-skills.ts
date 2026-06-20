@@ -82,6 +82,46 @@ export const PILOT_SKILLS: readonly PilotSkill[] = [
     unitKey: "unit-2",
     label: "Ecuaciones fraccionarias",
   },
+  {
+    skillId: "mat.u3.ecuaciones_lineales",
+    unitKey: "unit-3",
+    label: "Ecuaciones lineales",
+  },
+  {
+    skillId: "mat.u3.ecuaciones_cuadraticas",
+    unitKey: "unit-3",
+    label: "Ecuaciones cuadráticas",
+  },
+  {
+    skillId: "mat.u3.inecuaciones_lineales",
+    unitKey: "unit-3",
+    label: "Inecuaciones lineales",
+  },
+  {
+    skillId: "mat.u3.inecuaciones_valor_absoluto",
+    unitKey: "unit-3",
+    label: "Inecuaciones con valor absoluto",
+  },
+  {
+    skillId: "mat.u3.recta",
+    unitKey: "unit-3",
+    label: "Ecuación de la recta",
+  },
+  {
+    skillId: "mat.u3.sistemas",
+    unitKey: "unit-3",
+    label: "Sistemas de ecuaciones",
+  },
+  {
+    skillId: "mat.u3.exponenciales",
+    unitKey: "unit-3",
+    label: "Ecuaciones exponenciales",
+  },
+  {
+    skillId: "mat.u3.logaritmicas",
+    unitKey: "unit-3",
+    label: "Ecuaciones logarítmicas",
+  },
 ] as const;
 
 /**

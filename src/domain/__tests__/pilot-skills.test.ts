@@ -5,8 +5,8 @@ import {
 } from "../catalog/pilot-skills";
 
 describe("PILOT_SKILLS", () => {
-  test("contains 15 pilot skills (8 unit-1 + 7 unit-2)", () => {
-    expect(PILOT_SKILLS).toHaveLength(15);
+  test("contains 23 pilot skills (8 unit-1 + 7 unit-2 + 8 unit-3)", () => {
+    expect(PILOT_SKILLS).toHaveLength(23);
   });
 
   test("contains the 8 unit-1 pilot skills", () => {
@@ -78,5 +78,64 @@ describe("PILOT_SKILL_UNIT_MAP", () => {
 
   test("returns undefined for unknown skills (tolerant of URL params)", () => {
     expect(PILOT_SKILL_UNIT_MAP["mat.u99.nonexistent"]).toBeUndefined();
+  });
+});
+
+describe("PILOT_SKILLS — Unit 3 (PR 3 / implement-unit-3-mathematics)", () => {
+  const U3_SKILL_IDS = [
+    "mat.u3.ecuaciones_lineales",
+    "mat.u3.ecuaciones_cuadraticas",
+    "mat.u3.inecuaciones_lineales",
+    "mat.u3.inecuaciones_valor_absoluto",
+    "mat.u3.recta",
+    "mat.u3.sistemas",
+    "mat.u3.exponenciales",
+    "mat.u3.logaritmicas",
+  ] as const;
+
+  test("contains all 8 unit-3 pilot skills (U3-PILOT-001)", () => {
+    const u3 = PILOT_SKILLS.filter((s) => s.unitKey === "unit-3");
+    expect(u3).toHaveLength(8);
+    const u3Ids = u3.map((s) => s.skillId);
+    for (const id of U3_SKILL_IDS) {
+      expect(u3Ids).toContain(id);
+    }
+  });
+
+  test("no non-U3 entry is registered with unitKey 'unit-3' (U3-PILOT-001 strict)", () => {
+    const u3 = PILOT_SKILLS.filter((s) => s.unitKey === "unit-3");
+    const u3Ids = new Set(u3.map((s) => s.skillId));
+    for (const id of u3Ids) {
+      expect(U3_SKILL_IDS).toContain(id);
+    }
+  });
+
+  test("every unit-3 skill has unitKey 'unit-3'", () => {
+    for (const id of U3_SKILL_IDS) {
+      expect(PILOT_SKILL_UNIT_MAP[id]).toBe("unit-3");
+    }
+  });
+
+  test("U3-PILOT-002: PILOT_SKILL_UNIT_MAP['mat.u3.recta'] === 'unit-3'", () => {
+    expect(PILOT_SKILL_UNIT_MAP["mat.u3.recta"]).toBe("unit-3");
+  });
+
+  test("unit-3 skills appear after unit-2 skills in catalog order", () => {
+    const lastU2Index = PILOT_SKILLS.findLastIndex((s) => s.unitKey === "unit-2");
+    const firstU3Index = PILOT_SKILLS.findIndex((s) => s.unitKey === "unit-3");
+    expect(firstU3Index).toBeGreaterThan(lastU2Index);
+  });
+
+  test("ecuaciones_lineales is the first unit-3 skill (no prerequisites within U3)", () => {
+    const u3 = PILOT_SKILLS.filter((s) => s.unitKey === "unit-3");
+    expect(u3[0].skillId).toBe("mat.u3.ecuaciones_lineales");
+  });
+
+  test("every U3 pilot skill has a non-empty Spanish label", () => {
+    const u3 = PILOT_SKILLS.filter((s) => s.unitKey === "unit-3");
+    for (const skill of u3) {
+      expect(typeof skill.label).toBe("string");
+      expect(skill.label.length).toBeGreaterThan(0);
+    }
   });
 });

@@ -11,9 +11,10 @@ const SKILL_DISPLAY_NAMES: Readonly<Record<string, string>> = Object.fromEntries
 const UNIT_LABELS: Readonly<Record<string, string>> = {
   "unit-1": "Unidad 1 — Aritmética y números",
   "unit-2": "Unidad 2 — Polinomios y álgebra",
+  "unit-3": "Unidad 3 — Ecuaciones y sistemas",
 };
 
-const UNIT_KEYS = ["unit-1", "unit-2"] as const;
+const UNIT_KEYS = ["unit-1", "unit-2", "unit-3"] as const;
 
 export default function LearnMatematicaPage() {
   const theoryByUnit = UNIT_KEYS.map((key) => ({

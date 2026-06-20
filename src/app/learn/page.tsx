@@ -24,7 +24,7 @@ export default function LearnPage() {
                 Matemática
               </span>
               <span className="block text-sm text-brand-500 mt-2 leading-[var(--leading-relaxed)]">
-                Unidades 1 y 2: Números reales, operaciones, intervalos y polinomios.
+                Unidades 1, 2 y 3: Números reales, operaciones, intervalos, polinomios, ecuaciones y sistemas.
               </span>
             </Link>
           </nav>

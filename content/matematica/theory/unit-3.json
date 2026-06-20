@@ -1,0 +1,450 @@
+[
+  {
+    "id": "theory-ecuaciones-lineales",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "concepts": [
+      {
+        "id": "concept-eco-definicion",
+        "title": "1. Definición de ecuación lineal",
+        "bodyParagraphs": [
+          "Idea principal: una ecuación lineal en una variable $x$ es una igualdad de la forma $ax + b = c$, donde $a$, $b$ y $c$ son números reales conocidos y $a \\neq 0$. La incógnita aparece elevada a la primera potencia; cualquier otra potencia (cuadrática, raíz) la saca de esta categoría.",
+          "Ejemplo: $3x - 5 = 10$ es lineal; $x^2 - 5 = 0$ NO lo es (el exponente es 2). Resolver la ecuación es encontrar el valor de $x$ que satisface la igualdad."
+        ]
+      },
+      {
+        "id": "concept-eco-aislamiento",
+        "title": "2. Estrategia: aislar la variable",
+        "bodyParagraphs": [
+          "Idea principal: para resolver $ax + b = c$ se aplican operaciones inversas en el mismo orden en ambos miembros: (1) restar $b$ en ambos lados para cancelar el término independiente; (2) dividir por $a$ en ambos lados para cancelar el coeficiente de $x$. El orden importa: primero el término que NO está multiplicando a $x$.",
+          "Ejemplo paso a paso: $2x + 5 = 13$. Paso 1: $2x = 13 - 5 = 8$. Paso 2: $x = 8 / 2 = 4$. La verificación: $2(4) + 5 = 8 + 5 = 13$ ✓."
+        ]
+      },
+      {
+        "id": "concept-eco-error-mover",
+        "title": "3. Atención: signo al mover un término",
+        "bodyParagraphs": [
+          "Idea principal: cuando un término pasa de un lado al otro de la igualdad, su signo CAMBIA. Si estaba sumando ($+5$), al pasar restará ($-5$). Si estaba restando ($-3$), al pasar sumará ($+3$).",
+          "Ejemplo: en $x + 5 = 12$, $x = 12 - 5 = 7$ (el $+5$ pasó como $-5$). En $2x - 1 = 7$, $2x = 7 + 1 = 8$ (el $-1$ pasó como $+1$). Error frecuente: olvidar el cambio de signo y escribir $x = 12 + 5$ o $2x = 7 - 1$."
+        ]
+      },
+      {
+        "id": "concept-eco-coeficiente-cero",
+        "title": "4. Atención: coeficiente negativo",
+        "bodyParagraphs": [
+          "Idea principal: si $a$ es negativo, después de aislar el término con $x$ queda un valor negativo que se debe dividir. La división por un negativo da un resultado con el signo opuesto.",
+          "Ejemplo: $-3x = 12 \\Rightarrow x = 12 / (-3) = -4$. Verificación: $-3 \\cdot (-4) = 12$ ✓. Error frecuente: olvidar el signo y decir $x = 4$."
+        ]
+      }
+    ],
+    "notation": [
+      "$ax + b = c$ — ecuación lineal genérica",
+      "$x$ — incógnita",
+      "$a, b, c \\in \\mathbb{R}$, $a \\neq 0$"
+    ],
+    "commonMistakes": [
+      "Mover un término sin cambiar el signo: $x + 5 = 12 \\Rightarrow x = 12 + 5$.",
+      "Olvidar dividir por el coeficiente después de restar: $2x + 5 = 13 \\Rightarrow x = 8$ en vez de $x = 4$.",
+      "Confundir el signo del coeficiente negativo: $-2x = 10 \\Rightarrow x = 5$ en vez de $x = -5$."
+    ],
+    "practicePrompts": [
+      "Resuelve $3x + 4 = 19$.",
+      "Resuelve $-5x + 7 = -3$.",
+      "Resuelve $2x - 8 = x + 1$."
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 1: Ecuaciones lineales en una variable",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Introducir la estrategia de aislamiento de variable mediante operaciones inversas, con foco en el cambio de signo al mover términos y la división final por el coeficiente"
+      }
+    ]
+  },
+  {
+    "id": "theory-ecuaciones-cuadraticas",
+    "skillId": "mat.u3.ecuaciones_cuadraticas",
+    "concepts": [
+      {
+        "id": "concept-cua-forma",
+        "title": "1. Forma general de la cuadrática",
+        "bodyParagraphs": [
+          "Idea principal: una ecuación cuadrática en $x$ es de la forma $ax^2 + bx + c = 0$, con $a$, $b$, $c$ reales y $a \\neq 0$. El exponente máximo es 2, así que la gráfica es una parábola. Toda ecuación de este tipo tiene 0, 1 o 2 soluciones reales.",
+          "Ejemplo: $x^2 - 5x + 6 = 0$ tiene $a=1$, $b=-5$, $c=6$."
+        ]
+      },
+      {
+        "id": "concept-cua-factorizacion",
+        "title": "2. Resolución por factorización",
+        "bodyParagraphs": [
+          "Idea principal: si la cuadrática factoriza como $(x - r_1)(x - r_2) = 0$, las soluciones son $x = r_1$ y $x = r_2$. Por la propiedad del producto cero, basta con que UNO de los factores valga cero para que la igualdad se cumpla.",
+          "Ejemplo: $x^2 - 5x + 6 = (x - 2)(x - 3) = 0 \\Rightarrow x = 2$ o $x = 3$. Verificación: ambos satisfacen la ecuación original."
+        ]
+      },
+      {
+        "id": "concept-cua-dos-raices",
+        "title": "3. La cuadrática puede tener DOS raíces",
+        "bodyParagraphs": [
+          "Idea principal: a diferencia de la ecuación lineal, una cuadrática admite DOS soluciones distintas. Si en el enunciado se pregunta 'cuál es la raíz' sin más contexto, la respuesta completa es el conjunto de las dos.",
+          "Ejemplo: $x^2 = 9$ tiene soluciones $x = 3$ y $x = -3$, no solamente $x = 3$. Error frecuente: olvidar la raíz negativa."
+        ]
+      },
+      {
+        "id": "concept-cua-cuadrados-perfectos",
+        "title": "4. Caso especial: cuadrados perfectos",
+        "bodyParagraphs": [
+          "Idea principal: cuando el miembro izquierdo es un cuadrado perfecto (o se puede escribir como diferencia de cuadrados), la resolución es directa: $(x - k)^2 = m$ da $x - k = \\pm\\sqrt{m}$, es decir, dos raíces si $m > 0$.",
+          "Ejemplo: $(x - 2)^2 = 9 \\Rightarrow x - 2 = \\pm 3 \\Rightarrow x = 5$ o $x = -1$."
+        ]
+      }
+    ],
+    "notation": [
+      "$ax^2 + bx + c = 0$ — forma general",
+      "$x = r_1, x = r_2$ — las dos raíces",
+      "$r_1 \\cdot r_2 = c/a$, $r_1 + r_2 = -b/a$ — relaciones de Vieta"
+    ],
+    "commonMistakes": [
+      "Olvidar la raíz negativa al resolver $x^2 = 9$: decir solo $x = 3$.",
+      "Factorizar con signo invertido: $x^2 - 5x + 6$ como $(x + 2)(x + 3)$.",
+      "Aplicar propiedad del producto cero solo a un factor y no a ambos."
+    ],
+    "practicePrompts": [
+      "Resuelve $x^2 - 5x + 6 = 0$.",
+      "Resuelve $x^2 - 9 = 0$.",
+      "Resuelve $(x - 2)^2 = 16$."
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 2: Ecuaciones cuadráticas — factorización y raíces",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar a reconocer la forma cuadrática, factorizarla, y recordar que admite hasta dos soluciones (incluyendo la negativa en $x^2 = a^2$)"
+      }
+    ]
+  },
+  {
+    "id": "theory-inecuaciones-lineales",
+    "skillId": "mat.u3.inecuaciones_lineales",
+    "concepts": [
+      {
+        "id": "concept-inl-definicion",
+        "title": "1. Definición de inecuación lineal",
+        "bodyParagraphs": [
+          "Idea principal: una inecuación lineal es como una ecuación lineal, pero con un signo de desigualdad ($<$, $>$, $\\leq$, $\\geq$) en lugar del igual. La solución NO es un único valor, sino un CONJUNTO de valores (un intervalo).",
+          "Ejemplo: $2x - 3 < 5$ tiene como solución todos los reales $x < 4$, no un único número."
+        ]
+      },
+      {
+        "id": "concept-inl-resolver",
+        "title": "2. Misma estrategia que en ecuaciones",
+        "bodyParagraphs": [
+          "Idea principal: se aplican las mismas operaciones inversas en ambos miembros, pero el conjunto solución se expresa como un intervalo o desigualdad. Por ejemplo, $x < 4$ en notación de conjunto es $(-\\infty, 4)$.",
+          "Ejemplo: $3x + 6 \\leq 12 \\Rightarrow 3x \\leq 6 \\Rightarrow x \\leq 2$. Solución: $(-\\infty, 2]$."
+        ]
+      },
+      {
+        "id": "concept-inl-flip",
+        "title": "3. Atención: invertir el signo al multiplicar/dividir por negativo",
+        "bodyParagraphs": [
+          "Idea principal: cuando se multiplica o divide AMBOS miembros por un número NEGATIVO, el sentido de la desigualdad SE INVIERTE. $<$ pasa a $>$, $\\leq$ pasa a $\\geq$.",
+          "Ejemplo: $-2x > 6 \\Rightarrow$ dividir por $-2$ (negativo) $\\Rightarrow x < -3$. Si se hubiera olvidado el flip, la respuesta errónea sería $x > -3$. La verificación es clave: si $x = -4$, $-2(-4) = 8 > 6$ ✓, así que $-4$ SÍ es solución, lo que confirma que el sentido correcto es $<$."
+        ]
+      }
+    ],
+    "notation": [
+      "$ax + b \\, [\\text{op}] \\, c$ — inecuación lineal genérica",
+      "$[\\text{op}] \\in \\{<, >, \\leq, \\geq\\}$",
+      "Solución: intervalo o desigualdad"
+    ],
+    "commonMistakes": [
+      "Multiplicar/dividir por negativo sin invertir el signo: $-2x > 6 \\Rightarrow x > -3$.",
+      "Escribir la desigualdad al revés: $x < 4$ cuando la solución es $x > 4$.",
+      "Confundir $<$ con $\\leq$: $x < 4$ vs $x \\leq 4$."
+    ],
+    "practicePrompts": [
+      "Resuelve $3x - 2 \\geq 10$.",
+      "Resuelve $-2x + 4 < 12$.",
+      "Resuelve $5x - 7 \\leq 3x + 1$."
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 3: Inecuaciones lineales — flip del signo al multiplicar por negativo",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar a resolver inecuaciones como ecuaciones pero expresando la solución como conjunto, con énfasis en la regla de inversión al multiplicar/dividir por un número negativo"
+      }
+    ]
+  },
+  {
+    "id": "theory-inecuaciones-valor-absoluto",
+    "skillId": "mat.u3.inecuaciones_valor_absoluto",
+    "concepts": [
+      {
+        "id": "concept-inv-definicion",
+        "title": "1. Inecuaciones con valor absoluto",
+        "bodyParagraphs": [
+          "Idea principal: una inecuación con valor absoluto involucra $|expr|$ y compara con un número. Hay DOS casos según la desigualdad: $|expr| < c$ (conjunción, $-c < expr < c$) y $|expr| > c$ (disyunción, $expr < -c$ o $expr > c$).",
+          "Idea principal: este es un punto donde muchos alumnos colapsan la respuesta a un único valor, perdiendo la estructura de intervalo que realmente tiene la solución."
+        ]
+      },
+      {
+        "id": "concept-inv-caso-menor",
+        "title": "2. Caso $|x - a| < c$ (conjunción)",
+        "bodyParagraphs": [
+          "Idea principal: si $|x - a| < c$ con $c > 0$, entonces $-c < x - a < c$, lo que equivale a $a - c < x < a + c$. La solución es un INTERVALO ABIERTO centrado en $a$.",
+          "Ejemplo: $|x - 2| < 5 \\Rightarrow -5 < x - 2 < 5 \\Rightarrow -3 < x < 7$. Solución: $(-3, 7)$. Error frecuente: decir solo $x < 7$ (omitiendo la mitad inferior)."
+        ]
+      },
+      {
+        "id": "concept-inv-caso-mayor",
+        "title": "3. Caso $|x - a| > c$ (disyunción)",
+        "bodyParagraphs": [
+          "Idea principal: si $|x - a| > c$ con $c > 0$, entonces $x - a < -c$ o $x - a > c$, es decir $x < a - c$ o $x > a + c$. La solución son DOS rayos que NO se tocan en $a$.",
+          "Ejemplo: $|x - 2| > 5 \\Rightarrow x < -3$ o $x > 7$. Solución: $(-\\infty, -3) \\cup (7, \\infty)$."
+        ]
+      }
+    ],
+    "notation": [
+      "$|expr| < c \\Leftrightarrow -c < expr < c$ (conjunción)",
+      "$|expr| > c \\Leftrightarrow expr < -c \\lor expr > c$ (disyunción)",
+      "$c > 0$ requerido para que el caso tenga sentido"
+    ],
+    "commonMistakes": [
+      "Tratar $|x - 2| < 5$ como $x < 7$ (omitiendo $x > -3$).",
+      "Aplicar la regla de conjunción en el caso de disyunción y viceversa.",
+      "Olvidar que $c$ debe ser positivo; si $c \\leq 0$, el análisis cambia ( $|expr| < 0$ no tiene solución; $|expr| > 0$ son todos los reales excepto donde $|expr| = 0$)."
+    ],
+    "practicePrompts": [
+      "Resuelve $|x - 2| < 5$.",
+      "Resuelve $|2x + 1| \\geq 3$.",
+      "Resuelve $|x + 4| > 1$."
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 4: Inecuaciones con valor absoluto — casos < y >",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Establecer la distinción entre la conjunción (caso <) y la disyunción (caso >), y mostrar que la solución siempre es un conjunto, no un valor único"
+      }
+    ]
+  },
+  {
+    "id": "theory-recta",
+    "skillId": "mat.u3.recta",
+    "concepts": [
+      {
+        "id": "concept-recta-pendiente-ordenada",
+        "title": "1. Forma pendiente-ordenada: $y = mx + b$",
+        "bodyParagraphs": [
+          "Idea principal: la ecuación $y = mx + b$ describe una recta. $m$ es la PENDIENTE (cuánto sube/baja $y$ por cada unidad que avanza $x$). $b$ es la ORDENADA AL ORIGEN (el valor de $y$ cuando $x = 0$). Confundir $m$ con $b$ es uno de los errores más comunes.",
+          "Ejemplo: en $y = 3x + 2$, la pendiente es 3 y la ordenada es 2. Si la ecuación fuera $y = 2x + 3$, la pendiente sería 2 y la ordenada 3."
+        ]
+      },
+      {
+        "id": "concept-recta-pendiente-dos-puntos",
+        "title": "2. Pendiente entre dos puntos",
+        "bodyParagraphs": [
+          "Idea principal: dados dos puntos $(x_1, y_1)$ y $(x_2, y_2)$ con $x_1 \\neq x_2$, la pendiente es $m = (y_2 - y_1) / (x_2 - x_1)$. La diferencia en $y$ va en el numerador y la diferencia en $x$ va en el denominador. Invertir el orden produce la pendiente recíproca (no necesariamente de signo cambiado).",
+          "Ejemplo: con $(1, 2)$ y $(3, 6)$: $m = (6 - 2) / (3 - 1) = 4/2 = 2$. Error frecuente: calcular $(x_2 - x_1)/(y_2 - y_1)$ en lugar de $(y_2 - y_1)/(x_2 - x_1)$."
+        ]
+      },
+      {
+        "id": "concept-recta-ordenada",
+        "title": "3. Cómo leer la ordenada al origen",
+        "bodyParagraphs": [
+          "Idea principal: la ordenada al origen $b$ es el valor de $y$ cuando $x = 0$. Gráficamente, es el punto donde la recta cruza el EJE $y$. Si la recta pasa por el origen, $b = 0$ y la ecuación es simplemente $y = mx$.",
+          "Ejemplo: la recta $y = 5x - 3$ cruza el eje $y$ en $(0, -3)$. La recta $y = -2x$ pasa por el origen."
+        ]
+      }
+    ],
+    "notation": [
+      "$y = mx + b$ — ecuación pendiente-ordenada",
+      "$m = \\frac{y_2 - y_1}{x_2 - x_1}$ — pendiente entre dos puntos",
+      "$b = y(0)$ — ordenada al origen"
+    ],
+    "commonMistakes": [
+      "Intercambiar pendiente y ordenada: decir que en $y = 3x + 2$ la pendiente es 2.",
+      "Calcular la pendiente con la fracción invertida: $(x_2 - x_1) / (y_2 - y_1)$.",
+      "Confundir el signo: si el segundo punto está MÁS ABAJO, la pendiente es negativa."
+    ],
+    "practicePrompts": [
+      "¿Cuál es la pendiente y la ordenada al origen de $y = 5x - 2$?",
+      "Calcula la pendiente de la recta que pasa por $(1, 3)$ y $(4, 9)$.",
+      "Escribe la ecuación de la recta con pendiente 2 y ordenada -1."
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 5: La recta en el plano — pendiente y ordenada",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Distinguir pendiente de ordenada al origen en la forma $y = mx + b$, y enseñar a calcular la pendiente entre dos puntos"
+      }
+    ]
+  },
+  {
+    "id": "theory-sistemas",
+    "skillId": "mat.u3.sistemas",
+    "concepts": [
+      {
+        "id": "concept-sis-definicion",
+        "title": "1. Sistemas de dos ecuaciones con dos incógnitas",
+        "bodyParagraphs": [
+          "Idea principal: un sistema de dos ecuaciones con dos incógnitas $x$ e $y$ es un par de igualdades que se deben satisfacer simultáneamente. La solución es el PAR ORDENADO $(x_0, y_0)$ que cumple AMBAS ecuaciones.",
+          "Ejemplo: $x + y = 5$ y $2x - y = 1$ tiene solución $(2, 3)$ porque $2 + 3 = 5$ ✓ y $2(2) - 3 = 1$ ✓."
+        ]
+      },
+      {
+        "id": "concept-sis-sustitucion",
+        "title": "2. Método de sustitución",
+        "bodyParagraphs": [
+          "Idea principal: se despeja una variable en una de las ecuaciones y se REEMPLAZA en la otra. El resultado es una sola ecuación con una sola incógnita. Se resuelve esa ecuación y se sustituye de vuelta para encontrar la otra variable.",
+          "Ejemplo paso a paso: del sistema $x + y = 5$ y $2x - y = 1$. Paso 1: $x = 5 - y$. Paso 2: $2(5 - y) - y = 1 \\Rightarrow 10 - 2y - y = 1 \\Rightarrow -3y = -9 \\Rightarrow y = 3$. Paso 3: $x = 5 - 3 = 2$."
+        ]
+      },
+      {
+        "id": "concept-sis-eliminacion",
+        "title": "3. Método de eliminación (suma y resta)",
+        "bodyParagraphs": [
+          "Idea principal: se suman o restan las ecuaciones para CANCELAR una de las variables. Si los coeficientes de $y$ son opuestos (como $+y$ y $-y$), una simple suma elimina $y$. Si no lo son, se multiplica una (o ambas) ecuaciones antes de sumar.",
+          "Ejemplo: $x + y = 5$ y $2x - y = 1$. Sumando: $(x + 2x) + (y - y) = 5 + 1 \\Rightarrow 3x = 6 \\Rightarrow x = 2$. Sustituyendo: $y = 5 - 2 = 3$. Error frecuente: olvidar cambiar el signo al restar (sumar $-y$ en vez de restar)."
+        ]
+      }
+    ],
+    "notation": [
+      "$x + y = 5$, $2x - y = 1$ — sistema genérico",
+      "$(x_0, y_0)$ — par solución",
+      "Sustitución o eliminación — métodos de resolución"
+    ],
+    "commonMistakes": [
+      "Al restar ecuaciones, olvidar cambiar el signo de TODOS los términos de la ecuación que se resta. Ej: si se resta $(x + y)$ de $(2x + 3y)$, hay que escribir $(2x + 3y) - x - y$, no $(2x + 3y) - x + y$.",
+      "Sustituir en la misma ecuación en vez de en la otra.",
+      "Perder un término al distribuir el negativo en la sustitución.",
+      "Olvidar verificar la solución en AMBAS ecuaciones originales."
+    ],
+    "practicePrompts": [
+      "Resuelve por sustitución: $x + y = 7$ y $2x - y = 2$.",
+      "Resuelve por eliminación: $3x + y = 9$ y $x - y = 1$.",
+      "Resuelve: $2x + 3y = 12$ y $x - y = 1$."
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 6: Sistemas de ecuaciones lineales — sustitución y eliminación",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Presentar sustitución y eliminación como métodos equivalentes, con foco en los errores frecuentes: signo al sumar, sustitución en la ecuación equivocada, y pérdida de términos"
+      }
+    ]
+  },
+  {
+    "id": "theory-exponenciales",
+    "skillId": "mat.u3.exponenciales",
+    "concepts": [
+      {
+        "id": "concept-exp-definicion",
+        "title": "1. Ecuaciones exponenciales",
+        "bodyParagraphs": [
+          "Idea principal: una ecuación exponencial tiene la incógnita en el exponente, por ejemplo $2^x = 8$. La estrategia general es expresar ambos miembros como POTENCIA DE LA MISMA BASE para luego igualar los exponentes.",
+          "Idea principal: este es un punto donde muchos alumnos confunden la base con la respuesta: para $2^x = 8$, escriben $x = 8$ en lugar de reconocer que $8 = 2^3$."
+        ]
+      },
+      {
+        "id": "concept-exp-misma-base",
+        "title": "2. Igualar a la misma base",
+        "bodyParagraphs": [
+          "Idea principal: cuando los dos miembros pueden escribirse como potencias de la misma base, los exponentes se igualan. $a^{m} = a^{n}$ implica $m = n$ (con $a > 0$ y $a \\neq 1$).",
+          "Ejemplo: $2^x = 8$. Como $8 = 2^3$, entonces $2^x = 2^3 \\Rightarrow x = 3$. Otro: $4^x = 32$. Como $4 = 2^2$ y $32 = 2^5$, entonces $(2^2)^x = 2^5 \\Rightarrow 2x = 5 \\Rightarrow x = 5/2$."
+        ]
+      },
+      {
+        "id": "concept-exp-propiedades",
+        "title": "3. Propiedades de potencias que se usan",
+        "bodyParagraphs": [
+          "Idea principal: para igualar bases, se aplican $(a^m)^n = a^{m \\cdot n}$ (potencia de potencia) y la descomposición en factores primos. Reescribir todo en términos de la MISMA base prima es el paso clave.",
+          "Ejemplo: $9^x = 27 \\Rightarrow (3^2)^x = 3^3 \\Rightarrow 2x = 3 \\Rightarrow x = 3/2$."
+        ]
+      }
+    ],
+    "notation": [
+      "$a^x = b$ — ecuación exponencial genérica",
+      "$a > 0$, $a \\neq 1$",
+      "$(a^m)^n = a^{m \\cdot n}$ — potencia de potencia"
+    ],
+    "commonMistakes": [
+      "Tratar la base como respuesta: $2^x = 8 \\Rightarrow x = 8$ en vez de $x = 3$.",
+      "Tratar el exponente como base: $2^x = 8 \\Rightarrow x = 2$.",
+      "No igualar las bases antes de igualar los exponentes."
+    ],
+    "practicePrompts": [
+      "Resuelve $3^x = 27$.",
+      "Resuelve $4^x = 32$.",
+      "Resuelve $9^x = 27$."
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 7: Ecuaciones exponenciales — igualación de bases",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar la estrategia de llevar ambos miembros a la misma base antes de igualar exponentes, y alertar sobre el error frecuente de confundir base y exponente"
+      }
+    ]
+  },
+  {
+    "id": "theory-logaritmicas",
+    "skillId": "mat.u3.logaritmicas",
+    "concepts": [
+      {
+        "id": "concept-log-recordatorio",
+        "title": "1. Recordatorio: definición de logaritmo",
+        "bodyParagraphs": [
+          "Idea principal: $\\log_a(b) = c$ significa que $a^c = b$, con $a > 0$, $a \\neq 1$, $b > 0$. La base $a$ y el argumento $b$ son fijos; $c$ es la incógnita que se despeja al aplicar la equivalencia exponencial."
+        ]
+      },
+      {
+        "id": "concept-log-producto",
+        "title": "2. Propiedad del logaritmo de un producto",
+        "bodyParagraphs": [
+          "Idea principal: $\\log_a(x \\cdot y) = \\log_a x + \\log_a y$. El logaritmo de un producto es la SUMA de los logaritmos. Error frecuente: pensar que es el producto de los logaritmos ($\\log_a x \\cdot \\log_a y$).",
+          "Ejemplo: $\\log_2(8 \\cdot 4) = \\log_2 32 = 5$. Por propiedad: $\\log_2 8 + \\log_2 4 = 3 + 2 = 5$ ✓."
+        ]
+      },
+      {
+        "id": "concept-log-potencia",
+        "title": "3. Propiedad del logaritmo de una potencia",
+        "bodyParagraphs": [
+          "Idea principal: $\\log_a(x^n) = n \\cdot \\log_a x$. El exponente BAJA como factor multiplicativo. Error frecuente: pensar que la potencia se aplica al logaritmo ($\\log_a(x^n) = (\\log_a x)^n$).",
+          "Ejemplo: $\\log_2(8^3) = \\log_2 512 = 9$. Por propiedad: $3 \\cdot \\log_2 8 = 3 \\cdot 3 = 9$ ✓."
+        ]
+      },
+      {
+        "id": "concept-log-cambio-base",
+        "title": "4. Cambio de base",
+        "bodyParagraphs": [
+          "Idea principal: para calcular $\\log_a b$ cuando la calculadora solo tiene $\\log_{10}$ o $\\ln$, se usa $\\log_a b = \\log_c b / \\log_c a$, donde $c$ es una base conveniente (típicamente 10 o $e$)."
+        ]
+      }
+    ],
+    "notation": [
+      "$\\log_a b$ — logaritmo de $b$ en base $a$",
+      "$\\log_a b = c \\Leftrightarrow a^c = b$",
+      "$\\log_a(x \\cdot y) = \\log_a x + \\log_a y$",
+      "$\\log_a(x^n) = n \\cdot \\log_a x$"
+    ],
+    "commonMistakes": [
+      "$\\log(a + b) = \\log a + \\log b$ (FALSO): el logaritmo NO distribuye sobre la suma.",
+      "$\\log(a \\cdot b) = \\log a \\cdot \\log b$ (FALSO): el producto se convierte en suma, no en producto.",
+      "$\\log(a^n) = (\\log a)^n$ (FALSO): el exponente baja como factor, no se aplica como potencia al logaritmo."
+    ],
+    "practicePrompts": [
+      "Aplica la propiedad del producto: $\\log_2(4 \\cdot 8)$.",
+      "Aplica la propiedad de potencia: $\\log_2(8^3)$.",
+      "Simplifica $\\log_{10}(1000)$."
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 8: Ecuaciones logarítmicas — propiedades y cambio de base",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Reforzar las propiedades (producto → suma, potencia → factor) y alertar sobre las confusiones frecuentes (suma → producto, factor → potencia)"
+      }
+    ]
+  }
+]

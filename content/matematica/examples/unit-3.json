@@ -1,0 +1,337 @@
+[
+  {
+    "id": "example-ecuaciones-lineales-1",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "problem": "Resolver la ecuación $3x - 5 = 10$",
+    "steps": [
+      { "order": 1, "explanation": "Identificamos los componentes: coeficiente $a = 3$, término independiente $b = -5$ (porque es $-5$, no $+5$), y lado derecho $c = 10$." },
+      { "order": 2, "explanation": "Paso 1: pasar el $-5$ al lado derecho cambiando el signo. $3x = 10 + 5 = 15$. (El $-5$ que estaba restando pasa como $+5$.)" },
+      { "order": 3, "explanation": "Paso 2: dividir ambos lados por el coeficiente $3$. $x = 15 / 3 = 5$." },
+      { "order": 4, "explanation": "Verificación: $3 \\cdot 5 - 5 = 15 - 5 = 10$ ✓." }
+    ],
+    "finalAnswer": "x = 5",
+    "pedagogicalNote": "Error frecuente: olvidar el cambio de signo al pasar el $-5$ y escribir $3x = 10 - 5 = 5$, lo que daría $x = 5/3$ en vez de $x = 5$.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 1: Ecuaciones lineales — método de aislamiento",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar el método de aislamiento paso a paso, con énfasis en el cambio de signo al pasar un término negativo"
+      }
+    ]
+  },
+  {
+    "id": "example-ecuaciones-lineales-2",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "problem": "Resolver la ecuación $-2x + 4 = 10$",
+    "steps": [
+      { "order": 1, "explanation": "Identificamos: coeficiente $a = -2$ (negativo), término $b = 4$, lado derecho $c = 10$." },
+      { "order": 2, "explanation": "Paso 1: pasar el $+4$ al lado derecho cambiando el signo. $-2x = 10 - 4 = 6$." },
+      { "order": 3, "explanation": "Paso 2: dividir ambos lados por $-2$. Atención: división por negativo, el signo se conserva en el resultado. $x = 6 / (-2) = -3$." },
+      { "order": 4, "explanation": "Verificación: $-2 \\cdot (-3) + 4 = 6 + 4 = 10$ ✓." }
+    ],
+    "finalAnswer": "x = -3",
+    "pedagogicalNote": "Cuando el coeficiente es negativo, el resultado de la división también es negativo (si el numerador es positivo). Error frecuente: decir $x = 3$ por haber olvidado el signo del coeficiente.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 1: Ecuaciones lineales con coeficiente negativo",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Mostrar que un coeficiente negativo produce una solución negativa (cuando el lado derecho es positivo)"
+      }
+    ]
+  },
+  {
+    "id": "example-ecuaciones-cuadraticas-1",
+    "skillId": "mat.u3.ecuaciones_cuadraticas",
+    "problem": "Resolver $x^2 - 5x + 6 = 0$",
+    "steps": [
+      { "order": 1, "explanation": "Buscamos dos números que sumados den $-5$ y multiplicados den $6$. Esos números son $-2$ y $-3$, porque $(-2) + (-3) = -5$ y $(-2) \\cdot (-3) = 6$." },
+      { "order": 2, "explanation": "Factorizamos: $x^2 - 5x + 6 = (x - 2)(x - 3)$." },
+      { "order": 3, "explanation": "Por la propiedad del producto cero: $(x - 2)(x - 3) = 0$ si y solo si $x - 2 = 0$ o $x - 3 = 0$." },
+      { "order": 4, "explanation": "Las dos soluciones son $x = 2$ y $x = 3$." },
+      { "order": 5, "explanation": "Verificación: para $x = 2$: $4 - 10 + 6 = 0$ ✓. Para $x = 3$: $9 - 15 + 6 = 0$ ✓." }
+    ],
+    "finalAnswer": "x = 2 o x = 3",
+    "pedagogicalNote": "La cuadrática tiene DOS soluciones. Reportar solo una es incompleto. La factorización requiere que los signos de los números coincidan con los signos de los coeficientes.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 2: Ecuaciones cuadráticas — factorización",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar la técnica de buscar dos números que sumen $b$ y multipliquen $c$, y recordar que la cuadrática tiene dos raíces"
+      }
+    ]
+  },
+  {
+    "id": "example-ecuaciones-cuadraticas-2",
+    "skillId": "mat.u3.ecuaciones_cuadraticas",
+    "problem": "Resolver $x^2 - 9 = 0$",
+    "steps": [
+      { "order": 1, "explanation": "Es una diferencia de cuadrados: $x^2 - 9 = x^2 - 3^2 = (x - 3)(x + 3)$." },
+      { "order": 2, "explanation": "Por producto cero: $(x - 3)(x + 3) = 0 \\Rightarrow x = 3$ o $x = -3$." },
+      { "order": 3, "explanation": "Verificación: para $x = 3$: $9 - 9 = 0$ ✓. Para $x = -3$: $9 - 9 = 0$ ✓." }
+    ],
+    "finalAnswer": "x = 3 o x = -3",
+    "pedagogicalNote": "Para $x^2 = 9$, el alumno debe recordar que la raíz cuadrada tiene DOS signos: positivo y negativo. Decir solo $x = 3$ es el error más frecuente aquí.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 2: Diferencia de cuadrados",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Trabajar el caso $x^2 = a^2$ con énfasis en que la raíz tiene DOS signos"
+      }
+    ]
+  },
+  {
+    "id": "example-inecuaciones-lineales-1",
+    "skillId": "mat.u3.inecuaciones_lineales",
+    "problem": "Resolver la inecuación $3x - 2 \\geq 10$",
+    "steps": [
+      { "order": 1, "explanation": "Aplicamos las mismas operaciones inversas que en una ecuación. Paso 1: pasar el $-2$ al lado derecho. $3x \\geq 10 + 2 = 12$." },
+      { "order": 2, "explanation": "Paso 2: dividir ambos lados por $3$ (positivo, no se invierte el signo). $x \\geq 12 / 3 = 4$." },
+      { "order": 3, "explanation": "Solución: $[4, +\\infty)$ o equivalentemente $x \\geq 4$." },
+      { "order": 4, "explanation": "Verificación con $x = 5$: $3 \\cdot 5 - 2 = 13 \\geq 10$ ✓." }
+    ],
+    "finalAnswer": "x ≥ 4",
+    "pedagogicalNote": "Cuando se divide por un número POSITIVO, el sentido de la desigualdad NO cambia. Solo se invierte al multiplicar o dividir por un NEGATIVO.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 3: Inecuaciones lineales",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Resolver una inecuación como ecuación y expresar la solución como desigualdad o intervalo"
+      }
+    ]
+  },
+  {
+    "id": "example-inecuaciones-lineales-2",
+    "skillId": "mat.u3.inecuaciones_lineales",
+    "problem": "Resolver $-2x > 6$",
+    "steps": [
+      { "order": 1, "explanation": "El coeficiente de $x$ es $-2$. Vamos a dividir por $-2$, que es NEGATIVO. Esto invierte el sentido de la desigualdad." },
+      { "order": 2, "explanation": "$x < 6 / (-2) = -3$." },
+      { "order": 3, "explanation": "Solución: $(-\\infty, -3)$ o $x < -3$." },
+      { "order": 4, "explanation": "Verificación con $x = -4$: $-2 \\cdot (-4) = 8 > 6$ ✓. ($-4$ SÍ es solución, lo que confirma que el sentido correcto es $<$.)" }
+    ],
+    "finalAnswer": "x < −3",
+    "pedagogicalNote": "PASO CRUCIAL: dividir por un número negativo invierte el sentido de la desigualdad. Decir $x > -3$ sería el error más común y la verificación lo desmiente inmediatamente.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 3: Inversión del signo al dividir por negativo",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Enseñar la regla de inversión del signo al multiplicar/dividir por negativo y verificar con un valor concreto"
+      }
+    ]
+  },
+  {
+    "id": "example-inecuaciones-valor-absoluto-1",
+    "skillId": "mat.u3.inecuaciones_valor_absoluto",
+    "problem": "Resolver $|x - 2| < 5$",
+    "steps": [
+      { "order": 1, "explanation": "Caso $<$: $|expr| < c$ se descompone como $-c < expr < c$ (conjunción). Aquí $expr = x - 2$ y $c = 5$." },
+      { "order": 2, "explanation": "Aplicamos: $-5 < x - 2 < 5$." },
+      { "order": 3, "explanation": "Sumamos $2$ en los tres miembros: $-5 + 2 < x < 5 + 2$, es decir $-3 < x < 7$." },
+      { "order": 4, "explanation": "Solución: el intervalo abierto $(-3, 7)$." },
+      { "order": 5, "explanation": "Verificación con $x = 0$ (dentro): $|0 - 2| = 2 < 5$ ✓. Con $x = -5$ (fuera): $|-5 - 2| = 7 \\not< 5$ ✓ (correctamente excluido)." }
+    ],
+    "finalAnswer": "−3 < x < 7",
+    "pedagogicalNote": "El error clásico es quedarse con UNA sola desigualdad: $x < 7$. La estructura completa es una CONJUNCIÓN, no una disyunción.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 4: Inecuaciones con valor absoluto — caso <",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Establecer la estructura de conjunción para $|expr| < c$ y mostrar que la solución es un intervalo abierto"
+      }
+    ]
+  },
+  {
+    "id": "example-inecuaciones-valor-absoluto-2",
+    "skillId": "mat.u3.inecuaciones_valor_absoluto",
+    "problem": "Resolver $|2x + 1| \\geq 3$",
+    "steps": [
+      { "order": 1, "explanation": "Caso $\\geq$: $|expr| \\geq c$ se descompone como $expr \\leq -c$ o $expr \\geq c$ (disyunción). Aquí $expr = 2x + 1$ y $c = 3$." },
+      { "order": 2, "explanation": "Aplicamos: $2x + 1 \\leq -3$ o $2x + 1 \\geq 3$." },
+      { "order": 3, "explanation": "Resolvemos cada rama. Rama 1: $2x \\leq -4 \\Rightarrow x \\leq -2$. Rama 2: $2x \\geq 2 \\Rightarrow x \\geq 1$." },
+      { "order": 4, "explanation": "Solución: $(-\\infty, -2] \\cup [1, +\\infty)$, o equivalentemente $x \\leq -2$ o $x \\geq 1$." }
+    ],
+    "finalAnswer": "x ≤ −2 o x ≥ 1",
+    "pedagogicalNote": "El caso $\\geq$ (y $>$ ) produce una DISYUNCIÓN: dos rayos disjuntos. NO es un único intervalo.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 4: Inecuaciones con valor absoluto — caso >",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Diferenciar la disyunción del caso > de la conjunción del caso < y mostrar que la solución son dos rayos"
+      }
+    ]
+  },
+  {
+    "id": "example-recta-1",
+    "skillId": "mat.u3.recta",
+    "problem": "Para la recta $y = 3x + 2$, identificar la pendiente y la ordenada al origen",
+    "steps": [
+      { "order": 1, "explanation": "La ecuación está en la forma $y = mx + b$ (forma pendiente-ordenada)." },
+      { "order": 2, "explanation": "Comparamos: $m$ es el coeficiente que multiplica a $x$, $b$ es el término independiente. Aquí $m = 3$ y $b = 2$." },
+      { "order": 3, "explanation": "Entonces la pendiente es $3$ (por cada unidad que avanza $x$, $y$ sube $3$) y la ordenada al origen es $2$ (cuando $x = 0$, $y = 2$)." }
+    ],
+    "finalAnswer": "Pendiente 3, ordenada 2",
+    "pedagogicalNote": "Error frecuente: confundir y decir 'pendiente 2, ordenada 3'. La regla es: pendiente = coeficiente de $x$; ordenada = término independiente.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 5: Forma pendiente-ordenada de la recta",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Distinguir pendiente de ordenada al origen en la forma $y = mx + b$"
+      }
+    ]
+  },
+  {
+    "id": "example-recta-2",
+    "skillId": "mat.u3.recta",
+    "problem": "Calcular la pendiente de la recta que pasa por los puntos $(1, 2)$ y $(3, 6)$",
+    "steps": [
+      { "order": 1, "explanation": "Usamos la fórmula $m = (y_2 - y_1) / (x_2 - x_1)$. Identificamos: $(x_1, y_1) = (1, 2)$ y $(x_2, y_2) = (3, 6)$." },
+      { "order": 2, "explanation": "Calculamos las diferencias: $y_2 - y_1 = 6 - 2 = 4$ y $x_2 - x_1 = 3 - 1 = 2$." },
+      { "order": 3, "explanation": "$m = 4 / 2 = 2$." },
+      { "order": 4, "explanation": "Verificación: la pendiente es $2$, lo que significa que por cada unidad de $x$, $y$ sube $2$. De $x = 1$ a $x = 3$ (2 unidades), $y$ debería subir $4$ (de $2$ a $6$). ✓" }
+    ],
+    "finalAnswer": "m = 2",
+    "pedagogicalNote": "La diferencia en $y$ va en el NUMERADOR, la diferencia en $x$ va en el DENOMINADOR. Invertir el orden produce la pendiente recíproca ($\\frac{\\Delta x}{\\Delta y}$ en lugar de $\\frac{\\Delta y}{\\Delta x}$), que no es lo mismo que la pendiente original.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 5: Pendiente entre dos puntos",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Aplicar correctamente la fórmula de pendiente y verificar con la progresión geométrica entre los puntos"
+      }
+    ]
+  },
+  {
+    "id": "example-sistemas-1",
+    "skillId": "mat.u3.sistemas",
+    "problem": "Resolver por sustitución: $x + y = 5$ y $2x - y = 1$",
+    "steps": [
+      { "order": 1, "explanation": "De la primera ecuación, despejamos $y$: $y = 5 - x$." },
+      { "order": 2, "explanation": "Sustituimos en la segunda: $2x - (5 - x) = 1$. Atención al signo: $-y = -(5 - x) = -5 + x$." },
+      { "order": 3, "explanation": "Operamos: $2x - 5 + x = 1 \\Rightarrow 3x - 5 = 1 \\Rightarrow 3x = 6 \\Rightarrow x = 2$." },
+      { "order": 4, "explanation": "Sustituimos $x = 2$ en $y = 5 - x$: $y = 5 - 2 = 3$." },
+      { "order": 5, "explanation": "Solución: $(x, y) = (2, 3)$. Verificación: $2 + 3 = 5$ ✓ y $2(2) - 3 = 1$ ✓." }
+    ],
+    "finalAnswer": "x = 2, y = 3",
+    "pedagogicalNote": "El paso crítico es la distribución del signo negativo en la sustitución: $-(5 - x) = -5 + x$, NO $-(5 - x) = -5 - x$.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 6: Método de sustitución",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Mostrar el método de sustitución con foco en la distribución correcta del signo negativo"
+      }
+    ]
+  },
+  {
+    "id": "example-sistemas-2",
+    "skillId": "mat.u3.sistemas",
+    "problem": "Resolver por eliminación: $x + y = 5$ y $2x - y = 1$",
+    "steps": [
+      { "order": 1, "explanation": "Sumamos las dos ecuaciones miembro a miembro. Los coeficientes de $y$ son $+1$ y $-1$, así que se cancelan." },
+      { "order": 2, "explanation": "$(x + 2x) + (y + (-y)) = 5 + 1 \\Rightarrow 3x + 0 = 6 \\Rightarrow x = 2$." },
+      { "order": 3, "explanation": "Sustituimos en la primera: $2 + y = 5 \\Rightarrow y = 3$." },
+      { "order": 4, "explanation": "Solución: $(x, y) = (2, 3)$. Verificación en ambas ecuaciones: ✓." }
+    ],
+    "finalAnswer": "x = 2, y = 3",
+    "pedagogicalNote": "Para eliminar $y$, se SUMAN las ecuaciones porque los coeficientes son opuestos ($+1$ y $-1$). Si los coeficientes fueran iguales, habría que restar; si no fueran iguales ni opuestos, se multiplica una ecuación antes de sumar.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 6: Método de eliminación",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Mostrar la técnica de sumar/restar ecuaciones para cancelar una variable"
+      }
+    ]
+  },
+  {
+    "id": "example-exponenciales-1",
+    "skillId": "mat.u3.exponenciales",
+    "problem": "Resolver $2^x = 8$",
+    "steps": [
+      { "order": 1, "explanation": "Llevamos ambos miembros a la misma base. $2$ ya es base $2$. ¿Y $8$? $8 = 2^3$." },
+      { "order": 2, "explanation": "Entonces la ecuación es $2^x = 2^3$." },
+      { "order": 3, "explanation": "Si las bases son iguales y positivas, los exponentes son iguales: $x = 3$." },
+      { "order": 4, "explanation": "Verificación: $2^3 = 8$ ✓." }
+    ],
+    "finalAnswer": "x = 3",
+    "pedagogicalNote": "Error frecuente: decir $x = 8$ (la igualdad está confundiendo el lado derecho con la respuesta) o $x = 2$ (la base con la respuesta). Reescribir siempre ambos miembros con la misma base.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 7: Ecuaciones exponenciales — igualación de bases",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Establecer la estrategia de igualar bases antes de igualar exponentes, y alertar sobre la confusión base-vs-respuesta"
+      }
+    ]
+  },
+  {
+    "id": "example-exponenciales-2",
+    "skillId": "mat.u3.exponenciales",
+    "problem": "Resolver $4^x = 32$",
+    "steps": [
+      { "order": 1, "explanation": "Las bases NO son iguales: $4 \\neq 32$. Reescribimos ambos miembros como potencia de $2$." },
+      { "order": 2, "explanation": "$4 = 2^2$, así que $4^x = (2^2)^x = 2^{2x}$. Y $32 = 2^5$." },
+      { "order": 3, "explanation": "Entonces $2^{2x} = 2^5 \\Rightarrow 2x = 5 \\Rightarrow x = 5/2$." },
+      { "order": 4, "explanation": "Verificación: $4^{5/2} = (2^2)^{5/2} = 2^{5} = 32$ ✓." }
+    ],
+    "finalAnswer": "x = 5/2",
+    "pedagogicalNote": "La clave es identificar la base prima común (en este caso, $2$). Las potencias $4$ y $32$ se descomponen en $2$ para poder igualar.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 7: Igualación a base prima común",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Mostrar la técnica de descomponer en base prima común cuando las bases iniciales no coinciden"
+      }
+    ]
+  },
+  {
+    "id": "example-logaritmicas-1",
+    "skillId": "mat.u3.logaritmicas",
+    "problem": "Aplicar la propiedad del producto: $\\log_2(4 \\cdot 8)$",
+    "steps": [
+      { "order": 1, "explanation": "La propiedad dice: $\\log_a(x \\cdot y) = \\log_a x + \\log_a y$. Aplicamos con $x = 4$, $y = 8$, $a = 2$." },
+      { "order": 2, "explanation": "$\\log_2(4 \\cdot 8) = \\log_2 4 + \\log_2 8 = 2 + 3 = 5$." },
+      { "order": 3, "explanation": "Verificación directa: $4 \\cdot 8 = 32$, y $\\log_2 32 = 5$ ✓." }
+    ],
+    "finalAnswer": "log₂ 4 + log₂ 8 = 5",
+    "pedagogicalNote": "El producto de los argumentos se convierte en SUMA de logaritmos, no en producto de logaritmos. $\\log_a(x \\cdot y) \\neq \\log_a x \\cdot \\log_a y$.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 8: Propiedad del logaritmo de un producto",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Aplicar la propiedad del producto y alertar sobre la confusión frecuente producto-suma vs producto-producto"
+      }
+    ]
+  },
+  {
+    "id": "example-logaritmicas-2",
+    "skillId": "mat.u3.logaritmicas",
+    "problem": "Aplicar la propiedad de potencia: $\\log_2(8^3)$",
+    "steps": [
+      { "order": 1, "explanation": "La propiedad dice: $\\log_a(x^n) = n \\cdot \\log_a x$. Aplicamos con $x = 8$, $n = 3$, $a = 2$." },
+      { "order": 2, "explanation": "$\\log_2(8^3) = 3 \\cdot \\log_2 8 = 3 \\cdot 3 = 9$." },
+      { "order": 3, "explanation": "Verificación directa: $8^3 = 512$, y $\\log_2 512 = 9$ (porque $2^9 = 512$)." }
+    ],
+    "finalAnswer": "3 · log₂ 8 = 9",
+    "pedagogicalNote": "El exponente del argumento BAJA como factor multiplicativo. $\\log_a(x^n) = n \\cdot \\log_a x$, NO $(\\log_a x)^n$.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 8: Propiedad del logaritmo de una potencia",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Aplicar la propiedad de potencia y alertar sobre la confusión factor-exponente vs exponente-de-logaritmo"
+      }
+    ]
+  }
+]

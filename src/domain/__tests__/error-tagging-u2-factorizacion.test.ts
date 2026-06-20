@@ -1,6 +1,5 @@
 /**
  * U2 Factorizacion error-tagging detectors.
- * Strict TDD: RED phase first (this file written before detectors exist).
  *
  * Spec coverage: U2FAC-EVAL-003, U2FAC-EVAL-004, U2FAC-EVAL-005
  */

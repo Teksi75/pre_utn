@@ -193,14 +193,18 @@ describe("getAccessibleSkills — accessibility rules", () => {
         "mat.u2.factorizacion": 0.85,
         "mat.u2.gauss": 0.85,
         "mat.u2.mcm_mcd_polinomios": 0.85,
+        "mat.u2.ecuaciones_fraccionarias": 0.85,
+        // U3 cross-unit prereqs: inecuaciones_valor_absoluto, exponenciales,
+        // logaritmicas. Intra-U3 prereqs: inecuaciones_lineales feeds
+        // inecuaciones_valor_absoluto; ecuaciones_lineales feeds recta.
+        "mat.u3.ecuaciones_lineales": 0.85,
+        "mat.u3.inecuaciones_lineales": 0.85,
       },
     };
-    // Skills without content (like mat.u1.complejos, which is pilot-registered
-    // but not yet content-ready in PR 1) are excluded from this check.
-    const notYetReady: Set<string> = new Set(["mat.u1.complejos"]);
+    // All pilot skills are contentReady at this point, including complejos
+    // (has theory, examples, exercises, and feedback as of PR 3+).
     const result = getAccessibleSkills(progress);
     for (const skill of result) {
-      if (notYetReady.has(skill.skillId)) continue;
       expect(skill.accessible).toBe(true);
     }
   });
@@ -213,6 +217,118 @@ describe("getAccessibleSkills — accessibility rules", () => {
     expect(accessibleIds).not.toContain("mat.u1.propiedades_operaciones_reales");
     expect(accessibleIds).not.toContain("mat.u1.potencias_raices");
     expect(accessibleIds).not.toContain("mat.u1.racionalizacion");
+  });
+});
+
+describe("getAccessibleSkills — U3 cross-unit prereqs (PR 3 / implement-unit-3-mathematics)", () => {
+  test("mat.u3.inecuaciones_valor_absoluto is gated by mat.u1.valor_absoluto (U1→U3 prereq)", () => {
+    // Empty progress: BOTH prereqs are unmet → missingPrerequisites
+    // must list both (cross-unit U1 prereq + intra-U3 prereq).
+    const result = getAccessibleSkills(emptyProgress());
+    const inecVA = result.find(
+      (s) => s.skillId === "mat.u3.inecuaciones_valor_absoluto"
+    );
+    expect(inecVA?.accessible).toBe(false);
+    expect(inecVA?.missingPrerequisites).toContain("mat.u1.valor_absoluto");
+    expect(inecVA?.missingPrerequisites).toContain("mat.u3.inecuaciones_lineales");
+  });
+
+  test("mat.u3.inecuaciones_valor_absoluto remains gated when only the U1 prereq is met (intra-U3 prereq still missing)", () => {
+    const progress: PracticeProgress = {
+      ...emptyProgress(),
+      accuracyBySkill: { "mat.u1.valor_absoluto": 0.85 },
+    };
+    const result = getAccessibleSkills(progress);
+    const inecVA = result.find(
+      (s) => s.skillId === "mat.u3.inecuaciones_valor_absoluto"
+    );
+    expect(inecVA?.accessible).toBe(false);
+    // U1 prereq is now met (not in missingPrerequisites); intra-U3 prereq
+    // remains missing.
+    expect(inecVA?.missingPrerequisites).not.toContain("mat.u1.valor_absoluto");
+    expect(inecVA?.missingPrerequisites).toContain("mat.u3.inecuaciones_lineales");
+  });
+
+  test("mat.u3.inecuaciones_valor_absoluto becomes accessible once both prereqs are mastered", () => {
+    const progress: PracticeProgress = {
+      ...emptyProgress(),
+      accuracyBySkill: {
+        "mat.u1.valor_absoluto": 0.85,
+        "mat.u3.inecuaciones_lineales": 0.85,
+      },
+    };
+    const result = getAccessibleSkills(progress);
+    const inecVA = result.find(
+      (s) => s.skillId === "mat.u3.inecuaciones_valor_absoluto"
+    );
+    expect(inecVA?.accessible).toBe(true);
+    expect(inecVA?.missingPrerequisites).toEqual([]);
+  });
+
+  test("mat.u3.exponenciales is gated by mat.u1.potencias_raices (U1→U3 prereq)", () => {
+    const empty = getAccessibleSkills(emptyProgress());
+    const expoEmpty = empty.find((s) => s.skillId === "mat.u3.exponenciales");
+    expect(expoEmpty?.accessible).toBe(false);
+    expect(expoEmpty?.missingPrerequisites).toContain("mat.u1.potencias_raices");
+
+    const progress: PracticeProgress = {
+      ...emptyProgress(),
+      accuracyBySkill: { "mat.u1.potencias_raices": 0.85 },
+    };
+    const result = getAccessibleSkills(progress);
+    const expo = result.find((s) => s.skillId === "mat.u3.exponenciales");
+    expect(expo?.accessible).toBe(true);
+    expect(expo?.missingPrerequisites).toEqual([]);
+  });
+
+  test("mat.u3.logaritmicas is gated by mat.u1.logaritmos (U1→U3 prereq)", () => {
+    const empty = getAccessibleSkills(emptyProgress());
+    const logEmpty = empty.find((s) => s.skillId === "mat.u3.logaritmicas");
+    expect(logEmpty?.accessible).toBe(false);
+    expect(logEmpty?.missingPrerequisites).toContain("mat.u1.logaritmos");
+
+    const progress: PracticeProgress = {
+      ...emptyProgress(),
+      accuracyBySkill: { "mat.u1.logaritmos": 0.85 },
+    };
+    const result = getAccessibleSkills(progress);
+    const log = result.find((s) => s.skillId === "mat.u3.logaritmicas");
+    expect(log?.accessible).toBe(true);
+    expect(log?.missingPrerequisites).toEqual([]);
+  });
+
+  test("mat.u3.recta is gated by mat.u3.ecuaciones_lineales (intra-U3 prereq)", () => {
+    const empty = getAccessibleSkills(emptyProgress());
+    const recta = empty.find((s) => s.skillId === "mat.u3.recta");
+    expect(recta?.accessible).toBe(false);
+    expect(recta?.missingPrerequisites).toContain("mat.u3.ecuaciones_lineales");
+
+    const progress: PracticeProgress = {
+      ...emptyProgress(),
+      accuracyBySkill: { "mat.u3.ecuaciones_lineales": 0.85 },
+    };
+    const result = getAccessibleSkills(progress);
+    const rectaReady = result.find((s) => s.skillId === "mat.u3.recta");
+    expect(rectaReady?.accessible).toBe(true);
+  });
+
+  test("all 8 U3 pilot skills are listed with contentReady=true", () => {
+    const U3_IDS = [
+      "mat.u3.ecuaciones_lineales",
+      "mat.u3.ecuaciones_cuadraticas",
+      "mat.u3.inecuaciones_lineales",
+      "mat.u3.inecuaciones_valor_absoluto",
+      "mat.u3.recta",
+      "mat.u3.sistemas",
+      "mat.u3.exponenciales",
+      "mat.u3.logaritmicas",
+    ] as const;
+    const result = getAccessibleSkills(emptyProgress());
+    for (const id of U3_IDS) {
+      const entry = result.find((s) => s.skillId === id);
+      expect(entry, `U3 skill ${id} missing from accessibility results`).toBeDefined();
+      expect(entry?.contentReady).toBe(true);
+    }
   });
 });
 

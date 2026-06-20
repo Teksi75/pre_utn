@@ -105,10 +105,26 @@ describe("Error Taxonomy", () => {
         "u2_signo_factorizacion",
         "u2_caso_incorrecto",
       ]);
-      expect(tagsByUnit.get(3)?.map((tag) => tag.id)).toEqual([
+      // Unit 3 must contain at least the 8 SDD spec tags.
+      // Legacy tags (e.g. u3_direccion_desigualdad) may coexist.
+      const u3Ids = tagsByUnit.get(3)?.map((tag) => tag.id) ?? [];
+      const specU3 = [
+        "u3_aislamiento_incorrecto",
+        "u3_factorizacion_cuadratica",
         "u3_signo_desigualdad",
-        "u3_direccion_desigualdad",
-      ]);
+        "u3_dos_valores_absoluto",
+        "u3_pendiente_o_ordenada",
+        "u3_sustitucion_o_eliminacion",
+        "u3_igualdad_exponenciales",
+        "u3_propiedad_logaritmo",
+      ];
+      for (const id of specU3) {
+        expect(u3Ids, `Unit 3 should contain ${id}`).toContain(id);
+      }
+      // Legacy tag: u3_direccion_desigualdad must remain filterable as a U3 tag
+      expect(u3Ids, "Unit 3 should contain legacy tag u3_direccion_desigualdad").toContain(
+        "u3_direccion_desigualdad"
+      );
       expect(tagsByUnit.get(4)?.map((tag) => tag.id)).toEqual([
         "u4_formula_area",
         "u4_suma_angulos",

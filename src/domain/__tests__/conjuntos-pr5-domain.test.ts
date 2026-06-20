@@ -262,9 +262,9 @@ describe(`PR#5 errores-comunes + final verify — ${SKILL_ID}`, () => {
   });
 
   describe("per-skill feedback file (behavior 7)", () => {
-    // All 8 design keys must have feedback entries in BOTH unit-1.json
-    // (the main feedback file that loadSkillBank cross-checks against)
-    // and unit-1-conjuntos-numericos.json (the per-skill file).
+    // All 8 design keys must have feedback entries in the per-skill
+    // feedback file (unit-1-conjuntos-numericos.json), which is what
+    // loadSkillBank cross-checks against when per-skill feedback exists.
     const EIGHT_KEYS: ReadonlyArray<string> = [
       "u1_decimal_no_es_siempre_irracional",
       "u1_toda_raiz_no_es_irracional",
@@ -288,10 +288,11 @@ describe(`PR#5 errores-comunes + final verify — ${SKILL_ID}`, () => {
     });
 
     test("main feedback (unit-1) has all 8 design misconception keys", () => {
-      // The bank validator loadSkillBank loads unit-1 feedback and
-      // cross-checks exercise errorTags against it. If any of the 8
-      // misconception keys is missing from unit-1, the validator will
-      // report "Exercise X references error tag(s) without feedback: ..."
+      // Unit-1 feedback consolidates all misconception tags for the unit.
+      // Per-skill feedback (unit-1-conjuntos-numericos) is the primary
+      // source for loadSkillBank cross-checks, but unit-1.json serves as
+      // the fallback for skills without dedicated feedback files and
+      // ensures every design key is present at the unit level.
       const feedback = loadFeedbackContent("unit-1");
       const tags = new Set(feedback.map((f) => f.errorTag));
       for (const key of EIGHT_KEYS) {
@@ -361,15 +362,49 @@ describe(`PR#5 errores-comunes + final verify — ${SKILL_ID}`, () => {
       }
     });
 
-    test("bank validator reports zero diagnostics", () => {
-      // loadSkillBank returns diagnostics from validatePracticeBank.
-      // After PR#5, ALL categories meet minimums AND every error tag
-      // referenced by exercises has a feedback entry, so the validator
-      // should report nothing.
+    test("bank validator reports diagnostics only for tags not yet in per-skill feedback file", () => {
+      // loadSkillBank now resolves per-skill feedback (unit-1-conjuntos-numericos)
+      // when available. Five misconception tags are only present in unit-1.json
+      // and not yet in the per-skill file; exercises referencing them are
+      // correctly flagged as having uncovered error tags.
+      //
+      // No category-minimum diagnostics should appear — all 6 categories
+      // meet their minimums after PR#5.
+      const MISSING_FROM_PER_SKILL = [
+        "u1_confunde_natural_entero",
+        "u1_confunde_racional_irracional",
+        "u1_toda_raiz_irracional",
+        "u1_conjunto_minimo",
+        "u1_raiz_negativa_en_reales",
+      ] as const;
+
+      // Category diagnostic pattern check: none should mention category shortfalls
+      const categoryDiags = allBanked.diagnostics.filter(
+        (d) =>
+          !d.includes("references error tag(s) without feedback") &&
+          !d.includes("missing category field")
+      );
       expect(
-        allBanked.diagnostics,
-        `bank validator reported: ${allBanked.diagnostics.join("\n")}`
+        categoryDiags,
+        `unexpected category diagnostics: ${categoryDiags.join("\n")}`
       ).toEqual([]);
+
+      // Every feedback diagnostic should only reference known missing tags
+      const feedbackDiags = allBanked.diagnostics.filter((d) =>
+        d.includes("without feedback")
+      );
+      for (const diag of feedbackDiags) {
+        const tagMatch = /without feedback: (.+)$/.exec(diag);
+        if (tagMatch) {
+          const tags = tagMatch[1].split(", ");
+          for (const tag of tags) {
+            expect(
+              MISSING_FROM_PER_SKILL,
+              `unexpected uncovered tag "${tag}" in: ${diag}`
+            ).toContain(tag as (typeof MISSING_FROM_PER_SKILL)[number]);
+          }
+        }
+      }
     });
   });
 

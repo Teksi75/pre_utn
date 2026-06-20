@@ -6,9 +6,10 @@
  * same ordering. Exact baseline assertions catch regressions that weak
  * thresholds (>= 30) would miss.
  *
- * Baseline values (pre-PR3 / exercises.json with 113 exercises):
- *   loadCatalog().length = 152
+ * Baseline values (post-PR2 / implement-unit-3-mathematics):
+ *   loadCatalog().length = 184       (152 + 32 new U3 exercises)
  *   queryByUnit(1).length = 101
+ *   queryByUnit(3).length = 37        (32 new U3 + 5 legacy .1 entries)
  *   queryBySkill("mat.u1.conjuntos_numericos").length = 44
  */
 
@@ -16,8 +17,9 @@ import { describe, test, expect } from "vitest";
 import { loadCatalog, queryBySkill, queryByUnit } from "../catalog/index";
 
 /** Pre-PR3 baseline counts — must hold after any content split. */
-const BASELINE_TOTAL = 152;
+const BASELINE_TOTAL = 184;
 const BASELINE_UNIT_1 = 101;
+const BASELINE_UNIT_3 = 37;
 const BASELINE_CONJUNTOS_NUMERICOS = 44;
 
 describe("catalog split equivalence — baseline snapshot", () => {
@@ -31,6 +33,11 @@ describe("catalog split equivalence — baseline snapshot", () => {
   test("queryByUnit(1) returns exactly the baseline unit-1 count", () => {
     const results = queryByUnit(1);
     expect(results.length).toBe(BASELINE_UNIT_1);
+  });
+
+  test("queryByUnit(3) returns exactly the post-PR2 unit-3 count (new + legacy)", () => {
+    const results = queryByUnit(3);
+    expect(results.length).toBe(BASELINE_UNIT_3);
   });
 
   test('queryBySkill("mat.u1.conjuntos_numericos") returns exactly the baseline count', () => {

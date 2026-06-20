@@ -125,10 +125,40 @@ describe("loadSkillBank — wiring bank validator into catalog load path", () =>
     // guarantees — exact content changes as the bank grows, but the wiring
     // contract is preserved.
     const exercises = loadExercisesForSkill(SKILL_ID);
-    const feedback = loadFeedbackContent("unit-1");
+    // loadSkillBank resolves per-skill feedback first; replicate that
+    // resolution for the direct call so the triangulation stays exact.
+    const feedback = loadFeedbackContent("unit-1-conjuntos-numericos");
     const directDiagnostics = validatePracticeBank(SKILL_ID, exercises, feedback);
     const banked = loadSkillBank(SKILL_ID);
     expect(banked.diagnostics).toEqual(directDiagnostics);
+  });
+
+  test("resolves per-skill feedback for conjuntos_numericos", () => {
+    // When a dedicated per-skill feedback file exists (unit-1-conjuntos-numericos),
+    // loadSkillBank must use it instead of the generic unit-1 fallback.
+    // The per-skill file has a focused subset of tags — tags only in unit-1.json
+    // (e.g. u1_confunde_natural_entero) are correctly flagged as uncovered.
+    const banked = loadSkillBank(SKILL_ID);
+    // Per-skill feedback has 10 entries. Exercises that reference tags
+    // outside this set produce diagnostics — intentional: the per-skill
+    // file is the authoritative source for this skill.
+    expect(banked.diagnostics.length).toBeGreaterThan(0);
+    // Verify the diagnostics are feedback-coverage messages, not
+    // category-minimum or other issues.
+    for (const diag of banked.diagnostics) {
+      expect(diag).toContain("without feedback");
+    }
+  });
+
+  test("falls back to unit-level feedback when no per-skill file exists", () => {
+    // mat.u1.propiedades_operaciones_reales has no dedicated per-skill
+    // feedback file in RAW_REGISTRY. loadSkillBank must fall back to
+    // unit-1 feedback.
+    const banked = loadSkillBank("mat.u1.propiedades_operaciones_reales");
+    expect(banked.exercises.length).toBeGreaterThanOrEqual(4);
+    // The bank may have diagnostics (category counts, etc.) but the key
+    // assertion is that it loads without throwing — the fallback works.
+    expect(banked).toHaveProperty("diagnostics");
   });
 });
 

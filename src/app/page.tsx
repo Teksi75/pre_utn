@@ -10,8 +10,9 @@ import { HomeNextStepClient } from "@/components/home/HomeNextStepClient";
  *
  * B3 (redesign closeout): the dashboard is for the student.
  * The brand is carried by the top-left brand mark of the
- * header (mixed-case logo) and the hero wordmark (all-caps
- * INGENIUM). The institute's full name is NOT re-stated in
+ * header (all-caps INGENIUM wordmark) only — single brand
+ * touchpoint rule. The hero must not carry its own brand
+ * heading. The institute's full name is NOT re-stated in
  * the hero subtitle. The future teacher-facing panel (where
  * the profesor can see each student's progress) is a
  * separate product with its own SDD; see AGENTS.md "Marca y
@@ -86,7 +87,7 @@ export default function Home() {
             <div className="flex items-center justify-between gap-3 sm:flex-col sm:items-start">
               <dt className="text-[var(--color-brand-600)]">Unidad piloto</dt>
               <dd className="font-medium text-amber-700">
-                Unidades 1 y 2
+                Unidades 1, 2 y 3
               </dd>
             </div>
           </dl>

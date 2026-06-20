@@ -149,6 +149,85 @@ describe("LearnMatematicaPage — section card visible contract", () => {
   });
 });
 
+describe("LearnMatematicaPage — Unit 3 section card visible contract", () => {
+  const U3_SKILL_IDS: readonly string[] = [
+    "mat.u3.ecuaciones_lineales",
+    "mat.u3.ecuaciones_cuadraticas",
+    "mat.u3.inecuaciones_lineales",
+    "mat.u3.inecuaciones_valor_absoluto",
+    "mat.u3.recta",
+    "mat.u3.sistemas",
+    "mat.u3.exponenciales",
+    "mat.u3.logaritmicas",
+  ];
+
+  /**
+   * Extract the Unit 3 <section> block by finding its h2 heading text
+   * and matching from that point to the closing </section> tag.
+   * Returns the section HTML string, or null if not found.
+   */
+  function extractUnit3Section(html: string): string | null {
+    const headingMarker = "Unidad 3 — Ecuaciones y sistemas";
+    const idx = html.indexOf(headingMarker);
+    if (idx === -1) return null;
+    // Walk backward to find the nearest opening <section> before this h2.
+    const before = html.substring(0, idx);
+    const sectionStart = before.lastIndexOf("<section");
+    if (sectionStart === -1) return null;
+    // Walk forward from the heading to find the matching </section>.
+    const after = html.substring(idx);
+    // Find the closing </section> — count depth for nested sections
+    // (not needed here since sections are siblings, but keeps it robust).
+    let depth = 0;
+    let pos = idx;
+    // The opening <section> before the heading is part of the section
+    // we need; scan from sectionStart.
+    for (let i = sectionStart; i < html.length; i++) {
+      if (html.substring(i, i + 8) === "<section") depth++;
+      else if (html.substring(i, i + 10) === "</section>") {
+        depth--;
+        if (depth === 0) {
+          return html.substring(sectionStart, i + 10);
+        }
+      }
+    }
+    return null;
+  }
+
+  test("Unidad 3 — Ecuaciones y sistemas heading is rendered", () => {
+    const html = renderPage();
+    expect(html).toContain("Unidad 3 — Ecuaciones y sistemas");
+  });
+
+  test("Unit 3 section has exactly 8 rendered cards", () => {
+    const html = renderPage();
+    const u3Section = extractUnit3Section(html);
+    expect(u3Section, "Unit 3 section not found").not.toBeNull();
+    // Count <a> elements linking to /learn/matematica/mat.u3.*
+    // These are the section cards; other links (like the back button)
+    // do NOT match the U3 path prefix.
+    const u3Cards =
+      u3Section!.match(
+        /<a[^>]*href="\/learn\/matematica\/mat\.u3\.[^"]*"/g,
+      ) ?? [];
+    expect(
+      u3Cards,
+      `expected 8 U3 card links, got ${u3Cards.length}`,
+    ).toHaveLength(8);
+  });
+
+  test("each U3 card links to /learn/matematica/{skillId}", () => {
+    const html = renderPage();
+    for (const skillId of U3_SKILL_IDS) {
+      const card = extractCard(html, skillId);
+      expect(card, `U3 card for ${skillId} missing`).not.toBeNull();
+      // The href must point at the detail view for the same skillId.
+      const escaped = skillId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      expect(card).toMatch(new RegExp(`href="/learn/matematica/${escaped}"`));
+    }
+  });
+});
+
 describe("LearnMatematicaPage — singular pluralization (smallest behavior-level seam)", () => {
   test("renders '1 tema' (singular) when a node has exactly one concept", () => {
     // No production node has 1 concept (current minimum is 3), so we

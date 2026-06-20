@@ -26,14 +26,18 @@ import type { IntervalRepresentation, IntervalBound, EndpointInclusion } from ".
 // parsing; runtime helpers validate the shapes on first load.
 import theoryUnit1 from "../../../content/matematica/theory/unit-1.json";
 import theoryUnit2 from "../../../content/matematica/theory/unit-2.json";
+import theoryUnit3 from "../../../content/matematica/theory/unit-3.json";
 import examplesUnit1 from "../../../content/matematica/examples/unit-1.json";
 import examplesUnit2 from "../../../content/matematica/examples/unit-2.json";
+import examplesUnit3 from "../../../content/matematica/examples/unit-3.json";
 import feedbackUnit1 from "../../../content/matematica/feedback/unit-1.json";
 import feedbackUnit2 from "../../../content/matematica/feedback/unit-2.json";
+import feedbackUnit3 from "../../../content/matematica/feedback/unit-3.json";
 import feedbackUnit1ConjuntosNumericos from "../../../content/matematica/feedback/unit-1-conjuntos-numericos.json";
 import exercisesJson from "../../../content/matematica/exercises.json";
 import unit1Exercises from "../../../content/matematica/exercises/unit-1.json";
 import unit2Exercises from "../../../content/matematica/exercises/unit-2.json";
+import unit3Exercises from "../../../content/matematica/exercises/unit-3.json";
 import conjuntosNumericosExercises from "../../../content/matematica/exercises/conjuntos-numericos.json";
 
 // ---------------------------------------------------------------------------
@@ -448,15 +452,18 @@ const RAW_REGISTRY: RawRegistry = {
   theory: {
     "unit-1": theoryUnit1 as unknown,
     "unit-2": theoryUnit2 as unknown,
+    "unit-3": theoryUnit3 as unknown,
   },
   examples: {
     "unit-1": examplesUnit1 as unknown,
     "unit-2": examplesUnit2 as unknown,
+    "unit-3": examplesUnit3 as unknown,
   },
   feedback: {
     "unit-1": feedbackUnit1 as unknown,
     "unit-1-conjuntos-numericos": feedbackUnit1ConjuntosNumericos as unknown,
     "unit-2": feedbackUnit2 as unknown,
+    "unit-3": feedbackUnit3 as unknown,
   },
 };
 
@@ -617,9 +624,10 @@ const SKILL_EXERCISE_FILES: Readonly<Record<string, unknown>> = {
 };
 
 /** Unit exercise file registry — maps unit number to raw JSON array. */
-const UNIT_EXERCISE_FILES: Readonly<Record<number, unknown>> = {
+export const UNIT_EXERCISE_FILES: Readonly<Record<number, unknown>> = {
   1: unit1Exercises as unknown,
   2: unit2Exercises as unknown,
+  3: unit3Exercises as unknown,
 };
 
 /**
@@ -702,6 +710,25 @@ function skillIdToUnitKey(skillId: string): string {
 }
 
 /**
+ * Derive the per-skill feedback key (e.g. "unit-1-conjuntos-numericos")
+ * from a skill ID, if a dedicated per-skill feedback collection exists
+ * in the RAW_REGISTRY.
+ *
+ * Convention: `unit-{N}-{slug}` where `slug` is the skill suffix
+ * (`mat.u{N}.<suffix>`) with underscores replaced by hyphens.
+ *
+ * @returns The per-skill feedback key if it exists in the registry,
+ *          `undefined` otherwise.
+ */
+function resolveSkillFeedbackKey(skillId: string): string | undefined {
+  const match = /^mat\.u(\d+)\.(.+)$/.exec(skillId);
+  if (!match) return undefined;
+  const slug = match[2].replace(/_/g, "-");
+  const key = `unit-${match[1]}-${slug}`;
+  return Object.prototype.hasOwnProperty.call(RAW_REGISTRY.feedback, key) ? key : undefined;
+}
+
+/**
  * Load a skill's practice bank together with validation diagnostics.
  *
  * Wires the bank validator into the catalog load path: callers receive both
@@ -709,18 +736,24 @@ function skillIdToUnitKey(skillId: string): string {
  * without having to call them separately. Backward compatible with
  * `loadExercisesForSkill`, which still returns exercises only.
  *
+ * Feedback resolution: tries the per-skill feedback key first (e.g.
+ * `unit-1-conjuntos-numericos`), falling back to the unit-level key
+ * (`unit-1`). This ensures skills with dedicated feedback collections
+ * are validated against the precise set of mappings authored for them.
+ *
  * @param skillId - The skill ID to load the bank for
  * @returns Object with `exercises` array and `diagnostics` array (empty if bank is valid)
  */
 export function loadSkillBank(skillId: string): SkillBank {
   const exercises = loadExercisesForSkill(skillId);
 
-  // Try to load unit feedback for cross-checking error tag coverage.
+  // Try to load feedback for cross-checking error tag coverage.
   // Only swallow the specific "Unknown feedback unit key" error —
   // unexpected errors (programming bugs, loader failures) must propagate.
   let feedback: readonly FeedbackMapping[] = [];
   try {
-    feedback = loadFeedbackContent(skillIdToUnitKey(skillId));
+    const feedbackKey = resolveSkillFeedbackKey(skillId) ?? skillIdToUnitKey(skillId);
+    feedback = loadFeedbackContent(feedbackKey);
   } catch (e: unknown) {
     const isUnknownUnit =
       e instanceof Error && e.message.startsWith("Unknown feedback unit key:");
@@ -831,6 +864,7 @@ export interface UnitValidationThresholds {
 export const UNIT_THRESHOLDS: Readonly<Record<string, number>> = {
   "unit-1": 40,
   "unit-2": 20,
+  "unit-3": 24,
 };
 
 const DEFAULT_UNIT_MINIMUM = 5;

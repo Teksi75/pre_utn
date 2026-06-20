@@ -519,6 +519,22 @@
       "completedAt": "2026-06-19",
       "mergedTo": "main",
       "summary": "Section cards on /learn/matematica show title + 'N tema(s)' instead of first subtopic. Inline JSX substitution + content rename ('División de polinomios'). 6 source-level tests initially; post-apply review replaced them with 6 behavior-level tests using react-dom/server + mocked wrappers (next/link, MathWatermark, DirectionalTransition). 2142 tests, typecheck, build green. Archive clarified: verify/report.md marked SUPERSEDED by verify-report.md."
+    },
+    "implement-unit-3-mathematics": {
+      "status": "in-progress",
+      "branch": null,
+      "startedAt": "2026-06-20",
+      "delivery": "chained-prs-stacked-to-main (PR 1 + PR 2 + PR 3)",
+      "pr1": {
+        "summary": "PR 1 — Domain + Content (DONE in working tree): 8 u3_* taxonomy tags, 7 U3 error-tagging detectors, unit-3.json theory (8 nodes) + examples (16 worked examples) + feedback (8 mappings), 2195/2195 tests, typecheck + build green."
+      },
+      "pr2": {
+        "summary": "PR 2 — Catalog + Exercises (DONE in working tree): unit-3.json exercises (32 new entries, ≥4 per skill), content-loaders.ts + catalog/index.ts wiring, UNIT_THRESHOLDS[unit-3]=24, catalog-split-equivalence baseline bumped to 184/37, 2233/2233 tests, typecheck + build green. Judgment-day fix: tsconfig .next globs removed + ex.u3.recta.2 distractor 6/3→-2."
+      },
+      "pr3": {
+        "summary": "PR 3 — Pilot Activation + UI + tests + verify (DONE in working tree, pending commit): 8 PilotSkill entries appended (mat.u3.ecuaciones_lineales/cuadraticas/inecuaciones_lineales/inecuaciones_valor_absoluto/recta/sistemas/exponenciales/logaritmicas), UNIT_LABELS/UNIT_KEYS extended with unit-3, home pilot badge updated to 'Unidades 1, 2 y 3', /learn description mentions U3, U3 'not-pilot' fixtures in start-skill.test.ts + practice-link.test.ts replaced with mat.u4.perimetro_area_volumen, accessibility.test.ts U3 accuracy entries + U1→U3 prereq assertions (valor_absoluto→inecuaciones_valor_absoluto, potencias_raices→exponenciales, logaritmos→logaritmicas), readiness.ts vacuous-truth + unit-scope filter (skills with empty commonErrorTags or only cross-unit legacy tags are contentReady). 2252/2252 tests, typecheck + build green. Do not archive yet — orchestrator will commit and merge."
+      },
+      "summary": "Unit 3 (Ecuaciones y sistemas) vertical slice: 8 pilot skills, theory/examples/feedback/exercises content, 3-PR stacked delivery, pending commit."
     }
   },
   "activeBranches": [],

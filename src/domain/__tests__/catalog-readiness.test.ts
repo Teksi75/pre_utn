@@ -49,6 +49,38 @@ describe("getSkillComponents", () => {
     expect(feedback?.present).toBe(true);
   });
 
+  test("feedback requires every distinct in-scope error tag to be covered", () => {
+    // The contract: feedback is NOT present when any in-scope tag lacks a
+    // feedback mapping. This replaces the old "any-tag-trigger" behavior
+    // with a strict "every-distinct-tag-must-match" rule.
+    //
+    // For pilot skills, every distinct in-scope tag IS covered in the
+    // unit-level feedback file, so the feedback component remains present.
+    const components = getSkillComponents("mat.u1.conjuntos_numericos");
+    const feedback = components.find((c) => c.name === "feedback");
+    expect(feedback?.present).toBe(true);
+
+    // Spot-check: the conjuntos_numericos exercises use at least 13
+    // distinct tags; all must be in the unit-1 feedback file.
+    const distinctInScopeTags = [
+      ...new Set(
+        loadFeedbackContent("unit-1")
+          .filter((m) => m.errorTag.startsWith("u1_"))
+          .map((m) => m.errorTag)
+      ),
+    ];
+    const conjuntosTags = [
+      "u1_pertenencia_vs_inclusion",
+      "u1_confunde_natural_entero",
+      "u1_confunde_racional_irracional",
+      "u1_toda_raiz_irracional",
+      "u1_inclusion_chain_order",
+    ];
+    for (const tag of conjuntosTags) {
+      expect(distinctInScopeTags, `tag ${tag} must be in unit-1 feedback`).toContain(tag);
+    }
+  });
+
   test("evaluation component is present (always true for pilot)", () => {
     const components = getSkillComponents("mat.u1.propiedades_operaciones_reales");
     const evaluation = components.find((c) => c.name === "evaluation");

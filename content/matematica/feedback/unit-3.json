@@ -1,0 +1,50 @@
+[
+  {
+    "errorTag": "u3_aislamiento_incorrecto",
+    "type": "procedural",
+    "message": "Revisá el orden de las operaciones. Para resolver una ecuación lineal como $ax + b = c$: (1) primero movés el término independiente ($b$) al otro lado CAMBIANDO EL SIGNO, (2) después dividís por el coeficiente ($a$). El error más común es olvidar uno de los dos pasos — ya sea el cambio de signo al pasar el término, o la división final por el coeficiente. Verificá siempre reemplazando el valor obtenido en la ecuación original.",
+    "recoveryTarget": "example-ecuaciones-lineales-1"
+  },
+  {
+    "errorTag": "u3_factorizacion_cuadratica",
+    "type": "conceptual",
+    "message": "Una ecuación cuadrática como $ax^2 + bx + c = 0$ puede tener HASTA DOS soluciones, no una sola. Para $x^2 = a^2$, las soluciones son $x = +\\sqrt{a^2}$ y $x = -\\sqrt{a^2}$; reportar solo el positivo es un error frecuente. Si factorizás como $(x - r_1)(x - r_2) = 0$, hay DOS raíces ($r_1$ y $r_2$) y la respuesta completa es el conjunto de las dos. Verificá que los signos de los factores coincidan con el término independiente y con el coeficiente del término lineal.",
+    "recoveryTarget": "example-ecuaciones-cuadraticas-2"
+  },
+  {
+    "errorTag": "u3_signo_desigualdad",
+    "type": "procedural",
+    "message": "REGLA CRUCIAL: cuando multiplicás o dividís ambos miembros de una desigualdad por un número NEGATIVO, tenés que invertir el sentido del signo. Si tenés $-2x > 6$ y dividís por $-2$, el resultado es $x < -3$ (NO $x > -3$). El modo más confiable de no equivocarte es la verificación: si tu respuesta dice $x > -3$, probá con $x = -4$: $-2 \\cdot (-4) = 8$, que SÍ es mayor que 6, así que $-4$ es solución y tu respuesta era incompleta. La verificación desmiente la respuesta incorrecta.",
+    "recoveryTarget": "example-inecuaciones-lineales-2"
+  },
+  {
+    "errorTag": "u3_dos_valores_absoluto",
+    "type": "conceptual",
+    "message": "Las inecuaciones con valor absoluto tienen DOS estructuras diferentes según la desigualdad. Para $|expr| < c$: la solución es un INTERVALO ABIERTO (conjunción, $-c < expr < c$). Para $|expr| > c$: la solución son DOS RAYOS disjuntos (disyunción, $expr < -c$ o $expr > c$). El error más común es reducir la respuesta a un único valor (como $x = 7$) o quedarse con una sola desigualdad. La solución SIEMPRE es un conjunto, no un valor único. Recordá: $<$ y $\\leq$ dan conjunción; $>$ y $\\geq$ dan disyunción.",
+    "recoveryTarget": "example-inecuaciones-valor-absoluto-1"
+  },
+  {
+    "errorTag": "u3_pendiente_o_ordenada",
+    "type": "conceptual",
+    "message": "En la forma $y = mx + b$ (forma pendiente-ordenada), el coeficiente que multiplica a $x$ es la PENDIENTE ($m$), y el término independiente es la ORDENADA AL ORIGEN ($b$). El error más común es intercambiarlos. Truco para no equivocarte: tapá con la mano el coeficiente de $x$ — lo que queda visible es la ordenada. Para calcular la pendiente entre dos puntos, recordá que la diferencia en $y$ va en el NUMERADOR y la diferencia en $x$ en el DENOMINADOR: $m = (y_2 - y_1)/(x_2 - x_1)$.",
+    "recoveryTarget": "example-recta-1"
+  },
+  {
+    "errorTag": "u3_sustitucion_o_eliminacion",
+    "type": "procedural",
+    "message": "En sistemas de ecuaciones, hay dos puntos donde ocurren los errores más comunes: (1) al sustituir, distribuir mal el signo negativo — recordá que $-(5 - x) = -5 + x$, NO $-5 - x$. (2) al eliminar, sumar en vez de restar o viceversa — si los coeficientes son OPUESTOS ($+y$ y $-y$), SUMÁ; si son IGUALES, RESTÁ. Verificá siempre la solución en AMBAS ecuaciones originales antes de dar la respuesta final. Si solo verificás en una, perdés la otra mitad del control.",
+    "recoveryTarget": "example-sistemas-1"
+  },
+  {
+    "errorTag": "u3_igualdad_exponenciales",
+    "type": "conceptual",
+    "message": "Para resolver una ecuación exponencial, primero REESCRIBÍ ambos miembros como potencia de la MISMA base. Por ejemplo, $4^x = 32$ se convierte en $(2^2)^x = 2^5$, es decir $2^{2x} = 2^5$, dando $x = 5/2$. El error más común es confundir la base con la respuesta: si decís que $2^x = 8$ da $x = 8$, estás tratando el lado derecho como si fuera el valor de $x$. Recordá: en $a^x = b$, $a$ es la base y $b$ es lo que $a$ elevado a algo debe dar. La respuesta es ESE algo, no $b$.",
+    "recoveryTarget": "example-exponenciales-1"
+  },
+  {
+    "errorTag": "u3_propiedad_logaritmo",
+    "type": "conceptual",
+    "message": "Las propiedades de logaritmos son sistemáticamente mal aplicadas. Tres errores clásicos que tenés que evitar: (1) $\\log(a + b) \\neq \\log a + \\log b$ — el logaritmo NO distribuye sobre la suma. (2) $\\log(a \\cdot b) = \\log a + \\log b$ (SÍ), pero $\\log(a \\cdot b) \\neq \\log a \\cdot \\log b$. (3) $\\log(a^n) = n \\cdot \\log a$ (el exponente BAJA como factor), pero $\\log(a^n) \\neq (\\log a)^n$. Si dudás entre producto, suma, factor o potencia, escribí la propiedad literalmente y compará con lo que estás por hacer.",
+    "recoveryTarget": "example-logaritmicas-1"
+  }
+]

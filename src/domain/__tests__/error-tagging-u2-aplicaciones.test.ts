@@ -1,6 +1,5 @@
 /**
  * U2 Aplicaciones error-tagging detectors.
- * Strict TDD: RED phase first (this file written before detectors exist).
  *
  * Spec coverage: U2APP-TAG-001..U2APP-TAG-003 (taxonomy),
  *                detector scenarios for u2_denominador_cero and u2_confunde_mcm_mcd

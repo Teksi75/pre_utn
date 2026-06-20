@@ -26,7 +26,11 @@ describe("resolveInitialPracticeSkill", () => {
   });
 
   it("rejects a known catalog skill that is not ready for guided practice", () => {
-    expect(resolveInitialPracticeSkill("mat.u3.ecuaciones_lineales")).toBeNull();
+    // mat.u4.perimetro_area_volumen is a known skill id (Unit 4 geometry) but is
+    // not registered for guided practice in PILOT_SKILL_UNIT_MAP — Unit 4 is
+    // intentionally coming-soon until it has its own slice. Replaced the
+    // legacy U3 fixture here after Unit 3 became a pilot unit in PR 3.
+    expect(resolveInitialPracticeSkill("mat.u4.perimetro_area_volumen")).toBeNull();
   });
 
   it("rejects an absent or unknown skill query param", () => {
@@ -69,16 +73,18 @@ describe("analyzeRequestedSkill", () => {
   });
 
   it("returns 'blocked' with reason 'unknown-skill' for a non-pilot skill id", () => {
-    // mat.u3.ecuaciones_lineales is in the SKILL_DEPENDENCIES graph (so it would
-    // be "valid" as a skill id) but it is not registered for guided
-    // practice in PILOT_SKILL_UNIT_MAP.
+    // mat.u4.perimetro_area_volumen is in KNOWN_SKILL_IDS (Unit 4 is a known
+    // catalog unit) but is NOT registered for guided practice in
+    // PILOT_SKILL_UNIT_MAP — Unit 4 is intentionally coming-soon. Used as
+    // the non-pilot fixture after Unit 3 became a pilot unit in PR 3.
     const result = analyzeRequestedSkill(
-      "mat.u3.ecuaciones_lineales",
+      "mat.u4.perimetro_area_volumen",
       emptyProgress()
     );
     expect(result.kind).toBe("blocked");
     if (result.kind === "blocked") {
       expect(result.reason).toBe("unknown-skill");
+      expect(result.skillId).toBe("mat.u4.perimetro_area_volumen");
     }
   });
 
@@ -240,7 +246,7 @@ describe("analyzeRequestedSkill — QA content mode", () => {
 
   it("still blocks non-pilot skills even when QA mode is enabled", () => {
     const result = analyzeRequestedSkill(
-      "mat.u3.ecuaciones_lineales",
+      "mat.u4.perimetro_area_volumen",
       emptyProgress(),
       { qaContentModeEnabled: true }
     );
@@ -252,7 +258,7 @@ describe("analyzeRequestedSkill — QA content mode", () => {
 
   it("still blocks content-not-ready skills even when QA mode is enabled", () => {
     const result = analyzeRequestedSkill(
-      "mat.u3.ecuaciones_lineales",
+      "mat.u4.perimetro_area_volumen",
       emptyProgress(),
       { qaContentModeEnabled: true }
     );
