@@ -3,18 +3,20 @@
 import { useState } from "react";
 import { RichText } from "@/components/math/RichText";
 import { IntervalNumberLine } from "@/components/practice/IntervalNumberLine";
+import { PedagogicalVisualRenderer } from "@/components/math-visuals/PedagogicalVisualRenderer";
 import type { WorkedExample } from "@/domain/models/worked-example";
 
 interface WorkedExampleCardProps {
   readonly example: WorkedExample;
+  readonly defaultExpanded?: boolean;
 }
 
 /**
  * Displays a worked example with collapsible solution steps.
  * Steps are hidden by default and revealed on user action.
  */
-export function WorkedExampleCard({ example }: WorkedExampleCardProps) {
-  const [showSteps, setShowSteps] = useState(false);
+export function WorkedExampleCard({ example, defaultExpanded = false }: WorkedExampleCardProps) {
+  const [showSteps, setShowSteps] = useState(defaultExpanded);
   const sortedSteps = [...example.steps].sort((a, b) => a.order - b.order);
 
   return (
@@ -59,6 +61,13 @@ export function WorkedExampleCard({ example }: WorkedExampleCardProps) {
                         interval={rep}
                         className="rounded-[var(--radius-card)] border border-brand-200 bg-brand-50 p-3"
                       />
+                    ))}
+                  </div>
+                )}
+                {step.visualExamples && step.visualExamples.length > 0 && (
+                  <div className="ml-9 mt-3 space-y-3">
+                    {step.visualExamples.map((visual) => (
+                      <PedagogicalVisualRenderer key={visual.id} visual={visual} />
                     ))}
                   </div>
                 )}

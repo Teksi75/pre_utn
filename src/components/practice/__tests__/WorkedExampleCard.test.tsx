@@ -12,6 +12,8 @@ import { describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { WorkedExampleCard } from "@/components/practice/WorkedExampleCard";
 import type { WorkedExample } from "@/domain/models/worked-example";
+import type { IntervalRepresentation } from "@/domain/intervals/representation";
+import type { PedagogicalVisual } from "@/domain/visuals/types";
 
 // ---------------------------------------------------------------------------
 // Test fixtures
@@ -121,5 +123,86 @@ describe("WorkedExampleCard — disclosure contract", () => {
     expect(html).toContain('aria-expanded="false"');
     // No step content mounted
     expect(html).not.toContain("diferencia de cuadrados");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Pedagogical visual examples wiring
+// ---------------------------------------------------------------------------
+
+const distanceVisual: PedagogicalVisual = {
+  id: "step-distance",
+  kind: "distance-on-line",
+  title: "Distance on the number line",
+  ariaLabel: "Distance visual for absolute value inequality",
+  description: "The solution is the interval between -1 and 5.",
+  center: 2,
+  distance: 3,
+  inequality: "le",
+};
+
+describe("WorkedExampleCard — pedagogical visuals wiring", () => {
+  test("step-level visualExamples render when expanded", () => {
+    const example = makeExample({
+      steps: [
+        { order: 1, explanation: "First step.", visualExamples: [distanceVisual] },
+        { order: 2, explanation: "Second step." },
+      ],
+    });
+
+    const html = renderToStaticMarkup(<WorkedExampleCard example={example} defaultExpanded />);
+
+    expect(html).toContain("First step.");
+    expect(html).toContain('role="img"');
+    expect(html).toContain(distanceVisual.ariaLabel);
+    expect(html).toContain(distanceVisual.description);
+  });
+
+  test("step-level visualExamples are not mounted when collapsed", () => {
+    const example = makeExample({
+      steps: [
+        { order: 1, explanation: "First step.", visualExamples: [distanceVisual] },
+      ],
+    });
+
+    const html = renderHtml(example);
+
+    expect(html).not.toContain('role="img"');
+    expect(html).not.toContain(distanceVisual.ariaLabel);
+  });
+
+  test("step-level visualExamples render after explanation and intervalRepresentations", () => {
+    const intervalRep: IntervalRepresentation = {
+      id: "step-interval",
+      notation: "[1, 4]",
+      setBuilderLabel: "1 ≤ x ≤ 4",
+      lower: { kind: "finite", value: 1 },
+      upper: { kind: "finite", value: 4 },
+      lowerInclusion: "closed",
+      upperInclusion: "closed",
+      ariaLabel: "Step interval one to four closed",
+    };
+
+    const example = makeExample({
+      steps: [
+        {
+          order: 1,
+          explanation: "Step explanation text.",
+          intervalRepresentations: [intervalRep],
+          visualExamples: [distanceVisual],
+        },
+      ],
+    });
+
+    const html = renderToStaticMarkup(<WorkedExampleCard example={example} defaultExpanded />);
+    const explanationPos = html.indexOf("Step explanation text.");
+    const intervalPos = html.indexOf(intervalRep.setBuilderLabel);
+    const visualPos = html.indexOf(distanceVisual.ariaLabel);
+
+    expect(explanationPos).toBeGreaterThan(-1);
+    expect(intervalPos).toBeGreaterThan(-1);
+    expect(visualPos).toBeGreaterThan(-1);
+    expect(visualPos).toBeGreaterThan(explanationPos);
+    expect(visualPos).toBeGreaterThan(intervalPos);
   });
 });
