@@ -15,8 +15,11 @@ import {
   loadTheoryContent,
   loadExampleContent,
   parseConceptBlock,
+  parseTheoryNode,
+  parseWorkedExample,
 } from "../catalog/content-loaders";
 import type { Exercise } from "../models/exercise";
+import { assertSignChart } from "../visuals/__tests__/helpers";
 
 describe("applyExerciseDefaults", () => {
   const baseRaw: Record<string, unknown> = {
@@ -745,5 +748,169 @@ describe("import safety — no side-effects at module load", () => {
     expect(() => loadTheoryContent("nonexistent")).toThrow(
       "Unknown theory unit key"
     );
+  });
+});
+
+describe("u3-visualizaciones-pedagogicas — visualExamples loader wiring", () => {
+  const baseVisual: Record<string, unknown> = {
+    id: "vis-1",
+    kind: "sign-chart",
+    title: "Tabla de signos",
+    ariaLabel: "Tabla de signos de x menos 2",
+    description: "La expresión es positiva antes de 2 y negativa después.",
+    variable: "x",
+    expression: "x - 2",
+    zeros: [2],
+    excludedPoints: [],
+    signZones: [
+      { lowerBound: null, upperBound: 2, sign: "-" },
+      { lowerBound: 2, upperBound: null, sign: "+" },
+    ],
+  };
+
+  const baseTheoryRaw: Record<string, unknown> = {
+    id: "theory-u3-test",
+    skillId: "mat.u3.inecuaciones_lineales",
+    notation: ["x"],
+    commonMistakes: ["olvidar invertir desigualdad"],
+    practicePrompts: ["resolver 2x > 4"],
+    canonicalTrace: [{ path: "test", sourceUse: "reference", pedagogicalIntent: "test" }],
+  };
+
+  const baseExampleRaw: Record<string, unknown> = {
+    id: "example-u3-test",
+    skillId: "mat.u3.inecuaciones_lineales",
+    problem: "Resolver 2x > 4",
+    finalAnswer: "x > 2",
+    pedagogicalNote: "Nota",
+    canonicalTrace: [{ path: "test", sourceUse: "reference", pedagogicalIntent: "test" }],
+  };
+
+  test("parseConceptBlock preserves valid concept-level visualExamples", () => {
+    const raw = {
+      id: "concept-u3-test",
+      title: "Concepto con visual",
+      body: "Cuerpo",
+      visualExamples: [baseVisual],
+    };
+    const result = parseConceptBlock(raw, "theory-u3-test", 0);
+    expect(result.visualExamples).toHaveLength(1);
+    const visual = assertSignChart(result.visualExamples![0]);
+    expect(visual.expression).toBe("x - 2");
+    expect(visual.criticalPoints).toEqual([2]);
+  });
+
+  test("parseConceptBlock rejects malformed concept-level visualExamples", () => {
+    const raw = {
+      id: "concept-u3-test",
+      title: "Concepto con visual",
+      body: "Cuerpo",
+      visualExamples: { kind: "sign-chart" },
+    };
+    expect(() => parseConceptBlock(raw, "theory-u3-test", 0)).toThrow(/visualExamples/);
+  });
+
+  test("parseConceptBlock rejects explicit null concept-level visualExamples", () => {
+    const raw = {
+      id: "concept-u3-test",
+      title: "Concepto con visual",
+      body: "Cuerpo",
+      visualExamples: null,
+    };
+    expect(() => parseConceptBlock(raw, "theory-u3-test", 0)).toThrow(/visualExamples/);
+  });
+
+  test("parseTheoryNode preserves valid node-level visualExamples", () => {
+    const raw = {
+      ...baseTheoryRaw,
+      visualExamples: [baseVisual],
+    };
+    const result = parseTheoryNode(raw, 0);
+    expect(result.visualExamples).toHaveLength(1);
+    expect(result.visualExamples![0].kind).toBe("sign-chart");
+  });
+
+  test("parseTheoryNode rejects malformed node-level visualExamples", () => {
+    const raw = {
+      ...baseTheoryRaw,
+      visualExamples: "not-an-array",
+    };
+    expect(() => parseTheoryNode(raw, 0)).toThrow(/visualExamples/);
+  });
+
+  test("parseTheoryNode rejects explicit null node-level visualExamples", () => {
+    const raw = {
+      ...baseTheoryRaw,
+      visualExamples: null,
+    };
+    expect(() => parseTheoryNode(raw, 0)).toThrow(/visualExamples/);
+  });
+
+  test("parseWorkedExample preserves valid step-level visualExamples", () => {
+    const raw = {
+      ...baseExampleRaw,
+      steps: [
+        {
+          order: 1,
+          explanation: "Paso uno",
+          visualExamples: [baseVisual],
+        },
+        {
+          order: 2,
+          explanation: "Paso dos",
+        },
+      ],
+    };
+    const result = parseWorkedExample(raw, 0);
+    expect(result.steps[0].visualExamples).toHaveLength(1);
+    expect(result.steps[0].visualExamples![0].kind).toBe("sign-chart");
+    expect(result.steps[1].visualExamples).toBeUndefined();
+  });
+
+  test("parseWorkedExample rejects malformed step-level visualExamples", () => {
+    const raw = {
+      ...baseExampleRaw,
+      steps: [
+        {
+          order: 1,
+          explanation: "Paso uno",
+          visualExamples: { kind: "sign-chart" },
+        },
+        {
+          order: 2,
+          explanation: "Paso dos",
+        },
+      ],
+    };
+    expect(() => parseWorkedExample(raw, 0)).toThrow(/visualExamples/);
+  });
+
+  test("parseWorkedExample rejects explicit null step-level visualExamples", () => {
+    const raw = {
+      ...baseExampleRaw,
+      steps: [
+        {
+          order: 1,
+          explanation: "Paso uno",
+          visualExamples: null,
+        },
+        {
+          order: 2,
+          explanation: "Paso dos",
+        },
+      ],
+    };
+    expect(() => parseWorkedExample(raw, 0)).toThrow(/visualExamples/);
+  });
+
+  test("U3 theory and examples load without breaking existing content", () => {
+    // Backward-compat guard: U3 JSON currently has no visualExamples, but the
+    // wiring must not throw and must preserve existing shape.
+    expect(() => loadTheoryContent("unit-3")).not.toThrow();
+    expect(() => loadExampleContent("unit-3")).not.toThrow();
+    const theory = loadTheoryContent("unit-3");
+    const examples = loadExampleContent("unit-3");
+    expect(theory.length).toBeGreaterThan(0);
+    expect(examples.length).toBeGreaterThan(0);
   });
 });

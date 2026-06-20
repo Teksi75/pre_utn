@@ -20,6 +20,7 @@ import type { SkillId } from "../models/skill";
 import { parseSkillUnit } from "../shared/skill-id";
 import type { IntervalModel, IntervalEndpoint } from "../intervals/index";
 import type { IntervalRepresentation, IntervalBound, EndpointInclusion } from "../intervals/representation";
+import { parseOptionalVisualExamples } from "../visuals/parse";
 
 // Static JSON imports — arrive as TypeScript-inferred shapes.
 // All are stored as `unknown` in RAW_REGISTRY to prevent module-init
@@ -256,6 +257,7 @@ export function parseConceptBlock(raw: Record<string, unknown>, parentId: string
     title: parseStringField(raw, "title", id),
     body: body ?? "",
     intervalRepresentations: parseOptionalIntervalRepresentations(raw, "intervalRepresentations", id),
+    visualExamples: parseOptionalVisualExamples(raw.visualExamples, id),
   };
   return bodyParagraphs ? { ...result, bodyParagraphs } : result;
 }
@@ -339,7 +341,7 @@ function parseOptionalIntervalVisuals(
 }
 
 /** Runtime-parse a WorkedExample from a raw object. */
-function parseWorkedExample(raw: Record<string, unknown>, index: number): WorkedExample {
+export function parseWorkedExample(raw: Record<string, unknown>, index: number): WorkedExample {
   const id = typeof raw.id === "string" ? raw.id : `worked-ex-${index}`;
   const stepsRaw = raw.steps;
   const steps: SolutionStep[] = [];
@@ -350,6 +352,7 @@ function parseWorkedExample(raw: Record<string, unknown>, index: number): Worked
         order: typeof s.order === "number" ? s.order : i + 1,
         explanation: parseStringField(s, "explanation", `${id}-step${i}`),
         intervalRepresentations: parseOptionalIntervalRepresentations(s, "intervalRepresentations", `${id}-step${i}`),
+        visualExamples: parseOptionalVisualExamples(s.visualExamples, `${id}-step${i}`),
       });
     }
   }
@@ -396,9 +399,10 @@ function parseFeedbackMappingArray(raw: unknown, sourceName: string): readonly F
 }
 
 /** Runtime-parse a TheoryNode from a raw object. */
-function parseTheoryNode(raw: Record<string, unknown>, index: number): TheoryNode {
+export function parseTheoryNode(raw: Record<string, unknown>, index: number): TheoryNode {
   const id = typeof raw.id === "string" ? raw.id : `theory-node-${index}`;
   const intervalVisuals = parseOptionalIntervalVisuals(raw, id);
+  const visualExamples = parseOptionalVisualExamples(raw.visualExamples, id);
 
   // Normalize: prefer `concepts`, fall back to `conceptBlocks`, else empty.
   const conceptsRaw: unknown[] = Array.isArray(raw.concepts)
@@ -419,6 +423,7 @@ function parseTheoryNode(raw: Record<string, unknown>, index: number): TheoryNod
     practicePrompts: parseOptionalStringArray(raw, "practicePrompts"),
     canonicalTrace: parseCanonicalTraceArray(raw, id),
     ...(intervalVisuals !== undefined ? { intervalVisuals } : {}),
+    ...(visualExamples !== undefined ? { visualExamples } : {}),
   };
 }
 

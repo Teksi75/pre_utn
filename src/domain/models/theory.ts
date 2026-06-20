@@ -8,6 +8,7 @@ import { ok, err } from "./result";
 import type { SkillId } from "./skill";
 import type { IntervalModel } from "../intervals/index";
 import type { IntervalRepresentation } from "../intervals/representation";
+import type { PedagogicalVisual } from "../visuals/types";
 
 /** Source use classification for canonical material. */
 export type SourceUse = "adapted" | "reinforcement" | "reference";
@@ -38,6 +39,8 @@ export interface ConceptBlock {
   readonly bodyParagraphs?: readonly string[];
   /** Optional interval representations for visual examples. */
   readonly intervalRepresentations?: readonly IntervalRepresentation[];
+  /** Optional pedagogical visuals attached to this concept. */
+  readonly visualExamples?: readonly PedagogicalVisual[];
 }
 
 /** Optional visual interval representation attached to theory nodes. */
@@ -58,6 +61,8 @@ export interface TheoryNode {
   readonly practicePrompts: readonly string[];
   readonly canonicalTrace: readonly CanonicalTrace[];
   readonly intervalVisuals?: readonly IntervalVisualExample[];
+  /** Optional node-level pedagogical visuals. */
+  readonly visualExamples?: readonly PedagogicalVisual[];
 }
 
 /** Validation error with field and message. */
