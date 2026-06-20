@@ -11,7 +11,9 @@
 import { describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { TheoryCard } from "@/components/practice/TheoryCard";
-import type { TheoryNode, CanonicalTrace } from "@/domain/models/theory";
+import type { TheoryNode, CanonicalTrace, IntervalVisualExample } from "@/domain/models/theory";
+import type { IntervalRepresentation } from "@/domain/intervals/representation";
+import type { PedagogicalVisual } from "@/domain/visuals/types";
 
 // ---------------------------------------------------------------------------
 // Test helpers
@@ -293,5 +295,141 @@ describe("TheoryCard — KaTeX math in paragraphs", () => {
     // The wrapper is a <div> (not <p>) → no <p> tags wrapping block math
     const childDivs = countChildDivsInsideContainer(html, "space-y-2");
     expect(childDivs).toBeGreaterThanOrEqual(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Pedagogical visual examples wiring
+// ---------------------------------------------------------------------------
+
+const signChartVisual: PedagogicalVisual = {
+  id: "theory-sign-chart",
+  kind: "sign-chart",
+  title: "Sign chart",
+  ariaLabel: "Sign chart for linear inequality",
+  description: "The expression is positive before the zero and negative after it.",
+  variable: "x",
+  expression: "x - 2",
+  zeros: [2],
+  excludedPoints: [],
+  criticalPoints: [2],
+  signZones: [
+    { lowerBound: null, upperBound: 2, sign: "-" },
+    { lowerBound: 2, upperBound: null, sign: "+" },
+  ],
+};
+
+describe("TheoryCard — pedagogical visuals wiring", () => {
+  test("concept-level visualExamples render after the concept body", () => {
+    const node = makeNode({
+      concepts: [
+        {
+          id: "concept-visual",
+          title: "Visual concept",
+          body: "Concept body.",
+          visualExamples: [signChartVisual],
+        },
+      ],
+    });
+
+    const html = renderHtml(node);
+
+    expect(html).toContain("Concept body.");
+    expect(html).toContain('role="img"');
+    expect(html).toContain(signChartVisual.ariaLabel);
+    expect(html).toContain(signChartVisual.description);
+  });
+
+  test("node-level visualExamples render near legacy interval visuals", () => {
+    const node = makeNode({
+      visualExamples: [signChartVisual],
+    });
+
+    const html = renderHtml(node);
+
+    expect(html).toContain('role="img"');
+    expect(html).toContain(signChartVisual.ariaLabel);
+    expect(html).toContain(signChartVisual.description);
+  });
+
+  test("responsive smoke test: visual inside a narrow card container uses viewBox and relative width (jsdom cannot measure real overflow)", () => {
+    const html = renderToStaticMarkup(
+      <div style={{ width: 320 }}>
+        <TheoryCard node={makeNode({ visualExamples: [signChartVisual] })} />
+      </div>
+    );
+
+    // The SVG must scale to the card width; a fixed pixel width would break
+    // narrow screens. jsdom cannot compute layout overflow, so we assert the
+    // structural preconditions that make responsive scaling possible.
+    expect(html).toContain('viewBox="');
+    expect(html).toContain('class="h-auto w-full"');
+    expect(html).not.toMatch(/<svg[^>]*\swidth="\d+"/);
+    expect(html).not.toMatch(/<figure[^>]*style="[^"]*width/);
+  });
+
+  test("no visualExamples renders without resolver markup", () => {
+    const html = renderHtml(makeNode());
+
+    expect(html).not.toContain('role="img"');
+    expect(html).not.toContain(signChartVisual.ariaLabel);
+  });
+
+  test("concept-level visualExamples render after intervalRepresentations", () => {
+    const intervalRep: IntervalRepresentation = {
+      id: "concept-interval",
+      notation: "[1, 4]",
+      setBuilderLabel: "1 ≤ x ≤ 4",
+      lower: { kind: "finite", value: 1 },
+      upper: { kind: "finite", value: 4 },
+      lowerInclusion: "closed",
+      upperInclusion: "closed",
+      ariaLabel: "Interval one to four closed",
+    };
+
+    const node = makeNode({
+      concepts: [
+        {
+          id: "concept-ordered",
+          title: "Ordered concept",
+          body: "Body text.",
+          intervalRepresentations: [intervalRep],
+          visualExamples: [signChartVisual],
+        },
+      ],
+    });
+
+    const html = renderHtml(node);
+    const intervalPos = html.indexOf(intervalRep.setBuilderLabel);
+    const visualPos = html.indexOf(signChartVisual.ariaLabel);
+
+    expect(intervalPos).toBeGreaterThan(-1);
+    expect(visualPos).toBeGreaterThan(-1);
+    expect(visualPos).toBeGreaterThan(intervalPos);
+  });
+
+  test("node-level visualExamples render after legacy interval visuals", () => {
+    const intervalVisual: IntervalVisualExample = {
+      id: "node-interval",
+      title: "Node interval title",
+      description: "Node interval description.",
+      interval: {
+        left: { kind: "finite", value: 1, closed: true },
+        right: { kind: "finite", value: 4, closed: true },
+      },
+    };
+
+    const node = makeNode({
+      intervalVisuals: [intervalVisual],
+      visualExamples: [signChartVisual],
+    });
+
+    const html = renderHtml(node);
+    const intervalPos = html.indexOf(intervalVisual.title);
+    const visualPos = html.indexOf(signChartVisual.ariaLabel);
+
+    expect(intervalPos).toBeGreaterThan(-1);
+    expect(visualPos).toBeGreaterThan(-1);
+    expect(visualPos).toBeGreaterThan(intervalPos);
   });
 });

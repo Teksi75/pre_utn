@@ -4,6 +4,7 @@ import { useState } from "react";
 import { NumberLineInterval } from "@/components/math/NumberLineInterval";
 import { IntervalNumberLine } from "@/components/practice/IntervalNumberLine";
 import { RichText } from "@/components/math/RichText";
+import { PedagogicalVisualRenderer } from "@/components/math-visuals/PedagogicalVisualRenderer";
 import type { TheoryNode } from "@/domain/models/theory";
 
 interface TheoryCardProps {
@@ -83,6 +84,13 @@ export function TheoryCard({ node }: TheoryCardProps) {
                 ))}
               </div>
             )}
+            {concept.visualExamples && concept.visualExamples.length > 0 && (
+              <div className="mt-3 space-y-3">
+                {concept.visualExamples.map((visual) => (
+                  <PedagogicalVisualRenderer key={visual.id} visual={visual} />
+                ))}
+              </div>
+            )}
           </section>
         ))}
       </div>
@@ -99,6 +107,14 @@ export function TheoryCard({ node }: TheoryCardProps) {
               title={visual.title}
               description={<RichText text={visual.description} />}
             />
+          ))}
+        </div>
+      )}
+
+      {node.visualExamples && node.visualExamples.length > 0 && (
+        <div className="mt-5 space-y-3">
+          {node.visualExamples.map((visual) => (
+            <PedagogicalVisualRenderer key={visual.id} visual={visual} />
           ))}
         </div>
       )}
