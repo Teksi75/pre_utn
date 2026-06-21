@@ -137,21 +137,6 @@
         "explanation": "Solución: $(-\\infty, -3)$ o $x < -3$.",
         "visualExamples": [
           {
-            "id": "vis-ex-inl-flip-intervalo",
-            "kind": "sign-chart",
-            "title": "Signo de -2x - 6",
-            "ariaLabel": "Tabla de signos de menos 2x menos 6; la expresión se anula en menos 3, es positiva antes y negativa después, con el extremo abierto",
-            "description": "La expresión -2x - 6 se hace 0 en x = -3, es positiva a la izquierda y negativa a la derecha. La desigualdad -2x > 6 equivale a -2x - 6 > 0, así que se acepta la zona positiva; -3 queda excluido porque la desigualdad es estricta.",
-            "variable": "x",
-            "expression": "-2x - 6",
-            "zeros": [-3],
-            "excludedPoints": [-3],
-            "signZones": [
-              { "lowerBound": null, "upperBound": -3, "sign": "+" },
-              { "lowerBound": -3, "upperBound": null, "sign": "-" }
-            ]
-          },
-          {
             "id": "vis-ex-inl-flip-intervalo-set",
             "kind": "interval-set",
             "title": "Solución de -2x > 6",

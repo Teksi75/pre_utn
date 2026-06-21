@@ -235,9 +235,9 @@ describe("u3-visualizaciones-pedagogicas — content shape", () => {
     expect(visuals.length, `expected ≥1 visual for ${skillId}`).toBeGreaterThanOrEqual(1);
   });
 
-  test("inecuaciones_lineales includes a sign-chart visual", () => {
+  test("inecuaciones_lineales includes an interval-set solution visual", () => {
     const visuals = visualsForSkill("mat.u3.inecuaciones_lineales");
-    expect(visuals.some((v) => v.kind === "sign-chart")).toBe(true);
+    expect(visuals.some((v) => v.kind === "interval-set")).toBe(true);
   });
 
   test("inecuaciones_valor_absoluto includes a distance-on-line visual", () => {
@@ -262,10 +262,9 @@ describe("u3-visualizaciones-pedagogicas — content shape", () => {
     expect(() => loadExampleContent("unit-3")).not.toThrow();
   });
 
-  test("strict-inequality sign-chart visuals mark the boundary as excluded", () => {
-    // A strict inequality endpoint must be drawn as an open/excluded point.
-    // It may also be listed in zeros when it is a root of the expression that is
-    // excluded from the solution set (e.g. -2x - 6 = 0 at x = -3 for -2x > 6).
+  test("strict-inequality interval-set visuals mark finite boundaries as open", () => {
+    // A strict inequality endpoint must be drawn as an open point in the final
+    // solution interval, not as a closed boundary.
     const examples = loadExampleContent("unit-3");
     let checked = 0;
 
@@ -275,39 +274,45 @@ describe("u3-visualizaciones-pedagogicas — content shape", () => {
 
       for (const step of ex.steps) {
         for (const visual of step.visualExamples ?? []) {
-          if (visual.kind !== "sign-chart") continue;
-          if (visual.criticalPoints.length !== 1) continue;
+          if (visual.kind !== "interval-set") continue;
 
-          const boundary = visual.criticalPoints[0];
-          expect(
-            visual.excludedPoints,
-            `${ex.id}/${visual.id}: boundary ${boundary} must be in excludedPoints for strict inequality`
-          ).toContain(boundary);
-          checked++;
+          for (const interval of visual.intervals) {
+            if (interval.lower.kind === "finite") {
+              expect(interval.lowerInclusion, `${ex.id}/${visual.id}: lower finite boundary must be open`).toBe("open");
+              checked++;
+            }
+            if (interval.upper.kind === "finite") {
+              expect(interval.upperInclusion, `${ex.id}/${visual.id}: upper finite boundary must be open`).toBe("open");
+              checked++;
+            }
+          }
         }
       }
     }
 
-    expect(checked, "expected at least one strict-inequality sign-chart example").toBeGreaterThan(0);
+    expect(checked, "expected at least one strict-inequality interval-set boundary").toBeGreaterThan(0);
   });
 
-  test("vis-ex-inl-flip-intervalo shows zero at -3, positive left, negative right, excluded boundary", () => {
+  test("vis-ex-inl-flip-intervalo-set shows x < -3 as the final solution", () => {
     const examples = loadExampleContent("unit-3");
     const ex = examples.find((e) => e.id === "example-inecuaciones-lineales-2");
     expect(ex).toBeDefined();
 
     const visual = ex!.steps
       .flatMap((s) => s.visualExamples ?? [])
-      .find((v) => v.id === "vis-ex-inl-flip-intervalo");
+      .find((v) => v.id === "vis-ex-inl-flip-intervalo-set");
     expect(visual).toBeDefined();
-    expect(visual!.kind).toBe("sign-chart");
+    expect(visual!.kind).toBe("interval-set");
 
-    const chart = visual! as Extract<PedagogicalVisual, { kind: "sign-chart" }>;
-    expect(chart.zeros).toContain(-3);
-    expect(chart.excludedPoints).toContain(-3);
-    expect(chart.signZones).toEqual([
-      { lowerBound: null, upperBound: -3, sign: "+" },
-      { lowerBound: -3, upperBound: null, sign: "-" },
+    const intervalSet = visual! as Extract<PedagogicalVisual, { kind: "interval-set" }>;
+    expect(intervalSet.notation).toBe("(-∞, -3)");
+    expect(intervalSet.intervals).toEqual([
+      {
+        lower: { kind: "infinity", direction: "negative" },
+        upper: { kind: "finite", value: -3 },
+        lowerInclusion: "open",
+        upperInclusion: "open",
+      },
     ]);
   });
 
@@ -477,14 +482,14 @@ describe("u3-interval-set-visual — content integration", () => {
     expect(visuals[0]?.kind).toBe("interval-set");
   });
 
-  test("example-inecuaciones-lineales-2 keeps sign-chart and adds interval-set", () => {
+  test("example-inecuaciones-lineales-2 shows only the final interval-set solution", () => {
     const examples = loadExampleContent("unit-3");
     const ex = examples.find((e) => e.id === "example-inecuaciones-lineales-2");
     const step = ex?.steps.find((s) => s.order === 3);
     const visuals = step?.visualExamples ?? [];
 
-    expect(visuals.some((v) => v.kind === "sign-chart")).toBe(true);
-    expect(visuals.some((v) => v.kind === "interval-set")).toBe(true);
+    expect(visuals).toHaveLength(1);
+    expect(visuals[0]?.kind).toBe("interval-set");
   });
 
   test("example-inecuaciones-valor-absoluto-2 keeps distance-on-line and adds interval-set", () => {
