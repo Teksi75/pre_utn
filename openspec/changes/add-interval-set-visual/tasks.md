@@ -43,20 +43,20 @@ Chain strategy: feature-branch-chain
 
 ## Phase 4: Renderer (TDD)
 
-- [ ] 4.1 RED — Add failing `renderToStaticMarkup` tests in a new `src/components/math-visuals/__tests__/IntervalSetVisual.test.tsx` covering responsive `viewBox` (no fixed `width="520"`), arrows on infinity sides, hatching/sombreado, open/closed finite endpoints, fraction labels, `role="img"`, `aria-label`, `<title>`, `<desc>`, and stable `data-interval-region`, `data-interval-side`, `data-endpoint`, `data-hatching` attributes.
-- [ ] 4.2 GREEN — Create `src/components/math-visuals/IntervalSetVisual.tsx` with one shared axis, closed/open circles on finite bounds, arrows on infinity sides, hatching, and ONE `<text>` for the union notation.
-- [ ] 4.3 GREEN — Add `case "interval-set"` routing in `src/components/math-visuals/PedagogicalVisualRenderer.tsx`.
-- [ ] 4.4 GREEN — Extend `src/components/math-visuals/__tests__/PedagogicalVisualRenderer.test.tsx` with an `interval-set` describe block (basic render, two-segment union, infinity arrows on both sides, fraction label).
-- [ ] 4.5 REFACTOR — Deduplicate styling tokens with `SignChartVisual`/`DistanceOnLineVisual`; keep tests green.
+- [x] 4.1 RED — Add failing `renderToStaticMarkup` tests in a new `src/components/math-visuals/__tests__/IntervalSetVisual.test.tsx` covering responsive `viewBox` (no fixed `width="520"`), arrows on infinity sides, hatching/sombreado, open/closed finite endpoints, fraction labels, `role="img"`, `aria-label`, `<title>`, `<desc>`, and stable `data-interval-region`, `data-interval-side`, `data-endpoint`, `data-hatching` attributes.
+- [x] 4.2 GREEN — Create `src/components/math-visuals/IntervalSetVisual.tsx` with one shared axis, closed/open circles on finite bounds, arrows on infinity sides, hatching, and ONE `<text>` for the union notation.
+- [x] 4.3 GREEN — Add `case "interval-set"` routing in `src/components/math-visuals/PedagogicalVisualRenderer.tsx`.
+- [x] 4.4 GREEN — Extend `src/components/math-visuals/__tests__/PedagogicalVisualRenderer.test.tsx` with an `interval-set` describe block (basic render, two-segment union, infinity arrows on both sides, fraction label).
+- [x] 4.5 REFACTOR — Deduplicate styling tokens with `SignChartVisual`/`DistanceOnLineVisual`; keep tests green.
 
 ## Phase 5: U3 Content Integration
 
-- [ ] 5.1 Add `interval-set` visuals to `content/matematica/theory/unit-3.json` for `concept-inl-resolver` `(-∞,2]` and `concept-inv-caso-mayor` `(-∞,-3) ∪ (7,+∞)`.
-- [ ] 5.2 Add `interval-set` visuals to `content/matematica/examples/unit-3.json` for `example-inecuaciones-lineales-1` step 3, `example-inecuaciones-lineales-2` step 3 (keep its existing `sign-chart` and ADD `interval-set`), and `example-inecuaciones-valor-absoluto-2` step 4.
-- [ ] 5.3 Extend U3 content-loader / regression tests so the new visuals parse.
+- [x] 5.1 Add `interval-set` visuals to `content/matematica/theory/unit-3.json` for `concept-inl-resolver` `(-∞,2]` and `concept-inv-caso-mayor` `(-∞,-3) ∪ (7,+∞)`.
+- [x] 5.2 Add `interval-set` visuals to `content/matematica/examples/unit-3.json` for `example-inecuaciones-lineales-1` step 3, `example-inecuaciones-lineales-2` step 3 (keep its existing `sign-chart` and ADD `interval-set`), and `example-inecuaciones-valor-absoluto-2` step 4.
+- [x] 5.3 Extend U3 content-loader / regression tests so the new visuals parse.
 
 ## Phase 6: Verification & Documentation
 
-- [ ] 6.1 Document the distinction (`sign-chart` = sign reasoning vs `interval-set` = final solution set) in the existing visual-design doc under `docs/sdd/`, referencing ADR-007/008.
-- [ ] 6.2 Run `pnpm run test`, `pnpm run typecheck`, `pnpm run build`. All green.
+- [x] 6.1 Document the distinction (`sign-chart` = sign reasoning vs `interval-set` = final solution set) in the existing visual-design doc under `docs/sdd/`, referencing ADR-007/008.
+- [x] 6.2 Run `pnpm run test`, `pnpm run typecheck`, `pnpm run build`. All green.
 - [ ] 6.3 After both PRs merge, run `pnpm run audit:branches` and clean up per `AGENTS.md` branch-management rule; update `openspec/changes/STATUS.json`.
