@@ -8,10 +8,14 @@ App publicada: https://pre-utn.vercel.app/
 
 Matemática es el módulo activo. Física queda para una segunda fase.
 
+La experiencia transitable actual cubre las Unidades 1, 2 y 3 de Matemática. Las Unidades 4, 5 y 6 existen en el mapa general de skills, pero todavía no se presentan como curso completo para el alumno.
+
 | Unidad | Skills | Estado |
 |--------|--------|--------|
-| Unidad 1 — Conjuntos, Reales, Intervalos, Potencias, Racionalización, Valor absoluto, Logaritmos, Complejos | 8 | Completa |
-| Unidad 2 — Polinomios, Operaciones, Ruffini, Factorización, Gauss, MCM/MCD, Ecuaciones | 7 | Completa |
+| Unidad 1 — Conjuntos, Reales, Intervalos, Potencias, Racionalización, Valor absoluto, Logaritmos, Complejos | 8 | Completa / activa |
+| Unidad 2 — Polinomios, Operaciones, Ruffini, Factorización, Gauss, MCM/MCD, Ecuaciones | 7 | Completa / activa |
+| Unidad 3 — Ecuaciones lineales, Cuadráticas, Inecuaciones, Recta, Sistemas, Exponenciales, Logarítmicas | 8 | Implementada / activa |
+| Unidades 4, 5 y 6 — Geometría, Trigonometría y Funciones | 22 | Roadmap / no transitables todavía |
 
 **Unidad 1 — Skills transitables hoy:**
 
@@ -38,6 +42,19 @@ Matemática es el módulo activo. Física queda para una segunda fase.
 | MCM y MCD de polinomios | Listo |
 | Ecuaciones fraccionarias | Listo |
 
+**Unidad 3 — Skills transitables hoy:**
+
+| Skill | Estado |
+|-------|--------|
+| Ecuaciones lineales | Listo |
+| Ecuaciones cuadráticas | Listo |
+| Inecuaciones lineales | Listo |
+| Inecuaciones con valor absoluto | Listo |
+| Ecuación de la recta | Listo |
+| Sistemas de ecuaciones | Listo |
+| Ecuaciones exponenciales | Listo |
+| Ecuaciones logarítmicas | Listo |
+
 ## Fuente de verdad
 
 Este README es una puerta de entrada y un mapa de navegación. No es la fuente normativa única.
@@ -49,11 +66,12 @@ Este README es una puerta de entrada y un mapa de navegación. No es la fuente n
 | Mapa de skills | `utn-ingreso-app-spec/docs/pedagogy/06-skill-map.md` |
 | Estado de implementación SDD | `openspec/changes/` vigentes |
 | Estado SDD portable (multi-PC) | `openspec/changes/STATUS.json` |
+| Verificación de cambios SDD | `openspec/changes/*/verify-report.md` |
 | Contenido cargado en la app | `content/matematica/` |
 | Catálogo y readiness técnico | `src/domain/catalog/` |
 | Scripts reales | `package.json` |
 
-La fuente pedagógica es el material canónico y las specs activas. La fuente técnica es el código y los tests. La fuente de estado implementado son los cambios SDD vigentes y el contenido real del repo.
+La fuente pedagógica es el material canónico y las specs activas. La fuente técnica es el código y los tests. La fuente de estado implementado son los cambios SDD vigentes, sus reportes de verificación y el contenido real del repo.
 
 ## Reglas para agentes
 
@@ -91,7 +109,20 @@ La fuente pedagógica es el material canónico y las specs activas. La fuente t�
 | 5 | MCM y MCD de polinomios | Listo |
 | 6 | Ecuaciones fraccionarias | Listo |
 
-**Cambios recientes:** identidad de alumno con persistencia local + switcher; rediseño visual sprint v4; UI de catalog readiness.
+## Camino actual de Unidad 3
+
+| Paso | Tema | Estado |
+|------|------|--------|
+| 0 | Ecuaciones lineales | Listo |
+| 1 | Ecuaciones cuadráticas | Listo |
+| 2 | Inecuaciones lineales | Listo |
+| 3 | Inecuaciones con valor absoluto | Listo |
+| 4 | Ecuación de la recta | Listo |
+| 5 | Sistemas de ecuaciones | Listo |
+| 6 | Ecuaciones exponenciales | Listo |
+| 7 | Ecuaciones logarítmicas | Listo |
+
+**Cambios recientes:** Unidad 3 activada como experiencia transitable; identidad de alumno con persistencia local + switcher; rediseño visual sprint v4; UI de catalog readiness; visual pedagógico para intervalos en inecuaciones; mejoras en disclosures de teoría/práctica.
 
 ## Cómo correr
 
@@ -104,6 +135,15 @@ pnpm run build
 ```
 
 Abrir `http://localhost:3000` para usar la app en desarrollo.
+
+### E2E smoke suite
+
+La suite E2E usa Playwright/Chromium y corre contra el bundle real en el puerto 3100.
+
+```bash
+pnpm test:e2e:install
+pnpm test:e2e
+```
 
 ## Quality gate (GGA)
 
