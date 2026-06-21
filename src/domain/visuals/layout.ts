@@ -109,6 +109,33 @@ function finiteDomain(values: readonly number[]): { readonly min: number; readon
   return { min: Math.min(...values), max: Math.max(...values) };
 }
 
+function defaultTickLabel(value: number): string {
+  return String(value);
+}
+
+function isExplicitLabel(label: string, value: number): boolean {
+  return label !== defaultTickLabel(value);
+}
+
+function mergeTick(
+  existing: IntervalSetTick | undefined,
+  value: number,
+  label: string | undefined,
+  x: number
+): IntervalSetTick {
+  const candidate = label ?? defaultTickLabel(value);
+  if (!existing) return { value, label: candidate, x };
+
+  // Precedence for duplicate finite tick values:
+  //   - explicit label wins over the default numeric string;
+  //   - if both labels are explicit and differ, keep the first one encountered
+  //     (lower before upper, segments in input order) so output is deterministic.
+  if (!isExplicitLabel(existing.label, value) && isExplicitLabel(candidate, value)) {
+    return { value, label: candidate, x };
+  }
+  return existing;
+}
+
 export function computeIntervalSetLayout(
   visual: IntervalSetVisual,
   options: { readonly width?: number; readonly height?: number; readonly padding?: number } = {}
@@ -157,11 +184,11 @@ export function computeIntervalSetLayout(
 
     if (segment.lower.kind === "finite") {
       const value = segment.lower.value;
-      tickMap.set(value, { value, label: segment.lower.label ?? String(value), x: scale.valueToPx(value) });
+      tickMap.set(value, mergeTick(tickMap.get(value), value, segment.lower.label, scale.valueToPx(value)));
     }
     if (segment.upper.kind === "finite") {
       const value = segment.upper.value;
-      tickMap.set(value, { value, label: segment.upper.label ?? String(value), x: scale.valueToPx(value) });
+      tickMap.set(value, mergeTick(tickMap.get(value), value, segment.upper.label, scale.valueToPx(value)));
     }
   }
 

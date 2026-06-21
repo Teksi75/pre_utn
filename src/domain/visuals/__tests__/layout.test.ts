@@ -167,6 +167,54 @@ describe("layout helpers", () => {
       expect(tick!.x).toBeLessThan(layout.ticks.find((t) => t.value === 1)!.x);
     });
 
+    test("prefers explicit tick label over default numeric string for a closed singleton", () => {
+      const layout = computeIntervalSetLayout(
+        makeIntervalSet("[-5/2, -5/2]", [
+          {
+            lower: { kind: "finite", value: -2.5, label: "-5/2" },
+            upper: { kind: "finite", value: -2.5 },
+            lowerInclusion: "closed",
+            upperInclusion: "closed",
+          },
+        ])
+      );
+      const ticks = layout.ticks.filter((t) => t.value === -2.5);
+      expect(ticks).toHaveLength(1);
+      expect(ticks[0].label).toBe("-5/2");
+    });
+
+    test("prefers explicit upper label when lower bound has none", () => {
+      const layout = computeIntervalSetLayout(
+        makeIntervalSet("[5/2, 5/2]", [
+          {
+            lower: { kind: "finite", value: 2.5 },
+            upper: { kind: "finite", value: 2.5, label: "5/2" },
+            lowerInclusion: "closed",
+            upperInclusion: "closed",
+          },
+        ])
+      );
+      const ticks = layout.ticks.filter((t) => t.value === 2.5);
+      expect(ticks).toHaveLength(1);
+      expect(ticks[0].label).toBe("5/2");
+    });
+
+    test("keeps first explicit label when both bounds provide different labels for the same value", () => {
+      const layout = computeIntervalSetLayout(
+        makeIntervalSet("[4, 4]", [
+          {
+            lower: { kind: "finite", value: 4, label: "cuatro" },
+            upper: { kind: "finite", value: 4, label: "four" },
+            lowerInclusion: "closed",
+            upperInclusion: "closed",
+          },
+        ])
+      );
+      const ticks = layout.ticks.filter((t) => t.value === 4);
+      expect(ticks).toHaveLength(1);
+      expect(ticks[0].label).toBe("cuatro");
+    });
+
     test("places a left arrow for a left ray", () => {
       const layout = computeIntervalSetLayout(
         makeIntervalSet("(-∞, 2]", [
