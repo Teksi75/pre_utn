@@ -13,6 +13,7 @@ import { PedagogicalVisualRenderer } from "../PedagogicalVisualRenderer";
 import type {
   CartesianLineVisual,
   DistanceOnLineVisual,
+  IntervalSetVisual,
   PedagogicalVisual,
   SignChartVisual,
   SystemsOfLinesVisual,
@@ -82,6 +83,13 @@ const systems = (classification: SystemsOfLinesVisual["classification"]): System
       return { ...common, classification, lines: [{ form: "slope-intercept" as const, slope: 2, intercept: 1 }, { form: "slope-intercept" as const, slope: 2, intercept: 1 }] };
   }
 };
+
+const intervalSet = (notation: string, intervals: IntervalSetVisual["intervals"]): IntervalSetVisual => ({
+  ...base,
+  kind: "interval-set",
+  notation,
+  intervals,
+});
 
 function renderHtml(visual: PedagogicalVisual): string {
   return renderToStaticMarkup(<PedagogicalVisualRenderer visual={visual} />);
@@ -155,6 +163,88 @@ describe("PedagogicalVisualRenderer", () => {
     // cross marker reserved for undefined/asymptote points.
     expect(html).toContain('fill="#ffffff"');
     expect(html).not.toMatch(/M\d+ \d+ L\d+ \d+ M\d+ \d+ L\d+ \d+/);
+  });
+
+  test.each([
+    {
+      name: "bounded open interval",
+      visual: intervalSet("(-3, 7)", [
+        {
+          lower: { kind: "finite", value: -3 },
+          upper: { kind: "finite", value: 7 },
+          lowerInclusion: "open",
+          upperInclusion: "open",
+        },
+      ]),
+    },
+    {
+      name: "right ray",
+      visual: intervalSet("[4, +∞)", [
+        {
+          lower: { kind: "finite", value: 4 },
+          upper: { kind: "infinity", direction: "positive" },
+          lowerInclusion: "closed",
+          upperInclusion: "open",
+        },
+      ]),
+    },
+    {
+      name: "two-segment exterior union",
+      visual: intervalSet("(-∞, -3) ∪ (7, +∞)", [
+        {
+          lower: { kind: "infinity", direction: "negative" },
+          upper: { kind: "finite", value: -3 },
+          lowerInclusion: "open",
+          upperInclusion: "open",
+        },
+        {
+          lower: { kind: "finite", value: 7 },
+          upper: { kind: "infinity", direction: "positive" },
+          lowerInclusion: "open",
+          upperInclusion: "open",
+        },
+      ]),
+    },
+    {
+      name: "fraction label endpoint",
+      visual: intervalSet("(-∞, -5/2)", [
+        {
+          lower: { kind: "infinity", direction: "negative" },
+          upper: { kind: "finite", value: -2.5, label: "-5/2" },
+          lowerInclusion: "open",
+          upperInclusion: "open",
+        },
+      ]),
+    },
+  ])("interval-set $name renders accessible figure with stable data attributes", ({ visual }) => {
+    const html = renderHtml(visual);
+    assertVisualWrapper(html, visual);
+    expect(html).toContain(visual.notation);
+    expect(html).toContain('data-interval-region="0"');
+  });
+
+  test("interval-set two-segment union renders both regions and both arrows", () => {
+    const visual = intervalSet("(-∞, -3) ∪ (7, +∞)", [
+      {
+        lower: { kind: "infinity", direction: "negative" },
+        upper: { kind: "finite", value: -3 },
+        lowerInclusion: "open",
+        upperInclusion: "open",
+      },
+      {
+        lower: { kind: "finite", value: 7 },
+        upper: { kind: "infinity", direction: "positive" },
+        lowerInclusion: "open",
+        upperInclusion: "open",
+      },
+    ]);
+    const html = renderHtml(visual);
+
+    assertVisualWrapper(html, visual);
+    expect(html).toContain('data-interval-region="0"');
+    expect(html).toContain('data-interval-region="1"');
+    expect(html).toContain('data-interval-side="left"');
+    expect(html).toContain('data-interval-side="right"');
   });
 
   test("unknown kind throws at render time", () => {

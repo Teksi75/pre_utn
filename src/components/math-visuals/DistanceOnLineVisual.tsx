@@ -1,6 +1,17 @@
 import type { DistanceOnLineVisual } from "@/domain/visuals/types";
 import { linearScale } from "@/domain/visuals/layout";
 import { PedagogicalVisualFigure } from "./PedagogicalVisualFigure";
+import {
+  AXIS_STROKE,
+  AXIS_STROKE_WIDTH,
+  CLOSED_ENDPOINT_FILL,
+  ENDPOINT_STROKE,
+  OPEN_ENDPOINT_FILL,
+  REGION_STROKE,
+  REGION_STROKE_WIDTH,
+  TICK_LABEL_CLASS,
+  TICK_LABEL_FILL,
+} from "./visual-tokens";
 
 interface DistanceOnLineVisualProps {
   readonly visual: DistanceOnLineVisual;
@@ -44,8 +55,8 @@ export function DistanceOnLineVisual({ visual }: DistanceOnLineVisualProps) {
         y1={AXIS_Y}
         x2={RIGHT}
         y2={AXIS_Y}
-        stroke="var(--color-brand-400)"
-        strokeWidth="2"
+        stroke={AXIS_STROKE}
+        strokeWidth={AXIS_STROKE_WIDTH}
       />
 
       {geometryIsFinite && (
@@ -61,8 +72,8 @@ export function DistanceOnLineVisual({ visual }: DistanceOnLineVisualProps) {
                 y1={AXIS_Y}
                 x2={rightX}
                 y2={AXIS_Y}
-                stroke="var(--color-accent-600)"
-                strokeWidth="6"
+                stroke={REGION_STROKE}
+                strokeWidth={REGION_STROKE_WIDTH}
                 strokeLinecap="round"
               />
             ) : (
@@ -72,8 +83,8 @@ export function DistanceOnLineVisual({ visual }: DistanceOnLineVisualProps) {
                   y1={AXIS_Y}
                   x2={leftX}
                   y2={AXIS_Y}
-                  stroke="var(--color-accent-600)"
-                  strokeWidth="6"
+                  stroke={REGION_STROKE}
+                  strokeWidth={REGION_STROKE_WIDTH}
                   strokeLinecap="round"
                 />
                 <line
@@ -81,8 +92,8 @@ export function DistanceOnLineVisual({ visual }: DistanceOnLineVisualProps) {
                   y1={AXIS_Y}
                   x2={RIGHT}
                   y2={AXIS_Y}
-                  stroke="var(--color-accent-600)"
-                  strokeWidth="6"
+                  stroke={REGION_STROKE}
+                  strokeWidth={REGION_STROKE_WIDTH}
                   strokeLinecap="round"
                 />
               </>
@@ -93,16 +104,16 @@ export function DistanceOnLineVisual({ visual }: DistanceOnLineVisualProps) {
               cx={leftX}
               cy={AXIS_Y}
               r="7"
-              fill={closed ? "var(--color-accent-600)" : "#ffffff"}
-              stroke="var(--color-accent-600)"
+              fill={closed ? CLOSED_ENDPOINT_FILL : OPEN_ENDPOINT_FILL}
+              stroke={ENDPOINT_STROKE}
               strokeWidth="3"
             />
             <circle
               cx={rightX}
               cy={AXIS_Y}
               r="7"
-              fill={closed ? "var(--color-accent-600)" : "#ffffff"}
-              stroke="var(--color-accent-600)"
+              fill={closed ? CLOSED_ENDPOINT_FILL : OPEN_ENDPOINT_FILL}
+              stroke={ENDPOINT_STROKE}
               strokeWidth="3"
             />
           </g>
@@ -112,8 +123,8 @@ export function DistanceOnLineVisual({ visual }: DistanceOnLineVisualProps) {
             x={leftX}
             y={AXIS_Y + 28}
             textAnchor="middle"
-            fill="var(--color-brand-600)"
-            className="text-[12px]"
+            fill={TICK_LABEL_FILL}
+            className={TICK_LABEL_CLASS}
           >
             {leftValue}
           </text>
@@ -121,8 +132,8 @@ export function DistanceOnLineVisual({ visual }: DistanceOnLineVisualProps) {
             x={centerX}
             y={AXIS_Y + 28}
             textAnchor="middle"
-            fill="var(--color-brand-600)"
-            className="text-[12px]"
+            fill={TICK_LABEL_FILL}
+            className={TICK_LABEL_CLASS}
           >
             {center}
           </text>
@@ -130,8 +141,8 @@ export function DistanceOnLineVisual({ visual }: DistanceOnLineVisualProps) {
             x={rightX}
             y={AXIS_Y + 28}
             textAnchor="middle"
-            fill="var(--color-brand-600)"
-            className="text-[12px]"
+            fill={TICK_LABEL_FILL}
+            className={TICK_LABEL_CLASS}
           >
             {rightValue}
           </text>
@@ -141,7 +152,7 @@ export function DistanceOnLineVisual({ visual }: DistanceOnLineVisualProps) {
             cx={centerX}
             cy={AXIS_Y}
             r="4"
-            fill="var(--color-brand-600)"
+            fill={TICK_LABEL_FILL}
           />
         </>
       )}
