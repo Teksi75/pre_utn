@@ -120,46 +120,54 @@ export function TheoryCard({ node }: TheoryCardProps) {
       )}
 
       {/* Notation toggle */}
-      <button
-        onClick={() => setShowNotation(!showNotation)}
-        className="mt-4 min-h-[44px] inline-flex items-center gap-2 rounded-[var(--radius-button)] border border-brand-300 bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-800 shadow-sm transition-colors hover:border-brand-400 hover:bg-brand-100 focus-visible:shadow-[var(--ring-focus)]"
-      >
-        <span aria-hidden="true">{showNotation ? "−" : "+"}</span>
-        {showNotation ? "Ocultar notación" : "Ver notación"}
-      </button>
+      {node.notation.length > 0 && (
+        <>
+          <button
+            onClick={() => setShowNotation(!showNotation)}
+            className="mt-4 min-h-[44px] inline-flex items-center gap-2 rounded-[var(--radius-button)] border border-brand-300 bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-800 shadow-sm transition-colors hover:border-brand-400 hover:bg-brand-100 focus-visible:shadow-[var(--ring-focus)]"
+          >
+            <span aria-hidden="true">{showNotation ? "−" : "+"}</span>
+            {showNotation ? "Ocultar notación" : "Ver notación"}
+          </button>
 
-      <div
-        className="overflow-hidden transition-all duration-[var(--duration-normal)]"
-        style={{ maxHeight: showNotation ? '500px' : '0px' }}
-        aria-hidden={!showNotation}
-      >
-        <ul className="mt-2 list-disc list-inside text-sm text-brand-700 space-y-1">
-          {node.notation.map((item, i) => (
-            <li key={i}><RichText text={item} /></li>
-          ))}
-        </ul>
-      </div>
+          <div
+            className="overflow-hidden transition-all duration-[var(--duration-normal)]"
+            style={{ maxHeight: showNotation ? '500px' : '0px' }}
+            aria-hidden={!showNotation}
+          >
+            <ul className="mt-2 list-disc list-inside text-sm text-brand-700 space-y-1">
+              {node.notation.map((item, i) => (
+                <li key={i}><RichText text={item} /></li>
+              ))}
+            </ul>
+          </div>
+        </>
+      )}
 
       {/* Common mistakes toggle */}
-      <button
-        onClick={() => setShowMistakes(!showMistakes)}
-        className="mt-2 min-h-[44px] inline-flex items-center gap-2 rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 shadow-sm transition-colors hover:border-red-300 hover:bg-red-100 focus-visible:shadow-[var(--ring-focus)]"
-      >
-        <span aria-hidden="true">{showMistakes ? "−" : "+"}</span>
-        {showMistakes ? "Ocultar errores comunes" : "Ver errores comunes"}
-      </button>
+      {node.commonMistakes.length > 0 && (
+        <>
+          <button
+            onClick={() => setShowMistakes(!showMistakes)}
+            className="mt-2 min-h-[44px] inline-flex items-center gap-2 rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 shadow-sm transition-colors hover:border-red-300 hover:bg-red-100 focus-visible:shadow-[var(--ring-focus)]"
+          >
+            <span aria-hidden="true">{showMistakes ? "−" : "+"}</span>
+            {showMistakes ? "Ocultar errores comunes" : "Ver errores comunes"}
+          </button>
 
-      <div
-        className="overflow-hidden transition-all duration-[var(--duration-normal)]"
-        style={{ maxHeight: showMistakes ? '500px' : '0px' }}
-        aria-hidden={!showMistakes}
-      >
-        <ul className="mt-2 list-disc list-inside text-sm text-red-600 space-y-1">
-          {node.commonMistakes.map((mistake, i) => (
-            <li key={i}><RichText text={mistake} /></li>
-          ))}
-        </ul>
-      </div>
+          <div
+            className="overflow-hidden transition-all duration-[var(--duration-normal)]"
+            style={{ maxHeight: showMistakes ? '500px' : '0px' }}
+            aria-hidden={!showMistakes}
+          >
+            <ul className="mt-2 list-disc list-inside text-sm text-red-600 space-y-1">
+              {node.commonMistakes.map((mistake, i) => (
+                <li key={i}><RichText text={mistake} /></li>
+              ))}
+            </ul>
+          </div>
+        </>
+      )}
 
       {/* Practice prompts */}
       {node.practicePrompts.length > 0 && (

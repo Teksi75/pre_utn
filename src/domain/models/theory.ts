@@ -96,14 +96,14 @@ export function validateTheoryNode(
     return err({ field: "concepts", message: "concepts must have at least one entry" });
   }
 
-  // Validate notation
-  if (!input.notation || input.notation.length === 0) {
-    return err({ field: "notation", message: "notation must have at least one entry" });
+  // Validate notation (optional disclosure — empty arrays are valid)
+  if (!Array.isArray(input.notation)) {
+    return err({ field: "notation", message: "notation must be an array" });
   }
 
-  // Validate commonMistakes
-  if (!input.commonMistakes || input.commonMistakes.length === 0) {
-    return err({ field: "commonMistakes", message: "commonMistakes must have at least one entry" });
+  // Validate commonMistakes (optional disclosure — empty arrays are valid)
+  if (!Array.isArray(input.commonMistakes)) {
+    return err({ field: "commonMistakes", message: "commonMistakes must be an array" });
   }
 
   // Validate canonicalTrace

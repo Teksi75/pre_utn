@@ -84,8 +84,26 @@ describe("TheoryNode", () => {
       }
     });
 
-    test("rejects node with empty notation", () => {
+    test("accepts node with empty notation", () => {
       const node = makeNode({ notation: [] });
+      const result = validateTheoryNode(node);
+      expect(result.ok).toBe(true);
+    });
+
+    test("accepts node with empty commonMistakes", () => {
+      const node = makeNode({ commonMistakes: [] });
+      const result = validateTheoryNode(node);
+      expect(result.ok).toBe(true);
+    });
+
+    test("accepts node with both notation and commonMistakes empty", () => {
+      const node = makeNode({ notation: [], commonMistakes: [] });
+      const result = validateTheoryNode(node);
+      expect(result.ok).toBe(true);
+    });
+
+    test("rejects node when notation is not an array", () => {
+      const node = makeNode({ notation: "not-an-array" as unknown as string[] });
       const result = validateTheoryNode(node);
       expect(result.ok).toBe(false);
       if (!result.ok) {
@@ -93,8 +111,8 @@ describe("TheoryNode", () => {
       }
     });
 
-    test("rejects node with empty commonMistakes", () => {
-      const node = makeNode({ commonMistakes: [] });
+    test("rejects node when commonMistakes is not an array", () => {
+      const node = makeNode({ commonMistakes: 123 as unknown as string[] });
       const result = validateTheoryNode(node);
       expect(result.ok).toBe(false);
       if (!result.ok) {

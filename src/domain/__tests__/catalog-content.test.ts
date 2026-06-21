@@ -385,4 +385,46 @@ describe("Unit-2 theory normalization", () => {
     expect(polNode!.concepts[0].id).toBe("concept-pol-definicion");
     expect(polNode!.concepts[0].title).toContain("Definición");
   });
+
+  test("definitional U2 nodes keep notation and commonMistakes empty (no filler)", () => {
+    const nodes = loadTheoryContent("unit-2");
+    const polNode = nodes.find((n) => n.skillId === "mat.u2.polinomios_basico");
+    expect(polNode).toBeDefined();
+    expect(polNode!.notation.length).toBe(0);
+    expect(polNode!.commonMistakes.length).toBe(0);
+  });
+
+  test("source-backed U2 nodes expose populated common-mistake disclosures", () => {
+    const nodes = loadTheoryContent("unit-2");
+    const ruffini = nodes.find((n) => n.skillId === "mat.u2.ruffini_resto");
+    const operaciones = nodes.find((n) => n.skillId === "mat.u2.operaciones_polinomios");
+    const factorizacion = nodes.find((n) => n.skillId === "mat.u2.factorizacion");
+    const mcmMcd = nodes.find((n) => n.skillId === "mat.u2.mcm_mcd_polinomios");
+    const ecuaciones = nodes.find((n) => n.skillId === "mat.u2.ecuaciones_fraccionarias");
+
+    expect(ruffini).toBeDefined();
+    expect(ruffini!.commonMistakes.length).toBeGreaterThanOrEqual(1);
+
+    expect(operaciones).toBeDefined();
+    expect(operaciones!.commonMistakes.length).toBeGreaterThanOrEqual(1);
+
+    expect(factorizacion).toBeDefined();
+    expect(factorizacion!.commonMistakes.length).toBeGreaterThanOrEqual(1);
+
+    expect(mcmMcd).toBeDefined();
+    expect(mcmMcd!.commonMistakes.length).toBeGreaterThanOrEqual(1);
+
+    expect(ecuaciones).toBeDefined();
+    expect(ecuaciones!.commonMistakes.length).toBeGreaterThanOrEqual(1);
+  });
+
+  test("lifted U2 common-mistake warnings preserve source text and math signs", () => {
+    const nodes = loadTheoryContent("unit-2");
+    const ruffini = nodes.find((n) => n.skillId === "mat.u2.ruffini_resto");
+    expect(ruffini).toBeDefined();
+    const expectedWarning =
+      "Error frecuente: al dividir por $(x−a)$ se usa $a$ en la regla de Ruffini. Pero si el divisor es $(x+a)$, debe usarse $−a$. Esto es porque $(x+a)=(x−(−a))$. Confundir el signo produce cociente y resto incorrectos.";
+    const ruffiniWarning = ruffini!.commonMistakes.find((m) => m === expectedWarning);
+    expect(ruffiniWarning).toBeDefined();
+  });
 });

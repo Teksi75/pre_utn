@@ -77,7 +77,17 @@
         "pedagogicalIntent": "Enseñar las operaciones entre polinomios con énfasis en la distribución del signo negativo y la combinación correcta de términos semejantes"
       }
     ],
-    "pageReferences": "págs. 5-7"
+    "pageReferences": "págs. 5-7",
+    "notation": [
+      "$(a+b)^2 = a^2 + 2ab + b^2$",
+      "$(a+b)(a-b) = a^2 - b^2$"
+    ],
+    "commonMistakes": [
+      "Al restar polinomios, no distribuir el signo negativo a TODOS los términos del segundo polinomio."
+    ],
+    "practicePrompts": [
+      "Restá $(3x^2 - 2x + 1) - (x^2 + 4x - 3)$ y verificá que el resultado sea $2x^2 - 6x + 4$."
+    ]
   },
   {
     "id": "theory-ruffini-resto",
@@ -119,7 +129,17 @@
         "pedagogicalIntent": "Enseñar la regla de Ruffini como método abreviado de división y el teorema del resto como herramienta para verificar raíces sin dividir"
       }
     ],
-    "pageReferences": "págs. 7-9"
+    "pageReferences": "págs. 7-9",
+    "notation": [
+      "Divisor $(x-a)$: usar $a$ en Ruffini.",
+      "Divisor $(x+a)$: usar $-a$ en Ruffini."
+    ],
+    "commonMistakes": [
+      "Error frecuente: al dividir por $(x−a)$ se usa $a$ en la regla de Ruffini. Pero si el divisor es $(x+a)$, debe usarse $−a$. Esto es porque $(x+a)=(x−(−a))$. Confundir el signo produce cociente y resto incorrectos."
+    ],
+    "practicePrompts": [
+      "Calculá el resto de dividir $P(x)$ por $(x-2)$ evaluando $P(2)$."
+    ]
   },
   {
     "id": "theory-factorizacion",
@@ -199,7 +219,18 @@
         "pedagogicalIntent": "Presentar los 7 casos canónicos de factorización con ejemplos representativos y advertencias sobre errores frecuentes: confusión entre TCP y trinomio de segundo grado, factorización incompleta, y errores de signo al elegir los factores"
       }
     ],
-    "pageReferences": "págs. 9-14"
+    "pageReferences": "págs. 9-14",
+    "notation": [
+      "Diferencia de cuadrados: $a^2 - b^2 = (a-b)(a+b)$",
+      "Suma de cubos: $a^3 + b^3 = (a+b)(a^2 - ab + b^2)$"
+    ],
+    "commonMistakes": [
+      "Error frecuente: confundir con un trinomio de segundo grado cualquiera que tiene los mismos cuadrados pero distinto término medio.",
+      "Una SUMA de cuadrados $(a^2 + b^2)$ NO se factoriza en $\\mathbb{R}$ con este caso."
+    ],
+    "practicePrompts": [
+      "Antes de aplicar un caso de factoreo, verificá si la expresión es una suma o una diferencia."
+    ]
   },
   {
     "id": "theory-gauss",
@@ -285,7 +316,13 @@
         "pedagogicalIntent": "Enseñar el cálculo de MCM y MCD de polinomios como extensión de los conceptos aritméticos, enfatizando la necesidad de factorizar primero y la diferencia entre 'mayor exponente' (MCM) y 'menor exponente' (MCD)"
       }
     ],
-    "pageReferences": "págs. 14-15"
+    "pageReferences": "págs. 14-15",
+    "commonMistakes": [
+      "Error frecuente: intercambiar MCM y MCD (confundir 'mayor exponente' con 'menor exponente')."
+    ],
+    "practicePrompts": [
+      "Factorizá completamente cada polinomio antes de calcular MCM o MCD."
+    ]
   },
   {
     "id": "theory-ecuaciones-fraccionarias",
@@ -328,6 +365,12 @@
         "pedagogicalIntent": "Enseñar la resolución de ecuaciones fraccionarias con énfasis en la determinación del dominio, el uso del MCM para eliminar denominadores y la verificación de soluciones contra el dominio excluido"
       }
     ],
-    "pageReferences": "págs. 15-16"
+    "pageReferences": "págs. 15-16",
+    "commonMistakes": [
+      "Error frecuente: resolver algebraicamente y aceptar la solución sin verificar el dominio."
+    ],
+    "practicePrompts": [
+      "Determiná los valores excluidos antes de multiplicar por el MCM de los denominadores."
+    ]
   }
 ]

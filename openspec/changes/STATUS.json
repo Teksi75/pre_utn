@@ -555,6 +555,15 @@
         "summary": "PR 3 — Pilot Activation + UI + tests + verify (DONE in working tree, pending commit): 8 PilotSkill entries appended (mat.u3.ecuaciones_lineales/cuadraticas/inecuaciones_lineales/inecuaciones_valor_absoluto/recta/sistemas/exponenciales/logaritmicas), UNIT_LABELS/UNIT_KEYS extended with unit-3, home pilot badge updated to 'Unidades 1, 2 y 3', /learn description mentions U3, U3 'not-pilot' fixtures in start-skill.test.ts + practice-link.test.ts replaced with mat.u4.perimetro_area_volumen, accessibility.test.ts U3 accuracy entries + U1→U3 prereq assertions (valor_absoluto→inecuaciones_valor_absoluto, potencias_raices→exponenciales, logaritmos→logaritmicas), readiness.ts vacuous-truth + unit-scope filter (skills with empty commonErrorTags or only cross-unit legacy tags are contentReady). 2252/2252 tests, typecheck + build green. Do not archive yet — orchestrator will commit and merge."
       },
       "summary": "Unit 3 (Ecuaciones y sistemas) vertical slice: 8 pilot skills, theory/examples/feedback/exercises content, 3-PR stacked delivery, pending commit."
+    },
+    "issue-37-practice-theory-disclosures": {
+      "status": "done",
+      "branch": null,
+      "startedAt": "2026-06-21",
+      "completedAt": "2026-06-21",
+      "mergedTo": "main",
+      "issue": 37,
+      "summary": "Resolved issue #37: practice theory disclosure buttons now hide when notation/common-mistakes content is empty, Unit 2 received source-backed disclosure content where it adds value, and visual review was completed by the user. Verification PASS: 2479 tests, typecheck, build."
     }
   },
   "activeBranches": [],

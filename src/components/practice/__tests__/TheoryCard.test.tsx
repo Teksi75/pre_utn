@@ -112,6 +112,54 @@ function countChildDivsInsideContainer(
 }
 
 // ---------------------------------------------------------------------------
+// Disclosure controls visibility
+// ---------------------------------------------------------------------------
+
+describe("TheoryCard — disclosure controls", () => {
+  test("shows 'Ver notación' control when notation has entries", () => {
+    const node = makeNode({ notation: ["$a + b$", "$a - b$"], commonMistakes: [] });
+    const html = renderHtml(node);
+    expect(html).toContain("Ver notación");
+    expect(html).toContain("a + b");
+    expect(html).toContain("a - b");
+  });
+
+  test("hides 'Ver notación' control when notation is empty", () => {
+    const node = makeNode({ notation: [], commonMistakes: ["Error test"] });
+    const html = renderHtml(node);
+    expect(html).not.toContain("Ver notación");
+    expect(html).not.toContain("Ocultar notación");
+  });
+
+  test("shows only 'Ver errores comunes' when common mistakes exist but notation is empty", () => {
+    const node = makeNode({
+      notation: [],
+      commonMistakes: ["Olvidar cambiar el signo al restar."],
+    });
+    const html = renderHtml(node);
+    expect(html).not.toContain("Ver notación");
+    expect(html).toContain("Ver errores comunes");
+    expect(html).toContain("Olvidar cambiar el signo al restar.");
+  });
+
+  test("hides 'Ver errores comunes' control when commonMistakes is empty", () => {
+    const node = makeNode({ notation: ["$a + b$"], commonMistakes: [] });
+    const html = renderHtml(node);
+    expect(html).not.toContain("Ver errores comunes");
+    expect(html).not.toContain("Ocultar errores comunes");
+  });
+
+  test("hides both disclosure controls when notation and commonMistakes are empty", () => {
+    const node = makeNode({ notation: [], commonMistakes: [] });
+    const html = renderHtml(node);
+    expect(html).not.toContain("Ver notación");
+    expect(html).not.toContain("Ver errores comunes");
+    expect(html).not.toContain("Ocultar notación");
+    expect(html).not.toContain("Ocultar errores comunes");
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Multi-paragraph rendering (bodyParagraphs)
 // ---------------------------------------------------------------------------
 
