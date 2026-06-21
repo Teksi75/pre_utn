@@ -311,27 +311,29 @@ describe("u3-visualizaciones-pedagogicas — content shape", () => {
     ]);
   });
 
-  test("vis-inl-resolver-signo describes x - 2 sign and x ≤ 2 solution honestly", () => {
+  test("vis-inl-resolver-intervalo describes x ≤ 2 as the final solution", () => {
     const theory = loadTheoryContent("unit-3");
     const node = theory.find((n) => n.skillId === "mat.u3.inecuaciones_lineales");
     const visual = node?.concepts
       .flatMap((c) => c.visualExamples ?? [])
-      .find((v) => v.id === "vis-inl-resolver-signo");
+      .find((v) => v.id === "vis-inl-resolver-intervalo");
     expect(visual).toBeDefined();
-    expect(visual!.kind).toBe("sign-chart");
+    expect(visual!.kind).toBe("interval-set");
 
-    const chart = visual! as Extract<PedagogicalVisual, { kind: "sign-chart" }>;
-    expect(chart.expression).toBe("x - 2");
-    expect(chart.zeros).toContain(2);
-    expect(chart.signZones).toEqual([
-      { lowerBound: null, upperBound: 2, sign: "-" },
-      { lowerBound: 2, upperBound: null, sign: "+" },
+    const intervalSet = visual! as Extract<PedagogicalVisual, { kind: "interval-set" }>;
+    expect(intervalSet.notation).toBe("(-∞, 2]");
+    expect(intervalSet.intervals).toEqual([
+      {
+        lower: { kind: "infinity", direction: "negative" },
+        upper: { kind: "finite", value: 2 },
+        lowerInclusion: "open",
+        upperInclusion: "closed",
+      },
     ]);
 
-    const description = chart.description.toLowerCase();
-    expect(description).toContain("negativa antes de 2");
-    expect(description).toContain("positiva después");
-    expect(description).toContain("0 en 2");
+    const description = intervalSet.description.toLowerCase();
+    expect(description).toContain("punto cerrado en 2");
+    expect(description).toContain("flecha hacia la izquierda");
     expect(description).not.toContain("$");
   });
 
@@ -465,14 +467,14 @@ describe("u3-interval-set-visual — content integration", () => {
     expect(intervalSet.intervals.length).toBeGreaterThan(0);
   });
 
-  test("concept-inl-resolver keeps sign-chart and adds interval-set", () => {
+  test("concept-inl-resolver shows only the final interval-set solution", () => {
     const theory = loadTheoryContent("unit-3");
     const node = theory.find((n) => n.skillId === "mat.u3.inecuaciones_lineales");
     const concept = node?.concepts.find((c) => c.id === "concept-inl-resolver");
     const visuals = concept?.visualExamples ?? [];
 
-    expect(visuals.some((v) => v.kind === "sign-chart")).toBe(true);
-    expect(visuals.some((v) => v.kind === "interval-set")).toBe(true);
+    expect(visuals).toHaveLength(1);
+    expect(visuals[0]?.kind).toBe("interval-set");
   });
 
   test("example-inecuaciones-lineales-2 keeps sign-chart and adds interval-set", () => {

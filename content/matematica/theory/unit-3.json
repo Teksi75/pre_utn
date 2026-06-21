@@ -142,21 +142,6 @@
         ],
         "visualExamples": [
           {
-            "id": "vis-inl-resolver-signo",
-            "kind": "sign-chart",
-            "title": "Signo de x - 2",
-            "ariaLabel": "Tabla de signos de la expresión x menos 2",
-            "description": "La expresión x - 2 es negativa antes de 2, vale 0 en 2 y es positiva después. La desigualdad x ≤ 2 incluye el 0 y todo el lado negativo.",
-            "variable": "x",
-            "expression": "x - 2",
-            "zeros": [2],
-            "excludedPoints": [],
-            "signZones": [
-              { "lowerBound": null, "upperBound": 2, "sign": "-" },
-              { "lowerBound": 2, "upperBound": null, "sign": "+" }
-            ]
-          },
-          {
             "id": "vis-inl-resolver-intervalo",
             "kind": "interval-set",
             "title": "Solución de x ≤ 2",
