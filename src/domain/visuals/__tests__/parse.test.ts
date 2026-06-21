@@ -573,6 +573,47 @@ describe("parsePedagogicalVisual", () => {
         )
       ).toThrow(/unexpected key/);
     });
+
+    test("accepts closed singleton [a, a]", () => {
+      const v = assertIntervalSet(parsePedagogicalVisual(
+        makeIntervalSet({
+          notation: "[4, 4]",
+          intervals: [
+            {
+              lower: { kind: "finite", value: 4 },
+              upper: { kind: "finite", value: 4 },
+              lowerInclusion: "closed",
+              upperInclusion: "closed",
+            },
+          ],
+        })
+      ));
+      expect(v.intervals).toHaveLength(1);
+      expect(v.intervals[0].lower).toMatchObject({ kind: "finite", value: 4 });
+      expect(v.intervals[0].upper).toMatchObject({ kind: "finite", value: 4 });
+    });
+
+    test.each([
+      ["open", "open"],
+      ["closed", "open"],
+      ["open", "closed"],
+    ])("rejects equal finite bounds unless both closed (%s, %s)", (lowerInclusion, upperInclusion) => {
+      expect(() =>
+        parsePedagogicalVisual(
+          makeIntervalSet({
+            notation: "(4, 4)",
+            intervals: [
+              {
+                lower: { kind: "finite", value: 4 },
+                upper: { kind: "finite", value: 4 },
+                lowerInclusion,
+                upperInclusion,
+              },
+            ],
+          })
+        )
+      ).toThrow(/bounds|singleton|empty|equal/);
+    });
   });
 
   test("rejects unsupported kind", () => {

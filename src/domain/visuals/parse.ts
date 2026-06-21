@@ -275,6 +275,14 @@ function intervalSegment(raw: Record<string, unknown>, context: string) {
   if (lower.kind === "finite" && upper.kind === "finite" && lower.value > upper.value) {
     fail(context, "lower bound must be less than or equal to upper bound");
   }
+  if (
+    lower.kind === "finite" &&
+    upper.kind === "finite" &&
+    lower.value === upper.value &&
+    (lowerInclusion !== "closed" || upperInclusion !== "closed")
+  ) {
+    fail(context, "equal finite bounds must be closed on both sides to form a singleton");
+  }
 
   return { lower, upper, lowerInclusion, upperInclusion };
 }
