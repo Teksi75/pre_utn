@@ -240,6 +240,14 @@ describe("u3-visualizaciones-pedagogicas — content shape", () => {
     expect(visuals.some((v) => v.kind === "interval-set")).toBe(true);
   });
 
+  test("inecuaciones_lineales notation does not expose raw operator placeholders", () => {
+    const theory = loadTheoryContent("unit-3");
+    const node = theory.find((n) => n.skillId === "mat.u3.inecuaciones_lineales");
+
+    expect(node).toBeDefined();
+    expect(node!.notation.join("\n")).not.toMatch(/\[\\text\{op\}\]|\[op\]/);
+  });
+
   test("inecuaciones_valor_absoluto includes a distance-on-line visual", () => {
     const visuals = visualsForSkill("mat.u3.inecuaciones_valor_absoluto");
     expect(visuals.some((v) => v.kind === "distance-on-line")).toBe(true);

@@ -169,8 +169,8 @@
       }
     ],
     "notation": [
-      "$ax + b \\, [\\text{op}] \\, c$ — inecuación lineal genérica",
-      "$[\\text{op}] \\in \\{<, >, \\leq, \\geq\\}$",
+      "$ax + b < c$, $ax + b > c$, $ax + b \\leq c$ o $ax + b \\geq c$ — formas típicas de una inecuación lineal",
+      "El signo puede ser $<$, $>$, $\\leq$ o $\\geq$.",
       "Solución: intervalo o desigualdad"
     ],
     "commonMistakes": [
