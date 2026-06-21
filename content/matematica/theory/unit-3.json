@@ -142,18 +142,19 @@
         ],
         "visualExamples": [
           {
-            "id": "vis-inl-resolver-signo",
-            "kind": "sign-chart",
-            "title": "Signo de x - 2",
-            "ariaLabel": "Tabla de signos de la expresión x menos 2",
-            "description": "La expresión x - 2 es negativa antes de 2, vale 0 en 2 y es positiva después. La desigualdad x ≤ 2 incluye el 0 y todo el lado negativo.",
-            "variable": "x",
-            "expression": "x - 2",
-            "zeros": [2],
-            "excludedPoints": [],
-            "signZones": [
-              { "lowerBound": null, "upperBound": 2, "sign": "-" },
-              { "lowerBound": 2, "upperBound": null, "sign": "+" }
+            "id": "vis-inl-resolver-intervalo",
+            "kind": "interval-set",
+            "title": "Solución de x ≤ 2",
+            "ariaLabel": "Conjunto solución de x menor o igual que 2: el intervalo menos infinito coma 2 cerrado",
+            "description": "La solución x ≤ 2 se representa como el intervalo (-∞, 2]: una recta numérica con un punto cerrado en 2 y una flecha hacia la izquierda.",
+            "notation": "(-∞, 2]",
+            "intervals": [
+              {
+                "lower": { "kind": "infinity", "direction": "negative" },
+                "upper": { "kind": "finite", "value": 2 },
+                "lowerInclusion": "open",
+                "upperInclusion": "closed"
+              }
             ]
           }
         ]
@@ -168,8 +169,8 @@
       }
     ],
     "notation": [
-      "$ax + b \\, [\\text{op}] \\, c$ — inecuación lineal genérica",
-      "$[\\text{op}] \\in \\{<, >, \\leq, \\geq\\}$",
+      "$ax + b < c$, $ax + b > c$, $ax + b \\leq c$ o $ax + b \\geq c$ — formas típicas de una inecuación lineal",
+      "El signo puede ser $<$, $>$, $\\leq$ o $\\geq$.",
       "Solución: intervalo o desigualdad"
     ],
     "commonMistakes": [
@@ -229,6 +230,30 @@
         "bodyParagraphs": [
           "Idea principal: si $|x - a| > c$ con $c > 0$, entonces $x - a < -c$ o $x - a > c$, es decir $x < a - c$ o $x > a + c$. La solución son DOS rayos que NO se tocan en $a$.",
           "Ejemplo: $|x - 2| > 5 \\Rightarrow x < -3$ o $x > 7$. Solución: $(-\\infty, -3) \\cup (7, \\infty)$."
+        ],
+        "visualExamples": [
+          {
+            "id": "vis-inv-caso-mayor-intervalo",
+            "kind": "interval-set",
+            "title": "Solución de |x - 2| > 5",
+            "ariaLabel": "Conjunto solución de módulo de x menos 2 mayor que 5: dos rayos disjuntos",
+            "description": "La solución son los reales menores que -3 o mayores que 7. En la recta numérica se muestran dos rayos separados con extremos abiertos y flechas hacia afuera.",
+            "notation": "(-∞, -3) ∪ (7, +∞)",
+            "intervals": [
+              {
+                "lower": { "kind": "infinity", "direction": "negative" },
+                "upper": { "kind": "finite", "value": -3 },
+                "lowerInclusion": "open",
+                "upperInclusion": "open"
+              },
+              {
+                "lower": { "kind": "finite", "value": 7 },
+                "upper": { "kind": "infinity", "direction": "positive" },
+                "lowerInclusion": "open",
+                "upperInclusion": "open"
+              }
+            ]
+          }
         ]
       }
     ],

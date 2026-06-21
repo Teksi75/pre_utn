@@ -96,13 +96,30 @@ export interface CoincidentSystemsOfLinesVisual extends SystemsOfLinesVisualBase
   readonly classification: "coincident";
 }
 
+import type { EndpointInclusion, IntervalBound } from "../intervals/representation";
+
 export type SystemsOfLinesVisual =
   | SecantSystemsOfLinesVisual
   | ParallelSystemsOfLinesVisual
   | CoincidentSystemsOfLinesVisual;
 
+export interface IntervalSegment {
+  readonly lower: IntervalBound;
+  readonly upper: IntervalBound;
+  readonly lowerInclusion: EndpointInclusion;
+  readonly upperInclusion: EndpointInclusion;
+}
+
+export interface IntervalSetVisual extends VisualBase {
+  readonly kind: "interval-set";
+  readonly notation: string;
+  readonly setBuilderLabel?: string;
+  readonly intervals: readonly IntervalSegment[];
+}
+
 export type PedagogicalVisual =
   | SignChartVisual
   | DistanceOnLineVisual
   | CartesianLineVisual
-  | SystemsOfLinesVisual;
+  | SystemsOfLinesVisual
+  | IntervalSetVisual;

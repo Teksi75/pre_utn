@@ -520,6 +520,23 @@
       "mergedTo": "main",
       "summary": "Section cards on /learn/matematica show title + 'N tema(s)' instead of first subtopic. Inline JSX substitution + content rename ('División de polinomios'). 6 source-level tests initially; post-apply review replaced them with 6 behavior-level tests using react-dom/server + mocked wrappers (next/link, MathWatermark, DirectionalTransition). 2142 tests, typecheck, build green. Archive clarified: verify/report.md marked SUPERSEDED by verify-report.md."
     },
+    "add-interval-set-visual": {
+      "status": "in-progress",
+      "branch": "feature/add-interval-set-visual-renderer",
+      "startedAt": "2026-06-20",
+      "delivery": "feature-branch-chain",
+      "pr1": {
+        "branch": "feature/add-interval-set-visual",
+        "status": "merged",
+        "summary": "Domain types, parser, layout helper, and unit tests for interval-set visuals."
+      },
+      "pr2": {
+        "branch": "feature/add-interval-set-visual-renderer",
+        "status": "in-progress",
+        "summary": "React renderer, render tests, U3 content integration, and visual-design doc."
+      },
+      "summary": "Add a dedicated interval-set pedagogical visual for U3 inequality solution sets while preserving sign-chart for sign reasoning."
+    },
     "implement-unit-3-mathematics": {
       "status": "in-progress",
       "branch": null,

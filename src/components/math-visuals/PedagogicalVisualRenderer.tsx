@@ -1,6 +1,7 @@
 import type { PedagogicalVisual } from "@/domain/visuals/types";
 import { CartesianLineVisual } from "./CartesianLineVisual";
 import { DistanceOnLineVisual } from "./DistanceOnLineVisual";
+import { IntervalSetVisual } from "./IntervalSetVisual";
 import { SignChartVisual } from "./SignChartVisual";
 import { SystemsOfLinesVisual } from "./SystemsOfLinesVisual";
 
@@ -20,6 +21,8 @@ export function PedagogicalVisualRenderer({
       return <CartesianLineVisual visual={visual} />;
     case "systems-of-lines":
       return <SystemsOfLinesVisual visual={visual} />;
+    case "interval-set":
+      return <IntervalSetVisual visual={visual} />;
     default:
       throw new Error(
         `Unsupported pedagogical visual kind: ${(visual as { kind?: string }).kind ?? "undefined"}`

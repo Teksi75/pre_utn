@@ -1,6 +1,20 @@
 import type { SignChartVisual } from "@/domain/visuals/types";
 import { linearScale } from "@/domain/visuals/layout";
 import { PedagogicalVisualFigure } from "./PedagogicalVisualFigure";
+import {
+  AXIS_STROKE,
+  AXIS_STROKE_WIDTH,
+  CLOSED_ENDPOINT_FILL,
+  ENDPOINT_RADIUS,
+  ENDPOINT_STROKE,
+  NOTATION_CLASS,
+  NOTATION_FILL,
+  OPEN_ENDPOINT_FILL,
+  TICK_LABEL_CLASS,
+  TICK_LABEL_FILL,
+  TICK_STROKE,
+  TICK_STROKE_WIDTH,
+} from "./visual-tokens";
 
 interface SignChartVisualProps {
   readonly visual: SignChartVisual;
@@ -38,8 +52,8 @@ export function SignChartVisual({ visual }: SignChartVisualProps) {
         y1={AXIS_Y}
         x2={RIGHT}
         y2={AXIS_Y}
-        stroke="var(--color-brand-400)"
-        strokeWidth="2"
+        stroke={AXIS_STROKE}
+        strokeWidth={AXIS_STROKE_WIDTH}
       />
 
       {/* Critical points */}
@@ -53,15 +67,15 @@ export function SignChartVisual({ visual }: SignChartVisualProps) {
               y1={AXIS_Y - 8}
               x2={x}
               y2={AXIS_Y + 8}
-              stroke="var(--color-brand-400)"
-              strokeWidth="1.5"
+              stroke={TICK_STROKE}
+              strokeWidth={TICK_STROKE_WIDTH}
             />
             <text
               x={x}
               y={AXIS_Y + 26}
               textAnchor="middle"
-              fill="var(--color-brand-600)"
-              className="text-[12px]"
+              fill={TICK_LABEL_FILL}
+              className={TICK_LABEL_CLASS}
             >
               {p}
             </text>
@@ -69,8 +83,8 @@ export function SignChartVisual({ visual }: SignChartVisualProps) {
               <circle
                 cx={x}
                 cy={AXIS_Y}
-                r="5"
-                fill="var(--color-accent-600)"
+                r={ENDPOINT_RADIUS}
+                fill={CLOSED_ENDPOINT_FILL}
               />
             )}
             {zeroSet.has(p) && isExcluded && (
@@ -78,9 +92,9 @@ export function SignChartVisual({ visual }: SignChartVisualProps) {
               <circle
                 cx={x}
                 cy={AXIS_Y}
-                r="5"
-                fill="#ffffff"
-                stroke="var(--color-accent-600)"
+                r={ENDPOINT_RADIUS}
+                fill={OPEN_ENDPOINT_FILL}
+                stroke={ENDPOINT_STROKE}
                 strokeWidth="2"
               />
             )}
@@ -90,15 +104,15 @@ export function SignChartVisual({ visual }: SignChartVisualProps) {
                 <circle
                   cx={x}
                   cy={AXIS_Y}
-                  r="5"
-                  fill="#ffffff"
-                  stroke="var(--color-accent-600)"
+                  r={ENDPOINT_RADIUS}
+                  fill={OPEN_ENDPOINT_FILL}
+                  stroke={ENDPOINT_STROKE}
                   strokeWidth="2"
                 />
                 <path
                   d={`M${x - 3} ${AXIS_Y - 3} L${x + 3} ${AXIS_Y + 3} M${x + 3} ${AXIS_Y - 3} L${x - 3} ${AXIS_Y + 3}`}
-                  stroke="var(--color-accent-600)"
-                  strokeWidth="1.5"
+                  stroke={ENDPOINT_STROKE}
+                  strokeWidth={TICK_STROKE_WIDTH}
                 />
               </>
             )}
@@ -130,8 +144,8 @@ export function SignChartVisual({ visual }: SignChartVisualProps) {
         x={WIDTH / 2}
         y={24}
         textAnchor="middle"
-        fill="var(--color-brand-900)"
-        className="text-[15px] font-semibold"
+        fill={NOTATION_FILL}
+        className={NOTATION_CLASS}
       >
         {visual.expression}
       </text>
