@@ -553,6 +553,26 @@ describe("parsePedagogicalVisual", () => {
         )
       ).toThrow(/notation|intervals|union/);
     });
+
+    test("rejects interval segment with extra keys", () => {
+      expect(() =>
+        parsePedagogicalVisual(
+          makeIntervalSet({
+            intervals: [
+              {
+                lower: { kind: "finite", value: 4 },
+                upper: { kind: "finite", value: 7 },
+                lowerInclusion: "closed",
+                upperInclusion: "closed",
+                notation: "[4,7]",
+                ariaLabel: "interval",
+                description: "segment",
+              },
+            ],
+          })
+        )
+      ).toThrow(/unexpected key/);
+    });
   });
 
   test("rejects unsupported kind", () => {

@@ -1,5 +1,9 @@
 import type { CartesianLineData, IntervalSetVisual, Point } from "./types";
 
+const DEFAULT_INTERVAL_SET_WIDTH = 400;
+const DEFAULT_INTERVAL_SET_HEIGHT = 80;
+const DEFAULT_INTERVAL_SET_PADDING = 24;
+
 export interface IntervalSetTick {
   readonly value: number;
   readonly label: string;
@@ -109,9 +113,9 @@ export function computeIntervalSetLayout(
   visual: IntervalSetVisual,
   options: { readonly width?: number; readonly height?: number; readonly padding?: number } = {}
 ): IntervalSetLayout {
-  const width = options.width ?? 400;
-  const height = options.height ?? 80;
-  const padding = options.padding ?? 24;
+  const width = options.width ?? DEFAULT_INTERVAL_SET_WIDTH;
+  const height = options.height ?? DEFAULT_INTERVAL_SET_HEIGHT;
+  const padding = options.padding ?? DEFAULT_INTERVAL_SET_PADDING;
   const axisY = height / 2;
 
   const finiteValues: number[] = [];

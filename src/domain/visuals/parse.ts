@@ -245,7 +245,16 @@ function fieldRecord(raw: Record<string, unknown>, field: string, context: strin
   return value as Record<string, unknown>;
 }
 
+function exactKeys(raw: Record<string, unknown>, allowed: readonly string[], context: string): void {
+  const extra = Object.keys(raw).filter((key) => !allowed.includes(key));
+  if (extra.length > 0) {
+    fail(context, `unexpected key(s): ${extra.join(", ")}`);
+  }
+}
+
 function intervalSegment(raw: Record<string, unknown>, context: string) {
+  exactKeys(raw, ["lower", "upper", "lowerInclusion", "upperInclusion"], context);
+
   const lower = intervalBoundValue(fieldRecord(raw, "lower", context), `${context}.lower`);
   const upper = intervalBoundValue(fieldRecord(raw, "upper", context), `${context}.upper`);
   const lowerInclusion = inclusion(raw, "lowerInclusion", context);
