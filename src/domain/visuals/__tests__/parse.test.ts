@@ -5,6 +5,7 @@ import {
   assertDistanceOnLine,
   assertCartesianLine,
   assertSystemsOfLines,
+  assertIntervalSet,
 } from "./helpers";
 import { lineToStandardForm, solveLinearSystem, linearScale } from "../layout";
 import type { CartesianLineData } from "../types";
@@ -327,6 +328,231 @@ describe("parsePedagogicalVisual", () => {
   });
   test("systems-of-lines: rejects secant without intersection for vertical + horizontal", () => {
     expect(() => parsePedagogicalVisual(make({ kind: "systems-of-lines", classification: "secant", lines: [{ form: "vertical", constant: 2 }, { form: "horizontal", constant: 3 }] }))).toThrow(/intersection/);
+  });
+
+  describe("interval-set", () => {
+    function makeIntervalSet(extra: Record<string, unknown> = {}) {
+      return make({
+        kind: "interval-set",
+        notation: "[4, 7]",
+        intervals: [
+          {
+            lower: { kind: "finite", value: 4 },
+            upper: { kind: "finite", value: 7 },
+            lowerInclusion: "closed",
+            upperInclusion: "closed",
+          },
+        ],
+        ...extra,
+      });
+    }
+
+    test("accepts single bounded interval [a, b]", () => {
+      const v = assertIntervalSet(parsePedagogicalVisual(makeIntervalSet()));
+      expect(v.kind).toBe("interval-set");
+      expect(v.notation).toBe("[4, 7]");
+      expect(v.intervals).toHaveLength(1);
+    });
+
+    test("accepts left ray (-∞, a)", () => {
+      const v = assertIntervalSet(parsePedagogicalVisual(
+        makeIntervalSet({
+          notation: "(-∞, -3)",
+          intervals: [
+            {
+              lower: { kind: "infinity", direction: "negative" },
+              upper: { kind: "finite", value: -3 },
+              lowerInclusion: "open",
+              upperInclusion: "open",
+            },
+          ],
+        })
+      ));
+      expect(v.kind).toBe("interval-set");
+      expect(v.intervals).toHaveLength(1);
+      expect(v.intervals[0]).toMatchObject({
+        lower: { kind: "infinity", direction: "negative" },
+        upper: { kind: "finite", value: -3 },
+        lowerInclusion: "open",
+        upperInclusion: "open",
+      });
+    });
+
+    test("accepts right ray [a, +∞)", () => {
+      const v = assertIntervalSet(parsePedagogicalVisual(
+        makeIntervalSet({
+          notation: "[4, +∞)",
+          intervals: [
+            {
+              lower: { kind: "finite", value: 4 },
+              upper: { kind: "infinity", direction: "positive" },
+              lowerInclusion: "closed",
+              upperInclusion: "open",
+            },
+          ],
+        })
+      ));
+      expect(v.kind).toBe("interval-set");
+      expect(v.intervals).toHaveLength(1);
+      expect(v.intervals[0]).toMatchObject({
+        lower: { kind: "finite", value: 4 },
+        upper: { kind: "infinity", direction: "positive" },
+        lowerInclusion: "closed",
+        upperInclusion: "open",
+      });
+    });
+
+    test("accepts two-segment exterior union (-∞, -3) ∪ (7, +∞)", () => {
+      const v = assertIntervalSet(parsePedagogicalVisual(
+        makeIntervalSet({
+          notation: "(-∞, -3) ∪ (7, +∞)",
+          intervals: [
+            {
+              lower: { kind: "infinity", direction: "negative" },
+              upper: { kind: "finite", value: -3 },
+              lowerInclusion: "open",
+              upperInclusion: "open",
+            },
+            {
+              lower: { kind: "finite", value: 7 },
+              upper: { kind: "infinity", direction: "positive" },
+              lowerInclusion: "open",
+              upperInclusion: "open",
+            },
+          ],
+        })
+      ));
+      expect(v.kind).toBe("interval-set");
+      expect(v.intervals).toHaveLength(2);
+      expect(v.notation).toBe("(-∞, -3) ∪ (7, +∞)");
+    });
+
+    test("preserves fraction label while using numeric value", () => {
+      const v = assertIntervalSet(parsePedagogicalVisual(
+        makeIntervalSet({
+          notation: "[-5/2, 1)",
+          intervals: [
+            {
+              lower: { kind: "finite", value: -2.5, label: "-5/2" },
+              upper: { kind: "finite", value: 1 },
+              lowerInclusion: "closed",
+              upperInclusion: "open",
+            },
+          ],
+        })
+      ));
+      expect(v.intervals).toHaveLength(1);
+      expect(v.intervals[0].lower).toMatchObject({
+        kind: "finite",
+        value: -2.5,
+        label: "-5/2",
+      });
+    });
+
+    test("rejects invalid infinity direction on lower bound", () => {
+      expect(() =>
+        parsePedagogicalVisual(
+          makeIntervalSet({
+            notation: "(4, +∞)",
+            intervals: [
+              {
+                lower: { kind: "infinity", direction: "positive" },
+                upper: { kind: "finite", value: 7 },
+                lowerInclusion: "open",
+                upperInclusion: "open",
+              },
+            ],
+          })
+        )
+      ).toThrow(/infinity|direction/);
+    });
+
+    test("rejects invalid infinity direction on upper bound", () => {
+      expect(() =>
+        parsePedagogicalVisual(
+          makeIntervalSet({
+            notation: "(-∞, 4)",
+            intervals: [
+              {
+                lower: { kind: "finite", value: -7 },
+                upper: { kind: "infinity", direction: "negative" },
+                lowerInclusion: "open",
+                upperInclusion: "open",
+              },
+            ],
+          })
+        )
+      ).toThrow(/infinity|direction/);
+    });
+
+    test("rejects finite lower bound greater than upper bound", () => {
+      expect(() =>
+        parsePedagogicalVisual(
+          makeIntervalSet({
+            notation: "[7, 4]",
+            intervals: [
+              {
+                lower: { kind: "finite", value: 7 },
+                upper: { kind: "finite", value: 4 },
+                lowerInclusion: "closed",
+                upperInclusion: "closed",
+              },
+            ],
+          })
+        )
+      ).toThrow(/lower.*upper|bounds|ordering/);
+    });
+
+    test("rejects missing notation", () => {
+      const { notation: _removed, ...withoutNotation } = makeIntervalSet();
+      expect(() => parsePedagogicalVisual(withoutNotation)).toThrow(/notation/);
+    });
+
+    test("rejects empty intervals", () => {
+      expect(() => parsePedagogicalVisual(makeIntervalSet({ intervals: [] }))).toThrow(/intervals/);
+    });
+
+    test("rejects notation/segment count drift (too few segments)", () => {
+      expect(() =>
+        parsePedagogicalVisual(
+          makeIntervalSet({
+            notation: "(-∞, -3) ∪ (7, +∞)",
+            intervals: [
+              {
+                lower: { kind: "infinity", direction: "negative" },
+                upper: { kind: "finite", value: -3 },
+                lowerInclusion: "open",
+                upperInclusion: "open",
+              },
+            ],
+          })
+        )
+      ).toThrow(/notation|intervals|union/);
+    });
+
+    test("rejects notation/segment count drift (too many segments)", () => {
+      expect(() =>
+        parsePedagogicalVisual(
+          makeIntervalSet({
+            notation: "[4, +∞)",
+            intervals: [
+              {
+                lower: { kind: "finite", value: 4 },
+                upper: { kind: "infinity", direction: "positive" },
+                lowerInclusion: "closed",
+                upperInclusion: "open",
+              },
+              {
+                lower: { kind: "finite", value: 5 },
+                upper: { kind: "infinity", direction: "positive" },
+                lowerInclusion: "closed",
+                upperInclusion: "open",
+              },
+            ],
+          })
+        )
+      ).toThrow(/notation|intervals|union/);
+    });
   });
 
   test("rejects unsupported kind", () => {

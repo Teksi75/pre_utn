@@ -2,6 +2,7 @@ import type {
   CartesianLineData,
   CartesianLineVisual,
   DistanceOnLineVisual,
+  IntervalSetVisual,
   PedagogicalVisual,
   Point,
   SignChartVisual,
@@ -9,6 +10,7 @@ import type {
   SystemsOfLinesVisual,
   VisualBase,
 } from "./types";
+import type { EndpointInclusion, IntervalBound } from "../intervals/representation";
 import { areLinesCoincident, areLinesParallel, pointSatisfiesLine } from "./layout";
 
 function fail(context: string, detail: string): never {
@@ -203,6 +205,103 @@ function systemsOfLines(raw: Record<string, unknown>, b: VisualBase, ctx: string
   return { ...baseResult, classification: "secant" as const, intersection };
 }
 
+const INCLUSIONS = new Set(["open", "closed"]);
+
+function inclusion(raw: Record<string, unknown>, field: string, context: string): EndpointInclusion {
+  const v = str(raw, field, context);
+  if (!INCLUSIONS.has(v)) fail(context, `${field} must be open or closed`);
+  return v as EndpointInclusion;
+}
+
+function intervalBoundValue(raw: Record<string, unknown>, context: string): IntervalBound {
+  const kind = str(raw, "kind", context);
+  if (kind === "finite") {
+    const value = num(raw, "value", context);
+    const labelRaw = raw.label;
+    if (labelRaw !== undefined && (typeof labelRaw !== "string" || labelRaw.trim().length === 0)) {
+      fail(context, "label must be a non-empty string");
+    }
+    return {
+      kind: "finite",
+      value,
+      ...(labelRaw !== undefined ? { label: labelRaw } : {}),
+    } as IntervalBound;
+  }
+  if (kind === "infinity") {
+    const direction = str(raw, "direction", context);
+    if (direction !== "negative" && direction !== "positive") {
+      fail(context, "direction must be negative or positive");
+    }
+    return { kind: "infinity", direction: direction as "negative" | "positive" };
+  }
+  fail(context, "kind must be finite or infinity");
+}
+
+function fieldRecord(raw: Record<string, unknown>, field: string, context: string): Record<string, unknown> {
+  const value = raw[field];
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    fail(context, `${field} must be an object`);
+  }
+  return value as Record<string, unknown>;
+}
+
+function intervalSegment(raw: Record<string, unknown>, context: string) {
+  const lower = intervalBoundValue(fieldRecord(raw, "lower", context), `${context}.lower`);
+  const upper = intervalBoundValue(fieldRecord(raw, "upper", context), `${context}.upper`);
+  const lowerInclusion = inclusion(raw, "lowerInclusion", context);
+  const upperInclusion = inclusion(raw, "upperInclusion", context);
+
+  if (lower.kind === "infinity" && lower.direction !== "negative") {
+    fail(`${context}.lower`, "lower infinity must be negative");
+  }
+  if (upper.kind === "infinity" && upper.direction !== "positive") {
+    fail(`${context}.upper`, "upper infinity must be positive");
+  }
+  if (lower.kind === "infinity" && lowerInclusion !== "open") {
+    fail(`${context}.lowerInclusion`, "infinity lower bound must be open");
+  }
+  if (upper.kind === "infinity" && upperInclusion !== "open") {
+    fail(`${context}.upperInclusion`, "infinity upper bound must be open");
+  }
+  if (lower.kind === "finite" && upper.kind === "finite" && lower.value > upper.value) {
+    fail(context, "lower bound must be less than or equal to upper bound");
+  }
+
+  return { lower, upper, lowerInclusion, upperInclusion };
+}
+
+function parseIntervalSet(raw: Record<string, unknown>, b: VisualBase, context: string): IntervalSetVisual {
+  const notation = str(raw, "notation", context);
+  const intervalsRaw = raw.intervals;
+  if (!Array.isArray(intervalsRaw) || intervalsRaw.length === 0) {
+    fail(context, "intervals must be a non-empty array");
+  }
+  const intervals = intervalsRaw.map((item, i) =>
+    intervalSegment(record(item, `${context}.intervals[${i}]`), `${context}.intervals[${i}]`)
+  );
+
+  const unionMatches = notation.match(/∪|\\cup| U /g) ?? [];
+  if (unionMatches.length + 1 !== intervals.length) {
+    fail(
+      context,
+      `notation union count (${unionMatches.length + 1}) does not match intervals length (${intervals.length})`
+    );
+  }
+
+  const setBuilderLabelRaw = raw.setBuilderLabel;
+  if (setBuilderLabelRaw !== undefined && (typeof setBuilderLabelRaw !== "string" || setBuilderLabelRaw.trim().length === 0)) {
+    fail(context, "setBuilderLabel must be a non-empty string");
+  }
+
+  return {
+    ...b,
+    kind: "interval-set",
+    notation,
+    intervals,
+    ...(setBuilderLabelRaw !== undefined ? { setBuilderLabel: setBuilderLabelRaw } : {}),
+  } as IntervalSetVisual;
+}
+
 export function parsePedagogicalVisual(raw: unknown, context = "visual"): PedagogicalVisual {
   const r = record(raw, context);
   const b = base(r, context);
@@ -211,6 +310,7 @@ export function parsePedagogicalVisual(raw: unknown, context = "visual"): Pedago
     case "distance-on-line": return distanceOnLine(r, b, context);
     case "cartesian-line": return cartesianLine(r, b, context);
     case "systems-of-lines": return systemsOfLines(r, b, context);
+    case "interval-set": return parseIntervalSet(r, b, context);
     default: fail(context, `unsupported kind: ${b.kind}`);
   }
 }

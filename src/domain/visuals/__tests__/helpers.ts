@@ -1,6 +1,7 @@
 import type {
   CartesianLineVisual,
   DistanceOnLineVisual,
+  IntervalSetVisual,
   PedagogicalVisual,
   SignChartVisual,
   SystemsOfLinesVisual,
@@ -30,6 +31,13 @@ export function assertCartesianLine(visual: PedagogicalVisual): CartesianLineVis
 export function assertSystemsOfLines(visual: PedagogicalVisual): SystemsOfLinesVisual {
   if (visual.kind !== "systems-of-lines") {
     throw new Error(`expected systems-of-lines, got ${visual.kind}`);
+  }
+  return visual;
+}
+
+export function assertIntervalSet(visual: PedagogicalVisual): IntervalSetVisual {
+  if (visual.kind !== "interval-set") {
+    throw new Error(`expected interval-set, got ${visual.kind}`);
   }
   return visual;
 }
