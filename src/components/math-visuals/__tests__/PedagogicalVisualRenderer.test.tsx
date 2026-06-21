@@ -134,6 +134,29 @@ describe("PedagogicalVisualRenderer", () => {
     }
   );
 
+  test("sign-chart renders an excluded zero as an open circle without a cross", () => {
+    const visual: SignChartVisual = {
+      ...base,
+      kind: "sign-chart",
+      variable: "x",
+      expression: "-2x - 6",
+      zeros: [-3],
+      excludedPoints: [-3],
+      criticalPoints: [-3],
+      signZones: [
+        { lowerBound: null, upperBound: -3, sign: "+" },
+        { lowerBound: -3, upperBound: null, sign: "-" },
+      ],
+    };
+    const html = renderHtml(visual);
+    assertVisualWrapper(html, visual);
+
+    // The point must be drawn as an open circle (excluded root), not with the
+    // cross marker reserved for undefined/asymptote points.
+    expect(html).toContain('fill="#ffffff"');
+    expect(html).not.toMatch(/M\d+ \d+ L\d+ \d+ M\d+ \d+ L\d+ \d+/);
+  });
+
   test("unknown kind throws at render time", () => {
     const unknown = { ...base, kind: "unknown" } as unknown as PedagogicalVisual;
     expect(() => renderHtml(unknown)).toThrow();

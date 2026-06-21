@@ -123,10 +123,9 @@ function signChart(raw: Record<string, unknown>, b: VisualBase, ctx: string): Si
   const excludedSet = new Set(excludedPoints);
   if (excludedSet.size !== excludedPoints.length) fail(ctx, "excludedPoints contains duplicates");
 
-  for (const z of zeros) {
-    if (excludedSet.has(z)) fail(ctx, `zero ${z} overlaps with excluded points`);
-  }
-
+  // A point may belong to both zeros and excludedPoints: it is a root of the
+  // expression but excluded from the solution set (strict inequality). The
+  // renderer draws such a point as an open circle.
   const criticalPoints = Array.from(new Set([...zeros, ...excludedPoints])).sort((a, b) => a - b);
   const expectedZones = criticalPoints.length + 1;
   if (zones.length !== expectedZones) {

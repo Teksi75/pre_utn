@@ -85,12 +85,18 @@ describe("parsePedagogicalVisual", () => {
       )
     ).toThrow(/signZones/);
   });
-  test("sign-chart: rejects overlapping zero and excluded point", () => {
-    expect(() =>
+  test("sign-chart: accepts overlapping zero and excluded point (excluded zero)", () => {
+    // A strict linear inequality can have a root that is excluded from the
+    // solution set. The point is still a zero of the expression, so it belongs
+    // in both arrays; the renderer draws it as an open circle.
+    const v = assertSignChart(
       parsePedagogicalVisual(
         makeSignChart({ zeros: [0], excludedPoints: [0], signZones: [{ lowerBound: null, upperBound: 0, sign: "+" }, { lowerBound: 0, upperBound: null, sign: "-" }] })
       )
-    ).toThrow(/overlap/);
+    );
+    expect(v.zeros).toContain(0);
+    expect(v.excludedPoints).toContain(0);
+    expect(v.criticalPoints).toEqual([0]);
   });
   test("sign-chart: rejects duplicate zeros", () => {
     expect(() =>

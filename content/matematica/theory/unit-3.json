@@ -139,6 +139,23 @@
         "bodyParagraphs": [
           "Idea principal: se aplican las mismas operaciones inversas en ambos miembros, pero el conjunto solución se expresa como un intervalo o desigualdad. Por ejemplo, $x < 4$ en notación de conjunto es $(-\\infty, 4)$.",
           "Ejemplo: $3x + 6 \\leq 12 \\Rightarrow 3x \\leq 6 \\Rightarrow x \\leq 2$. Solución: $(-\\infty, 2]$."
+        ],
+        "visualExamples": [
+          {
+            "id": "vis-inl-resolver-signo",
+            "kind": "sign-chart",
+            "title": "Signo de x - 2",
+            "ariaLabel": "Tabla de signos de la expresión x menos 2",
+            "description": "La expresión x - 2 es negativa antes de 2, vale 0 en 2 y es positiva después. La desigualdad x ≤ 2 incluye el 0 y todo el lado negativo.",
+            "variable": "x",
+            "expression": "x - 2",
+            "zeros": [2],
+            "excludedPoints": [],
+            "signZones": [
+              { "lowerBound": null, "upperBound": 2, "sign": "-" },
+              { "lowerBound": 2, "upperBound": null, "sign": "+" }
+            ]
+          }
         ]
       },
       {
@@ -192,6 +209,18 @@
         "bodyParagraphs": [
           "Idea principal: si $|x - a| < c$ con $c > 0$, entonces $-c < x - a < c$, lo que equivale a $a - c < x < a + c$. La solución es un INTERVALO ABIERTO centrado en $a$.",
           "Ejemplo: $|x - 2| < 5 \\Rightarrow -5 < x - 2 < 5 \\Rightarrow -3 < x < 7$. Solución: $(-3, 7)$. Error frecuente: decir solo $x < 7$ (omitiendo la mitad inferior)."
+        ],
+        "visualExamples": [
+          {
+            "id": "vis-inv-caso-menor-distancia",
+            "kind": "distance-on-line",
+            "title": "Distancia al centro 2 menor que 5",
+            "ariaLabel": "Recta numérica: los valores cuya distancia a 2 es menor que 5 van de menos 3 a 7, sin incluir los extremos",
+            "description": "|x - 2| < 5 se lee: la distancia de x a 2 es menor que 5. Los extremos son -3 y 7; como la desigualdad es estricta, no se incluyen.",
+            "center": 2,
+            "distance": 5,
+            "inequality": "lt"
+          }
         ]
       },
       {
@@ -237,6 +266,18 @@
         "bodyParagraphs": [
           "Idea principal: la ecuación $y = mx + b$ describe una recta. $m$ es la PENDIENTE (cuánto sube/baja $y$ por cada unidad que avanza $x$). $b$ es la ORDENADA AL ORIGEN (el valor de $y$ cuando $x = 0$). Confundir $m$ con $b$ es uno de los errores más comunes.",
           "Ejemplo: en $y = 3x + 2$, la pendiente es 3 y la ordenada es 2. Si la ecuación fuera $y = 2x + 3$, la pendiente sería 2 y la ordenada 3."
+        ],
+        "visualExamples": [
+          {
+            "id": "vis-recta-pendiente-ordenada",
+            "kind": "cartesian-line",
+            "title": "Recta y = 3x + 2",
+            "ariaLabel": "Gráfica de la recta y igual 3x más 2 con pendiente 3 y ordenada al origen 2",
+            "description": "La recta y = 3x + 2 tiene pendiente 3 (sube 3 unidades por cada unidad de x) y ordenada al origen 2 (cruza el eje y en (0, 2)).",
+            "form": "slope-intercept",
+            "slope": 3,
+            "intercept": 2
+          }
         ]
       },
       {
@@ -290,6 +331,21 @@
         "bodyParagraphs": [
           "Idea principal: un sistema de dos ecuaciones con dos incógnitas $x$ e $y$ es un par de igualdades que se deben satisfacer simultáneamente. La solución es el PAR ORDENADO $(x_0, y_0)$ que cumple AMBAS ecuaciones.",
           "Ejemplo: $x + y = 5$ y $2x - y = 1$ tiene solución $(2, 3)$ porque $2 + 3 = 5$ ✓ y $2(2) - 3 = 1$ ✓."
+        ],
+        "visualExamples": [
+          {
+            "id": "vis-sis-definicion-secante",
+            "kind": "systems-of-lines",
+            "title": "Sistema secante: x + y = 5 y 2x - y = 1",
+            "ariaLabel": "Sistema de dos rectas secantes que se cortan en el punto 2 coma 3",
+            "description": "Las rectas x + y = 5 y 2x - y = 1 se cortan en el único punto (2, 3), que es la solución del sistema.",
+            "classification": "secant",
+            "lines": [
+              { "form": "slope-intercept", "slope": -1, "intercept": 5 },
+              { "form": "slope-intercept", "slope": 2, "intercept": -1 }
+            ],
+            "intersection": { "x": 2, "y": 3 }
+          }
         ]
       },
       {

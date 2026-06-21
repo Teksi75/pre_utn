@@ -21,6 +21,7 @@ import {
   getUnitThreshold,
 } from "../catalog/content-loaders";
 import { loadCatalog, queryByUnit, queryBySkill } from "../catalog/index";
+import type { PedagogicalVisual } from "../visuals/types";
 
 /** The 8 declared U3 skill IDs (from theory/unit-3.json and examples/unit-3.json). */
 const U3_SKILL_IDS: readonly string[] = [
@@ -199,5 +200,220 @@ describe("Unit-3 catalog composition", () => {
     expect(bank).toHaveProperty("diagnostics");
     expect(bank.exercises.length).toBeGreaterThanOrEqual(3);
     expect(Array.isArray(bank.diagnostics)).toBe(true);
+  });
+});
+
+describe("u3-visualizaciones-pedagogicas — content shape", () => {
+  const TARGET_SKILLS: readonly string[] = [
+    "mat.u3.inecuaciones_lineales",
+    "mat.u3.inecuaciones_valor_absoluto",
+    "mat.u3.recta",
+    "mat.u3.sistemas",
+  ];
+
+  function visualsForSkill(skillId: string): readonly PedagogicalVisual[] {
+    const theory = loadTheoryContent("unit-3");
+    const examples = loadExampleContent("unit-3");
+    const node = theory.find((n) => n.skillId === skillId);
+    const result: PedagogicalVisual[] = [];
+
+    if (node?.visualExamples) result.push(...node.visualExamples);
+    for (const concept of node?.concepts ?? []) {
+      if (concept.visualExamples) result.push(...concept.visualExamples);
+    }
+    for (const ex of examples.filter((e) => e.skillId === skillId)) {
+      for (const step of ex.steps) {
+        if (step.visualExamples) result.push(...step.visualExamples);
+      }
+    }
+    return result;
+  }
+
+  test.each(TARGET_SKILLS)("%s has at least one visual example", (skillId) => {
+    const visuals = visualsForSkill(skillId);
+    expect(visuals.length, `expected ≥1 visual for ${skillId}`).toBeGreaterThanOrEqual(1);
+  });
+
+  test("inecuaciones_lineales includes a sign-chart visual", () => {
+    const visuals = visualsForSkill("mat.u3.inecuaciones_lineales");
+    expect(visuals.some((v) => v.kind === "sign-chart")).toBe(true);
+  });
+
+  test("inecuaciones_valor_absoluto includes a distance-on-line visual", () => {
+    const visuals = visualsForSkill("mat.u3.inecuaciones_valor_absoluto");
+    expect(visuals.some((v) => v.kind === "distance-on-line")).toBe(true);
+  });
+
+  test("recta includes a cartesian-line visual", () => {
+    const visuals = visualsForSkill("mat.u3.recta");
+    expect(visuals.some((v) => v.kind === "cartesian-line")).toBe(true);
+  });
+
+  test("sistemas includes a systems-of-lines visual", () => {
+    const visuals = visualsForSkill("mat.u3.sistemas");
+    expect(visuals.some((v) => v.kind === "systems-of-lines")).toBe(true);
+  });
+
+  test("every U3 visual entry parses through the content loader", () => {
+    // Indirectly validated because loadTheoryContent / loadExampleContent throw
+    // on malformed visuals. This test makes the contract explicit.
+    expect(() => loadTheoryContent("unit-3")).not.toThrow();
+    expect(() => loadExampleContent("unit-3")).not.toThrow();
+  });
+
+  test("strict-inequality sign-chart visuals mark the boundary as excluded", () => {
+    // A strict inequality endpoint must be drawn as an open/excluded point.
+    // It may also be listed in zeros when it is a root of the expression that is
+    // excluded from the solution set (e.g. -2x - 6 = 0 at x = -3 for -2x > 6).
+    const examples = loadExampleContent("unit-3");
+    let checked = 0;
+
+    for (const ex of examples) {
+      // Strict linear inequality answers use < or >; non-strict answers use ≤/≥.
+      if (!/[<>]/.test(ex.finalAnswer)) continue;
+
+      for (const step of ex.steps) {
+        for (const visual of step.visualExamples ?? []) {
+          if (visual.kind !== "sign-chart") continue;
+          if (visual.criticalPoints.length !== 1) continue;
+
+          const boundary = visual.criticalPoints[0];
+          expect(
+            visual.excludedPoints,
+            `${ex.id}/${visual.id}: boundary ${boundary} must be in excludedPoints for strict inequality`
+          ).toContain(boundary);
+          checked++;
+        }
+      }
+    }
+
+    expect(checked, "expected at least one strict-inequality sign-chart example").toBeGreaterThan(0);
+  });
+
+  test("vis-ex-inl-flip-intervalo shows zero at -3, positive left, negative right, excluded boundary", () => {
+    const examples = loadExampleContent("unit-3");
+    const ex = examples.find((e) => e.id === "example-inecuaciones-lineales-2");
+    expect(ex).toBeDefined();
+
+    const visual = ex!.steps
+      .flatMap((s) => s.visualExamples ?? [])
+      .find((v) => v.id === "vis-ex-inl-flip-intervalo");
+    expect(visual).toBeDefined();
+    expect(visual!.kind).toBe("sign-chart");
+
+    const chart = visual! as Extract<PedagogicalVisual, { kind: "sign-chart" }>;
+    expect(chart.zeros).toContain(-3);
+    expect(chart.excludedPoints).toContain(-3);
+    expect(chart.signZones).toEqual([
+      { lowerBound: null, upperBound: -3, sign: "+" },
+      { lowerBound: -3, upperBound: null, sign: "-" },
+    ]);
+  });
+
+  test("vis-inl-resolver-signo describes x - 2 sign and x ≤ 2 solution honestly", () => {
+    const theory = loadTheoryContent("unit-3");
+    const node = theory.find((n) => n.skillId === "mat.u3.inecuaciones_lineales");
+    const visual = node?.concepts
+      .flatMap((c) => c.visualExamples ?? [])
+      .find((v) => v.id === "vis-inl-resolver-signo");
+    expect(visual).toBeDefined();
+    expect(visual!.kind).toBe("sign-chart");
+
+    const chart = visual! as Extract<PedagogicalVisual, { kind: "sign-chart" }>;
+    expect(chart.expression).toBe("x - 2");
+    expect(chart.zeros).toContain(2);
+    expect(chart.signZones).toEqual([
+      { lowerBound: null, upperBound: 2, sign: "-" },
+      { lowerBound: 2, upperBound: null, sign: "+" },
+    ]);
+
+    const description = chart.description.toLowerCase();
+    expect(description).toContain("negativa antes de 2");
+    expect(description).toContain("positiva después");
+    expect(description).toContain("0 en 2");
+    expect(description).not.toContain("$");
+  });
+
+  test("U3 visual text fields do not contain unresolved LaTeX delimiters", () => {
+    const theory = loadTheoryContent("unit-3");
+    const examples = loadExampleContent("unit-3");
+    const visuals: PedagogicalVisual[] = [];
+
+    for (const node of theory) {
+      visuals.push(...(node.visualExamples ?? []));
+      for (const concept of node.concepts) visuals.push(...(concept.visualExamples ?? []));
+    }
+    for (const ex of examples) {
+      for (const step of ex.steps) visuals.push(...(step.visualExamples ?? []));
+    }
+
+    expect(visuals.length).toBeGreaterThan(0);
+    for (const v of visuals) {
+      expect(v.title, `${v.id} title contains raw $`).not.toContain("$");
+      expect(v.description, `${v.id} description contains raw $`).not.toContain("$");
+      if (v.kind === "sign-chart") {
+        expect(v.expression, `${v.id} expression contains raw $`).not.toContain("$");
+      }
+    }
+  });
+
+  test("worked-example recta and sistemas visuals differ from their theory visuals", () => {
+    const theory = loadTheoryContent("unit-3");
+    const examples = loadExampleContent("unit-3");
+
+    function cartesianEquation(v: PedagogicalVisual): string | null {
+      if (v.kind !== "cartesian-line") return null;
+      if (v.form !== "slope-intercept") return null;
+      return `${v.slope}:${v.intercept}`;
+    }
+
+    function systemKey(v: PedagogicalVisual): string | null {
+      if (v.kind !== "systems-of-lines") return null;
+      return JSON.stringify(v.lines);
+    }
+
+    function theoryVisualsForSkill(skillId: string): readonly PedagogicalVisual[] {
+      const node = theory.find((n) => n.skillId === skillId);
+      const result: PedagogicalVisual[] = [];
+      if (node?.visualExamples) result.push(...node.visualExamples);
+      for (const concept of node?.concepts ?? []) {
+        if (concept.visualExamples) result.push(...concept.visualExamples);
+      }
+      return result;
+    }
+
+    const theoryRecta = theoryVisualsForSkill("mat.u3.recta")
+      .map(cartesianEquation)
+      .filter((k): k is string => k !== null);
+    const exampleRecta = examples
+      .filter((e) => e.skillId === "mat.u3.recta")
+      .flatMap((e) => e.steps)
+      .flatMap((s) => s.visualExamples ?? [])
+      .map(cartesianEquation)
+      .filter((k): k is string => k !== null);
+
+    for (const key of exampleRecta) {
+      expect(
+        theoryRecta,
+        `recta worked-example visual ${key} duplicates a theory visual`
+      ).not.toContain(key);
+    }
+
+    const theorySistemas = theoryVisualsForSkill("mat.u3.sistemas")
+      .map(systemKey)
+      .filter((k): k is string => k !== null);
+    const exampleSistemas = examples
+      .filter((e) => e.skillId === "mat.u3.sistemas")
+      .flatMap((e) => e.steps)
+      .flatMap((s) => s.visualExamples ?? [])
+      .map(systemKey)
+      .filter((k): k is string => k !== null);
+
+    for (const key of exampleSistemas) {
+      expect(
+        theorySistemas,
+        `sistemas worked-example visual duplicates a theory visual`
+      ).not.toContain(key);
+    }
   });
 });

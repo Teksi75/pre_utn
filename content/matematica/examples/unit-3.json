@@ -111,7 +111,27 @@
     "steps": [
       { "order": 1, "explanation": "El coeficiente de $x$ es $-2$. Vamos a dividir por $-2$, que es NEGATIVO. Esto invierte el sentido de la desigualdad." },
       { "order": 2, "explanation": "$x < 6 / (-2) = -3$." },
-      { "order": 3, "explanation": "Solución: $(-\\infty, -3)$ o $x < -3$." },
+      {
+        "order": 3,
+        "explanation": "Solución: $(-\\infty, -3)$ o $x < -3$.",
+        "visualExamples": [
+          {
+            "id": "vis-ex-inl-flip-intervalo",
+            "kind": "sign-chart",
+            "title": "Signo de -2x - 6",
+            "ariaLabel": "Tabla de signos de menos 2x menos 6; la expresión se anula en menos 3, es positiva antes y negativa después, con el extremo abierto",
+            "description": "La expresión -2x - 6 se hace 0 en x = -3, es positiva a la izquierda y negativa a la derecha. La desigualdad -2x > 6 equivale a -2x - 6 > 0, así que se acepta la zona positiva; -3 queda excluido porque la desigualdad es estricta.",
+            "variable": "x",
+            "expression": "-2x - 6",
+            "zeros": [-3],
+            "excludedPoints": [-3],
+            "signZones": [
+              { "lowerBound": null, "upperBound": -3, "sign": "+" },
+              { "lowerBound": -3, "upperBound": null, "sign": "-" }
+            ]
+          }
+        ]
+      },
       { "order": 4, "explanation": "Verificación con $x = -4$: $-2 \\cdot (-4) = 8 > 6$ ✓. ($-4$ SÍ es solución, lo que confirma que el sentido correcto es $<$.)" }
     ],
     "finalAnswer": "x < −3",
@@ -133,7 +153,22 @@
       { "order": 1, "explanation": "Caso $<$: $|expr| < c$ se descompone como $-c < expr < c$ (conjunción). Aquí $expr = x - 2$ y $c = 5$." },
       { "order": 2, "explanation": "Aplicamos: $-5 < x - 2 < 5$." },
       { "order": 3, "explanation": "Sumamos $2$ en los tres miembros: $-5 + 2 < x < 5 + 2$, es decir $-3 < x < 7$." },
-      { "order": 4, "explanation": "Solución: el intervalo abierto $(-3, 7)$." },
+      {
+        "order": 4,
+        "explanation": "Solución: el intervalo abierto $(-3, 7)$.",
+        "visualExamples": [
+          {
+            "id": "vis-ex-inv-menor-distancia",
+            "kind": "distance-on-line",
+            "title": "Valores a distancia menor que 5 de 2",
+            "ariaLabel": "Recta numérica: los valores entre menos 3 y 7 están a menos de 5 unidades de 2",
+            "description": "|x - 2| < 5 se lee: la distancia de x a 2 es menor que 5. En la recta numérica eso deja el intervalo abierto (-3, 7).",
+            "center": 2,
+            "distance": 5,
+            "inequality": "lt"
+          }
+        ]
+      },
       { "order": 5, "explanation": "Verificación con $x = 0$ (dentro): $|0 - 2| = 2 < 5$ ✓. Con $x = -5$ (fuera): $|-5 - 2| = 7 \\not< 5$ ✓ (correctamente excluido)." }
     ],
     "finalAnswer": "−3 < x < 7",
@@ -154,8 +189,23 @@
     "steps": [
       { "order": 1, "explanation": "Caso $\\geq$: $|expr| \\geq c$ se descompone como $expr \\leq -c$ o $expr \\geq c$ (disyunción). Aquí $expr = 2x + 1$ y $c = 3$." },
       { "order": 2, "explanation": "Aplicamos: $2x + 1 \\leq -3$ o $2x + 1 \\geq 3$." },
-      { "order": 3, "explanation": "Resolvemos cada rama. Rama 1: $2x \\leq -4 \\Rightarrow x \\leq -2$. Rama 2: $2x \\geq 2 \\Rightarrow x \\geq 1$." },
-      { "order": 4, "explanation": "Solución: $(-\\infty, -2] \\cup [1, +\\infty)$, o equivalentemente $x \\leq -2$ o $x \\geq 1$." }
+      { "order": 3, "explanation": "Resolvemos cada rama. Rama 1: 2x ≤ -4 ⇒ x ≤ -2. Rama 2: 2x ≥ 2 ⇒ x ≥ 1." },
+      {
+        "order": 4,
+        "explanation": "Solución: (-∞, -2] ∪ [1, +∞), o equivalentemente x ≤ -2 o x ≥ 1.",
+        "visualExamples": [
+          {
+            "id": "vis-ex-inv-mayor-distancia",
+            "kind": "distance-on-line",
+            "title": "Valores a distancia mayor o igual que 1,5 de -0,5",
+            "ariaLabel": "Recta numérica: los valores a la izquierda de menos 2 y a la derecha de 1 están a 1,5 o más unidades de menos 0,5, con extremos cerrados",
+            "description": "|x + 0,5| ≥ 1,5 se lee: la distancia de x a -0,5 es mayor o igual que 1,5. Los extremos son -2 y 1; como la desigualdad incluye la igualdad, se dibujan cerrados.",
+            "center": -0.5,
+            "distance": 1.5,
+            "inequality": "ge"
+          }
+        ]
+      }
     ],
     "finalAnswer": "x ≤ −2 o x ≥ 1",
     "pedagogicalNote": "El caso $\\geq$ (y $>$ ) produce una DISYUNCIÓN: dos rayos disjuntos. NO es un único intervalo.",
@@ -171,14 +221,29 @@
   {
     "id": "example-recta-1",
     "skillId": "mat.u3.recta",
-    "problem": "Para la recta $y = 3x + 2$, identificar la pendiente y la ordenada al origen",
+    "problem": "Para la recta y = -2x + 4, identificar la pendiente y la ordenada al origen",
     "steps": [
-      { "order": 1, "explanation": "La ecuación está en la forma $y = mx + b$ (forma pendiente-ordenada)." },
-      { "order": 2, "explanation": "Comparamos: $m$ es el coeficiente que multiplica a $x$, $b$ es el término independiente. Aquí $m = 3$ y $b = 2$." },
-      { "order": 3, "explanation": "Entonces la pendiente es $3$ (por cada unidad que avanza $x$, $y$ sube $3$) y la ordenada al origen es $2$ (cuando $x = 0$, $y = 2$)." }
+      { "order": 1, "explanation": "La ecuación está en la forma y = mx + b (forma pendiente-ordenada)." },
+      { "order": 2, "explanation": "Comparamos: m es el coeficiente que multiplica a x, b es el término independiente. Aquí m = -2 y b = 4." },
+      {
+        "order": 3,
+        "explanation": "Entonces la pendiente es -2 (por cada unidad que avanza x, y baja 2) y la ordenada al origen es 4 (cuando x = 0, y = 4).",
+        "visualExamples": [
+          {
+            "id": "vis-ex-recta-pendiente-ordenada",
+            "kind": "cartesian-line",
+            "title": "Gráfica de y = -2x + 4",
+            "ariaLabel": "Recta con pendiente menos 2 y ordenada al origen 4",
+            "description": "La recta pasa por (0, 4) y baja 2 unidades por cada unidad a la derecha, lo que confirma m = -2 y b = 4.",
+            "form": "slope-intercept",
+            "slope": -2,
+            "intercept": 4
+          }
+        ]
+      }
     ],
-    "finalAnswer": "Pendiente 3, ordenada 2",
-    "pedagogicalNote": "Error frecuente: confundir y decir 'pendiente 2, ordenada 3'. La regla es: pendiente = coeficiente de $x$; ordenada = término independiente.",
+    "finalAnswer": "Pendiente -2, ordenada 4",
+    "pedagogicalNote": "Error frecuente: confundir y decir 'pendiente 4, ordenada -2'. La regla es: pendiente = coeficiente de x; ordenada = término independiente.",
     "canonicalTrace": [
       {
         "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
@@ -212,16 +277,34 @@
   {
     "id": "example-sistemas-1",
     "skillId": "mat.u3.sistemas",
-    "problem": "Resolver por sustitución: $x + y = 5$ y $2x - y = 1$",
+    "problem": "Resolver por sustitución: x + y = 6 y 2x - y = 0",
     "steps": [
-      { "order": 1, "explanation": "De la primera ecuación, despejamos $y$: $y = 5 - x$." },
-      { "order": 2, "explanation": "Sustituimos en la segunda: $2x - (5 - x) = 1$. Atención al signo: $-y = -(5 - x) = -5 + x$." },
-      { "order": 3, "explanation": "Operamos: $2x - 5 + x = 1 \\Rightarrow 3x - 5 = 1 \\Rightarrow 3x = 6 \\Rightarrow x = 2$." },
-      { "order": 4, "explanation": "Sustituimos $x = 2$ en $y = 5 - x$: $y = 5 - 2 = 3$." },
-      { "order": 5, "explanation": "Solución: $(x, y) = (2, 3)$. Verificación: $2 + 3 = 5$ ✓ y $2(2) - 3 = 1$ ✓." }
+      { "order": 1, "explanation": "De la primera ecuación, despejamos y: y = 6 - x." },
+      { "order": 2, "explanation": "Sustituimos en la segunda: 2x - (6 - x) = 0. Atención al signo: -y = -(6 - x) = -6 + x." },
+      { "order": 3, "explanation": "Operamos: 2x - 6 + x = 0 ⇒ 3x - 6 = 0 ⇒ 3x = 6 ⇒ x = 2." },
+      { "order": 4, "explanation": "Sustituimos x = 2 en y = 6 - x: y = 6 - 2 = 4." },
+      {
+        "order": 5,
+        "explanation": "Solución: (x, y) = (2, 4). Verificación: 2 + 4 = 6 ✓ y 2(2) - 4 = 0 ✓.",
+        "visualExamples": [
+          {
+            "id": "vis-ex-sistemas-secante",
+            "kind": "systems-of-lines",
+            "title": "Verificación gráfica: intersección en (2, 4)",
+            "ariaLabel": "Dos rectas secantes que se cortan en el punto 2 coma 4",
+            "description": "El par ordenado (2, 4) es el punto donde se cruzan las rectas del sistema, lo que confirma gráficamente la solución algebraica.",
+            "classification": "secant",
+            "lines": [
+              { "form": "slope-intercept", "slope": -1, "intercept": 6 },
+              { "form": "slope-intercept", "slope": 2, "intercept": 0 }
+            ],
+            "intersection": { "x": 2, "y": 4 }
+          }
+        ]
+      }
     ],
-    "finalAnswer": "x = 2, y = 3",
-    "pedagogicalNote": "El paso crítico es la distribución del signo negativo en la sustitución: $-(5 - x) = -5 + x$, NO $-(5 - x) = -5 - x$.",
+    "finalAnswer": "x = 2, y = 4",
+    "pedagogicalNote": "El paso crítico es la distribución del signo negativo en la sustitución: -(6 - x) = -6 + x, NO -(6 - x) = -6 - x.",
     "canonicalTrace": [
       {
         "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",

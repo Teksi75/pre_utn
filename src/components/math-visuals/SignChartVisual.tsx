@@ -73,7 +73,19 @@ export function SignChartVisual({ visual }: SignChartVisualProps) {
                 fill="var(--color-accent-600)"
               />
             )}
-            {isExcluded && (
+            {zeroSet.has(p) && isExcluded && (
+              // Excluded root: open circle (strict inequality boundary).
+              <circle
+                cx={x}
+                cy={AXIS_Y}
+                r="5"
+                fill="#ffffff"
+                stroke="var(--color-accent-600)"
+                strokeWidth="2"
+              />
+            )}
+            {isExcluded && !zeroSet.has(p) && (
+              // Undefined/asymptote point: open circle with cross.
               <>
                 <circle
                   cx={x}
