@@ -522,8 +522,19 @@
     },
     "add-interval-set-visual": {
       "status": "in-progress",
-      "branch": "feature/add-interval-set-visual",
+      "branch": "feature/add-interval-set-visual-renderer",
       "startedAt": "2026-06-20",
+      "delivery": "feature-branch-chain",
+      "pr1": {
+        "branch": "feature/add-interval-set-visual",
+        "status": "merged",
+        "summary": "Domain types, parser, layout helper, and unit tests for interval-set visuals."
+      },
+      "pr2": {
+        "branch": "feature/add-interval-set-visual-renderer",
+        "status": "in-progress",
+        "summary": "React renderer, render tests, U3 content integration, and visual-design doc."
+      },
       "summary": "Add a dedicated interval-set pedagogical visual for U3 inequality solution sets while preserving sign-chart for sign reasoning."
     },
     "implement-unit-3-mathematics": {
