@@ -155,6 +155,22 @@
               { "lowerBound": null, "upperBound": 2, "sign": "-" },
               { "lowerBound": 2, "upperBound": null, "sign": "+" }
             ]
+          },
+          {
+            "id": "vis-inl-resolver-intervalo",
+            "kind": "interval-set",
+            "title": "Solución de x ≤ 2",
+            "ariaLabel": "Conjunto solución de x menor o igual que 2: el intervalo menos infinito coma 2 cerrado",
+            "description": "La solución x ≤ 2 se representa como el intervalo (-∞, 2]: una recta numérica con un punto cerrado en 2 y una flecha hacia la izquierda.",
+            "notation": "(-∞, 2]",
+            "intervals": [
+              {
+                "lower": { "kind": "infinity", "direction": "negative" },
+                "upper": { "kind": "finite", "value": 2 },
+                "lowerInclusion": "open",
+                "upperInclusion": "closed"
+              }
+            ]
           }
         ]
       },
@@ -229,6 +245,30 @@
         "bodyParagraphs": [
           "Idea principal: si $|x - a| > c$ con $c > 0$, entonces $x - a < -c$ o $x - a > c$, es decir $x < a - c$ o $x > a + c$. La solución son DOS rayos que NO se tocan en $a$.",
           "Ejemplo: $|x - 2| > 5 \\Rightarrow x < -3$ o $x > 7$. Solución: $(-\\infty, -3) \\cup (7, \\infty)$."
+        ],
+        "visualExamples": [
+          {
+            "id": "vis-inv-caso-mayor-intervalo",
+            "kind": "interval-set",
+            "title": "Solución de |x - 2| > 5",
+            "ariaLabel": "Conjunto solución de módulo de x menos 2 mayor que 5: dos rayos disjuntos",
+            "description": "La solución son los reales menores que -3 o mayores que 7. En la recta numérica se muestran dos rayos separados con extremos abiertos y flechas hacia afuera.",
+            "notation": "(-∞, -3) ∪ (7, +∞)",
+            "intervals": [
+              {
+                "lower": { "kind": "infinity", "direction": "negative" },
+                "upper": { "kind": "finite", "value": -3 },
+                "lowerInclusion": "open",
+                "upperInclusion": "open"
+              },
+              {
+                "lower": { "kind": "finite", "value": 7 },
+                "upper": { "kind": "infinity", "direction": "positive" },
+                "lowerInclusion": "open",
+                "upperInclusion": "open"
+              }
+            ]
+          }
         ]
       }
     ],

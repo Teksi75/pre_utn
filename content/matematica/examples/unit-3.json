@@ -90,7 +90,28 @@
     "steps": [
       { "order": 1, "explanation": "Aplicamos las mismas operaciones inversas que en una ecuación. Paso 1: pasar el $-2$ al lado derecho. $3x \\geq 10 + 2 = 12$." },
       { "order": 2, "explanation": "Paso 2: dividir ambos lados por $3$ (positivo, no se invierte el signo). $x \\geq 12 / 3 = 4$." },
-      { "order": 3, "explanation": "Solución: $[4, +\\infty)$ o equivalentemente $x \\geq 4$." },
+      {
+        "order": 3,
+        "explanation": "Solución: $[4, +\\infty)$ o equivalentemente $x \\geq 4$.",
+        "visualExamples": [
+          {
+            "id": "vis-ex-inl-1-intervalo",
+            "kind": "interval-set",
+            "title": "Solución de 3x - 2 ≥ 10",
+            "ariaLabel": "Conjunto solución de 3x menos 2 mayor o igual que 10: el intervalo 4 coma más infinito cerrado",
+            "description": "La solución x ≥ 4 se representa como el intervalo [4, +∞): punto cerrado en 4 y flecha hacia la derecha.",
+            "notation": "[4, +∞)",
+            "intervals": [
+              {
+                "lower": { "kind": "finite", "value": 4 },
+                "upper": { "kind": "infinity", "direction": "positive" },
+                "lowerInclusion": "closed",
+                "upperInclusion": "open"
+              }
+            ]
+          }
+        ]
+      },
       { "order": 4, "explanation": "Verificación con $x = 5$: $3 \\cdot 5 - 2 = 13 \\geq 10$ ✓." }
     ],
     "finalAnswer": "x ≥ 4",
@@ -128,6 +149,22 @@
             "signZones": [
               { "lowerBound": null, "upperBound": -3, "sign": "+" },
               { "lowerBound": -3, "upperBound": null, "sign": "-" }
+            ]
+          },
+          {
+            "id": "vis-ex-inl-flip-intervalo-set",
+            "kind": "interval-set",
+            "title": "Solución de -2x > 6",
+            "ariaLabel": "Conjunto solución de menos 2x mayor que 6: el intervalo menos infinito coma menos 3 abierto",
+            "description": "La solución x < -3 se representa como el intervalo (-∞, -3): punto abierto en -3 y flecha hacia la izquierda.",
+            "notation": "(-∞, -3)",
+            "intervals": [
+              {
+                "lower": { "kind": "infinity", "direction": "negative" },
+                "upper": { "kind": "finite", "value": -3 },
+                "lowerInclusion": "open",
+                "upperInclusion": "open"
+              }
             ]
           }
         ]
@@ -203,6 +240,28 @@
             "center": -0.5,
             "distance": 1.5,
             "inequality": "ge"
+          },
+          {
+            "id": "vis-ex-inv-mayor-intervalo",
+            "kind": "interval-set",
+            "title": "Solución de |2x + 1| ≥ 3",
+            "ariaLabel": "Conjunto solución de módulo de 2x más 1 mayor o igual que 3: dos rayos cerrados disjuntos",
+            "description": "La solución x ≤ -2 o x ≥ 1 se representa como la unión (-∞, -2] ∪ [1, +∞): puntos cerrados en -2 y 1 con flechas hacia afuera.",
+            "notation": "(-∞, -2] ∪ [1, +∞)",
+            "intervals": [
+              {
+                "lower": { "kind": "infinity", "direction": "negative" },
+                "upper": { "kind": "finite", "value": -2 },
+                "lowerInclusion": "open",
+                "upperInclusion": "closed"
+              },
+              {
+                "lower": { "kind": "finite", "value": 1 },
+                "upper": { "kind": "infinity", "direction": "positive" },
+                "lowerInclusion": "closed",
+                "upperInclusion": "open"
+              }
+            ]
           }
         ]
       }

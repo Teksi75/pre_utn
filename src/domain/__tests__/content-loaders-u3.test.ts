@@ -22,6 +22,7 @@ import {
 } from "../catalog/content-loaders";
 import { loadCatalog, queryByUnit, queryBySkill } from "../catalog/index";
 import type { PedagogicalVisual } from "../visuals/types";
+import { assertIntervalSet } from "../visuals/__tests__/helpers";
 
 /** The 8 declared U3 skill IDs (from theory/unit-3.json and examples/unit-3.json). */
 const U3_SKILL_IDS: readonly string[] = [
@@ -415,5 +416,82 @@ describe("u3-visualizaciones-pedagogicas — content shape", () => {
         `sistemas worked-example visual duplicates a theory visual`
       ).not.toContain(key);
     }
+  });
+});
+
+describe("u3-interval-set-visual — content integration", () => {
+  function findVisual(
+    skillId: string,
+    visualId: string
+  ): PedagogicalVisual | undefined {
+    const theory = loadTheoryContent("unit-3");
+    const examples = loadExampleContent("unit-3");
+
+    for (const node of theory) {
+      if (node.skillId !== skillId) continue;
+      for (const visual of node.visualExamples ?? []) {
+        if (visual.id === visualId) return visual;
+      }
+      for (const concept of node.concepts) {
+        for (const visual of concept.visualExamples ?? []) {
+          if (visual.id === visualId) return visual;
+        }
+      }
+    }
+
+    for (const ex of examples) {
+      if (ex.skillId !== skillId) continue;
+      for (const step of ex.steps) {
+        for (const visual of step.visualExamples ?? []) {
+          if (visual.id === visualId) return visual;
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  test.each([
+    { skillId: "mat.u3.inecuaciones_lineales", visualId: "vis-inl-resolver-intervalo", notation: "(-∞, 2]" },
+    { skillId: "mat.u3.inecuaciones_valor_absoluto", visualId: "vis-inv-caso-mayor-intervalo", notation: "(-∞, -3) ∪ (7, +∞)" },
+    { skillId: "mat.u3.inecuaciones_lineales", visualId: "vis-ex-inl-1-intervalo", notation: "[4, +∞)" },
+    { skillId: "mat.u3.inecuaciones_lineales", visualId: "vis-ex-inl-flip-intervalo-set", notation: "(-∞, -3)" },
+    { skillId: "mat.u3.inecuaciones_valor_absoluto", visualId: "vis-ex-inv-mayor-intervalo", notation: "(-∞, -2] ∪ [1, +∞)" },
+  ])("$visualId parses as interval-set with notation $notation", ({ skillId, visualId, notation }) => {
+    const visual = findVisual(skillId, visualId);
+    expect(visual).toBeDefined();
+    const intervalSet = assertIntervalSet(visual!);
+    expect(intervalSet.notation).toBe(notation);
+    expect(intervalSet.intervals.length).toBeGreaterThan(0);
+  });
+
+  test("concept-inl-resolver keeps sign-chart and adds interval-set", () => {
+    const theory = loadTheoryContent("unit-3");
+    const node = theory.find((n) => n.skillId === "mat.u3.inecuaciones_lineales");
+    const concept = node?.concepts.find((c) => c.id === "concept-inl-resolver");
+    const visuals = concept?.visualExamples ?? [];
+
+    expect(visuals.some((v) => v.kind === "sign-chart")).toBe(true);
+    expect(visuals.some((v) => v.kind === "interval-set")).toBe(true);
+  });
+
+  test("example-inecuaciones-lineales-2 keeps sign-chart and adds interval-set", () => {
+    const examples = loadExampleContent("unit-3");
+    const ex = examples.find((e) => e.id === "example-inecuaciones-lineales-2");
+    const step = ex?.steps.find((s) => s.order === 3);
+    const visuals = step?.visualExamples ?? [];
+
+    expect(visuals.some((v) => v.kind === "sign-chart")).toBe(true);
+    expect(visuals.some((v) => v.kind === "interval-set")).toBe(true);
+  });
+
+  test("example-inecuaciones-valor-absoluto-2 keeps distance-on-line and adds interval-set", () => {
+    const examples = loadExampleContent("unit-3");
+    const ex = examples.find((e) => e.id === "example-inecuaciones-valor-absoluto-2");
+    const step = ex?.steps.find((s) => s.order === 4);
+    const visuals = step?.visualExamples ?? [];
+
+    expect(visuals.some((v) => v.kind === "distance-on-line")).toBe(true);
+    expect(visuals.some((v) => v.kind === "interval-set")).toBe(true);
   });
 });
