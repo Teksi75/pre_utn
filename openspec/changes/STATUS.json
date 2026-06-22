@@ -567,10 +567,9 @@
     },
     "challenge-attempt-student-id": {
       "status": "in-progress",
-      "branch": null,
+      "branch": "fix/challenge-attempt-student-id",
       "startedAt": "2026-06-22",
       "roadmapIssue": "I-21",
-      "plannedBranch": "fix/challenge-attempt-student-id",
       "summary": "Proposal created for adding studentId to ChallengeAttempt, preserving legacy local challenge data, and preventing advanced readiness leakage across students."
     }
   },
