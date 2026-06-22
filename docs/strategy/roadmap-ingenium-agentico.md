@@ -8,14 +8,15 @@
 
 ## Fuente de verdad y arranque
 
-Antes de cualquier trabajo, leer en este orden:
+Antes de cualquier trabajo operativo, leer en este orden:
 
 1. `AGENTS.md` — reglas obligatorias del repo (SDD, TDD, pnpm, TS estricto, dominio puro, marca).
-2. `docs/strategy/roadmap-ingenium-humano.md` — decisiones de producto vigentes.
-3. `docs/strategy/roadmap-estrategico-ingenium.md` — roadmap original con criterios de aceptación canónicos.
-4. `openspec/changes/STATUS.json` — estado portable de todos los cambios SDD.
-5. Rama actual y `git status` — verificar que se está en la branch correcta y el working tree está limpio.
-6. Artefactos openspec del change en curso (si existen): `proposal.md`, `spec.md`, `design.md`, `tasks.md`.
+2. `docs/strategy/roadmap-ingenium-agentico.md` — guía operativa vigente para agentes e implementadores.
+3. `openspec/changes/STATUS.json` — estado portable de todos los cambios SDD.
+4. Rama actual y `git status` — verificar que se está en la branch correcta y el working tree está limpio.
+5. Artefactos openspec del change en curso (si existen): `proposal.md`, `spec.md`, `design.md`, `tasks.md`.
+
+Consultar `docs/strategy/roadmap-ingenium-humano.md` solo cuando haga falta confirmar el **Mapa de lectura recomendado** o una decisión de producto. Tratar `docs/strategy/roadmap-estrategico-ingenium.md` como fuente estratégica original/histórica: no usarlo como guía operativa vigente si contradice este documento.
 
 **Regla:** no implementar features sin spec. No escribir código sin haber leído los criterios de aceptación del issue.
 
