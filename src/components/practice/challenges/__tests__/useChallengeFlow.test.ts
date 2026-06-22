@@ -9,7 +9,7 @@
  * STRICT TDD: RED first.
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 // ---------------------------------------------------------------------------
 // Types mirrored from useChallengeFlow (what the test expects)
@@ -511,5 +511,111 @@ describe("advancedReadiness in done phase", () => {
     const next = computeReadinessForDone(state, "skill-1", loadAdvancedProgress, computeAdvancedReadiness);
     expect(next.advancedReadiness).toBeNull();
     expect(next.phase).toBe("feedback");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Helper: simulate the hook's onAnswer callback without rendering
+// ---------------------------------------------------------------------------
+
+/**
+ * Mirrors useChallengeFlow's onAnswer logic: creates a ChallengeAttemptInput,
+ * calls addChallengeAttempt (ignoring its result), then applies recordAnswer.
+ *
+ * This proves the state transition is independent of addChallengeAttempt's
+ * return value — the same sequence the real hook performs.
+ */
+function simulateHookOnAnswer(
+  state: ChallengeFlowState,
+  answer: ChallengeAnswer,
+  addChallengeAttempt: (attempt: {
+    exerciseId: string;
+    skillId: string;
+    correct: boolean;
+    answeredAt: string;
+    timeMs: number;
+    attemptIndex: number;
+  }) => { ok: boolean; reason?: string },
+  skillId: string
+): ChallengeFlowState {
+  const attempt = {
+    exerciseId: answer.exerciseId,
+    skillId,
+    correct: answer.correct,
+    answeredAt: new Date().toISOString(),
+    timeMs: answer.timeMs,
+    attemptIndex: 1,
+  };
+  addChallengeAttempt(attempt); // ← result ignored, just like the hook
+  return recordAnswer(state, answer);
+}
+
+// ---------------------------------------------------------------------------
+// Unit tests: onAnswer ignores blocked addChallengeAttempt result
+// ---------------------------------------------------------------------------
+
+describe("onAnswer ignores blocked addChallengeAttempt result", () => {
+  it("transitions to feedback when injected addChallengeAttempt returns missing-active-profile", () => {
+    const mockAdd = vi.fn().mockReturnValue({ ok: false, reason: "missing-active-profile" });
+
+    const state: ChallengeFlowState = {
+      phase: "exercise",
+      currentChallengeIndex: 0,
+      lastEvaluation: null,
+      advancedReadiness: null,
+    };
+    const answer: ChallengeAnswer = {
+      exerciseId: "ex-1",
+      answer: "opt-1",
+      correct: true,
+      timeMs: 45000,
+    };
+
+    const next = simulateHookOnAnswer(state, answer, mockAdd, "test-skill");
+
+    // addChallengeAttempt was actually called with the attempt
+    expect(mockAdd).toHaveBeenCalledOnce();
+    expect(mockAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        exerciseId: "ex-1",
+        skillId: "test-skill",
+        correct: true,
+      })
+    );
+
+    // State transition still happens despite blocked persistence
+    expect(next.phase).toBe("feedback");
+    expect(next.lastEvaluation).toEqual({ correct: true });
+  });
+
+  it("transitions to feedback when injected addChallengeAttempt returns storage-error", () => {
+    const mockAdd = vi.fn().mockReturnValue({ ok: false, reason: "storage-error" });
+
+    const state: ChallengeFlowState = {
+      phase: "exercise",
+      currentChallengeIndex: 1,
+      lastEvaluation: null,
+      advancedReadiness: null,
+    };
+    const answer: ChallengeAnswer = {
+      exerciseId: "ex-2",
+      answer: "opt-3",
+      correct: false,
+      timeMs: 60000,
+    };
+
+    const next = simulateHookOnAnswer(state, answer, mockAdd, "test-skill");
+
+    expect(mockAdd).toHaveBeenCalledOnce();
+    expect(mockAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        exerciseId: "ex-2",
+        skillId: "test-skill",
+        correct: false,
+      })
+    );
+
+    expect(next.phase).toBe("feedback");
+    expect(next.lastEvaluation).toEqual({ correct: false });
   });
 });

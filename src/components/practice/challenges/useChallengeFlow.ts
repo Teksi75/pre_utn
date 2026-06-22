@@ -16,7 +16,7 @@
 
 import { useState, useCallback } from "react";
 import type { ChallengeExercise } from "@/domain/catalog/challenges/types";
-import type { ChallengeAttempt } from "@/lib/advanced-practice-progress";
+import type { ChallengeAttemptInput, ChallengeAttempt } from "@/lib/advanced-practice-progress";
 import type { SkillId } from "@/domain/models/skill";
 
 // ---------------------------------------------------------------------------
@@ -39,7 +39,7 @@ export interface ChallengeFlowOptions {
   skillId: SkillId;
   /** Record a challenge attempt to the advanced store */
   addChallengeAttempt: (
-    attempt: ChallengeAttempt
+    attempt: ChallengeAttemptInput
   ) => { ok: true; value: unknown } | { ok: false; reason: string };
   /** Load advanced progress from the store */
   loadAdvancedProgress: () => {
@@ -170,8 +170,8 @@ export function useChallengeFlow({
   /** Submit an answer — exercise → feedback */
   const onAnswer = useCallback(
     (answer: ChallengeAnswer) => {
-      // Record attempt to advanced store
-      const attempt: ChallengeAttempt = {
+      // Record attempt to advanced store — adapter stamps studentId
+      const attempt: ChallengeAttemptInput = {
         exerciseId: answer.exerciseId,
         skillId,
         correct: answer.correct,
