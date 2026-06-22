@@ -109,12 +109,13 @@ No banned patterns found.
 
 | Requirement | Scenario | Test | Result |
 |-------------|----------|------|--------|
-| Anonymous Attempts Forbidden | addAttempt without active profile writes nothing | `1.2` | ✅ COMPLIANT |
-| Anonymous Attempts Forbidden | challenge attempt without active profile writes nothing | `1.2` | ✅ COMPLIANT |
+| Anonymous Attempts Forbidden | addAttempt without active profile writes nothing | *Inherited*: `practice-progress.test.ts:188` — pre-existing gate, not changed by I-21 | ✅ COMPLIANT |
+| Anonymous Attempts Forbidden | diagnostic save without active profile writes nothing | *Inherited*: `diagnostic-storage.test.ts:147` — pre-existing gate, not changed by I-21 | ✅ COMPLIANT |
+| Anonymous Attempts Forbidden | challenge attempt without active profile writes nothing | `1.2 — no active profile → blocked; storage untouched` | ✅ COMPLIANT |
 | Challenge Progress Uses Active Profile | active profile reads only its challenge progress | `1.4 — filters to studentId === activeStudentId` | ✅ COMPLIANT |
 | Challenge Progress Uses Active Profile | legacy anonymous data does not contaminate a different student | `1.4` + `1.5` + stale-readiness isolation suite | ✅ COMPLIANT |
 
-**Compliance summary**: 9/9 scenarios compliant
+**Compliance summary**: 10/10 scenarios compliant
 
 ---
 
@@ -193,4 +194,4 @@ The original verify-report flagged WARNING #1: `addChallengeAttempt` spread `par
 
 **PASS**
 
-All 9 spec scenarios have covering tests that pass at runtime. All 16 tasks complete. Gates green (test 2497/2497, typecheck clean, build clean). No scope creep. Design decisions followed. The critical stale readinessBySkill leak has been fixed and verified with 5 dedicated isolation tests. Both `loadAdvancedProgress` and `addChallengeAttempt` now recompute `readinessBySkill` from filtered active-student attempts via the pure `recomputeAllReadiness()` helper, eliminating the cross-student/anonymous readiness leakage path.
+All 10 spec scenarios have covering tests that pass at runtime. All 16 tasks complete. Gates green (test 2497/2497, typecheck clean, build clean). No scope creep. Design decisions followed. The critical stale readinessBySkill leak has been fixed and verified with 5 dedicated isolation tests. Both `loadAdvancedProgress` and `addChallengeAttempt` now recompute `readinessBySkill` from filtered active-student attempts via the pure `recomputeAllReadiness()` helper, eliminating the cross-student/anonymous readiness leakage path.
