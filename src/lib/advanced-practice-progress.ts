@@ -13,6 +13,7 @@
  */
 
 import type { SkillId } from "../domain/models/skill";
+import { getActiveStudentId } from "./student-profile-storage";
 
 /** Versioned localStorage key for advanced (challenge) practice progress. */
 export const ADVANCED_PRACTICE_STORAGE_KEY = "pre-utn.advanced-practice.v1";
@@ -28,6 +29,7 @@ export const ADVANCED_PRACTICE_STORAGE_KEY = "pre-utn.advanced-practice.v1";
  * current session. Used as tie-breaker when answeredAt timestamps are equal.
  */
 export interface ChallengeAttempt {
+  readonly studentId: string;
   readonly exerciseId: string;
   readonly skillId: SkillId;
   readonly correct: boolean;
@@ -35,6 +37,13 @@ export interface ChallengeAttempt {
   readonly timeMs: number;
   readonly attemptIndex: number;
 }
+
+/**
+ * Input for addChallengeAttempt — omits studentId because the adapter
+ * stamps it from the active profile. Callers (hooks, UI) should not
+ * supply studentId; the storage layer owns that field.
+ */
+export type ChallengeAttemptInput = Omit<ChallengeAttempt, "studentId">;
 
 /**
  * Full advanced practice progress state.
@@ -92,22 +101,53 @@ function deduplicateByLastAttempt(
  *   where accuracy = correct_deduplicated / total_deduplicated
  *   (last attempt per exerciseId wins)
  *
+ * When activeStudentId is provided, only attempts matching that student
+ * contribute to the score. Legacy anonymous attempts (no studentId) are
+ * excluded when filtering is active.
+ *
  * @param skillId - The skill to compute readiness for
  * @param attempts - All challenge attempts to evaluate
+ * @param activeStudentId - If provided, filter to this student only
  * @returns Score 0–100 or null when no attempts exist
  */
 export function computeAdvancedReadiness(
   skillId: SkillId,
-  attempts: readonly ChallengeAttempt[]
+  attempts: readonly ChallengeAttempt[],
+  activeStudentId?: string
 ): number | null {
   const skillAttempts = attempts.filter((a) => a.skillId === skillId);
-  const deduplicated = deduplicateByLastAttempt(skillAttempts);
+  const filtered = activeStudentId
+    ? skillAttempts.filter((a) => a.studentId === activeStudentId)
+    : skillAttempts;
+  const deduplicated = deduplicateByLastAttempt(filtered);
 
   if (deduplicated.length === 0) return null;
 
   const correct = deduplicated.filter((a) => a.correct).length;
   const accuracy = correct / deduplicated.length;
   return Math.round(accuracy * 100);
+}
+
+// ---------------------------------------------------------------------------
+// Readiness recomputation (pure)
+// ---------------------------------------------------------------------------
+
+/**
+ * Recompute readinessBySkill for ALL skills present in the given attempts.
+ * This is the single source of truth for readiness — never trust persisted maps.
+ *
+ * @param attempts - Filtered attempts (active student only)
+ * @returns Record mapping each skillId to its readiness score (0–100) or null
+ */
+function recomputeAllReadiness(
+  attempts: readonly ChallengeAttempt[]
+): Record<SkillId, number | null> {
+  const skillIds = new Set(attempts.map((a) => a.skillId));
+  const result: Record<string, number | null> = {};
+  for (const skillId of skillIds) {
+    result[skillId] = computeAdvancedReadiness(skillId, attempts);
+  }
+  return result as Record<SkillId, number | null>;
 }
 
 // ---------------------------------------------------------------------------
@@ -128,9 +168,14 @@ function parseAdvancedProgress(raw: unknown): AdvancedPracticeProgress | null {
 /**
  * Load advanced practice progress from localStorage.
  * Returns empty progress if nothing stored or data is invalid/corrupt.
+ * Filters challengeAttempts to the active student only.
+ * Legacy anonymous attempts (no studentId) are excluded from reads.
  */
 export function loadAdvancedProgress(): AdvancedPracticeProgress {
   try {
+    const activeStudentId = getActiveStudentId();
+    if (!activeStudentId) return EMPTY_ADVANCED_PROGRESS;
+
     const raw = localStorage.getItem(ADVANCED_PRACTICE_STORAGE_KEY);
     if (!raw) return EMPTY_ADVANCED_PROGRESS;
 
@@ -139,9 +184,16 @@ export function loadAdvancedProgress(): AdvancedPracticeProgress {
     if (!progress) return EMPTY_ADVANCED_PROGRESS;
 
     // Ensure readinessBySkill is present (backward compat with older stores)
+    // Filter to active student only; exclude legacy anonymous attempts
+    const filtered = (progress.challengeAttempts ?? []).filter(
+      (a) => a.studentId === activeStudentId
+    );
+
+    // Recompute readiness from filtered attempts — never trust persisted map
+    // (may contain stale cross-student or anonymous readiness entries)
     return {
-      challengeAttempts: progress.challengeAttempts ?? [],
-      readinessBySkill: progress.readinessBySkill ?? {},
+      challengeAttempts: filtered,
+      readinessBySkill: recomputeAllReadiness(filtered),
     };
   } catch {
     return EMPTY_ADVANCED_PROGRESS;
@@ -150,26 +202,38 @@ export function loadAdvancedProgress(): AdvancedPracticeProgress {
 
 /**
  * Add a single challenge attempt and persist.
- * Recomputes readiness for the affected skill.
+ * Recomputes readiness for ALL skills from active student's attempts
+ * (never trusts persisted readinessBySkill — it may contain stale entries).
+ * Requires an active student profile; returns blocked result if none exists.
  *
  * @param attempt - The challenge attempt to record
  * @returns Persistence result with updated progress
  */
 export function addChallengeAttempt(
-  attempt: ChallengeAttempt
-): { ok: true; value: AdvancedPracticeProgress } | { ok: false; reason: string } {
+  attempt: ChallengeAttemptInput
+): { ok: true; value: AdvancedPracticeProgress } | { ok: false; reason: "missing-active-profile" | "storage-error" } {
   try {
-    const current = loadAdvancedProgress();
-    const updatedAttempts = [...current.challengeAttempts, attempt];
+    const activeStudentId = getActiveStudentId();
+    if (!activeStudentId) {
+      return { ok: false, reason: "missing-active-profile" };
+    }
 
-    // Compute updated readiness for the affected skill
-    const updatedReadiness: Record<string, number | null> = {
-      ...current.readinessBySkill,
-    };
-    updatedReadiness[attempt.skillId] = computeAdvancedReadiness(
-      attempt.skillId,
-      updatedAttempts
+    // Load ALL attempts from storage (not filtered), then append the new one
+    const raw = localStorage.getItem(ADVANCED_PRACTICE_STORAGE_KEY);
+    const parsed = raw ? parseAdvancedProgress(JSON.parse(raw)) : null;
+    const allAttempts = parsed?.challengeAttempts ?? [];
+
+    const stampedAttempt: ChallengeAttempt = { ...attempt, studentId: activeStudentId };
+    const updatedAttempts = [...allAttempts, stampedAttempt];
+
+    // Filter to active student for readiness computation
+    const activeStudentAttempts = updatedAttempts.filter(
+      (a) => a.studentId === activeStudentId
     );
+
+    // Recompute ALL readiness from active student's attempts
+    // (never spread persisted readinessBySkill — it may contain stale entries)
+    const updatedReadiness = recomputeAllReadiness(activeStudentAttempts);
 
     const updated: AdvancedPracticeProgress = {
       challengeAttempts: updatedAttempts,
@@ -181,7 +245,14 @@ export function addChallengeAttempt(
       JSON.stringify(updated)
     );
 
-    return { ok: true, value: updated };
+    // Return filtered view for the active student
+    return {
+      ok: true,
+      value: {
+        challengeAttempts: activeStudentAttempts,
+        readinessBySkill: updatedReadiness as Record<SkillId, number | null>,
+      },
+    };
   } catch {
     return { ok: false, reason: "storage-error" };
   }

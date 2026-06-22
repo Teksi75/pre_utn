@@ -564,6 +564,14 @@
       "mergedTo": "main",
       "issue": 37,
       "summary": "Resolved issue #37: practice theory disclosure buttons now hide when notation/common-mistakes content is empty, Unit 2 received source-backed disclosure content where it adds value, and visual review was completed by the user. Verification PASS: 2479 tests, typecheck, build."
+    },
+    "challenge-attempt-student-id": {
+      "status": "in-progress",
+      "branch": null,
+      "startedAt": "2026-06-22",
+      "roadmapIssue": "I-21",
+      "plannedBranch": "fix/challenge-attempt-student-id",
+      "summary": "Proposal created for adding studentId to ChallengeAttempt, preserving legacy local challenge data, and preventing advanced readiness leakage across students."
     }
   },
   "activeBranches": [],

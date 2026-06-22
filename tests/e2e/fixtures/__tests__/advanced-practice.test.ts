@@ -16,6 +16,7 @@ describe("buildAdvancedPracticeFixture", () => {
 
   test("passes challengeAttempts through into the result", () => {
     const attempt: ChallengeAttempt = {
+      studentId: "student-a",
       exerciseId: "ex.u1.potencias_raices.challenge.1",
       skillId: "mat.u1.potencias_raices",
       correct: true,
