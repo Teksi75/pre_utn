@@ -63,4 +63,4 @@ Revert this change’s code and delta specs. Existing anonymous data remains in 
 - [ ] New challenge attempts include `studentId`.
 - [ ] Legacy anonymous challenge data remains loadable.
 - [ ] Advanced readiness/progress does not leak across students.
-- [ ] PR stays small and within the 400-line review budget.
+- [ ] PR stays within review budget (size:exception approved by maintainer — actual diff exceeds 400 lines due to critical readinessBySkill isolation fix).

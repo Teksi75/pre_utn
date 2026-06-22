@@ -24,12 +24,12 @@ Route (app) — all routes compiled successfully
 ○ /  ○ /diagnostic  ○ /learn  ○ /learn/matematica  ƒ /learn/matematica/[skillId]  ○ /practice
 ```
 
-**Tests**: ✅ 2495 passed / 0 failed / 0 skipped
+**Tests**: ✅ 2497 passed / 0 failed / 0 skipped
 ```text
 $ pnpm run test
 Test Files  141 passed (141)
-Tests       2495 passed (2495)
-Duration    17.02s
+Tests       2497 passed (2497)
+Duration    13.70s
 ```
 
 **Typecheck**: ✅ Passed
@@ -47,8 +47,8 @@ $ pnpm run typecheck (tsc --noEmit) — no errors
 |-------|--------|---------|
 | TDD Evidence reported | ✅ | `tasks.md` Critical Fix section has TDD Evidence table (RED/GREEN/TRIANGULATE/REFACTOR) |
 | All tasks have tests | ✅ | 1.1–1.7, 3.1, 4.2 + critical fix (5 tests) all have covering test cases |
-| RED confirmed (tests exist) | ✅ | `advanced-practice-progress.test.ts` has 35 tests; `useChallengeFlow.test.ts` has 27 tests |
-| GREEN confirmed (tests pass) | ✅ | 2495/2495 pass including 35 advanced-practice tests, 27 useChallengeFlow tests, 3 fixture tests |
+| RED confirmed (tests exist) | ✅ | `advanced-practice-progress.test.ts` has 35 tests; `useChallengeFlow.test.ts` has 29 tests (27 state-machine + 2 blocked-result) |
+| GREEN confirmed (tests pass) | ✅ | 2497/2497 pass including 35 advanced-practice tests, 29 useChallengeFlow tests, 3 fixture tests |
 | Triangulation adequate | ✅ | Critical fix has 5 test cases: load discards other-student readiness, load discards anonymous readiness, load recomputes from active student, addChallengeAttempt discards stale entries, addChallengeAttempt recomputes all skills |
 | Safety Net for modified files | ✅ | Existing tests (storage key, load/add, readiness) continue to pass — no regressions |
 
@@ -60,10 +60,10 @@ $ pnpm run typecheck (tsc --noEmit) — no errors
 
 | Layer | Tests | Files | Tools |
 |-------|-------|-------|-------|
-| Unit | 65 | 3 | vitest |
+| Unit | 67 | 3 | vitest |
 | Integration | 0 | 0 | not installed |
 | E2E | 0 | 0 | not applicable (fixture tests are unit-layer) |
-| **Total** | **65** | **3** | |
+| **Total** | **67** | **3** | |
 
 ---
 
@@ -79,7 +79,7 @@ Coverage analysis skipped — no coverage tool detected.
 
 Audited all 3 test files modified by this change:
 - `src/lib/__tests__/advanced-practice-progress.test.ts` (35 tests): No tautologies, no ghost loops, no type-only assertions. All assertions verify concrete values (studentId strings, attempt counts, readiness percentages, storage contents).
-- `src/components/practice/challenges/__tests__/useChallengeFlow.test.ts` (27 tests): Pure state machine tests assert phase transitions, index values, and evaluation objects. No implementation-detail coupling.
+- `src/components/practice/challenges/__tests__/useChallengeFlow.test.ts` (29 tests): Pure state machine tests assert phase transitions, index values, and evaluation objects. Two additional tests inject a mock `addChallengeAttempt` (via `simulateHookOnAnswer` helper) that returns `{ ok:false, reason:"missing-active-profile" }` and `{ ok:false, reason:"storage-error" }` respectively, verify the mock was called, and assert the state still transitions to feedback. No implementation-detail coupling.
 - `tests/e2e/fixtures/__tests__/advanced-practice.test.ts` (3 tests): Builder shape assertions with concrete values.
 
 No banned patterns found.
@@ -193,4 +193,4 @@ The original verify-report flagged WARNING #1: `addChallengeAttempt` spread `par
 
 **PASS**
 
-All 9 spec scenarios have covering tests that pass at runtime. All 16 tasks complete. Gates green (test 2495/2495, typecheck clean, build clean). No scope creep. Design decisions followed. The critical stale readinessBySkill leak has been fixed and verified with 5 dedicated isolation tests. Both `loadAdvancedProgress` and `addChallengeAttempt` now recompute `readinessBySkill` from filtered active-student attempts via the pure `recomputeAllReadiness()` helper, eliminating the cross-student/anonymous readiness leakage path.
+All 9 spec scenarios have covering tests that pass at runtime. All 16 tasks complete. Gates green (test 2497/2497, typecheck clean, build clean). No scope creep. Design decisions followed. The critical stale readinessBySkill leak has been fixed and verified with 5 dedicated isolation tests. Both `loadAdvancedProgress` and `addChallengeAttempt` now recompute `readinessBySkill` from filtered active-student attempts via the pure `recomputeAllReadiness()` helper, eliminating the cross-student/anonymous readiness leakage path.

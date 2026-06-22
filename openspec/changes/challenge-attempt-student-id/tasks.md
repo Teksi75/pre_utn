@@ -4,19 +4,18 @@
 
 | Field | Value |
 |-------|-------|
-| Estimated changed lines | 250–350 |
-| 400-line budget risk | Low |
-| Chained PRs recommended | No |
+| Estimated changed lines | 250–350 (actual: exceeds 400 lines) |
+| 400-line budget risk | **Exception approved** |
+| Chained PRs recommended | No (size exception granted) |
 | Suggested split | Single PR |
-| Delivery strategy | auto-forecast |
-| Chain strategy | pending |
+| Delivery strategy | single-pr; size:exception |
+| Chain strategy | N/A |
 
-Decision needed before apply: No
+Decision needed before apply: No (size exception granted by maintainer)
 Chained PRs recommended: No
-Chain strategy: pending
-400-line budget risk: Low
+400-line budget risk: **Exception (maintainer-approved)**
 
-Rationale: one bounded concern (advanced-practice localStorage adapter), same shape/topology, no adapter boundary, no remote/Supabase.
+Rationale: one bounded concern (advanced-practice localStorage adapter), same shape/topology, no adapter boundary, no remote/Supabase. Actual diff exceeded 400-line budget due to critical readinessBySkill isolation fix (5 additional tests + recomputeAllReadiness helper). Maintainer approved single-PR size exception.
 
 ### Suggested Work Units
 
@@ -43,7 +42,7 @@ Rationale: one bounded concern (advanced-practice localStorage adapter), same sh
 
 ## Phase 3: Hook compatibility — `src/components/practice/challenges/`
 
-- [x] 3.1 RED: `useChallengeFlow` advances exercise → feedback even when injected `addChallengeAttempt` returns a blocked result.
+- [x] 3.1 RED: `useChallengeFlow` advances exercise → feedback even when injected `addChallengeAttempt` returns a blocked result (pure state transition test added to `useChallengeFlow.test.ts` confirming `onAnswer` ignores persistence result).
 - [x] 3.2 GREEN: align injected signature in `useChallengeFlow.ts` with `ChallengePersistenceResult`; no behavior change otherwise.
 
 ## Phase 4: Fixture + verification

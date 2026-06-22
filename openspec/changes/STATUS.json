@@ -570,7 +570,14 @@
       "branch": "fix/challenge-attempt-student-id",
       "startedAt": "2026-06-22",
       "roadmapIssue": "I-21",
-      "summary": "Proposal created for adding studentId to ChallengeAttempt, preserving legacy local challenge data, and preventing advanced readiness leakage across students."
+      "delivery": "single-pr; size:exception",
+      "sizeException": {
+        "approved": true,
+        "approvedBy": "user",
+        "approvedAt": "2026-06-22",
+        "reason": "Actual diff exceeds 400-line budget. Critical readinessBySkill isolation fix (5 additional tests + recomputeAllReadiness helper) expanded scope. Maintainer approved single-PR delivery."
+      },
+      "summary": "Student-scoped challenge attempts: add studentId to ChallengeAttempt, block anonymous writes, filter legacy data, recompute readinessBySkill from active-student attempts only. Size exception approved."
     }
   },
   "activeBranches": [],
