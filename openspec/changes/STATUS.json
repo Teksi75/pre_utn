@@ -566,9 +566,13 @@
       "summary": "Resolved issue #37: practice theory disclosure buttons now hide when notation/common-mistakes content is empty, Unit 2 received source-backed disclosure content where it adds value, and visual review was completed by the user. Verification PASS: 2479 tests, typecheck, build."
     },
     "challenge-attempt-student-id": {
-      "status": "in-progress",
-      "branch": "fix/challenge-attempt-student-id",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-06-22",
+      "completedAt": "2026-06-22",
+      "mergedTo": "main",
+      "mergeCommit": "4ed94a063346529f1c8efd04f26ec4d753bf898c",
+      "pr": 47,
       "roadmapIssue": "I-21",
       "delivery": "single-pr; size:exception",
       "sizeException": {
@@ -577,7 +581,7 @@
         "approvedAt": "2026-06-22",
         "reason": "Actual diff exceeds 400-line budget. Critical readinessBySkill isolation fix (5 additional tests + recomputeAllReadiness helper) expanded scope. Maintainer approved single-PR delivery."
       },
-      "summary": "Student-scoped challenge attempts: add studentId to ChallengeAttempt, block anonymous writes, filter legacy data, recompute readinessBySkill from active-student attempts only. Size exception approved."
+      "summary": "I-21 complete: ChallengeAttempt is scoped to the active student, anonymous challenge writes are blocked, legacy anonymous challenge data remains loadable but excluded from active readiness, and readinessBySkill is recomputed from active-student attempts to prevent cross-student leakage. Verification PASS: 2497 tests, typecheck, build."
     }
   },
   "activeBranches": [],
