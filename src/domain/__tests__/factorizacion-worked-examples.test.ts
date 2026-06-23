@@ -59,7 +59,7 @@ describe("factorization worked examples", () => {
     );
 
     expect(caseSeven?.problem, "Case 7 leading coefficient").toMatch(
-      /factorizar [2-9]x²/
+      /factorizar \$[2-9]x\^2/
     );
   });
 

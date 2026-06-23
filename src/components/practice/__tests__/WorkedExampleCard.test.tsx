@@ -206,3 +206,69 @@ describe("WorkedExampleCard — pedagogical visuals wiring", () => {
     expect(visualPos).toBeGreaterThan(intervalPos);
   });
 });
+
+// ---------------------------------------------------------------------------
+// LaTeX / KaTeX rendering
+// ---------------------------------------------------------------------------
+
+describe("WorkedExampleCard — LaTeX KaTeX rendering", () => {
+  test("renders KaTeX elements for LaTeX expressions in steps", () => {
+    const example = makeExample({
+      problem: "Caso 7 — Trinomio cuadrático: factorizar $2x^2 + 7x + 3$",
+      steps: [
+        {
+          order: 1,
+          explanation:
+            "Identificamos $a = 2$, $b = 7$ y $c = 3$. Calculamos el discriminante: $\\Delta = b^2 - 4ac = 7^2 - 4\\cdot 2\\cdot 3 = 25$.",
+        },
+        {
+          order: 2,
+          explanation:
+            "Calculamos las raíces con la fórmula general: $x = \\frac{-7 \\pm \\sqrt{25}}{4}$. Así obtenemos $x_1 = -\\frac{1}{2}$ y $x_2 = -3$.",
+        },
+        {
+          order: 3,
+          explanation:
+            "Resultado: $(2x + 1)(x + 3)$. Verificación por expansión: $(2x + 1)(x + 3) = 2x^2 + 6x + x + 3 = 2x^2 + 7x + 3$ ✓.",
+        },
+      ],
+      finalAnswer: "$(2x + 1)(x + 3)$",
+    });
+
+    const html = renderToStaticMarkup(<WorkedExampleCard example={example} defaultExpanded />);
+
+    // KaTeX renders a <span class="katex"> for each math expression
+    const katexMatches = html.match(/class="katex"/g) ?? [];
+    expect(katexMatches.length, "expected multiple KaTeX elements").toBeGreaterThanOrEqual(6);
+
+    // Verify KaTeX renders sqrt as SVG (class "sqrt") and fractions (class "frac")
+    expect(html).toContain('class="katex"');
+    expect(html).toContain("sqrt");
+    expect(html).toContain("frac");
+  });
+
+  test("renders fractions and subscripts from Case 7 example", () => {
+    const example = makeExample({
+      problem: "Factorizar $2x^2 + 7x + 3$",
+      steps: [
+        {
+          order: 1,
+          explanation: "Raíces: $x_1 = -\\frac{1}{2}$ y $x_2 = -3$.",
+        },
+        {
+          order: 2,
+          explanation: "Fórmula: $x = \\frac{-7 \\pm \\sqrt{25}}{4}$.",
+        },
+      ],
+      finalAnswer: "$(2x + 1)(x + 3)$",
+    });
+
+    const html = renderToStaticMarkup(<WorkedExampleCard example={example} defaultExpanded />);
+
+    // KaTeX elements should be present
+    expect(html).toContain("katex");
+
+    // Fraction structure: KaTeX renders fractions with a "frac" class or fraction line
+    expect(html).toMatch(/frac|frac-line|mfrac/);
+  });
+});

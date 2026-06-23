@@ -113,15 +113,15 @@ describe("LearnMatematicaPage — section card visible contract", () => {
   test("the count is computed from `node.concepts.length` (triangulation across nodes with different counts)", () => {
     // Triangulation: a hardcoded `3 temas` would pass the previous test
     // but fail this one. We sample three real nodes with distinct counts
-    // (3, 5, 7) and assert each renders the count that matches its
+    // (3, 5, 8) and assert each renders the count that matches its
     // concepts array. This proves the count is derived, not literal.
     const html = renderPage();
     const three = extractCard(html, "mat.u2.operaciones_polinomios");
     const five = extractCard(html, "mat.u2.polinomios_basico");
-    const seven = extractCard(html, "mat.u2.factorizacion");
+    const eight = extractCard(html, "mat.u2.factorizacion");
     expect(three).toMatch(/>3 temas<\/span>/);
     expect(five).toMatch(/>5 temas<\/span>/);
-    expect(seven).toMatch(/>7 temas<\/span>/);
+    expect(eight).toMatch(/>8 temas<\/span>/);
   });
 
   test("the first subtopic '1. Suma y resta de polinomios' is NOT shown in the section-card view", () => {

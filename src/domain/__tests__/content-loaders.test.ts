@@ -564,6 +564,7 @@ describe("migrate-all-theory-paragraphs — full catalog smoke", () => {
     "concept-fac-cubo-perfecto",
     "concept-fac-potencias-igual-grado",
     "concept-fac-trinomio-segundo-grado",
+    "concept-fac-formula-general-discriminante",
     "concept-gauss-enunciado",
     "concept-gauss-algoritmo",
     "concept-gauss-ejemplo",
@@ -598,8 +599,8 @@ describe("migrate-all-theory-paragraphs — full catalog smoke", () => {
     }
   });
 
-  test("unit-2: all 17 new long concepts use bodyParagraphs and have no body field", () => {
-    expect(MIGRATED_U2_IDS).toHaveLength(17);
+  test("unit-2: all 18 new long concepts use bodyParagraphs and have no body field", () => {
+    expect(MIGRATED_U2_IDS).toHaveLength(18);
     // issue-42-powers-same-degree: concept-fac-potencias-igual-grado is the
     // only concept in unit-2 that may carry 5-10 paragraphs (the spec for the
     // Caso 6 pedagogical bridge). All other migrated concepts stay within

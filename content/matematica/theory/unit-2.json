@@ -198,12 +198,22 @@
       },
       {
         "id": "concept-fac-trinomio-segundo-grado",
-        "title": "7. Trinomio de segundo grado",
+        "title": "7a. Trinomio de segundo grado",
         "bodyParagraphs": [
           "Un trinomio de segundo grado es un polinomio de la forma ax² + bx + c, con a ≠ 0. El coeficiente a acompaña al término cuadrático, b al término lineal y c es el término independiente. Factorizarlo significa escribirlo como producto de factores de primer grado. Si conocemos sus raíces r₁ y r₂, la forma factorizada es a(x − r₁)(x − r₂).",
           "La idea del método es descomponer el término central bx en dos términos que permitan aplicar factor común por grupos. Cuando a = 1, buscamos dos números p y q tales que p + q = b y p·q = c. Entonces x² + bx + c = (x + p)(x + q). Ejemplo: x² − 5x + 6 = (x − 2)(x − 3), porque −2 + (−3) = −5 y (−2)(−3) = 6.",
           "Cuando a ≠ 1, buscamos dos números que sumen b y multipliquen a·c. Luego reemplazamos bx por esos dos términos y factorizamos por grupos. Este procedimiento evita aplicar directamente la fórmula general cuando el trinomio se puede factorizar de manera exacta.",
           "Ejemplo: 2x² + 5x + 3. Como a·c = 2·3 = 6, buscamos dos números que sumen 5 y multipliquen 6: son 2 y 3. Entonces 2x² + 5x + 3 = 2x² + 2x + 3x + 3 = 2x(x + 1) + 3(x + 1) = (x + 1)(2x + 3)."
+        ]
+      },
+      {
+        "id": "concept-fac-formula-general-discriminante",
+        "title": "7b. Fórmula general con discriminante",
+        "bodyParagraphs": [
+          "Un trinomio de segundo grado $ax^2 + bx + c$ (con $a \\neq 0$) se puede factorizar encontrando sus raíces. Las raíces se obtienen con la fórmula general: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$. El discriminante $\\Delta = b^2 - 4ac$ determina la naturaleza de las raíces: si $\\Delta > 0$, hay dos raíces reales distintas y el trinomio se factoriza en $\\mathbb{R}$; si $\\Delta = 0$, hay una raíz real doble; si $\\Delta < 0$, no hay raíces reales y el trinomio NO se factoriza en $\\mathbb{R}$.",
+          "Una vez conocidas las raíces $x_1$ y $x_2$, la factorización es: $ax^2 + bx + c = a(x - x_1)(x - x_2)$. Es importante conservar el coeficiente principal $a$ al reconstruir la factorización: si $a = 2$, debe aparecer explícitamente multiplicando a los dos binomios.",
+          "Ejemplo: $2x^2 + 7x + 3$. Calculamos el discriminante: $\\Delta = 7^2 - 4 \\cdot 2 \\cdot 3 = 49 - 24 = 25$. Como $\\Delta > 0$, hay dos raíces reales distintas.",
+          "Aplicamos la fórmula general: $x = \\frac{-7 \\pm \\sqrt{25}}{2 \\cdot 2} = \\frac{-7 \\pm 5}{4}$. Obtenemos $x_1 = -\\frac{1}{2}$ y $x_2 = -3$. Entonces $2x^2 + 7x + 3 = 2\\left(x + \\frac{1}{2}\\right)(x + 3) = (2x + 1)(x + 3)$."
         ]
       }
     ],

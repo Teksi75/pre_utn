@@ -2,14 +2,14 @@
   {
     "id": "example-polinomios-basico-1",
     "skillId": "mat.u2.polinomios_basico",
-    "problem": "Determinar el grado, el coeficiente principal y el término constante de P(x) = 3x⁴ + 2x² − 5x + 1",
+    "problem": "Determinar el grado, el coeficiente principal y el término constante de $P(x) = 3x^4 + 2x^2 - 5x + 1$",
     "steps": [
-      { "order": 1, "explanation": "Identificamos todos los términos: 3x⁴ (grado 4), 2x² (grado 2), −5x (grado 1), 1 (grado 0, término constante)." },
-      { "order": 2, "explanation": "El grado es el mayor exponente con coeficiente no nulo: grado(P) = 4." },
-      { "order": 3, "explanation": "El coeficiente principal es el que acompaña al término de mayor grado: 3." },
-      { "order": 4, "explanation": "El término constante es el coeficiente de x⁰ (el número sin x): 1." }
+      { "order": 1, "explanation": "Identificamos todos los términos: $3x^4$ (grado 4), $2x^2$ (grado 2), $-5x$ (grado 1), $1$ (grado 0, término constante)." },
+      { "order": 2, "explanation": "El grado es el mayor exponente con coeficiente no nulo: $\\text{grado}(P) = 4$." },
+      { "order": 3, "explanation": "El coeficiente principal es el que acompaña al término de mayor grado: $3$." },
+      { "order": 4, "explanation": "El término constante es el coeficiente de $x^0$ (el número sin $x$): $1$." }
     ],
-    "finalAnswer": "Grado 4, coeficiente principal 3, término constante 1",
+    "finalAnswer": "Grado $4$, coeficiente principal $3$, término constante $1$",
     "pedagogicalNote": "El grado no es la cantidad de términos (4) sino el mayor exponente presente. Tampoco es la suma de los exponentes.",
     "canonicalTrace": [
       {
@@ -23,14 +23,14 @@
   {
     "id": "example-polinomios-basico-2",
     "skillId": "mat.u2.polinomios_basico",
-    "problem": "Evaluar P(2) y P(−1) para P(x) = x³ − 2x² + x − 3",
+    "problem": "Evaluar $P(2)$ y $P(-1)$ para $P(x) = x^3 - 2x^2 + x - 3$",
     "steps": [
-      { "order": 1, "explanation": "Para P(2), reemplazamos x por 2: P(2) = 2³ − 2(2²) + 2 − 3 = 8 − 2(4) + 2 − 3." },
-      { "order": 2, "explanation": "Operamos: 8 − 8 + 2 − 3 = −1. Entonces P(2) = −1." },
-      { "order": 3, "explanation": "Para P(−1): (−1)³ − 2(−1)² + (−1) − 3 = −1 − 2(1) − 1 − 3." },
-      { "order": 4, "explanation": "Operamos: −1 − 2 − 1 − 3 = −7. Entonces P(−1) = −7." }
+      { "order": 1, "explanation": "Para $P(2)$, reemplazamos $x$ por $2$: $P(2) = 2^3 - 2(2^2) + 2 - 3 = 8 - 2(4) + 2 - 3$." },
+      { "order": 2, "explanation": "Operamos: $8 - 8 + 2 - 3 = -1$. Entonces $P(2) = -1$." },
+      { "order": 3, "explanation": "Para $P(-1)$: $(-1)^3 - 2(-1)^2 + (-1) - 3 = -1 - 2(1) - 1 - 3$." },
+      { "order": 4, "explanation": "Operamos: $-1 - 2 - 1 - 3 = -7$. Entonces $P(-1) = -7$." }
     ],
-    "finalAnswer": "P(2) = −1, P(−1) = −7",
+    "finalAnswer": "$P(2) = -1$, $P(-1) = -7$",
     "pedagogicalNote": "Al evaluar con valores negativos, los paréntesis son esenciales: (−1)³ = −1, no 1. Y (−1)² = 1, no −1.",
     "canonicalTrace": [
       {
@@ -44,14 +44,14 @@
   {
     "id": "example-operaciones-polinomios-1",
     "skillId": "mat.u2.operaciones_polinomios",
-    "problem": "Calcular (3x² − 2x + 1) − (x² + 4x − 3)",
+    "problem": "Calcular $(3x^2 - 2x + 1) - (x^2 + 4x - 3)$",
     "steps": [
-      { "order": 1, "explanation": "La resta de polinomios es sumar el opuesto: (3x² − 2x + 1) + (−x² − 4x + 3)." },
-      { "order": 2, "explanation": "Agrupamos términos del mismo grado: 3x² + (−x²) = 2x²." },
-      { "order": 3, "explanation": "Para grado 1: −2x + (−4x) = −6x." },
-      { "order": 4, "explanation": "Para el término constante: 1 + 3 = 4. Resultado: 2x² − 6x + 4." }
+      { "order": 1, "explanation": "La resta de polinomios es sumar el opuesto: $(3x^2 - 2x + 1) + (-x^2 - 4x + 3)$." },
+      { "order": 2, "explanation": "Agrupamos términos del mismo grado: $3x^2 + (-x^2) = 2x^2$." },
+      { "order": 3, "explanation": "Para grado 1: $-2x + (-4x) = -6x$." },
+      { "order": 4, "explanation": "Para el término constante: $1 + 3 = 4$. Resultado: $2x^2 - 6x + 4$." }
     ],
-    "finalAnswer": "2x² − 6x + 4",
+    "finalAnswer": "$2x^2 - 6x + 4$",
     "pedagogicalNote": "El error más frecuente es no cambiar el signo de TODOS los términos del segundo polinomio. Verificar dos veces: −(−3) = +3, no −3.",
     "canonicalTrace": [
       {
@@ -65,14 +65,14 @@
   {
     "id": "example-operaciones-polinomios-2",
     "skillId": "mat.u2.operaciones_polinomios",
-    "problem": "Multiplicar (2x + 1)(x − 3)",
+    "problem": "Multiplicar $(2x + 1)(x - 3)$",
     "steps": [
-      { "order": 1, "explanation": "Aplicamos la propiedad distributiva (método FOIL): (2x)(x) + (2x)(−3) + (1)(x) + (1)(−3)." },
-      { "order": 2, "explanation": "Resolvemos cada producto: 2x² − 6x + x − 3." },
-      { "order": 3, "explanation": "Agrupamos términos semejantes: −6x + x = −5x." },
-      { "order": 4, "explanation": "Resultado final: 2x² − 5x − 3." }
+      { "order": 1, "explanation": "Aplicamos la propiedad distributiva (método FOIL): $(2x)(x) + (2x)(-3) + (1)(x) + (1)(-3)$." },
+      { "order": 2, "explanation": "Resolvemos cada producto: $2x^2 - 6x + x - 3$." },
+      { "order": 3, "explanation": "Agrupamos términos semejantes: $-6x + x = -5x$." },
+      { "order": 4, "explanation": "Resultado final: $2x^2 - 5x - 3$." }
     ],
-    "finalAnswer": "2x² − 5x − 3",
+    "finalAnswer": "$2x^2 - 5x - 3$",
     "pedagogicalNote": "El término cruzado −6x + x = −5x es donde ocurren más errores de signo. Verificar cada producto parcial y el signo del término medio al combinar.",
     "canonicalTrace": [
       {
@@ -86,13 +86,13 @@
   {
     "id": "example-ruffini-resto-1",
     "skillId": "mat.u2.ruffini_resto",
-    "problem": "Usando el teorema del resto, calcular el residuo de dividir P(x) = x³ − 2x + 1 por (x − 2)",
+    "problem": "Usando el teorema del resto, calcular el residuo de dividir $P(x) = x^3 - 2x + 1$ por $(x - 2)$",
     "steps": [
-      { "order": 1, "explanation": "El teorema del resto dice: el residuo de dividir P(x) por (x − a) es P(a). Aquí el divisor es (x − 2), así que a = 2." },
-      { "order": 2, "explanation": "Evaluamos P(2): P(2) = 2³ − 2(2) + 1 = 8 − 4 + 1." },
-      { "order": 3, "explanation": "Resultado: P(2) = 5. Por lo tanto, el residuo de la división es 5." }
+      { "order": 1, "explanation": "El teorema del resto dice: el residuo de dividir $P(x)$ por $(x - a)$ es $P(a)$. Aquí el divisor es $(x - 2)$, así que $a = 2$." },
+      { "order": 2, "explanation": "Evaluamos $P(2)$: $P(2) = 2^3 - 2(2) + 1 = 8 - 4 + 1$." },
+      { "order": 3, "explanation": "Resultado: $P(2) = 5$. Por lo tanto, el residuo de la división es $5$." }
     ],
-    "finalAnswer": "5",
+    "finalAnswer": "$5$",
     "pedagogicalNote": "El teorema del resto evita hacer toda la división. Solo hay que evaluar el polinomio en x = a. Error frecuente: evaluar en x = −a en vez de x = a.",
     "canonicalTrace": [
       {
@@ -106,13 +106,13 @@
   {
     "id": "example-ruffini-resto-2",
     "skillId": "mat.u2.ruffini_resto",
-    "problem": "Aplicar la regla de Ruffini para dividir P(x) = 2x³ − 5x² + x − 2 por (x − 3)",
+    "problem": "Aplicar la regla de Ruffini para dividir $P(x) = 2x^3 - 5x^2 + x - 2$ por $(x - 3)$",
     "steps": [
-      { "order": 1, "explanation": "Coeficientes de P(x) en orden decreciente: [2, −5, 1, −2]. No hay grados faltantes. El valor a usar es a = 3 (porque el divisor es x − 3)." },
-      { "order": 2, "explanation": "Bajamos el 2. Multiplicamos 2×3=6, sumamos a −5: −5+6=1. Multiplicamos 1×3=3, sumamos a 1: 1+3=4. Multiplicamos 4×3=12, sumamos a −2: −2+12=10." },
-      { "order": 3, "explanation": "Cociente: [2, 1, 4] → 2x² + x + 4. Resto: 10. Verificación con teorema del resto: P(3)=2(27)−5(9)+3−2=54−45+3−2=10 ✓." }
+      { "order": 1, "explanation": "Coeficientes de $P(x)$ en orden decreciente: $[2, -5, 1, -2]$. No hay grados faltantes. El valor a usar es $a = 3$ (porque el divisor es $x - 3$)." },
+      { "order": 2, "explanation": "Bajamos el $2$. Multiplicamos $2 \\times 3 = 6$, sumamos a $-5$: $-5 + 6 = 1$. Multiplicamos $1 \\times 3 = 3$, sumamos a $1$: $1 + 3 = 4$. Multiplicamos $4 \\times 3 = 12$, sumamos a $-2$: $-2 + 12 = 10$." },
+      { "order": 3, "explanation": "Cociente: $[2, 1, 4] \\to 2x^2 + x + 4$. Resto: $10$. Verificación con teorema del resto: $P(3) = 2(27) - 5(9) + 3 - 2 = 54 - 45 + 3 - 2 = 10$ ✓." }
     ],
-    "finalAnswer": "Cociente: 2x² + x + 4, Resto: 10",
+    "finalAnswer": "Cociente: $2x^2 + x + 4$, Resto: $10$",
     "pedagogicalNote": "La regla de Ruffini requiere escribir TODOS los coeficientes, incluso ceros para grados faltantes. El cociente siempre tiene un grado menos que el dividendo.",
     "canonicalTrace": [
       {
@@ -126,13 +126,13 @@
   {
     "id": "example-factorizacion-6",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Caso 1 — Factor común: factorizar 6x³ − 9x²",
+    "problem": "Caso 1 — Factor común: factorizar $6x^3 - 9x^2$",
     "steps": [
-      { "order": 1, "explanation": "Buscamos el máximo factor común: entre 6 y 9 es 3, y entre x³ y x² la menor potencia es x²." },
-      { "order": 2, "explanation": "Extraemos 3x² y dividimos cada término: 6x³ ÷ 3x² = 2x; −9x² ÷ 3x² = −3." },
-      { "order": 3, "explanation": "Resultado: 6x³ − 9x² = 3x²(2x − 3). Verificación por expansión: 3x²·2x − 3x²·3 = 6x³ − 9x² ✓." }
+      { "order": 1, "explanation": "Buscamos el máximo factor común: entre $6$ y $9$ es $3$, y entre $x^3$ y $x^2$ la menor potencia es $x^2$." },
+      { "order": 2, "explanation": "Extraemos $3x^2$ y dividimos cada término: $6x^3 \\div 3x^2 = 2x$; $-9x^2 \\div 3x^2 = -3$." },
+      { "order": 3, "explanation": "Resultado: $3x^2(2x - 3)$. Verificación por expansión: $3x^2 \\cdot 2x - 3x^2 \\cdot 3 = 6x^3 - 9x^2$ ✓." }
     ],
-    "finalAnswer": "3x²(2x − 3)",
+    "finalAnswer": "$3x^2(2x - 3)$",
     "pedagogicalNote": "Error frecuente: extraer solo 3 o solo x². El factor común debe incluir simultáneamente el máximo divisor numérico y la menor potencia compartida.",
     "canonicalTrace": [
       {
@@ -146,13 +146,13 @@
   {
     "id": "example-factorizacion-7",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Caso 2 — Factor común por grupos: factorizar x³ + 3x² + 2x + 6",
+    "problem": "Caso 2 — Factor común por grupos: factorizar $x^3 + 3x^2 + 2x + 6$",
     "steps": [
-      { "order": 1, "explanation": "Agrupamos términos para obtener el mismo binomio: (x³ + 3x²) + (2x + 6)." },
-      { "order": 2, "explanation": "Extraemos el factor común de cada grupo: x²(x + 3) + 2(x + 3)." },
-      { "order": 3, "explanation": "Extraemos el binomio común. Resultado: x³ + 3x² + 2x + 6 = (x + 3)(x² + 2). Verificación por expansión: x(x² + 2) + 3(x² + 2) = x³ + 3x² + 2x + 6 ✓." }
+      { "order": 1, "explanation": "Agrupamos términos para obtener el mismo binomio: $(x^3 + 3x^2) + (2x + 6)$." },
+      { "order": 2, "explanation": "Extraemos el factor común de cada grupo: $x^2(x + 3) + 2(x + 3)$." },
+      { "order": 3, "explanation": "Extraemos el binomio común. Resultado: $(x + 3)(x^2 + 2)$. Verificación por expansión: $x(x^2 + 2) + 3(x^2 + 2) = x^3 + 3x^2 + 2x + 6$ ✓." }
     ],
-    "finalAnswer": "(x + 3)(x² + 2)",
+    "finalAnswer": "$(x + 3)(x^2 + 2)$",
     "pedagogicalNote": "Error frecuente: agrupar sin comprobar que aparezca el mismo factor en ambos grupos. Si los binomios no coinciden, hay que revisar la agrupación o los signos.",
     "canonicalTrace": [
       {
@@ -166,13 +166,13 @@
   {
     "id": "example-factorizacion-2",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Caso 3 — Factorizar x² + 6x + 9 usando el caso de trinomio cuadrado perfecto",
+    "problem": "Caso 3 — Factorizar $x^2 + 6x + 9$ usando el caso de trinomio cuadrado perfecto",
     "steps": [
-      { "order": 1, "explanation": "Verificamos si es un trinomio cuadrado perfecto: ¿dos términos son cuadrados perfectos? x² = (x)² y 9 = (3)². Sí." },
-      { "order": 2, "explanation": "¿El término del medio es el doble producto de las bases? 2 · x · 3 = 6x. Sí, coincide con el término medio dado." },
-      { "order": 3, "explanation": "Como todos los signos son positivos, la factorización es el cuadrado de la suma: (x + 3)². Verificación: (x + 3)² = x² + 2·x·3 + 3² = x² + 6x + 9 ✓." }
+      { "order": 1, "explanation": "Verificamos si es un trinomio cuadrado perfecto: ¿dos términos son cuadrados perfectos? $x^2 = (x)^2$ y $9 = (3)^2$. Sí." },
+      { "order": 2, "explanation": "¿El término del medio es el doble producto de las bases? $2 \\cdot x \\cdot 3 = 6x$. Sí, coincide con el término medio dado." },
+      { "order": 3, "explanation": "Como todos los signos son positivos, la factorización es el cuadrado de la suma: $(x + 3)^2$. Verificación: $(x + 3)^2 = x^2 + 2 \\cdot x \\cdot 3 + 3^2 = x^2 + 6x + 9$ ✓." }
     ],
-    "finalAnswer": "(x + 3)²",
+    "finalAnswer": "$(x + 3)^2$",
     "pedagogicalNote": "Un TCP se reconoce por tres condiciones: (1) primer y tercer término son cuadrados perfectos, (2) el término medio es el doble producto de las bases, (3) el signo del término medio determina si es suma o resta. No confundir con un trinomio de segundo grado cualquiera: x² + 5x + 6 NO es TCP porque 2·x·√6 ≠ 5x.",
     "canonicalTrace": [
       {
@@ -186,13 +186,13 @@
   {
     "id": "example-factorizacion-8",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Caso 4 — Cuatrinomio cubo perfecto: factorizar x³ + 6x² + 12x + 8",
+    "problem": "Caso 4 — Cuatrinomio cubo perfecto: factorizar $x^3 + 6x^2 + 12x + 8$",
     "steps": [
-      { "order": 1, "explanation": "Identificamos los cubos de los extremos: x³ = x³ y 8 = 2³; las bases candidatas son a = x y b = 2." },
-      { "order": 2, "explanation": "Comprobamos los términos interiores de (a + b)³: 3a²b = 3·x²·2 = 6x² y 3ab² = 3·x·2² = 12x." },
-      { "order": 3, "explanation": "Resultado: x³ + 6x² + 12x + 8 = (x + 2)³. Verificación por expansión: (x + 2)³ = x³ + 6x² + 12x + 8 ✓." }
+      { "order": 1, "explanation": "Identificamos los cubos de los extremos: $x^3 = x^3$ y $8 = 2^3$; las bases candidatas son $a = x$ y $b = 2$." },
+      { "order": 2, "explanation": "Comprobamos los términos interiores de $(a + b)^3$: $3a^2b = 3 \\cdot x^2 \\cdot 2 = 6x^2$ y $3ab^2 = 3 \\cdot x \\cdot 2^2 = 12x$." },
+      { "order": 3, "explanation": "Resultado: $(x + 2)^3$. Verificación por expansión: $(x + 2)^3 = x^3 + 6x^2 + 12x + 8$ ✓." }
     ],
-    "finalAnswer": "(x + 2)³",
+    "finalAnswer": "$(x + 2)^3$",
     "pedagogicalNote": "Error frecuente: mirar solo los extremos. También deben verificarse ambos términos interiores y sus coeficientes 3; de lo contrario, el cuatrinomio no es un cubo perfecto.",
     "canonicalTrace": [
       {
@@ -206,13 +206,13 @@
   {
     "id": "example-factorizacion-1",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Caso 5 — Factorizar x² − 16 usando el caso de diferencia de cuadrados",
+    "problem": "Caso 5 — Factorizar $x^2 - 16$ usando el caso de diferencia de cuadrados",
     "steps": [
-      { "order": 1, "explanation": "Identificamos que x² es el cuadrado de x (a = x) y 16 es el cuadrado de 4 (b = 4). La expresión es una diferencia (resta) de cuadrados perfectos." },
-      { "order": 2, "explanation": "Aplicamos la fórmula de diferencia de cuadrados: a² − b² = (a − b)(a + b). Sustituimos a = x, b = 4." },
-      { "order": 3, "explanation": "Resultado: x² − 16 = (x − 4)(x + 4). Verificamos expandiendo: (x − 4)(x + 4) = x² + 4x − 4x − 16 = x² − 16 ✓. El orden de los factores no altera el producto." }
+      { "order": 1, "explanation": "Identificamos que $x^2$ es el cuadrado de $x$ ($a = x$) y $16$ es el cuadrado de $4$ ($b = 4$). La expresión es una diferencia (resta) de cuadrados perfectos." },
+      { "order": 2, "explanation": "Aplicamos la fórmula de diferencia de cuadrados: $a^2 - b^2 = (a - b)(a + b)$. Sustituimos $a = x$, $b = 4$." },
+      { "order": 3, "explanation": "Resultado: $(x - 4)(x + 4)$. Verificamos expandiendo: $(x - 4)(x + 4) = x^2 + 4x - 4x - 16 = x^2 - 16$ ✓. El orden de los factores no altera el producto." }
     ],
-    "finalAnswer": "(x − 4)(x + 4)",
+    "finalAnswer": "$(x - 4)(x + 4)$",
     "pedagogicalNote": "La diferencia de cuadrados siempre produce dos binomios conjugados. Error frecuente: escribir (x − 4)² = x² − 8x + 16, que es un trinomio cuadrado perfecto, no una diferencia de cuadrados.",
     "canonicalTrace": [
       {
@@ -226,15 +226,15 @@
   {
     "id": "example-factorizacion-3",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Caso 6 — Factorizar 8x³ + 27 usando el caso de suma de cubos con la regla de Ruffini (divisor no mónico 2x + 3)",
+    "problem": "Caso 6 — Factorizar $8x^3 + 27$ usando el caso de suma de cubos con la regla de Ruffini (divisor no mónico $2x + 3$)",
     "steps": [
-      { "order": 1, "explanation": "Reconocemos la suma de cubos: 8x³ = (2x)³ y 27 = 3³, así que n = 3 (impar) y la suma se divide por (2x + 3). Ese 2x + 3 es el primer factor de la factorización." },
-      { "order": 2, "explanation": "Para usar Ruffini necesitamos el valor de x que anula el divisor. Resolvemos 2x + 3 = 0 ⇒ x = −3/2. Ese −3/2 es el número que va a la izquierda de la tabla de Ruffini (NO −3 ni 3, sino −3/2)." },
-      { "order": 3, "explanation": "Escribimos los coeficientes completos de 8x³ + 27: [8, 0, 0, 27] (hay ceros para x² y para x). Tabla de Ruffini con −3/2: bajamos 8; 8·(−3/2) = −12, −12 + 0 = −12; −12·(−3/2) = 18, 18 + 0 = 18; 18·(−3/2) = −27, −27 + 27 = 0." },
-      { "order": 4, "explanation": "El cociente de Ruffini es [8, −12, 18] con resto 0, es decir 8x² − 12x + 18. Pero ese cociente está calculado respecto al divisor mónico (x + 3/2). Como el divisor original era 2x + 3 = 2·(x + 3/2), hay que dividir el cociente por 2: (8x² − 12x + 18) / 2 = 4x² − 6x + 9." },
-      { "order": 5, "explanation": "Factorización completa: (2x + 3)(4x² − 6x + 9). Verificación expandiendo: (2x + 3)(4x² − 6x + 9) = 8x³ − 12x² + 18x + 12x² − 18x + 27 = 8x³ + 27 ✓." }
+      { "order": 1, "explanation": "Reconocemos la suma de cubos: $8x^3 = (2x)^3$ y $27 = 3^3$, así que $n = 3$ (impar) y la suma se divide por $(2x + 3)$. Ese $2x + 3$ es el primer factor de la factorización." },
+      { "order": 2, "explanation": "Para usar Ruffini necesitamos el valor de $x$ que anula el divisor. Resolvemos $2x + 3 = 0 \\Rightarrow x = -\\frac{3}{2}$. Ese $-\\frac{3}{2}$ es el número que va a la izquierda de la tabla de Ruffini (NO $-3$ ni $3$, sino $-\\frac{3}{2}$)." },
+      { "order": 3, "explanation": "Escribimos los coeficientes completos de $8x^3 + 27$: $[8, 0, 0, 27]$ (hay ceros para $x^2$ y para $x$). Tabla de Ruffini con $-\\frac{3}{2}$: bajamos $8$; $8 \\cdot (-\\frac{3}{2}) = -12$, $-12 + 0 = -12$; $-12 \\cdot (-\\frac{3}{2}) = 18$, $18 + 0 = 18$; $18 \\cdot (-\\frac{3}{2}) = -27$, $-27 + 27 = 0$." },
+      { "order": 4, "explanation": "El cociente de Ruffini es $[8, -12, 18]$ con resto $0$, es decir $8x^2 - 12x + 18$. Pero ese cociente está calculado respecto al divisor mónico $(x + \\frac{3}{2})$. Como el divisor original era $2x + 3 = 2 \\cdot (x + \\frac{3}{2})$, hay que dividir el cociente por $2$: $(8x^2 - 12x + 18) / 2 = 4x^2 - 6x + 9$." },
+      { "order": 5, "explanation": "Factorización completa: $(2x + 3)(4x^2 - 6x + 9)$. Verificación expandiendo: $(2x + 3)(4x^2 - 6x + 9) = 8x^3 - 12x^2 + 18x + 12x^2 - 18x + 27 = 8x^3 + 27$ ✓." }
     ],
-    "finalAnswer": "(2x + 3)(4x² − 6x + 9)",
+    "finalAnswer": "$(2x + 3)(4x^2 - 6x + 9)$",
     "pedagogicalNote": "Error frecuente: usar 3 o −3 en la tabla de Ruffini en vez de −3/2. El número que va a la izquierda sale SIEMPRE de resolver divisor = 0, no de mirar el término independiente del polinomio. Otro error: olvidar dividir el cociente de Ruffini por 2 cuando el divisor original tenía coeficiente principal distinto de 1.",
     "canonicalTrace": [
       {
@@ -248,15 +248,15 @@
   {
     "id": "example-factorizacion-4",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Caso 6 — Factorizar 8x³ + 27 usando el método de disminución de exponentes (sin dividir)",
+    "problem": "Caso 6 — Factorizar $8x^3 + 27$ usando el método de disminución de exponentes (sin dividir)",
     "steps": [
-      { "order": 1, "explanation": "Reconocemos las bases: 8x³ = (2x)³ (la base del cubo es 2x, NO 2 ni 8) y 27 = 3³. Entonces a = 2x y b = 3, con n = 3 (impar) y suma de cubos." },
-      { "order": 2, "explanation": "Aplicamos la fórmula de suma de cubos directamente, sin dividir: a³ + b³ = (a + b)(a² − ab + b²). No usamos Ruffini en este método." },
-      { "order": 3, "explanation": "Primer factor: (a + b) = 2x + 3." },
-      { "order": 4, "explanation": "Segundo factor: a² − ab + b² = (2x)² − (2x)(3) + 3² = 4x² − 6x + 9. Ojo con los signos: es a² MENOS ab MÁS b² (alternados + − +)." },
-      { "order": 5, "explanation": "Factorización: (2x + 3)(4x² − 6x + 9). Verificación por expansión: (2x + 3)(4x² − 6x + 9) = 8x³ − 12x² + 18x + 12x² − 18x + 27 = 8x³ + 27 ✓." }
+      { "order": 1, "explanation": "Reconocemos las bases: $8x^3 = (2x)^3$ (la base del cubo es $2x$, NO $2$ ni $8$) y $27 = 3^3$. Entonces $a = 2x$ y $b = 3$, con $n = 3$ (impar) y suma de cubos." },
+      { "order": 2, "explanation": "Aplicamos la fórmula de suma de cubos directamente, sin dividir: $a^3 + b^3 = (a + b)(a^2 - ab + b^2)$. No usamos Ruffini en este método." },
+      { "order": 3, "explanation": "Primer factor: $(a + b) = 2x + 3$." },
+      { "order": 4, "explanation": "Segundo factor: $a^2 - ab + b^2 = (2x)^2 - (2x)(3) + 3^2 = 4x^2 - 6x + 9$. Ojo con los signos: es $a^2$ MENOS $ab$ MÁS $b^2$ (alternados $+ - +$)." },
+      { "order": 5, "explanation": "Factorización: $(2x + 3)(4x^2 - 6x + 9)$. Verificación por expansión: $(2x + 3)(4x^2 - 6x + 9) = 8x^3 - 12x^2 + 18x + 12x^2 - 18x + 27 = 8x^3 + 27$ ✓." }
     ],
-    "finalAnswer": "(2x + 3)(4x² − 6x + 9)",
+    "finalAnswer": "$(2x + 3)(4x^2 - 6x + 9)$",
     "pedagogicalNote": "Error frecuente: identificar mal las bases a y b antes de usar la fórmula. La base del primer cubo es 2x, no 2, y la del segundo es 3. Disminución de exponentes es más rápido que Ruffini cuando las bases son evidentes, y ambos métodos dan el mismo resultado.",
     "canonicalTrace": [
       {
@@ -270,15 +270,15 @@
   {
     "id": "example-factorizacion-5",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Caso 6 — Factorizar x⁴ − 16 usando el caso de diferencia de potencias con n = 4 (par)",
+    "problem": "Caso 6 — Factorizar $x^4 - 16$ usando el caso de diferencia de potencias con $n = 4$ (par)",
     "steps": [
-      { "order": 1, "explanation": "Reconocemos diferencia de cuartas potencias: x⁴ − 16 = (x)⁴ − (2)⁴, con a = x, b = 2 y n = 4 (par). Por la regla (b) del caso 6, a⁴ − b⁴ es divisible por (a + b) cuando n es par." },
-      { "order": 2, "explanation": "Aplicamos la fórmula directa para diferencia de cuartas: a⁴ − b⁴ = (a² − b²)(a² + b²). Esta es la forma 'disminución de exponentes' para n = 4: bajamos los exponentes de 4 a 2 y aparecen DOS factores, uno diferencia y otro suma." },
-      { "order": 3, "explanation": "Sustituimos a = x, b = 2: (x² − 4)(x² + 4). La diferencia (x² − 4) es a su vez una diferencia de cuadrados (caso 5): x² − 4 = (x − 2)(x + 2)." },
-      { "order": 4, "explanation": "La suma (x² + 4) NO se factoriza en ℝ (es suma de cuadrados, caso 5 solo aplica a DIFERENCIA). Queda como factor irreducible." },
-      { "order": 5, "explanation": "Factorización completa: (x − 2)(x + 2)(x² + 4). Verificación: (x − 2)(x + 2) = x² − 4; (x² − 4)(x² + 4) = x⁴ − 16 ✓." }
+      { "order": 1, "explanation": "Reconocemos diferencia de cuartas potencias: $x^4 - 16 = (x)^4 - (2)^4$, con $a = x$, $b = 2$ y $n = 4$ (par). Por la regla (b) del caso 6, $a^4 - b^4$ es divisible por $(a + b)$ cuando $n$ es par." },
+      { "order": 2, "explanation": "Aplicamos la fórmula directa para diferencia de cuartas: $a^4 - b^4 = (a^2 - b^2)(a^2 + b^2)$. Esta es la forma 'disminución de exponentes' para $n = 4$: bajamos los exponentes de $4$ a $2$ y aparecen DOS factores, uno diferencia y otro suma." },
+      { "order": 3, "explanation": "Sustituimos $a = x$, $b = 2$: $(x^2 - 4)(x^2 + 4)$. La diferencia $(x^2 - 4)$ es a su vez una diferencia de cuadrados (caso 5): $x^2 - 4 = (x - 2)(x + 2)$." },
+      { "order": 4, "explanation": "La suma $(x^2 + 4)$ NO se factoriza en $\\mathbb{R}$ (es suma de cuadrados, caso 5 solo aplica a DIFERENCIA). Queda como factor irreducible." },
+      { "order": 5, "explanation": "Factorización completa: $(x - 2)(x + 2)(x^2 + 4)$. Verificación: $(x - 2)(x + 2) = x^2 - 4$; $(x^2 - 4)(x^2 + 4) = x^4 - 16$ ✓." }
     ],
-    "finalAnswer": "(x − 2)(x + 2)(x² + 4)",
+    "finalAnswer": "$(x - 2)(x + 2)(x^2 + 4)$",
     "pedagogicalNote": "x⁴ − 16 es diferencia de cuartas potencias (n = 4 par). La fórmula a⁴ − b⁴ = (a² − b²)(a² + b²) lleva a un factor diferencia de cuadrados y un factor suma de cuadrados; el primero se vuelve a factorear como caso 5, el segundo NO se sigue factoreando en ℝ. No confundir suma de cuadrados (x² + 4) con diferencia de cuadrados (x² − 4): solo la diferencia se factoriza.",
     "canonicalTrace": [
       {
@@ -292,14 +292,14 @@
   {
     "id": "example-factorizacion-9",
     "skillId": "mat.u2.factorizacion",
-    "problem": "Caso 7 — Trinomio cuadrático: factorizar 2x² + 7x + 3",
+    "problem": "Caso 7 — Trinomio cuadrático: factorizar $2x^2 + 7x + 3$",
     "steps": [
-      { "order": 1, "explanation": "Identificamos a = 2, b = 7 y c = 3. Calculamos el discriminante: Δ = b² − 4ac = 7² − 4·2·3 = 25." },
-      { "order": 2, "explanation": "Calculamos las raíces: x = (−7 ± √25)/4. Así obtenemos x₁ = −1/2 y x₂ = −3." },
-      { "order": 3, "explanation": "Reconstruimos con el coeficiente principal: 2(x + 1/2)(x + 3) = (2x + 1)(x + 3). Resultado: 2x² + 7x + 3 = (2x + 1)(x + 3). Verificación por expansión: (2x + 1)(x + 3) = 2x² + 6x + x + 3 = 2x² + 7x + 3 ✓." }
+      { "order": 1, "explanation": "Identificamos $a = 2$, $b = 7$ y $c = 3$. Calculamos el discriminante: $\\Delta = b^2 - 4ac = 7^2 - 4\\cdot 2\\cdot 3 = 25$." },
+      { "order": 2, "explanation": "Calculamos las raíces con la fórmula general: $x = \\frac{-7 \\pm \\sqrt{25}}{4}$. Así obtenemos $x_1 = -\\frac{1}{2}$ y $x_2 = -3$." },
+      { "order": 3, "explanation": "Reconstruimos con el coeficiente principal: $2\\left(x + \\frac{1}{2}\\right)(x + 3) = (2x + 1)(x + 3)$. Resultado: $(2x + 1)(x + 3)$. Verificación por expansión: $(2x + 1)(x + 3) = 2x^2 + 6x + x + 3 = 2x^2 + 7x + 3$ ✓." }
     ],
-    "finalAnswer": "(2x + 1)(x + 3)",
-    "pedagogicalNote": "Error frecuente: escribir solo (x − x₁)(x − x₂) y olvidar el coeficiente principal a. Como a = 2, debe conservarse al reconstruir la factorización.",
+    "finalAnswer": "$(2x + 1)(x + 3)$",
+    "pedagogicalNote": "Error frecuente: escribir solo $(x - x_1)(x - x_2)$ y olvidar el coeficiente principal $a$. Como $a = 2$, debe conservarse al reconstruir la factorización.",
     "canonicalTrace": [
       {
         "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
@@ -312,14 +312,14 @@
   {
     "id": "example-gauss-1",
     "skillId": "mat.u2.gauss",
-    "problem": "Usar el Teorema de Gauss para encontrar las raíces racionales de P(x) = 2x³ + 3x² − 8x + 3",
+    "problem": "Usar el Teorema de Gauss para encontrar las raíces racionales de $P(x) = 2x^3 + 3x^2 - 8x + 3$",
     "steps": [
-      { "order": 1, "explanation": "Identificamos: a₀ = 3 (término constante), aₙ = 2 (coeficiente principal). Divisores de a₀ = 3: ±1, ±3. Divisores de aₙ = 2: 1, 2." },
-      { "order": 2, "explanation": "Formamos todos los candidatos p/q como fracciones irreducibles: ±1/1 = ±1, ±3/1 = ±3, ±1/2, ±3/2. Candidatos: ±1, ±3, ±1/2, ±3/2." },
-      { "order": 3, "explanation": "Evaluamos P(x) en cada candidato usando el teorema del resto. P(1) = 2+3−8+3 = 0 ✓. P(−1) = −2+3+8+3 = 12 ≠ 0. P(3) = 54+27−24+3 = 60 ≠ 0. P(−3) = −54+27+24+3 = 0 ✓. P(1/2) = 2(1/8)+3(1/4)−4+3 = 0.25+0.75−4+3 = 0 ✓. Raíces encontradas: 1, −3, 1/2." },
-      { "order": 4, "explanation": "Verificamos con Ruffini: para a = 1, coeficientes [2, 3, −8, 3] → cociente [2, 5, −3], resto 0. P(x) = (x − 1)(2x² + 5x − 3). El factor cuadrático se resuelve con trinomio de segundo grado → (2x − 1)(x + 3). Factorización completa: (x − 1)(2x − 1)(x + 3)." }
+      { "order": 1, "explanation": "Identificamos: $a_0 = 3$ (término constante), $a_n = 2$ (coeficiente principal). Divisores de $a_0 = 3$: $\\pm 1$, $\\pm 3$. Divisores de $a_n = 2$: $1$, $2$." },
+      { "order": 2, "explanation": "Formamos todos los candidatos $p/q$ como fracciones irreducibles: $\\pm 1/1 = \\pm 1$, $\\pm 3/1 = \\pm 3$, $\\pm 1/2$, $\\pm 3/2$. Candidatos: $\\pm 1$, $\\pm 3$, $\\pm 1/2$, $\\pm 3/2$." },
+      { "order": 3, "explanation": "Evaluamos $P(x)$ en cada candidato usando el teorema del resto. $P(1) = 2 + 3 - 8 + 3 = 0$ ✓. $P(-1) = -2 + 3 + 8 + 3 = 12 \\neq 0$. $P(3) = 54 + 27 - 24 + 3 = 60 \\neq 0$. $P(-3) = -54 + 27 + 24 + 3 = 0$ ✓. $P(1/2) = 2(1/8) + 3(1/4) - 4 + 3 = 0.25 + 0.75 - 4 + 3 = 0$ ✓. Raíces encontradas: $1$, $-3$, $1/2$." },
+      { "order": 4, "explanation": "Verificamos con Ruffini: para $a = 1$, coeficientes $[2, 3, -8, 3] \\to$ cociente $[2, 5, -3]$, resto $0$. $P(x) = (x - 1)(2x^2 + 5x - 3)$. El factor cuadrático se resuelve con trinomio de segundo grado $\\to (2x - 1)(x + 3)$. Factorización completa: $(x - 1)(2x - 1)(x + 3)$." }
     ],
-    "finalAnswer": "Raíces: 1, −3, 1/2. Factorización: (x − 1)(2x − 1)(x + 3)",
+    "finalAnswer": "Raíces: $1$, $-3$, $\\frac{1}{2}$. Factorización: $(x - 1)(2x - 1)(x + 3)$",
     "pedagogicalNote": "El teorema de Gauss reduce las posibles raíces a un conjunto finito de candidatos. Cada raíz encontrada se 'extrae' con Ruffini y se continúa con el cociente. Si el cociente es de grado 2, se resuelve con la fórmula general o factorización directa.",
     "canonicalTrace": [
       {
@@ -333,13 +333,13 @@
   {
     "id": "example-gauss-2",
     "skillId": "mat.u2.gauss",
-    "problem": "Factorizar P(x) = x⁴ − 5x² + 4 usando el Teorema de Gauss",
+    "problem": "Factorizar $P(x) = x^4 - 5x^2 + 4$ usando el Teorema de Gauss",
     "steps": [
-      { "order": 1, "explanation": "Identificamos: a₀ = 4 (divisores: ±1, ±2, ±4), aₙ = 1 (divisores: 1). Como aₙ = 1, todos los candidatos son enteros: ±1, ±2, ±4." },
-      { "order": 2, "explanation": "Evaluamos: P(1) = 1−5+4 = 0 ✓. P(−1) = 1−5+4 = 0 ✓. P(2) = 16−20+4 = 0 ✓. P(−2) = 16−20+4 = 0 ✓. ¡Cuatro raíces! Esto significa que el polinomio se factoriza completamente como (x−1)(x+1)(x−2)(x+2)." },
-      { "order": 3, "explanation": "Podemos verificar por otro camino: notar que x⁴ − 5x² + 4 es un trinomio en x², hacemos t = x²: t² − 5t + 4 = (t − 1)(t − 4) = (x² − 1)(x² − 4) = (x−1)(x+1)(x−2)(x+2), donde cada diferencia de cuadrados se factorizó." }
+      { "order": 1, "explanation": "Identificamos: $a_0 = 4$ (divisores: $\\pm 1$, $\\pm 2$, $\\pm 4$), $a_n = 1$ (divisores: $1$). Como $a_n = 1$, todos los candidatos son enteros: $\\pm 1$, $\\pm 2$, $\\pm 4$." },
+      { "order": 2, "explanation": "Evaluamos: $P(1) = 1 - 5 + 4 = 0$ ✓. $P(-1) = 1 - 5 + 4 = 0$ ✓. $P(2) = 16 - 20 + 4 = 0$ ✓. $P(-2) = 16 - 20 + 4 = 0$ ✓. ¡Cuatro raíces! Esto significa que el polinomio se factoriza completamente como $(x - 1)(x + 1)(x - 2)(x + 2)$." },
+      { "order": 3, "explanation": "Podemos verificar por otro camino: notar que $x^4 - 5x^2 + 4$ es un trinomio en $x^2$, hacemos $t = x^2$: $t^2 - 5t + 4 = (t - 1)(t - 4) = (x^2 - 1)(x^2 - 4) = (x - 1)(x + 1)(x - 2)(x + 2)$, donde cada diferencia de cuadrados se factorizó." }
     ],
-    "finalAnswer": "(x − 1)(x + 1)(x − 2)(x + 2)",
+    "finalAnswer": "$(x - 1)(x + 1)(x - 2)(x + 2)$",
     "pedagogicalNote": "Este polinomio bicuadrático puede factorizarse por Gauss o por sustitución t = x². El Teorema de Gauss siempre funciona pero puede ser más laborioso; reconocer patrones (diferencia de cuadrados, bicuadrática) ahorra trabajo. El orden de los factores no altera el producto.",
     "canonicalTrace": [
       {
@@ -353,15 +353,15 @@
   {
     "id": "example-mcm-mcd-polinomios-1",
     "skillId": "mat.u2.mcm_mcd_polinomios",
-    "problem": "Calcular el MCM y el MCD de P(x) = x(x−2) y Q(x) = x(x+3)",
+    "problem": "Calcular el MCM y el MCD de $P(x) = x(x - 2)$ y $Q(x) = x(x + 3)$",
     "steps": [
-      { "order": 1, "explanation": "Ambos polinomios ya están factorizados. Identificamos los factores: P(x) tiene x y (x−2); Q(x) tiene x y (x+3)." },
-      { "order": 2, "explanation": "Factores totales: x, (x−2), (x+3). Factor común: x (aparece en ambos). Factores no comunes: (x−2) en P, (x+3) en Q." },
-      { "order": 3, "explanation": "MCM = producto de factores comunes y no comunes con mayor exponente: x¹(x−2)¹(x+3)¹ = x(x−2)(x+3)." },
-      { "order": 4, "explanation": "MCD = factores comunes con menor exponente: x¹ (es el único factor común). Resultado: MCD = x." },
-      { "order": 5, "explanation": "Verificación: ¿MCD divide a P y Q? x divide a x(x−2) ✓ y a x(x+3) ✓. ¿MCM es múltiplo de P y Q? x(x−2)(x+3) / [x(x−2)] = (x+3) entero ✓ y / [x(x+3)] = (x−2) entero ✓." }
+      { "order": 1, "explanation": "Ambos polinomios ya están factorizados. Identificamos los factores: $P(x)$ tiene $x$ y $(x - 2)$; $Q(x)$ tiene $x$ y $(x + 3)$." },
+      { "order": 2, "explanation": "Factores totales: $x$, $(x - 2)$, $(x + 3)$. Factor común: $x$ (aparece en ambos). Factores no comunes: $(x - 2)$ en $P$, $(x + 3)$ en $Q$." },
+      { "order": 3, "explanation": "MCM = producto de factores comunes y no comunes con mayor exponente: $x^1(x - 2)^1(x + 3)^1 = x(x - 2)(x + 3)$." },
+      { "order": 4, "explanation": "MCD = factores comunes con menor exponente: $x^1$ (es el único factor común). Resultado: MCD = $x$." },
+      { "order": 5, "explanation": "Verificación: ¿MCD divide a $P$ y $Q$? $x$ divide a $x(x - 2)$ ✓ y a $x(x + 3)$ ✓. ¿MCM es múltiplo de $P$ y $Q$? $x(x - 2)(x + 3) / [x(x - 2)] = (x + 3)$ entero ✓ y $/ [x(x + 3)] = (x - 2)$ entero ✓." }
     ],
-    "finalAnswer": "MCM = x(x−2)(x+3), MCD = x",
+    "finalAnswer": "MCM = $x(x - 2)(x + 3)$, MCD = $x$",
     "pedagogicalNote": "Error frecuente: confundir MCM con MCD. MCM incluye TODOS los factores (x, x−2, x+3); MCD solo los COMUNES (x). Si te piden MCM y respondés x, estás dando el MCD.",
     "canonicalTrace": [
       {
@@ -375,14 +375,14 @@
   {
     "id": "example-mcm-mcd-polinomios-2",
     "skillId": "mat.u2.mcm_mcd_polinomios",
-    "problem": "Calcular el MCM de x²−4 y x²−2x",
+    "problem": "Calcular el MCM de $x^2 - 4$ y $x^2 - 2x$",
     "steps": [
-      { "order": 1, "explanation": "Factorizamos ambos polinomios: x²−4 = (x−2)(x+2) [diferencia de cuadrados]. x²−2x = x(x−2) [factor común x]." },
-      { "order": 2, "explanation": "Factores totales: x, (x−2), (x+2). El factor (x−2) es común a ambos polinomios; x solo aparece en el segundo; (x+2) solo en el primero." },
-      { "order": 3, "explanation": "MCM = producto de todos los factores con mayor exponente: x¹(x−2)¹(x+2)¹ = x(x−2)(x+2)." },
-      { "order": 4, "explanation": "Expandimos para verificar: x(x−2)(x+2) = x(x²−4) = x³−4x. Este polinomio es divisible por x²−4 (cociente x) y por x²−2x (cociente x+2)." }
+      { "order": 1, "explanation": "Factorizamos ambos polinomios: $x^2 - 4 = (x - 2)(x + 2)$ [diferencia de cuadrados]. $x^2 - 2x = x(x - 2)$ [factor común $x$]." },
+      { "order": 2, "explanation": "Factores totales: $x$, $(x - 2)$, $(x + 2)$. El factor $(x - 2)$ es común a ambos polinomios; $x$ solo aparece en el segundo; $(x + 2)$ solo en el primero." },
+      { "order": 3, "explanation": "MCM = producto de todos los factores con mayor exponente: $x^1(x - 2)^1(x + 2)^1 = x(x - 2)(x + 2)$." },
+      { "order": 4, "explanation": "Expandimos para verificar: $x(x - 2)(x + 2) = x(x^2 - 4) = x^3 - 4x$. Este polinomio es divisible por $x^2 - 4$ (cociente $x$) y por $x^2 - 2x$ (cociente $x + 2$)." }
     ],
-    "finalAnswer": "x(x−2)(x+2)",
+    "finalAnswer": "$x(x - 2)(x + 2)$",
     "pedagogicalNote": "Primero SIEMPRE hay que factorizar. Intentar calcular MCM sin factorizar lleva a errores. El MCD de estos dos polinomios sería (x−2), que es el único factor común.",
     "canonicalTrace": [
       {
@@ -396,12 +396,12 @@
   {
     "id": "example-ecuaciones-fraccionarias-1",
     "skillId": "mat.u2.ecuaciones_fraccionarias",
-    "problem": "Resolver 1/(x−2) = 3/(x−2)",
+    "problem": "Resolver $\\frac{1}{x - 2} = \\frac{3}{x - 2}$",
     "steps": [
-      { "order": 1, "explanation": "Identificamos el dominio: el denominador es x−2. El valor excluido es x=2 (anula el denominador)." },
-      { "order": 2, "explanation": "Ambos miembros tienen el mismo denominador (x−2). Podemos multiplicar ambos miembros por (x−2), asumiendo x≠2: 1 = 3." },
-      { "order": 3, "explanation": "La igualdad 1=3 es FALSA para cualquier valor de x. Esto significa que la ecuación original NO tiene solución." },
-      { "order": 4, "explanation": "Además, la ecuación original ni siquiera está definida en x=2. Conclusión: no existe ningún valor de x que satisfaga la ecuación." }
+      { "order": 1, "explanation": "Identificamos el dominio: el denominador es $x - 2$. El valor excluido es $x = 2$ (anula el denominador)." },
+      { "order": 2, "explanation": "Ambos miembros tienen el mismo denominador $(x - 2)$. Podemos multiplicar ambos miembros por $(x - 2)$, asumiendo $x \\neq 2$: $1 = 3$." },
+      { "order": 3, "explanation": "La igualdad $1 = 3$ es FALSA para cualquier valor de $x$. Esto significa que la ecuación original NO tiene solución." },
+      { "order": 4, "explanation": "Además, la ecuación original ni siquiera está definida en $x = 2$. Conclusión: no existe ningún valor de $x$ que satisfaga la ecuación." }
     ],
     "finalAnswer": "No tiene solución",
     "pedagogicalNote": "Dos razones por las que no hay solución: (1) algebraicamente se llega a 1=3 que es falso; (2) x=2 anula el denominador así que aunque 1=3 fuera cierto, x=2 no sería válido. Siempre verificá el dominio ANTES de aceptar una solución.",
@@ -417,15 +417,15 @@
   {
     "id": "example-ecuaciones-fraccionarias-2",
     "skillId": "mat.u2.ecuaciones_fraccionarias",
-    "problem": "Resolver 2/(x+1) = 3/(x+2)",
+    "problem": "Resolver $\\frac{2}{x + 1} = \\frac{3}{x + 2}$",
     "steps": [
-      { "order": 1, "explanation": "Dominio: los denominadores son (x+1) y (x+2). Valores excluidos: x=−1 y x=−2." },
-      { "order": 2, "explanation": "Multiplicamos en cruz (válido porque x≠−1 y x≠−2): 2(x+2) = 3(x+1)." },
-      { "order": 3, "explanation": "Desarrollamos: 2x + 4 = 3x + 3." },
-      { "order": 4, "explanation": "Despejamos x: 4 − 3 = 3x − 2x → 1 = x. Solución candidata: x = 1." },
-      { "order": 5, "explanation": "Verificamos el dominio: x=1 no es −1 ni −2, así que es válido. Comprobamos en la ecuación original: 2/(1+1) = 2/2 = 1 y 3/(1+2) = 3/3 = 1. Ambos miembros coinciden ✓." }
+      { "order": 1, "explanation": "Dominio: los denominadores son $(x + 1)$ y $(x + 2)$. Valores excluidos: $x = -1$ y $x = -2$." },
+      { "order": 2, "explanation": "Multiplicamos en cruz (válido porque $x \\neq -1$ y $x \\neq -2$): $2(x + 2) = 3(x + 1)$." },
+      { "order": 3, "explanation": "Desarrollamos: $2x + 4 = 3x + 3$." },
+      { "order": 4, "explanation": "Despejamos $x$: $4 - 3 = 3x - 2x \\to 1 = x$. Solución candidata: $x = 1$." },
+      { "order": 5, "explanation": "Verificamos el dominio: $x = 1$ no es $-1$ ni $-2$, así que es válido. Comprobamos en la ecuación original: $\\frac{2}{1 + 1} = \\frac{2}{2} = 1$ y $\\frac{3}{1 + 2} = \\frac{3}{3} = 1$. Ambos miembros coinciden ✓." }
     ],
-    "finalAnswer": "x = 1",
+    "finalAnswer": "$x = 1$",
     "pedagogicalNote": "La multiplicación en cruz solo es válida cuando los denominadores no son cero. Siempre hay que verificar el dominio después de resolver. En este caso x=1 es válido. Si hubiera dado x=−1 o x=−2, habría que descartarlo.",
     "canonicalTrace": [
       {
