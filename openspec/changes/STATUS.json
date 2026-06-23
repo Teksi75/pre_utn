@@ -584,11 +584,16 @@
       "summary": "I-21 complete: ChallengeAttempt is scoped to the active student, anonymous challenge writes are blocked, legacy anonymous challenge data remains loadable but excluded from active readiness, and readinessBySkill is recomputed from active-student attempts to prevent cross-student leakage. Verification PASS: 2497 tests, typecheck, build."
     },
     "active-session-module": {
-      "status": "in-progress",
-      "branch": "refactor/active-session-module",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-06-22",
+      "completedAt": "2026-06-23",
+      "mergedTo": "main",
+      "mergeCommit": "8041fb7e0059cc4b97e2bb8276e00f377068c7d1",
       "roadmapIssue": "I-23",
-      "summary": "Proposal created: centralize active profile ID access behind an active-session module before future Supabase adapter substitution."
+      "issue": 48,
+      "pr": 49,
+      "summary": "Centralized active profile ID access behind getActiveProfileId() in active-session.ts. Replaced dispersed direct localStorage.getItem reads in practice-progress and diagnostic-storage adapters. Added hasProfilesStorage() helper for legacy migration containment. Boundary scan confirms 0 violations. 2503 tests pass, typecheck, build green."
     }
   },
   "activeBranches": [],
