@@ -582,6 +582,13 @@
         "reason": "Actual diff exceeds 400-line budget. Critical readinessBySkill isolation fix (5 additional tests + recomputeAllReadiness helper) expanded scope. Maintainer approved single-PR delivery."
       },
       "summary": "I-21 complete: ChallengeAttempt is scoped to the active student, anonymous challenge writes are blocked, legacy anonymous challenge data remains loadable but excluded from active readiness, and readinessBySkill is recomputed from active-student attempts to prevent cross-student leakage. Verification PASS: 2497 tests, typecheck, build."
+    },
+    "active-session-module": {
+      "status": "in-progress",
+      "branch": "refactor/active-session-module",
+      "startedAt": "2026-06-22",
+      "roadmapIssue": "I-23",
+      "summary": "Proposal created: centralize active profile ID access behind an active-session module before future Supabase adapter substitution."
     }
   },
   "activeBranches": [],
