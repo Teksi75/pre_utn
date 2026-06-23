@@ -60,13 +60,13 @@ export function TheoryCard({ node }: TheoryCardProps) {
             <h3 className={`text-[var(--text-lg)] font-semibold ${conceptTitleClass(concept.id)}`}>
               <RichText text={concept.title} />
             </h3>
-            <div className="mt-3 text-sm text-brand-700 leading-[var(--leading-relaxed)]">
+            <div className="mt-2 text-sm text-brand-700 leading-[var(--leading-relaxed)]">
               {concept.bodyParagraphs && concept.bodyParagraphs.length > 0 ? (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {concept.bodyParagraphs.map((p, i) => (
-                    <p key={i}>
+                    <div key={i}>
                       <RichText text={p} />
-                    </p>
+                    </div>
                   ))}
                 </div>
               ) : (
