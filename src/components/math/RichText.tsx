@@ -10,16 +10,25 @@ interface RichTextProps {
   readonly className?: string;
 }
 
-function renderTextSegment(value: string, keyPrefix: string) {
-  const parts = value.split(/(\*\*[^*]+\*\*)/g).filter((part) => part.length > 0);
+interface BoldState {
+  active: boolean;
+}
 
-  return parts.map((part, index) => {
-    const key = `${keyPrefix}-${index}`;
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return <strong key={key}>{part.slice(2, -2)}</strong>;
+function renderTextSegment(value: string, keyPrefix: string, boldState: BoldState) {
+  const parts = value.split(/(\*\*)/g).filter((part) => part.length > 0);
+
+  return parts.flatMap((part, index) => {
+    if (part === "**") {
+      boldState.active = !boldState.active;
+      return [];
     }
 
-    return <Fragment key={key}>{part}</Fragment>;
+    const key = `${keyPrefix}-${index}`;
+    if (boldState.active) {
+      return [<strong key={key}>{part}</strong>];
+    }
+
+    return [<Fragment key={key}>{part}</Fragment>];
   });
 }
 
@@ -27,20 +36,29 @@ function renderTextSegment(value: string, keyPrefix: string) {
  * Renders text with math delimiters:
  * - `$...$` renders inline via KaTeX.
  * - `$$...$$` renders as display math via KaTeX.
- * - `**...**` renders bold text outside math delimiters.
+ * - `**...**` renders bold text, including when the bold span contains math.
  */
 export function RichText({ text, className }: RichTextProps) {
   const segments = parseRichTextSegments(text);
+  const boldState: BoldState = { active: false };
+
   const children = segments.flatMap((seg, i) => {
     if (seg.kind === "math") {
-      return seg.displayMode ? (
-        <BlockMath key={i} tex={seg.value} />
+      const key = `math-${i}`;
+      const math = seg.displayMode ? (
+        <BlockMath tex={seg.value} />
       ) : (
-        <InlineMath key={i} tex={seg.value} />
+        <InlineMath tex={seg.value} />
       );
+
+      if (boldState.active) {
+        return [<strong key={key}>{math}</strong>];
+      }
+
+      return [<Fragment key={key}>{math}</Fragment>];
     }
 
-    return renderTextSegment(seg.value, `text-${i}`);
+    return renderTextSegment(seg.value, `text-${i}`, boldState);
   });
 
   if (className) {
