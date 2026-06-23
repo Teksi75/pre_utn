@@ -55,18 +55,18 @@ export function TheoryCard({ node }: TheoryCardProps) {
         {node.concepts.map((concept) => (
           <section
             key={concept.id}
-            className={`rounded-[var(--radius-card)] border p-4 shadow-sm ${conceptCardClass(concept.id)}`}
+            className={`rounded-[var(--radius-card)] border p-5 shadow-sm ${conceptCardClass(concept.id)}`}
           >
             <h3 className={`text-[var(--text-lg)] font-semibold ${conceptTitleClass(concept.id)}`}>
               <RichText text={concept.title} />
             </h3>
-            <div className="mt-1 text-sm text-brand-700 leading-[var(--leading-relaxed)]">
+            <div className="mt-3 text-sm text-brand-700 leading-[var(--leading-relaxed)]">
               {concept.bodyParagraphs && concept.bodyParagraphs.length > 0 ? (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {concept.bodyParagraphs.map((p, i) => (
-                    <div key={i}>
+                    <p key={i}>
                       <RichText text={p} />
-                    </div>
+                    </p>
                   ))}
                 </div>
               ) : (
