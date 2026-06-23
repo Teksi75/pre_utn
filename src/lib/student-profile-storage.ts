@@ -105,6 +105,19 @@ export function createProfileAndActivate(
 }
 
 /**
+ * Check whether the profiles storage key exists in localStorage.
+ * Read-only — never throws, never creates profiles.
+ * Used by legacy migration to detect whether profiles.v1 was already persisted.
+ */
+export function hasProfilesStorage(): boolean {
+  try {
+    return localStorage.getItem(PROFILES_STORAGE_KEY) !== null;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Recover the active profile, or null if none exists or active id is dangling.
  */
 export function recoverActiveProfile(): StudentProfile | null {

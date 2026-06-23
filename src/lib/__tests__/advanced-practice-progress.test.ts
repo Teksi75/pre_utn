@@ -20,10 +20,10 @@ import {
   type ChallengeAttempt,
   type AdvancedPracticeProgress,
 } from "../advanced-practice-progress";
-import { getActiveStudentId } from "../student-profile-storage";
+import { getActiveProfileId } from "../active-session";
 
-vi.mock("../student-profile-storage", () => ({
-  getActiveStudentId: vi.fn(() => null),
+vi.mock("../active-session", () => ({
+  getActiveProfileId: vi.fn(() => null),
 }));
 
 // ---------------------------------------------------------------------------
@@ -78,7 +78,7 @@ beforeEach(() => {
   localStorageMock.clear();
   vi.restoreAllMocks();
   // Default: active student is "student-a" so existing tests keep working
-  vi.mocked(getActiveStudentId).mockReturnValue("student-a");
+  vi.mocked(getActiveProfileId).mockReturnValue("student-a");
 });
 
 // ---------------------------------------------------------------------------
@@ -357,7 +357,7 @@ describe("advanced-practice-progress localStorage adapter", () => {
 
   describe("student identity — addChallengeAttempt (tasks 1.1, 1.2)", () => {
     it("1.1 — persists with studentId === getActiveStudentId()", () => {
-      vi.mocked(getActiveStudentId).mockReturnValue("student-42");
+      vi.mocked(getActiveProfileId).mockReturnValue("student-42");
 
       const result = addChallengeAttempt(
         makeAttempt({ studentId: "student-42", exerciseId: "ex.u1.complejos.desafio-1" })
@@ -376,7 +376,7 @@ describe("advanced-practice-progress localStorage adapter", () => {
     });
 
     it("1.2 — no active profile → blocked; storage untouched", () => {
-      vi.mocked(getActiveStudentId).mockReturnValue(null);
+      vi.mocked(getActiveProfileId).mockReturnValue(null);
       localStorageMock.setItem(
         ADVANCED_PRACTICE_STORAGE_KEY,
         JSON.stringify({ challengeAttempts: [{ studentId: "student-a", exerciseId: "ex-1", skillId: "mat.u1.complejos", correct: true, answeredAt: "2025-01-01T00:00:00.000Z", timeMs: 1000, attemptIndex: 1 }], readinessBySkill: {} })
@@ -456,7 +456,7 @@ describe("advanced-practice-progress localStorage adapter", () => {
         ADVANCED_PRACTICE_STORAGE_KEY,
         JSON.stringify(mixedPayload)
       );
-      vi.mocked(getActiveStudentId).mockReturnValue("student-a");
+      vi.mocked(getActiveProfileId).mockReturnValue("student-a");
 
       const result = loadAdvancedProgress();
 
@@ -485,7 +485,7 @@ describe("advanced-practice-progress localStorage adapter", () => {
 
   describe("student identity — storage error (task 1.6)", () => {
     it("1.6 — setItem throws → blocked with storage-error; no partial write", () => {
-      vi.mocked(getActiveStudentId).mockReturnValue("student-a");
+      vi.mocked(getActiveProfileId).mockReturnValue("student-a");
       // Seed one existing attempt so we can detect partial writes
       localStorageMock.setItem(
         ADVANCED_PRACTICE_STORAGE_KEY,
@@ -520,7 +520,7 @@ describe("advanced-practice-progress localStorage adapter", () => {
 
   describe("student identity — idempotency (task 1.7)", () => {
     it("1.7a — re-loading after blocked write is no-op", () => {
-      vi.mocked(getActiveStudentId).mockReturnValue(null);
+      vi.mocked(getActiveProfileId).mockReturnValue(null);
 
       // Blocked write
       const writeResult = addChallengeAttempt(makeAttempt());
@@ -532,7 +532,7 @@ describe("advanced-practice-progress localStorage adapter", () => {
     });
 
     it("1.7b — after successful write, re-loading preserves stamped attempts verbatim", () => {
-      vi.mocked(getActiveStudentId).mockReturnValue("student-a");
+      vi.mocked(getActiveProfileId).mockReturnValue("student-a");
 
       addChallengeAttempt(
         makeAttempt({ studentId: "student-a", exerciseId: "ex-1", correct: true })
@@ -548,7 +548,7 @@ describe("advanced-practice-progress localStorage adapter", () => {
 
   describe("student identity — no active profile returns empty progress (task 1.4b)", () => {
     it("1.4b — loadAdvancedProgress with no active profile returns empty", () => {
-      vi.mocked(getActiveStudentId).mockReturnValue(null);
+      vi.mocked(getActiveProfileId).mockReturnValue(null);
       localStorageMock.setItem(
         ADVANCED_PRACTICE_STORAGE_KEY,
         JSON.stringify({
@@ -579,7 +579,7 @@ describe("advanced-practice-progress localStorage adapter", () => {
         readinessBySkill: { "mat.u1.valor_absoluto": 100 },
       };
       localStorageMock.setItem(ADVANCED_PRACTICE_STORAGE_KEY, JSON.stringify(payload));
-      vi.mocked(getActiveStudentId).mockReturnValue("student-a");
+      vi.mocked(getActiveProfileId).mockReturnValue("student-a");
 
       const result = loadAdvancedProgress();
 
@@ -596,7 +596,7 @@ describe("advanced-practice-progress localStorage adapter", () => {
         readinessBySkill: { "mat.u1.complejos": 100 },
       };
       localStorageMock.setItem(ADVANCED_PRACTICE_STORAGE_KEY, JSON.stringify(payload));
-      vi.mocked(getActiveStudentId).mockReturnValue("student-a");
+      vi.mocked(getActiveProfileId).mockReturnValue("student-a");
 
       const result = loadAdvancedProgress();
 
@@ -615,7 +615,7 @@ describe("advanced-practice-progress localStorage adapter", () => {
         readinessBySkill: { "mat.u1.complejos": 50 },
       };
       localStorageMock.setItem(ADVANCED_PRACTICE_STORAGE_KEY, JSON.stringify(payload));
-      vi.mocked(getActiveStudentId).mockReturnValue("student-a");
+      vi.mocked(getActiveProfileId).mockReturnValue("student-a");
 
       const result = loadAdvancedProgress();
 
@@ -632,7 +632,7 @@ describe("advanced-practice-progress localStorage adapter", () => {
         readinessBySkill: { "mat.u1.valor_absoluto": 100 },
       };
       localStorageMock.setItem(ADVANCED_PRACTICE_STORAGE_KEY, JSON.stringify(payload));
-      vi.mocked(getActiveStudentId).mockReturnValue("student-a");
+      vi.mocked(getActiveProfileId).mockReturnValue("student-a");
 
       // student-a adds a challenge attempt for a DIFFERENT skill
       const result = addChallengeAttempt(
@@ -665,7 +665,7 @@ describe("advanced-practice-progress localStorage adapter", () => {
         readinessBySkill: { "mat.u1.complejos": 50, "mat.u1.valor_absoluto": 100 },
       };
       localStorageMock.setItem(ADVANCED_PRACTICE_STORAGE_KEY, JSON.stringify(payload));
-      vi.mocked(getActiveStudentId).mockReturnValue("student-a");
+      vi.mocked(getActiveProfileId).mockReturnValue("student-a");
 
       // student-a adds another attempt for mat.u1.complejos
       const result = addChallengeAttempt(

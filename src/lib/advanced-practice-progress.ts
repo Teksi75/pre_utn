@@ -13,7 +13,7 @@
  */
 
 import type { SkillId } from "../domain/models/skill";
-import { getActiveStudentId } from "./student-profile-storage";
+import { getActiveProfileId } from "./active-session";
 
 /** Versioned localStorage key for advanced (challenge) practice progress. */
 export const ADVANCED_PRACTICE_STORAGE_KEY = "pre-utn.advanced-practice.v1";
@@ -173,7 +173,7 @@ function parseAdvancedProgress(raw: unknown): AdvancedPracticeProgress | null {
  */
 export function loadAdvancedProgress(): AdvancedPracticeProgress {
   try {
-    const activeStudentId = getActiveStudentId();
+    const activeStudentId = getActiveProfileId();
     if (!activeStudentId) return EMPTY_ADVANCED_PROGRESS;
 
     const raw = localStorage.getItem(ADVANCED_PRACTICE_STORAGE_KEY);
@@ -213,7 +213,7 @@ export function addChallengeAttempt(
   attempt: ChallengeAttemptInput
 ): { ok: true; value: AdvancedPracticeProgress } | { ok: false; reason: "missing-active-profile" | "storage-error" } {
   try {
-    const activeStudentId = getActiveStudentId();
+    const activeStudentId = getActiveProfileId();
     if (!activeStudentId) {
       return { ok: false, reason: "missing-active-profile" };
     }

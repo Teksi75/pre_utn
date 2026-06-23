@@ -12,6 +12,7 @@
  */
 
 import type { DiagnosticResult, StudyPlan } from "@/domain/diagnostic";
+import { getActiveProfileId } from "./active-session";
 
 /** Versioned localStorage key to avoid collisions across experiments. */
 export const DIAGNOSTIC_STORAGE_KEY = "pre-utn.diagnostic.v1";
@@ -40,17 +41,6 @@ interface StudyPlanMap {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function getActiveStudentIdInternal(): string | null {
-  try {
-    const profilesRaw = localStorage.getItem("pre-utn.profiles.v1");
-    if (!profilesRaw) return null;
-    const parsed = JSON.parse(profilesRaw) as { activeStudentId: string | null };
-    return parsed.activeStudentId ?? null;
-  } catch {
-    return null;
-  }
-}
 
 function isDiagnosticMap(raw: unknown): raw is DiagnosticMap {
   if (!raw || typeof raw !== "object") return false;
@@ -113,7 +103,7 @@ function persistStudyPlanMap(map: StudyPlanMap): void {
  * Returns blocked result if no active profile exists.
  */
 export function saveDiagnosticResult(result: DiagnosticResult): PersistenceResult<void> {
-  const activeId = getActiveStudentIdInternal();
+  const activeId = getActiveProfileId();
   if (activeId === null) {
     return { ok: false, reason: "missing-active-profile" };
   }
@@ -132,7 +122,7 @@ export function saveDiagnosticResult(result: DiagnosticResult): PersistenceResul
  * Returns null when nothing is stored, no active profile, or stored data is corrupt.
  */
 export function loadDiagnosticResult(): DiagnosticResult | null {
-  const activeId = getActiveStudentIdInternal();
+  const activeId = getActiveProfileId();
   if (activeId === null) return null;
 
   const map = loadDiagnosticMap();
@@ -148,7 +138,7 @@ export function loadDiagnosticResult(): DiagnosticResult | null {
  * Returns blocked result if no active profile exists.
  */
 export function saveStudyPlan(plan: StudyPlan): PersistenceResult<void> {
-  const activeId = getActiveStudentIdInternal();
+  const activeId = getActiveProfileId();
   if (activeId === null) {
     return { ok: false, reason: "missing-active-profile" };
   }
@@ -167,7 +157,7 @@ export function saveStudyPlan(plan: StudyPlan): PersistenceResult<void> {
  * Returns null when nothing is stored, no active profile, or stored data is corrupt.
  */
 export function loadStudyPlan(): StudyPlan | null {
-  const activeId = getActiveStudentIdInternal();
+  const activeId = getActiveProfileId();
   if (activeId === null) return null;
 
   const map = loadStudyPlanMap();
@@ -184,7 +174,7 @@ export function loadStudyPlan(): StudyPlan | null {
  */
 export function clearDiagnosticResult(): void {
   try {
-    const activeId = getActiveStudentIdInternal();
+    const activeId = getActiveProfileId();
     if (activeId === null) return;
     const map = loadDiagnosticMap();
     const { [activeId]: _removed, ...restStudents } = map.students;
@@ -201,7 +191,7 @@ export function clearDiagnosticResult(): void {
  */
 export function clearStudyPlan(): void {
   try {
-    const activeId = getActiveStudentIdInternal();
+    const activeId = getActiveProfileId();
     if (activeId === null) return;
     const map = loadStudyPlanMap();
     const { [activeId]: _removed, ...restStudents } = map.students;

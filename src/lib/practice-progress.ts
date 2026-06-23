@@ -21,6 +21,8 @@ import type { PracticeProgress, PracticeAttempt } from "../domain/progress/index
 import { computeAccuracy, computeTrend } from "../domain/progress/index";
 import { createProfile } from "../domain/student-profile/index";
 import type { DiagnosticResult, StudyPlan } from "../domain/diagnostic";
+import { getActiveProfileId } from "./active-session";
+import { hasProfilesStorage } from "./student-profile-storage";
 
 /** Versioned localStorage key to avoid collisions across experiments. */
 export const PRACTICE_STORAGE_KEY = "pre-utn.practice.v1";
@@ -101,8 +103,7 @@ function parseProgress(raw: unknown): PracticeProgress | null {
 function runLegacyMigration(): void {
   try {
     // Check if profiles already exist (migration already done)
-    const profilesRaw = localStorage.getItem("pre-utn.profiles.v1");
-    if (profilesRaw) {
+    if (hasProfilesStorage()) {
       // Already migrated — profiles.v1 exists
       // But we still need to migrate the practice data if it's still in legacy shape
       const practiceRaw = localStorage.getItem(PRACTICE_STORAGE_KEY);
@@ -213,7 +214,7 @@ function extractActiveProgress(map: PracticeProgressMap): PracticeProgress {
 export function addAttempt(attempt: PracticeAttempt): PersistenceResult<PracticeProgress> {
   // Load first — this triggers lazy migration if needed, creating active profile
   const current = loadProgress();
-  const activeId = getActiveStudentIdInternal();
+  const activeId = getActiveProfileId();
   if (activeId === null) {
     return { ok: false, reason: "missing-active-profile" };
   }
@@ -257,17 +258,6 @@ export function addAttempt(attempt: PracticeAttempt): PersistenceResult<Practice
   return { ok: true, value: updated };
 }
 
-function getActiveStudentIdInternal(): string | null {
-  try {
-    const profilesRaw = localStorage.getItem("pre-utn.profiles.v1");
-    if (!profilesRaw) return null;
-    const parsed = JSON.parse(profilesRaw) as { activeStudentId: string | null };
-    return parsed.activeStudentId ?? null;
-  } catch {
-    return null;
-  }
-}
-
 function persistActiveProgress(progress: PracticeProgress, activeId: string): void {
   try {
     const raw = localStorage.getItem(PRACTICE_STORAGE_KEY);
@@ -299,7 +289,7 @@ function persistActiveProgress(progress: PracticeProgress, activeId: string): vo
 export function saveProgress(progress: PracticeProgress): PersistenceResult<void> {
   // Ensure migration runs and an active profile exists (may create Alumno local)
   loadProgress();
-  const activeId = getActiveStudentIdInternal();
+  const activeId = getActiveProfileId();
   if (activeId === null) {
     return { ok: false, reason: "missing-active-profile" };
   }
