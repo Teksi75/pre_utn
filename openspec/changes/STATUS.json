@@ -594,6 +594,19 @@
       "issue": 48,
       "pr": 49,
       "summary": "Centralized active profile ID access behind getActiveProfileId() in active-session.ts. Replaced dispersed direct localStorage.getItem reads in practice-progress and diagnostic-storage adapters. Added hasProfilesStorage() helper for legacy migration containment. Boundary scan confirms 0 violations. 2503 tests pass, typecheck, build green."
+    },
+    "supabase-adapter-v0-fallback": {
+      "status": "in-progress",
+      "branch": "feat/supabase-adapter-v0-fallback-port",
+      "startedAt": "2026-06-22",
+      "roadmapIssue": "I-24",
+      "delivery": "auto-chain; stacked-to-main",
+      "pr1": {
+        "branch": "feat/supabase-adapter-v0-fallback-port",
+        "status": "in-progress",
+        "summary": "PR 1 — Port + local adapter + selector/fallback: PersistenceAdapter interface, localStorage wrapper, env-based selector with fallback, async-aware withLocalFallback, injectable ops, studentId enforcement, legacy migration passthrough."
+      },
+      "summary": "Introduce Supabase-backed persistence adapter v0 with localStorage fallback. Defines persistence port, implements local and remote adapters, keeps service role key out of client, and preserves getActiveProfileId() boundary."
     }
   },
   "activeBranches": [],
