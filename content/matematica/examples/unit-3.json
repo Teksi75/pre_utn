@@ -154,10 +154,10 @@
           }
         ]
       },
-      { "order": 4, "explanation": "Verificación con $x = 0$: $5 - 2 \\cdot 0 = 5 \\leq 11$ ✓." }
+      { "order": 4, "explanation": "Verificación con tres valores cerca del límite: $x = -3$ da $5 - 2 \\cdot (-3) = 11 \\leq 11$ ✓ (cierre en el límite); $x = -2$ da $5 - 2 \\cdot (-2) = 9 \\leq 11$ ✓ (apenas adentro); $x = -4$ da $5 - 2 \\cdot (-4) = 13$, que NO cumple $\\leq 11$ ✗ (apenas afuera)." }
     ],
     "finalAnswer": "x ≥ −3",
-    "pedagogicalNote": "PASO CRUCIAL: dividir por un número negativo invierte el sentido de la desigualdad. Decir $x \\leq -3$ sería el error más común; la verificación con un valor dentro del conjunto solución (como $x = 0$) lo desmiente inmediatamente.",
+    "pedagogicalNote": "PASO CRUCIAL: dividir por un número negativo invierte el sentido de la desigualdad. El error más común es olvidar el flip y obtener $x \\leq -3$; la verificación con $x = -4$ lo desmiente de inmediato, porque $5 - 2 \\cdot (-4) = 13$ NO satisface $\\leq 11$. La verificación con $x = -3$ confirma el cierre: $5 - 2 \\cdot (-3) = 11 \\leq 11$ ✓.",
     "canonicalTrace": [
       {
         "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
