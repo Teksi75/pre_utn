@@ -28,5 +28,5 @@
 ## Examples in Unit 3
 
 - `concept-inl-resolver`: `sign-chart` for `x - 2` plus `interval-set` for `(-∞, 2]`.
-- `example-inecuaciones-lineales-2`: keeps the `sign-chart` for `-2x - 6` and adds `interval-set` for `(-∞, -3)`.
+- `example-inecuaciones-lineales-2`: only `interval-set` for `[-3, +∞)` (after `f2f9215` removed the redundant sign-chart; the flip rule is exercised via the example's own $5 - 2x \leq 11$ algebra).
 - `example-inecuaciones-valor-absoluto-2`: keeps `distance-on-line` for `|x + 0,5| ≥ 1,5` and adds `interval-set` for `(-∞, -2] ∪ [1, +∞)`.
