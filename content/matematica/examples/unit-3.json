@@ -128,36 +128,36 @@
   {
     "id": "example-inecuaciones-lineales-2",
     "skillId": "mat.u3.inecuaciones_lineales",
-    "problem": "Resolver $-2x > 6$",
+    "problem": "Resolver la inecuación $5 - 2x \\leq 11$",
     "steps": [
-      { "order": 1, "explanation": "El coeficiente de $x$ es $-2$. Vamos a dividir por $-2$, que es NEGATIVO. Esto invierte el sentido de la desigualdad." },
-      { "order": 2, "explanation": "$x < 6 / (-2) = -3$." },
+      { "order": 1, "explanation": "Paso 1: pasar el $5$ al lado derecho (operación inversa). $-2x \\leq 11 - 5 = 6$." },
+      { "order": 2, "explanation": "Paso 2: dividir ambos lados por $-2$ (NEGATIVO, esto invierte el sentido). $x \\geq 6 / (-2) = -3$." },
       {
         "order": 3,
-        "explanation": "Solución: $(-\\infty, -3)$ o $x < -3$.",
+        "explanation": "Solución: $[-3, +\\infty)$ o equivalentemente $x \\geq -3$.",
         "visualExamples": [
           {
-            "id": "vis-ex-inl-flip-intervalo-set",
+            "id": "vis-ex-inl-2-flip-cerrado-intervalo",
             "kind": "interval-set",
-            "title": "Solución de -2x > 6",
-            "ariaLabel": "Conjunto solución de menos 2x mayor que 6: el intervalo menos infinito coma menos 3 abierto",
-            "description": "La solución x < -3 se representa como el intervalo (-∞, -3): punto abierto en -3 y flecha hacia la izquierda.",
-            "notation": "(-∞, -3)",
+            "title": "Solución de 5 - 2x ≤ 11",
+            "ariaLabel": "Conjunto solución de 5 menos 2x menor o igual que 11: el intervalo menos 3 coma más infinito cerrado en menos 3",
+            "description": "La solución x ≥ -3 se representa como el intervalo [-3, +∞): punto cerrado en -3 y flecha hacia la derecha.",
+            "notation": "[-3, +∞)",
             "intervals": [
               {
-                "lower": { "kind": "infinity", "direction": "negative" },
-                "upper": { "kind": "finite", "value": -3 },
-                "lowerInclusion": "open",
+                "lower": { "kind": "finite", "value": -3 },
+                "upper": { "kind": "infinity", "direction": "positive" },
+                "lowerInclusion": "closed",
                 "upperInclusion": "open"
               }
             ]
           }
         ]
       },
-      { "order": 4, "explanation": "Verificación con $x = -4$: $-2 \\cdot (-4) = 8 > 6$ ✓. ($-4$ SÍ es solución, lo que confirma que el sentido correcto es $<$.)" }
+      { "order": 4, "explanation": "Verificación con $x = 0$: $5 - 2 \\cdot 0 = 5 \\leq 11$ ✓." }
     ],
-    "finalAnswer": "x < −3",
-    "pedagogicalNote": "PASO CRUCIAL: dividir por un número negativo invierte el sentido de la desigualdad. Decir $x > -3$ sería el error más común y la verificación lo desmiente inmediatamente.",
+    "finalAnswer": "x ≥ −3",
+    "pedagogicalNote": "PASO CRUCIAL: dividir por un número negativo invierte el sentido de la desigualdad. Decir $x \\leq -3$ sería el error más común; la verificación con un valor dentro del conjunto solución (como $x = 0$) lo desmiente inmediatamente.",
     "canonicalTrace": [
       {
         "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
