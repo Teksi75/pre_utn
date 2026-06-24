@@ -18,6 +18,12 @@ import { isPersistenceAdapter } from "../persistence/port";
 import type { PersistenceAdapter } from "../persistence/port";
 import { PROFILES_STORAGE_KEY } from "../student-profile-storage";
 
+/** Assert that a MaybePromise result is sync (no adapter configured) and return it. */
+function asSync<T>(value: T | Promise<T>): T {
+  expect(value).not.toBeInstanceOf(Promise);
+  return value as T;
+}
+
 // ---------------------------------------------------------------------------
 // localStorage mock (same pattern as existing tests)
 // ---------------------------------------------------------------------------
@@ -411,6 +417,170 @@ describe("selectPersistenceAdapter", () => {
     expect(resolved.ok).toBe(true);
   });
 
+  // --- Resolved-failure fallback tests ---
+  // BLOCKER FIX: withLocalFallback must detect resolved { ok: false } results
+  // from write operations and fall back to local adapter.
+
+  it("falls back to local when remote saveProgress resolves with ok:false", async () => {
+    setActiveProfile("local-student-a");
+
+    // Remote adapter that resolves (not throws) with ok:false — simulates
+    // a real Supabase save failure that returns a result instead of throwing.
+    const failingAdapter: PersistenceAdapter = {
+      ...makeRemoteAdapter(),
+      saveProgress: () => ({ ok: false as const, reason: "missing-active-profile" as const }),
+    };
+
+    const adapter = selectPersistenceAdapter({
+      env: { url: "https://test.supabase.co", publishableKey: "test-key" },
+      hasRemoteSession: true,
+      remoteAdapter: failingAdapter,
+    });
+
+    const progress = {
+      attempts: [],
+      accuracyBySkill: {},
+      trendBySkill: {},
+      lastPracticedBySkill: {},
+      diagnosticResult: null,
+      studyPlan: null,
+    };
+    const result = await adapter.saveProgress("local-student-a", progress);
+    // Must fall back to local — which succeeds (local studentId matches)
+    expect(result.ok).toBe(true);
+  });
+
+  it("falls back to local when remote saveProfiles resolves with ok:false", async () => {
+    setActiveProfile("local-student-a");
+
+    const failingAdapter: PersistenceAdapter = {
+      ...makeRemoteAdapter(),
+      saveProfiles: () => ({ ok: false as const, reason: "storage-unavailable" as const }),
+    };
+
+    const adapter = selectPersistenceAdapter({
+      env: { url: "https://test.supabase.co", publishableKey: "test-key" },
+      hasRemoteSession: true,
+      remoteAdapter: failingAdapter,
+    });
+
+    const result = await adapter.saveProfiles({
+      profiles: [],
+      activeStudentId: null,
+    });
+    // Must fall back to local — which succeeds
+    expect(result.ok).toBe(true);
+  });
+
+  it("falls back to local when remote saveDiagnosticResult resolves with ok:false", async () => {
+    setActiveProfile("local-student-a");
+
+    const failingAdapter: PersistenceAdapter = {
+      ...makeRemoteAdapter(),
+      saveDiagnosticResult: () => ({ ok: false as const, reason: "missing-active-profile" as const }),
+    };
+
+    const adapter = selectPersistenceAdapter({
+      env: { url: "https://test.supabase.co", publishableKey: "test-key" },
+      hasRemoteSession: true,
+      remoteAdapter: failingAdapter,
+    });
+
+    const result = await adapter.saveDiagnosticResult("local-student-a", {
+      completedAt: "2025-01-01T00:00:00.000Z",
+      estimates: [],
+      suggestions: [],
+      version: 1,
+    });
+    // Must fall back to local — which succeeds
+    expect(result.ok).toBe(true);
+  });
+
+  it("falls back to local when remote saveStudyPlan resolves with ok:false", async () => {
+    setActiveProfile("local-student-a");
+
+    const failingAdapter: PersistenceAdapter = {
+      ...makeRemoteAdapter(),
+      saveStudyPlan: () => ({ ok: false as const, reason: "missing-active-profile" as const }),
+    };
+
+    const adapter = selectPersistenceAdapter({
+      env: { url: "https://test.supabase.co", publishableKey: "test-key" },
+      hasRemoteSession: true,
+      remoteAdapter: failingAdapter,
+    });
+
+    const result = await adapter.saveStudyPlan("local-student-a", {
+      createdAt: "2025-01-01T00:00:00.000Z",
+      diagnosticResult: {
+        completedAt: "2025-01-01T00:00:00.000Z",
+        estimates: [],
+        suggestions: [],
+        version: 1,
+      },
+      skillPriorities: [],
+    });
+    // Must fall back to local — which succeeds
+    expect(result.ok).toBe(true);
+  });
+
+  it("does NOT fall back when remote saveProgress resolves with ok:true", async () => {
+    setActiveProfile("local-student-a");
+
+    let remoteCalled = false;
+    const successAdapter: PersistenceAdapter = {
+      ...makeRemoteAdapter(),
+      saveProgress: () => {
+        remoteCalled = true;
+        return { ok: true as const, value: undefined as void };
+      },
+    };
+
+    const adapter = selectPersistenceAdapter({
+      env: { url: "https://test.supabase.co", publishableKey: "test-key" },
+      hasRemoteSession: true,
+      remoteAdapter: successAdapter,
+    });
+
+    const result = await adapter.saveProgress("local-student-a", {
+      attempts: [],
+      accuracyBySkill: {},
+      trendBySkill: {},
+      lastPracticedBySkill: {},
+      diagnosticResult: null,
+      studyPlan: null,
+    });
+    // Remote succeeded — should use remote result, not fall back
+    expect(remoteCalled).toBe(true);
+    expect(result.ok).toBe(true);
+  });
+
+  it("falls back to local when remote saveProgress async resolves with ok:false", async () => {
+    setActiveProfile("local-student-a");
+
+    const asyncFailingAdapter: PersistenceAdapter = {
+      ...makeRemoteAdapter(),
+      saveProgress: () => Promise.resolve({ ok: false as const, reason: "missing-active-profile" as const }),
+    };
+
+    const adapter = selectPersistenceAdapter({
+      env: { url: "https://test.supabase.co", publishableKey: "test-key" },
+      hasRemoteSession: true,
+      remoteAdapter: asyncFailingAdapter,
+    });
+
+    const result = await adapter.saveProgress("local-student-a", {
+      attempts: [],
+      accuracyBySkill: {},
+      trendBySkill: {},
+      lastPracticedBySkill: {},
+      diagnosticResult: null,
+      studyPlan: null,
+    });
+    // Async resolved { ok: false } — must fall back to local
+    expect(result.ok).toBe(true);
+  });
+
   // --- studentId enforcement tests ---
   // Note: StudentId enforcement is the LOCAL adapter's responsibility.
   // When selector returns a fallback-wrapped remote adapter, the remote
@@ -460,6 +630,90 @@ describe("selectPersistenceAdapter", () => {
 // ---------------------------------------------------------------------------
 // Local adapter — legacy migration path
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Dangling activeStudentId — boundary gap
+// ---------------------------------------------------------------------------
+
+describe("dangling activeStudentId detection", () => {
+  it("returns null when activeStudentId does not match any profile", async () => {
+    // Set up profiles with student A and B, but activeStudentId = student-c
+    localStorageMock.setItem(
+      "pre-utn.profiles.v1",
+      JSON.stringify({
+        profiles: [
+          {
+            studentId: "student-a",
+            displayName: "Student A",
+            createdAt: "2025-01-01T00:00:00.000Z",
+            lastActiveAt: "2025-01-01T00:00:00.000Z",
+          },
+          {
+            studentId: "student-b",
+            displayName: "Student B",
+            createdAt: "2025-01-01T00:00:00.000Z",
+            lastActiveAt: "2025-01-01T00:00:00.000Z",
+          },
+        ],
+        activeStudentId: "student-c", // dangling — not in profiles
+      })
+    );
+
+    const { getActiveStudentId } = await import("../student-profile-storage");
+
+    // Must fail closed — return null instead of dangling ID
+    const result = getActiveStudentId();
+    expect(result).toBeNull();
+  });
+
+  it("returns valid studentId when activeStudentId matches a profile", async () => {
+    localStorageMock.setItem(
+      "pre-utn.profiles.v1",
+      JSON.stringify({
+        profiles: [
+          {
+            studentId: "student-a",
+            displayName: "Student A",
+            createdAt: "2025-01-01T00:00:00.000Z",
+            lastActiveAt: "2025-01-01T00:00:00.000Z",
+          },
+        ],
+        activeStudentId: "student-a", // valid — exists in profiles
+      })
+    );
+
+    const { getActiveStudentId } = await import("../student-profile-storage");
+
+    const result = getActiveStudentId();
+    expect(result).toBe("student-a");
+  });
+});
+
+describe("malformed Supabase env handling", () => {
+  it("returns null when Supabase URL is malformed (not a valid URL)", async () => {
+    // Reset module cache so the singleton doesn't carry over
+    vi.resetModules();
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "not-a-valid-url");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "test-key");
+
+    const { createBrowserClient } = await import("../supabase/browser");
+
+    // Must not crash — returns null, signaling local fallback
+    const client = createBrowserClient();
+    expect(client).toBeNull();
+  });
+
+  it("returns null when Supabase key is empty string", async () => {
+    vi.resetModules();
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://test.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "");
+
+    const { createBrowserClient } = await import("../supabase/browser");
+
+    const client = createBrowserClient();
+    expect(client).toBeNull();
+  });
+});
 
 describe("local adapter legacy migration path", () => {
   it("migrates legacy flat data when no active profile exists", async () => {
@@ -663,5 +917,730 @@ describe("createLocalStorageAdapter with injectable ops", () => {
     await adapter.saveStudyPlan("injected-student", plan);
     expect(customSaveStudyPlan).toHaveBeenCalledOnce();
     expect(customSaveStudyPlan).toHaveBeenCalledWith(plan);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// BLOCKER 1: Production path wired through selector
+// Public functions (loadProfiles, saveProfiles, etc.) must delegate through
+// the configured adapter, not always use raw localStorage directly.
+// ---------------------------------------------------------------------------
+
+describe("BLOCKER: public functions delegate through configured adapter", () => {
+  it("loadProfiles returns remote adapter data when adapter is configured", async () => {
+    const { configurePersistenceAdapter, resetPersistenceAdapter } = await import(
+      "../persistence/adapter-config"
+    );
+    const { loadProfiles } = await import("../student-profile-storage");
+
+    // localStorage has "local-student"
+    setActiveProfile("local-student");
+
+    // Configure a remote adapter that returns "remote-student"
+    const remoteAdapter = {
+      loadProfiles: () => ({
+        profiles: [
+          {
+            studentId: "remote-student",
+            displayName: "Remote Student",
+            createdAt: "2025-01-01T00:00:00.000Z",
+            lastActiveAt: "2025-01-01T00:00:00.000Z",
+          },
+        ],
+        activeStudentId: "remote-student",
+      }),
+      saveProfiles: (state: never) => ({ ok: true, state }),
+      loadProgress: () => ({
+        attempts: [],
+        accuracyBySkill: {},
+        trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      }),
+      saveProgress: () => ({ ok: true, value: undefined }),
+      loadDiagnosticResult: () => null,
+      saveDiagnosticResult: () => ({ ok: true, value: undefined }),
+      loadStudyPlan: () => null,
+      saveStudyPlan: () => ({ ok: true, value: undefined }),
+    };
+    configurePersistenceAdapter(remoteAdapter as never);
+
+    const result = asSync(loadProfiles());
+    // If wired: returns remote data ("remote-student")
+    // If NOT wired: returns local data ("local-student")
+    expect(result.profiles).toHaveLength(1);
+    expect(result.profiles[0].studentId).toBe("remote-student");
+
+    resetPersistenceAdapter();
+  });
+
+  it("loadProfiles falls back to raw localStorage when no adapter configured", async () => {
+    const { loadProfiles } = await import("../student-profile-storage");
+
+    setActiveProfile("local-student");
+
+    const result = asSync(loadProfiles());
+    expect(result.profiles).toHaveLength(1);
+    expect(result.profiles[0].studentId).toBe("local-student");
+  });
+
+  it("saveProfiles delegates through configured adapter", async () => {
+    const { configurePersistenceAdapter, resetPersistenceAdapter } = await import(
+      "../persistence/adapter-config"
+    );
+    const { saveProfiles } = await import("../student-profile-storage");
+
+    let remoteCalled = false;
+    const remoteAdapter = {
+      loadProfiles: () => ({ profiles: [], activeStudentId: null }),
+      saveProfiles: (state: never) => {
+        remoteCalled = true;
+        return { ok: true, state };
+      },
+      loadProgress: () => ({
+        attempts: [],
+        accuracyBySkill: {},
+        trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      }),
+      saveProgress: () => ({ ok: true, value: undefined }),
+      loadDiagnosticResult: () => null,
+      saveDiagnosticResult: () => ({ ok: true, value: undefined }),
+      loadStudyPlan: () => null,
+      saveStudyPlan: () => ({ ok: true, value: undefined }),
+    };
+    configurePersistenceAdapter(remoteAdapter as never);
+
+    const state = { profiles: [], activeStudentId: null };
+    const result = asSync(saveProfiles(state));
+    // If wired: remote adapter is called
+    // If NOT wired: remoteCalled stays false
+    expect(remoteCalled).toBe(true);
+    expect(result.ok).toBe(true);
+
+    resetPersistenceAdapter();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// BLOCKER 2: No-session reads fall back to local
+// Remote adapter returning no-session results for reads must trigger
+// local fallback, not hide local data behind empty results.
+// ---------------------------------------------------------------------------
+
+describe("BLOCKER: no-session reads fall back to local", () => {
+  // Helper: create a mock Supabase client with no auth session
+  function createNoSessionMockClient() {
+    let mockData: unknown = null;
+    let mockListData: unknown[] | null = null;
+
+    const chain = {
+      select: vi.fn(() => chain),
+      insert: vi.fn(() => chain),
+      update: vi.fn(() => chain),
+      upsert: vi.fn(() => chain),
+      eq: vi.fn(() => chain),
+      single: vi.fn(async () => ({ data: mockData, error: null })),
+      maybeSingle: vi.fn(async () => ({ data: mockData, error: null })),
+      then: (resolve: (value: unknown) => void) => {
+        if (mockListData !== null) return resolve({ data: mockListData, error: null });
+        return resolve({ data: mockData, error: null });
+      },
+    };
+
+    const from = vi.fn(() => chain);
+    const auth = {
+      getSession: vi.fn(async () => ({
+        data: { session: null }, // No session
+        error: null,
+      })),
+    };
+
+    return {
+      client: { from, auth } as unknown,
+      setMockData: (data: unknown) => { mockData = data; mockListData = null; },
+      setMockListData: (data: unknown[]) => { mockListData = data; mockData = null; },
+    };
+  }
+
+  it("falls back to local when remote loadProfiles has no session", async () => {
+    setActiveProfile("local-student");
+
+    const { createSupabaseAdapter } = await import("../persistence/supabase-adapter");
+    const mock = createNoSessionMockClient();
+    const remoteAdapter = createSupabaseAdapter(
+      mock.client as Parameters<typeof createSupabaseAdapter>[0]
+    );
+
+    const adapter = selectPersistenceAdapter({
+      env: { url: "https://test.supabase.co", publishableKey: "test-key" },
+      hasRemoteSession: true,
+      remoteAdapter,
+    });
+
+    const result = await adapter.loadProfiles();
+    // Must fall back to local — which has "local-student"
+    expect(result.profiles).toHaveLength(1);
+    expect(result.profiles[0].studentId).toBe("local-student");
+  });
+
+  it("falls back to local when remote loadProgress has no session", async () => {
+    setActiveProfile("local-student");
+
+    // Set up local progress data
+    localStorageMock.setItem(
+      "pre-utn.practice.v1",
+      JSON.stringify({
+        students: {
+          "local-student": {
+            attempts: [{ exerciseId: "ex-1", skillId: "mat.u1.fracciones", correct: true, answeredAt: "2025-01-01T00:00:00.000Z", timeMs: 1000, attemptIndex: 1, studentId: "local-student" }],
+            accuracyBySkill: { "mat.u1.fracciones": 1.0 },
+            trendBySkill: {},
+            lastPracticedBySkill: {},
+            diagnosticResult: null,
+            studyPlan: null,
+          },
+        },
+        activeStudentId: "local-student",
+      })
+    );
+
+    const { createSupabaseAdapter } = await import("../persistence/supabase-adapter");
+    const mock = createNoSessionMockClient();
+    mock.setMockData(null);
+    const remoteAdapter = createSupabaseAdapter(
+      mock.client as Parameters<typeof createSupabaseAdapter>[0]
+    );
+
+    const adapter = selectPersistenceAdapter({
+      env: { url: "https://test.supabase.co", publishableKey: "test-key" },
+      hasRemoteSession: true,
+      remoteAdapter,
+    });
+
+    const result = await adapter.loadProgress("local-student");
+    // Must fall back to local — which has 1 attempt
+    expect(result.attempts).toHaveLength(1);
+    expect(result.accuracyBySkill).toEqual({ "mat.u1.fracciones": 1.0 });
+  });
+
+  it("falls back to local when remote loadDiagnosticResult has no session", async () => {
+    setActiveProfile("local-student");
+
+    // Set up local diagnostic data
+    localStorageMock.setItem(
+      "pre-utn.diagnostic.v1",
+      JSON.stringify({
+        students: {
+          "local-student": {
+            completedAt: "2025-01-01T00:00:00.000Z",
+            estimates: [],
+            suggestions: [],
+            version: 1,
+          },
+        },
+        activeStudentId: "local-student",
+      })
+    );
+
+    const { createSupabaseAdapter } = await import("../persistence/supabase-adapter");
+    const mock = createNoSessionMockClient();
+    mock.setMockData(null);
+    const remoteAdapter = createSupabaseAdapter(
+      mock.client as Parameters<typeof createSupabaseAdapter>[0]
+    );
+
+    const adapter = selectPersistenceAdapter({
+      env: { url: "https://test.supabase.co", publishableKey: "test-key" },
+      hasRemoteSession: true,
+      remoteAdapter,
+    });
+
+    const result = await adapter.loadDiagnosticResult("local-student");
+    // Must fall back to local — which has a diagnostic result
+    expect(result).not.toBeNull();
+    expect(result!.version).toBe(1);
+  });
+
+  it("falls back to local when remote loadStudyPlan has no session", async () => {
+    setActiveProfile("local-student");
+
+    // Set up local study plan data
+    localStorageMock.setItem(
+      "pre-utn.study-plan.v1",
+      JSON.stringify({
+        students: {
+          "local-student": {
+            createdAt: "2025-01-01T00:00:00.000Z",
+            diagnosticResult: null,
+            skillPriorities: [{ skillId: "mat.u1.fracciones", priority: 1, reason: "diagnostic-weak", weakConcepts: [] }],
+          },
+        },
+        activeStudentId: "local-student",
+      })
+    );
+
+    const { createSupabaseAdapter } = await import("../persistence/supabase-adapter");
+    const mock = createNoSessionMockClient();
+    mock.setMockData(null);
+    const remoteAdapter = createSupabaseAdapter(
+      mock.client as Parameters<typeof createSupabaseAdapter>[0]
+    );
+
+    const adapter = selectPersistenceAdapter({
+      env: { url: "https://test.supabase.co", publishableKey: "test-key" },
+      hasRemoteSession: true,
+      remoteAdapter,
+    });
+
+    const result = await adapter.loadStudyPlan("local-student");
+    // Must fall back to local — which has a study plan
+    expect(result).not.toBeNull();
+    expect(result!.skillPriorities).toHaveLength(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// CRITICAL: Observability hook for fallback activation
+// ---------------------------------------------------------------------------
+
+describe("observability: onFallback callback", () => {
+  it("calls onFallback when remote throws and falls back to local", async () => {
+    setActiveProfile("local-student-a");
+
+    const fallbackCalls: Array<{ method: string; error: unknown }> = [];
+    const throwingAdapter: PersistenceAdapter = {
+      ...makeRemoteAdapter(),
+      loadProfiles: () => {
+        throw new Error("Supabase unreachable");
+      },
+    };
+
+    const adapter = selectPersistenceAdapter({
+      env: { url: "https://test.supabase.co", publishableKey: "test-key" },
+      hasRemoteSession: true,
+      remoteAdapter: throwingAdapter,
+      onFallback: (method, error) => {
+        fallbackCalls.push({ method, error });
+      },
+    });
+
+    await adapter.loadProfiles();
+    expect(fallbackCalls).toHaveLength(1);
+    expect(fallbackCalls[0].method).toBe("loadProfiles");
+  });
+
+  it("calls onFallback when remote resolves with ok:false and falls back", async () => {
+    setActiveProfile("local-student-a");
+
+    const fallbackCalls: Array<{ method: string; error: unknown }> = [];
+    const failingAdapter: PersistenceAdapter = {
+      ...makeRemoteAdapter(),
+      saveProgress: () => ({ ok: false as const, reason: "missing-active-profile" as const }),
+    };
+
+    const adapter = selectPersistenceAdapter({
+      env: { url: "https://test.supabase.co", publishableKey: "test-key" },
+      hasRemoteSession: true,
+      remoteAdapter: failingAdapter,
+      onFallback: (method, error) => {
+        fallbackCalls.push({ method, error });
+      },
+    });
+
+    await adapter.saveProgress("local-student-a", {
+      attempts: [],
+      accuracyBySkill: {},
+      trendBySkill: {},
+      lastPracticedBySkill: {},
+      diagnosticResult: null,
+      studyPlan: null,
+    });
+    expect(fallbackCalls).toHaveLength(1);
+    expect(fallbackCalls[0].method).toBe("saveProgress");
+  });
+
+  it("does NOT call onFallback when remote succeeds", async () => {
+    setActiveProfile("local-student-a");
+
+    const fallbackCalls: Array<{ method: string; error: unknown }> = [];
+    const adapter = selectPersistenceAdapter({
+      env: { url: "https://test.supabase.co", publishableKey: "test-key" },
+      hasRemoteSession: true,
+      remoteAdapter: makeRemoteAdapter(),
+      onFallback: (method, error) => {
+        fallbackCalls.push({ method, error });
+      },
+    });
+
+    await adapter.loadProfiles();
+    expect(fallbackCalls).toHaveLength(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// BLOCKER 1: Production initialization — initializePersistence()
+// Tests that the production init function correctly wires the adapter
+// based on real env vars and Supabase Auth session.
+// ---------------------------------------------------------------------------
+
+describe("BLOCKER 1: initializePersistence() production wiring", () => {
+  it("configures adapter when env vars present AND Supabase session exists", async () => {
+    vi.resetModules();
+
+    // Mock env vars present
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://test.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "test-publishable-key");
+
+    // Mock Supabase client with active session
+    const mockClient = {
+      auth: {
+        getSession: vi.fn(async () => ({
+          data: { session: { user: { id: "auth-user-1" } } },
+          error: null,
+        })),
+      },
+      from: vi.fn(() => ({
+        select: vi.fn(() => ({
+          eq: vi.fn(() => ({
+            maybeSingle: vi.fn(async () => ({ data: null, error: null })),
+          })),
+        })),
+      })),
+    };
+
+    // Mock createBrowserClient to return our mock client
+    vi.doMock("../supabase/browser", () => ({
+      createBrowserClient: () => mockClient,
+    }));
+
+    setActiveProfile("local-student");
+
+    const { initializePersistence, getConfiguredAdapter, resetPersistenceAdapter } =
+      await import("../persistence/adapter-config");
+
+    await initializePersistence();
+
+    // After init with env + session, adapter MUST be configured
+    const adapter = getConfiguredAdapter();
+    expect(adapter).not.toBeNull();
+
+    resetPersistenceAdapter();
+    vi.doUnmock("../supabase/browser");
+  });
+
+  it("leaves adapter null when Supabase env vars are missing", async () => {
+    vi.resetModules();
+
+    // No env vars
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "");
+
+    const { initializePersistence, getConfiguredAdapter, resetPersistenceAdapter } =
+      await import("../persistence/adapter-config");
+
+    await initializePersistence();
+
+    // Without env vars, adapter MUST remain null (local fallback)
+    const adapter = getConfiguredAdapter();
+    expect(adapter).toBeNull();
+
+    resetPersistenceAdapter();
+  });
+
+  it("leaves adapter null when no Supabase Auth session exists", async () => {
+    vi.resetModules();
+
+    // Env vars present
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://test.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "test-publishable-key");
+
+    // Mock Supabase client with NO session
+    const mockClient = {
+      auth: {
+        getSession: vi.fn(async () => ({
+          data: { session: null },
+          error: null,
+        })),
+      },
+    };
+
+    vi.doMock("../supabase/browser", () => ({
+      createBrowserClient: () => mockClient,
+    }));
+
+    setActiveProfile("local-student");
+
+    const { initializePersistence, getConfiguredAdapter, resetPersistenceAdapter } =
+      await import("../persistence/adapter-config");
+
+    await initializePersistence();
+
+    // Without session, adapter MUST remain null (local fallback)
+    const adapter = getConfiguredAdapter();
+    expect(adapter).toBeNull();
+
+    resetPersistenceAdapter();
+    vi.doUnmock("../supabase/browser");
+  });
+
+  it("leaves adapter null when createBrowserClient returns null (malformed env)", async () => {
+    vi.resetModules();
+
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "not-a-valid-url");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "test-key");
+
+    // createBrowserClient returns null for malformed URL
+    vi.doMock("../supabase/browser", () => ({
+      createBrowserClient: () => null,
+    }));
+
+    const { initializePersistence, getConfiguredAdapter, resetPersistenceAdapter } =
+      await import("../persistence/adapter-config");
+
+    await initializePersistence();
+
+    const adapter = getConfiguredAdapter();
+    expect(adapter).toBeNull();
+
+    resetPersistenceAdapter();
+    vi.doUnmock("../supabase/browser");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// BLOCKER 2: Async-aware public APIs
+// Public storage functions must NOT discard Promise results from the adapter.
+// When a remote adapter is configured, async results must be propagated.
+// ---------------------------------------------------------------------------
+
+describe("BLOCKER 2: public functions propagate async adapter results", () => {
+  it("loadProfiles returns Promise when adapter returns async", async () => {
+    const { configurePersistenceAdapter, resetPersistenceAdapter } = await import(
+      "../persistence/adapter-config"
+    );
+    const { loadProfiles } = await import("../student-profile-storage");
+
+    setActiveProfile("local-student");
+
+    const asyncAdapter = {
+      loadProfiles: () => Promise.resolve({
+        profiles: [{
+          studentId: "remote-student",
+          displayName: "Remote",
+          createdAt: "2025-01-01T00:00:00.000Z",
+          lastActiveAt: "2025-01-01T00:00:00.000Z",
+        }],
+        activeStudentId: "remote-student",
+      }),
+      saveProfiles: () => ({ ok: true as const, state: { profiles: [], activeStudentId: null } }),
+      loadProgress: () => Promise.resolve({
+        attempts: [],
+        accuracyBySkill: {},
+        trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      }),
+      saveProgress: () => Promise.resolve({ ok: true as const, value: undefined as void }),
+      loadDiagnosticResult: () => Promise.resolve(null),
+      saveDiagnosticResult: () => Promise.resolve({ ok: true as const, value: undefined as void }),
+      loadStudyPlan: () => Promise.resolve(null),
+      saveStudyPlan: () => Promise.resolve({ ok: true as const, value: undefined as void }),
+    };
+    configurePersistenceAdapter(asyncAdapter as never);
+
+    const result = loadProfiles();
+    // MUST return the Promise, not discard it
+    expect(result).toBeInstanceOf(Promise);
+    const resolved = await (result as Promise<unknown>);
+    expect((resolved as { profiles: unknown[] }).profiles).toHaveLength(1);
+    expect((resolved as { profiles: Array<{ studentId: string }> }).profiles[0].studentId).toBe("remote-student");
+
+    resetPersistenceAdapter();
+  });
+
+  it("saveProfiles returns Promise when adapter returns async", async () => {
+    const { configurePersistenceAdapter, resetPersistenceAdapter } = await import(
+      "../persistence/adapter-config"
+    );
+    const { saveProfiles } = await import("../student-profile-storage");
+
+    setActiveProfile("local-student");
+
+    const asyncAdapter = {
+      loadProfiles: () => ({ profiles: [], activeStudentId: null }),
+      saveProfiles: () => Promise.resolve({ ok: true as const, state: { profiles: [], activeStudentId: null } }),
+      loadProgress: () => ({ attempts: [], accuracyBySkill: {}, trendBySkill: {}, lastPracticedBySkill: {}, diagnosticResult: null, studyPlan: null }),
+      saveProgress: () => ({ ok: true as const, value: undefined as void }),
+      loadDiagnosticResult: () => null,
+      saveDiagnosticResult: () => ({ ok: true as const, value: undefined as void }),
+      loadStudyPlan: () => null,
+      saveStudyPlan: () => ({ ok: true as const, value: undefined as void }),
+    };
+    configurePersistenceAdapter(asyncAdapter as never);
+
+    const result = saveProfiles({ profiles: [], activeStudentId: null });
+    // MUST return the Promise, not discard it
+    expect(result).toBeInstanceOf(Promise);
+    const resolved = await (result as Promise<unknown>);
+    expect((resolved as { ok: boolean }).ok).toBe(true);
+
+    resetPersistenceAdapter();
+  });
+
+  it("loadProgress returns Promise when adapter returns async", async () => {
+    const { configurePersistenceAdapter, resetPersistenceAdapter } = await import(
+      "../persistence/adapter-config"
+    );
+    const { loadProgress } = await import("../practice-progress");
+
+    setActiveProfile("local-student");
+
+    const asyncAdapter = {
+      loadProfiles: () => ({ profiles: [], activeStudentId: null }),
+      saveProfiles: () => ({ ok: true as const, state: { profiles: [], activeStudentId: null } }),
+      loadProgress: () => Promise.resolve({
+        attempts: [{ exerciseId: "ex-remote", skillId: "mat.u1.fracciones", correct: true, answeredAt: "2025-01-01T00:00:00.000Z", timeMs: 1000, attemptIndex: 1, studentId: "local-student" }],
+        accuracyBySkill: { "mat.u1.fracciones": 1.0 },
+        trendBySkill: {},
+        lastPracticedBySkill: {},
+        diagnosticResult: null,
+        studyPlan: null,
+      }),
+      saveProgress: () => ({ ok: true as const, value: undefined as void }),
+      loadDiagnosticResult: () => null,
+      saveDiagnosticResult: () => ({ ok: true as const, value: undefined as void }),
+      loadStudyPlan: () => null,
+      saveStudyPlan: () => ({ ok: true as const, value: undefined as void }),
+    };
+    configurePersistenceAdapter(asyncAdapter as never);
+
+    const result = loadProgress();
+    // MUST return the Promise, not discard it
+    expect(result).toBeInstanceOf(Promise);
+    const resolved = await (result as Promise<unknown>);
+    expect((resolved as { attempts: unknown[] }).attempts).toHaveLength(1);
+
+    resetPersistenceAdapter();
+  });
+
+  it("saveProgress returns Promise when adapter returns async", async () => {
+    const { configurePersistenceAdapter, resetPersistenceAdapter } = await import(
+      "../persistence/adapter-config"
+    );
+    const { saveProgress } = await import("../practice-progress");
+
+    setActiveProfile("local-student");
+
+    const asyncAdapter = {
+      loadProfiles: () => ({ profiles: [], activeStudentId: null }),
+      saveProfiles: () => ({ ok: true as const, state: { profiles: [], activeStudentId: null } }),
+      loadProgress: () => ({ attempts: [], accuracyBySkill: {}, trendBySkill: {}, lastPracticedBySkill: {}, diagnosticResult: null, studyPlan: null }),
+      saveProgress: () => Promise.resolve({ ok: true as const, value: undefined as void }),
+      loadDiagnosticResult: () => null,
+      saveDiagnosticResult: () => ({ ok: true as const, value: undefined as void }),
+      loadStudyPlan: () => null,
+      saveStudyPlan: () => ({ ok: true as const, value: undefined as void }),
+    };
+    configurePersistenceAdapter(asyncAdapter as never);
+
+    const result = saveProgress({
+      attempts: [],
+      accuracyBySkill: {},
+      trendBySkill: {},
+      lastPracticedBySkill: {},
+      diagnosticResult: null,
+      studyPlan: null,
+    });
+    // MUST return the Promise, not discard it
+    expect(result).toBeInstanceOf(Promise);
+    const resolved = await (result as Promise<unknown>);
+    expect((resolved as { ok: boolean }).ok).toBe(true);
+
+    resetPersistenceAdapter();
+  });
+
+  it("addAttempt fires adapter saveProgress when adapter configured", async () => {
+    const { configurePersistenceAdapter, resetPersistenceAdapter } = await import(
+      "../persistence/adapter-config"
+    );
+    const { addAttempt } = await import("../practice-progress");
+
+    setActiveProfile("local-student");
+
+    let adapterSaveCalled = false;
+    const asyncAdapter = {
+      loadProfiles: () => ({ profiles: [], activeStudentId: null }),
+      saveProfiles: () => ({ ok: true as const, state: { profiles: [], activeStudentId: null } }),
+      loadProgress: () => ({ attempts: [], accuracyBySkill: {}, trendBySkill: {}, lastPracticedBySkill: {}, diagnosticResult: null, studyPlan: null }),
+      saveProgress: (_sid: string, _progress: unknown) => {
+        adapterSaveCalled = true;
+        return Promise.resolve({ ok: true as const, value: undefined as void });
+      },
+      loadDiagnosticResult: () => null,
+      saveDiagnosticResult: () => ({ ok: true as const, value: undefined as void }),
+      loadStudyPlan: () => null,
+      saveStudyPlan: () => ({ ok: true as const, value: undefined as void }),
+    };
+    configurePersistenceAdapter(asyncAdapter as never);
+
+    const result = addAttempt({
+      exerciseId: "ex-1",
+      skillId: "mat.u1.fracciones" as never,
+      correct: true,
+      answeredAt: "2025-01-01T00:00:00.000Z",
+      difficulty: 2 as never,
+      timeMs: 1000,
+      attemptIndex: 1,
+    });
+
+    // addAttempt returns sync (local save happened synchronously)
+    expect(result.ok).toBe(true);
+
+    // But the adapter save MUST have been fired (not discarded)
+    // Wait a tick for the async fire-and-forget
+    await new Promise((r) => setTimeout(r, 10));
+    expect(adapterSaveCalled).toBe(true);
+
+    resetPersistenceAdapter();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// WARNING: Supabase token persistence — safe auth options for v0
+// v0 has no auth UI. persistSession must be false to avoid storing
+// tokens that could confuse the client or require token management.
+// ---------------------------------------------------------------------------
+
+describe("WARNING: safe Supabase browser auth options for v0", () => {
+  it("createBrowserClient sets persistSession to false (no auth UI in v0)", async () => {
+    vi.resetModules();
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://test.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "test-key");
+
+    // Track the options passed to createClient
+    let capturedOptions: Record<string, unknown> | null = null;
+    vi.doMock("@supabase/supabase-js", () => ({
+      createClient: (_url: string, _key: string, options: Record<string, unknown>) => {
+        capturedOptions = options;
+        return { auth: { getSession: vi.fn() } };
+      },
+    }));
+
+    const { createBrowserClient } = await import("../supabase/browser");
+    createBrowserClient();
+
+    expect(capturedOptions).not.toBeNull();
+    const auth = (capturedOptions as unknown as { auth: Record<string, unknown> }).auth;
+    // v0 has no auth UI — persistSession MUST be false to avoid storing tokens
+    expect(auth.persistSession).toBe(false);
+    // autoRefreshToken MUST be false — auth flow is out of scope
+    expect(auth.autoRefreshToken).toBe(false);
+
+    vi.doUnmock("@supabase/supabase-js");
   });
 });

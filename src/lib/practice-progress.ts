@@ -23,6 +23,8 @@ import { createProfile } from "../domain/student-profile/index";
 import type { DiagnosticResult, StudyPlan } from "../domain/diagnostic";
 import { getActiveProfileId } from "./active-session";
 import { hasProfilesStorage } from "./student-profile-storage";
+import { getConfiguredAdapter, getInitializationPromise, getPendingProfileSavePromise } from "./persistence/adapter-config";
+import type { MaybePromise } from "./persistence/port";
 
 /** Versioned localStorage key to avoid collisions across experiments. */
 export const PRACTICE_STORAGE_KEY = "pre-utn.practice.v1";
@@ -171,10 +173,46 @@ function runLegacyMigration(): void {
 
 /**
  * Load practice progress for the active student.
+ * Delegates through the configured persistence adapter when available,
+ * otherwise uses raw localStorage directly.
  * Returns empty progress if nothing stored, active id is dangling, or data is invalid.
- * Runs lazy migration on first load.
+ * Runs lazy migration on first load (raw path only).
+ * When a remote adapter is configured, may return a Promise<PracticeProgress>.
+ *
+ * Initialization-aware: if `initializePersistence()` is pending, awaits it
+ * before checking the adapter. This prevents the race where a caller reads
+ * before the adapter is configured and gets stale local data.
  */
-export function loadProgress(): PracticeProgress {
+export function loadProgress(): MaybePromise<PracticeProgress> {
+  const initPromise = getInitializationPromise();
+  if (initPromise) {
+    // Initialization pending — wait for it, then delegate
+    return initPromise.then(() => {
+      const adapter = getConfiguredAdapter();
+      if (adapter) {
+        const activeId = getActiveProfileId();
+        if (activeId) {
+          return adapter.loadProgress(activeId);
+        }
+      }
+      return loadProgressRaw();
+    });
+  }
+  const adapter = getConfiguredAdapter();
+  if (adapter) {
+    const activeId = getActiveProfileId();
+    if (activeId) {
+      return adapter.loadProgress(activeId);
+    }
+  }
+  return loadProgressRaw();
+}
+
+/**
+ * Raw loadProgress — direct localStorage, no adapter delegation.
+ * Used by the local adapter to avoid recursion.
+ */
+export function loadProgressRaw(): PracticeProgress {
   runLegacyMigration();
 
   try {
@@ -210,10 +248,14 @@ function extractActiveProgress(map: PracticeProgressMap): PracticeProgress {
  * Add a single attempt to the active student's progress and persist.
  * Returns blocked result if no active profile exists.
  * Recomputes accuracy and trend for the affected skill.
+ *
+ * Always saves locally (sync) first, then fires adapter save
+ * asynchronously if a remote adapter is configured. The adapter
+ * save is not discarded — it runs as a background operation.
  */
 export function addAttempt(attempt: PracticeAttempt): PersistenceResult<PracticeProgress> {
   // Load first — this triggers lazy migration if needed, creating active profile
-  const current = loadProgress();
+  const current = loadProgressRaw();
   const activeId = getActiveProfileId();
   if (activeId === null) {
     return { ok: false, reason: "missing-active-profile" };
@@ -254,7 +296,36 @@ export function addAttempt(attempt: PracticeAttempt): PersistenceResult<Practice
     studyPlan: current.studyPlan,
   };
 
+  // Always save locally (sync) — ensures the student sees immediate results
   persistActiveProgress(updated, activeId);
+
+  // If a remote adapter is configured, fire save asynchronously.
+  // This ensures the adapter result is NOT discarded — the remote
+  // write actually executes (as a background operation).
+  //
+  // Ordering boundary: wait for any pending remote profile save for this
+  // student before saving progress. This prevents FK violations on
+  // student_progress_snapshots when createProfileAndActivate() is called
+  // immediately before addAttempt().
+  const adapter = getConfiguredAdapter();
+  if (adapter) {
+    const pendingProfileSave = getPendingProfileSavePromise(activeId);
+    const saveProgress = () => {
+      const result = adapter.saveProgress(activeId, updated);
+      if (result instanceof Promise) {
+        // Fire-and-forget: local save already happened, prevent unhandled rejection
+        result.catch(() => {});
+      }
+    };
+
+    if (pendingProfileSave) {
+      // Wait for profile save to complete before saving progress
+      pendingProfileSave.then(saveProgress).catch(() => {});
+    } else {
+      saveProgress();
+    }
+  }
+
   return { ok: true, value: updated };
 }
 
@@ -283,12 +354,29 @@ function persistActiveProgress(progress: PracticeProgress, activeId: string): vo
 
 /**
  * Save practice progress (full replacement for active student).
- * Used by the UI when loading a student's progress slice.
+ * Delegates through the configured persistence adapter when available,
+ * otherwise uses raw localStorage directly.
  * Triggers lazy migration if no active profile exists but legacy data is present.
+ * When a remote adapter is configured, may return a Promise<PersistenceResult<void>>.
  */
-export function saveProgress(progress: PracticeProgress): PersistenceResult<void> {
+export function saveProgress(progress: PracticeProgress): MaybePromise<PersistenceResult<void>> {
+  const adapter = getConfiguredAdapter();
+  if (adapter) {
+    const activeId = getActiveProfileId();
+    if (activeId) {
+      return adapter.saveProgress(activeId, progress);
+    }
+  }
+  return saveProgressRaw(progress);
+}
+
+/**
+ * Raw saveProgress — direct localStorage, no adapter delegation.
+ * Used by the local adapter to avoid recursion.
+ */
+export function saveProgressRaw(progress: PracticeProgress): PersistenceResult<void> {
   // Ensure migration runs and an active profile exists (may create Alumno local)
-  loadProgress();
+  loadProgressRaw();
   const activeId = getActiveProfileId();
   if (activeId === null) {
     return { ok: false, reason: "missing-active-profile" };

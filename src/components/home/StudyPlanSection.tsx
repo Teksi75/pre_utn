@@ -31,10 +31,22 @@ export function StudyPlanSection() {
   const [progress, setProgress] = useState<PracticeProgress | null>(null);
 
   useEffect(() => {
-    const stored = loadStudyPlan();
-    if (!stored || stored.skillPriorities.length === 0) return;
-    setPlan(stored);
-    setProgress(loadProgress());
+    const storedResult = loadStudyPlan();
+    const handleStored = (stored: StudyPlan | null) => {
+      if (!stored || stored.skillPriorities.length === 0) return;
+      setPlan(stored);
+      const progressResult = loadProgress();
+      if (progressResult instanceof Promise) {
+        progressResult.then(setProgress).catch(() => {});
+      } else {
+        setProgress(progressResult);
+      }
+    };
+    if (storedResult instanceof Promise) {
+      storedResult.then(handleStored).catch(() => {});
+    } else {
+      handleStored(storedResult);
+    }
   }, []);
 
   if (!plan || !progress) return null;

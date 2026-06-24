@@ -114,8 +114,16 @@ export default function DiagnosticPage() {
           version: 1,
         };
         const saveResult = saveDiagnosticResult(result);
-        if (!saveResult.ok && saveResult.reason === "missing-active-profile") {
-          setProfileBlocked(true);
+        // saveDiagnosticResult may return a Promise when remote adapter is configured
+        const handleSaveResult = (r: { ok: boolean; reason?: string }) => {
+          if (!r.ok && r.reason === "missing-active-profile") {
+            setProfileBlocked(true);
+          }
+        };
+        if (saveResult instanceof Promise) {
+          saveResult.then(handleSaveResult).catch(() => {});
+        } else {
+          handleSaveResult(saveResult);
         }
       }
     },
@@ -150,15 +158,33 @@ export default function DiagnosticPage() {
       suggestions,
       version: 1,
     };
-    const progress = loadProgress();
-    const plan = createStudyPlan(result, progress);
-    if (!plan) return false;
-    const saveResult = saveStudyPlan(plan);
-    if (!saveResult.ok && saveResult.reason === "missing-active-profile") {
-      setProfileBlocked(true);
-      return false;
+    const progressResult = loadProgress();
+    // loadProgress may return a Promise when remote adapter is configured
+    const createAndSave = (progress: Parameters<typeof createStudyPlan>[1]) => {
+      const plan = createStudyPlan(result, progress);
+      if (!plan) return false;
+      const saveResult = saveStudyPlan(plan);
+      const handleResult = (r: { ok: boolean; reason?: string }) => {
+        if (!r.ok && r.reason === "missing-active-profile") {
+          setProfileBlocked(true);
+        }
+      };
+      if (saveResult instanceof Promise) {
+        saveResult.then((r) => {
+          handleResult(r);
+          return r.ok;
+        }).catch(() => false);
+        // Return true optimistically — the async save will handle errors
+        return true;
+      }
+      handleResult(saveResult);
+      return saveResult.ok;
+    };
+    if (progressResult instanceof Promise) {
+      progressResult.then(createAndSave).catch(() => false);
+      return true; // optimistic
     }
-    return true;
+    return createAndSave(progressResult);
   }, [estimates, suggestions, student]);
 
   // Gate: require active profile to take diagnostic

@@ -36,19 +36,19 @@ import { getActiveProfileId } from "../active-session";
 // ---------------------------------------------------------------------------
 
 import {
-  loadProfiles as defaultLoadProfiles,
-  saveProfiles as defaultSaveProfiles,
+  rawLoadProfiles,
+  rawSaveProfiles,
 } from "../student-profile-storage";
 import {
-  loadProgress as defaultLoadProgress,
-  saveProgress as defaultSaveProgress,
+  loadProgressRaw as defaultLoadProgress,
+  saveProgressRaw as defaultSaveProgress,
   EMPTY_PROGRESS,
 } from "../practice-progress";
 import {
-  loadDiagnosticResult as defaultLoadDiagnosticResult,
-  saveDiagnosticResult as defaultSaveDiagnosticResult,
-  loadStudyPlan as defaultLoadStudyPlan,
-  saveStudyPlan as defaultSaveStudyPlan,
+  loadDiagnosticResultRaw as defaultLoadDiagnosticResult,
+  saveDiagnosticResultRaw as defaultSaveDiagnosticResult,
+  loadStudyPlanRaw as defaultLoadStudyPlan,
+  saveStudyPlanRaw as defaultSaveStudyPlan,
 } from "../diagnostic-storage";
 
 // ---------------------------------------------------------------------------
@@ -104,8 +104,8 @@ function isActiveStudent(studentId: string): boolean {
 export function createLocalStorageAdapter(
   ops?: LocalStorageOperations
 ): PersistenceAdapter {
-  const loadProfiles = ops?.loadProfiles ?? defaultLoadProfiles;
-  const saveProfiles = ops?.saveProfiles ?? defaultSaveProfiles;
+  const loadProfiles = ops?.loadProfiles ?? rawLoadProfiles;
+  const saveProfiles = ops?.saveProfiles ?? rawSaveProfiles;
   const loadProgress = ops?.loadProgress ?? defaultLoadProgress;
   const saveProgress = ops?.saveProgress ?? defaultSaveProgress;
   const loadDiagnosticResult = ops?.loadDiagnosticResult ?? defaultLoadDiagnosticResult;

@@ -9,6 +9,12 @@ import {
 import { PROFILES_STORAGE_KEY } from "../student-profile-storage";
 import type { PracticeProgress } from "../../domain/progress/index";
 
+/** Assert that a MaybePromise result is sync (no adapter configured) and return it. */
+function asSync<T>(value: T | Promise<T>): T {
+  expect(value).not.toBeInstanceOf(Promise);
+  return value as T;
+}
+
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
@@ -71,7 +77,7 @@ describe("practice-progress localStorage adapter", () => {
 
   describe("loadProgress", () => {
     it("returns empty progress when nothing stored and no active student exists", () => {
-      const result = loadProgress();
+      const result = asSync(loadProgress());
       expect(result.attempts).toEqual([]);
       expect(result.accuracyBySkill).toEqual({});
       expect(result.trendBySkill).toEqual({});
@@ -113,7 +119,7 @@ describe("practice-progress localStorage adapter", () => {
         })
       );
 
-      const result = loadProgress();
+      const result = asSync(loadProgress());
 
       expect(result.attempts).toHaveLength(1);
       expect(result.attempts[0].exerciseId).toBe("ex.active");
@@ -123,7 +129,7 @@ describe("practice-progress localStorage adapter", () => {
     it("returns empty progress when stored data is invalid JSON", () => {
       localStorageMock.setItem(PRACTICE_STORAGE_KEY, "not-valid-json {{{");
 
-      const result = loadProgress();
+      const result = asSync(loadProgress());
 
       expect(result.attempts).toEqual([]);
       expect(result.accuracyBySkill).toEqual({});
@@ -146,7 +152,7 @@ describe("practice-progress localStorage adapter", () => {
         })
       );
 
-      const result = loadProgress();
+      const result = asSync(loadProgress());
       const profiles = JSON.parse(localStorageMock.getItem(PROFILES_STORAGE_KEY) ?? "{}");
 
       expect(profiles.profiles).toHaveLength(1);
@@ -176,17 +182,17 @@ describe("practice-progress localStorage adapter", () => {
         trendBySkill: { "mat.u1.intervalos": "needs-review" },
       });
 
-      const result = saveProgress(progress);
+      const result = asSync(saveProgress(progress));
       const stored = JSON.parse(localStorageMock.getItem(PRACTICE_STORAGE_KEY) ?? "{}");
 
       expect(result.ok).toBe(true);
       expect(stored.activeStudentId).toBe(studentId);
       expect(stored.students[studentId].attempts).toHaveLength(1);
-      expect(loadProgress().trendBySkill["mat.u1.intervalos"]).toBe("needs-review");
+      expect(asSync(loadProgress()).trendBySkill["mat.u1.intervalos"]).toBe("needs-review");
     });
 
     it("returns a blocked result and writes nothing when no active profile exists", () => {
-      const result = saveProgress(emptyProgress());
+      const result = asSync(saveProgress(emptyProgress()));
 
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.reason).toBe("missing-active-profile");
@@ -286,7 +292,7 @@ describe("practice-progress localStorage adapter", () => {
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.reason).toBe("missing-active-profile");
       expect(localStorageMock.getItem(PRACTICE_STORAGE_KEY)).toBeNull();
-      expect(loadProgress().attempts).toHaveLength(0);
+      expect(asSync(loadProgress()).attempts).toHaveLength(0);
     });
   });
 });
