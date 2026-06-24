@@ -272,8 +272,10 @@ describe("u3-visualizaciones-pedagogicas — content shape", () => {
 
   test("strict-inequality interval-set visuals mark finite boundaries as open", () => {
     // A strict inequality endpoint must be drawn as an open point in the final
-    // solution interval, not as a closed boundary.
+    // solution interval, not as a closed boundary. Covers both worked examples
+    // (detected via finalAnswer) and theory concepts (detected via title).
     const examples = loadExampleContent("unit-3");
+    const theory = loadTheoryContent("unit-3");
     let checked = 0;
 
     for (const ex of examples) {
@@ -298,27 +300,50 @@ describe("u3-visualizaciones-pedagogicas — content shape", () => {
       }
     }
 
+    for (const node of theory) {
+      for (const concept of node.concepts) {
+        // Theory concept titles embed the strict inequality symbol
+        // (e.g. "Caso |x - a| > c").
+        if (!/[<>]/.test(concept.title)) continue;
+
+        for (const visual of concept.visualExamples ?? []) {
+          if (visual.kind !== "interval-set") continue;
+
+          for (const interval of visual.intervals) {
+            if (interval.lower.kind === "finite") {
+              expect(interval.lowerInclusion, `${concept.id}/${visual.id}: lower finite boundary must be open`).toBe("open");
+              checked++;
+            }
+            if (interval.upper.kind === "finite") {
+              expect(interval.upperInclusion, `${concept.id}/${visual.id}: upper finite boundary must be open`).toBe("open");
+              checked++;
+            }
+          }
+        }
+      }
+    }
+
     expect(checked, "expected at least one strict-inequality interval-set boundary").toBeGreaterThan(0);
   });
 
-  test("vis-ex-inl-flip-intervalo-set shows x < -3 as the final solution", () => {
+  test("vis-ex-inl-2-flip-cerrado-intervalo shows x ≥ -3 as the final solution", () => {
     const examples = loadExampleContent("unit-3");
     const ex = examples.find((e) => e.id === "example-inecuaciones-lineales-2");
     expect(ex).toBeDefined();
 
     const visual = ex!.steps
       .flatMap((s) => s.visualExamples ?? [])
-      .find((v) => v.id === "vis-ex-inl-flip-intervalo-set");
+      .find((v) => v.id === "vis-ex-inl-2-flip-cerrado-intervalo");
     expect(visual).toBeDefined();
     expect(visual!.kind).toBe("interval-set");
 
     const intervalSet = visual! as Extract<PedagogicalVisual, { kind: "interval-set" }>;
-    expect(intervalSet.notation).toBe("(-∞, -3)");
+    expect(intervalSet.notation).toBe("[-3, +∞)");
     expect(intervalSet.intervals).toEqual([
       {
-        lower: { kind: "infinity", direction: "negative" },
-        upper: { kind: "finite", value: -3 },
-        lowerInclusion: "open",
+        lower: { kind: "finite", value: -3 },
+        upper: { kind: "infinity", direction: "positive" },
+        lowerInclusion: "closed",
         upperInclusion: "open",
       },
     ]);
@@ -470,7 +495,7 @@ describe("u3-interval-set-visual — content integration", () => {
     { skillId: "mat.u3.inecuaciones_lineales", visualId: "vis-inl-resolver-intervalo", notation: "(-∞, 2]" },
     { skillId: "mat.u3.inecuaciones_valor_absoluto", visualId: "vis-inv-caso-mayor-intervalo", notation: "(-∞, -3) ∪ (7, +∞)" },
     { skillId: "mat.u3.inecuaciones_lineales", visualId: "vis-ex-inl-1-intervalo", notation: "[4, +∞)" },
-    { skillId: "mat.u3.inecuaciones_lineales", visualId: "vis-ex-inl-flip-intervalo-set", notation: "(-∞, -3)" },
+    { skillId: "mat.u3.inecuaciones_lineales", visualId: "vis-ex-inl-2-flip-cerrado-intervalo", notation: "[-3, +∞)" },
     { skillId: "mat.u3.inecuaciones_valor_absoluto", visualId: "vis-ex-inv-mayor-intervalo", notation: "(-∞, -2] ∪ [1, +∞)" },
   ])("$visualId parses as interval-set with notation $notation", ({ skillId, visualId, notation }) => {
     const visual = findVisual(skillId, visualId);
