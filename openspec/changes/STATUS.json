@@ -617,17 +617,21 @@
       "summary": "Introduce Supabase-backed persistence adapter v0 with localStorage fallback. Defines persistence port, implements local and remote adapters, keeps service role key out of client, and preserves getActiveProfileId() boundary. PR1 complete, PR2 complete with all review fixes + Phase 12 minimal real telemetry sink (2668 tests) + Phase 13 payload bounds + no-JSON-leak hardening (2680 tests). Initialization race resolved, remote FK gap closed, unhandled rejection protected, CustomEvent observability sink added, fallback events now POSTed to internal route handler for production observability, route validator enforces length caps, sanitizeErrorSummary no longer leaks JSON for non-Error inputs."
     },
   "u3-inecuaciones-ejemplo-distinto": {
-      "status": "pr-open",
-      "branch": "feat/u3-inecuaciones-ejemplo-distinto",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-06-24",
+      "completedAt": "2026-06-24",
+      "mergedTo": "main",
+      "mergeCommit": "30932fa0b261d61de6c29511303d36af75aa1be0",
       "roadmapIssue": 53,
       "delivery": "single-pr",
+      "verify": "PASS (0 CRITICAL, 0 WARNING, 1 SUGGESTION: Linux GGA re-validation recommended; bypassed on Windows per AGENTS.md)",
       "pr": {
         "number": 57,
         "url": "https://github.com/Teksi75/pre_utn/pull/57",
         "title": "feat(u3): differentiate worked example from theory (resolves #53)"
       },
-      "summary": "Replace duplicated U3 inecuaciones worked example (was -2x > 6) with 5 - 2x <= 11, rename visual id (vis-ex-inl-flip-intervalo-set -> vis-ex-inl-2-flip-cerrado-intervalo), update 3 tests + 1 doc line. 49 insertions / 24 deletions across 4 files. TDD RED-then-GREEN: d13b4f2 RED (3 tests fail), 9ab5f47 GREEN (42/42 pass), 499a8d5 doc cleanup. typecheck/build green. 1 unrelated pre-existing migration-rls-shape.test.ts failure (reproduced on main, supabase-adapter land)."
+      "summary": "Replace duplicated U3 inecuaciones worked example (was -2x > 6) with 5 - 2x <= 11, rename visual id (vis-ex-inl-flip-intervalo-set -> vis-ex-inl-2-flip-cerrado-intervalo), update 3 tests + 1 doc line. 49 insertions / 24 deletions across 4 files. TDD RED-then-GREEN: d13b4f2 RED (3 tests fail), 9ab5f47 GREEN (42/42 pass), 499a8d5 doc cleanup, 30932fa chore STATUS. Merged via fast-forward (main was simply behind feature branch, no divergent commits); 4 work-unit commits preserved on main. typecheck/build green. 1 unrelated pre-existing migration-rls-shape.test.ts failure (reproduced on main, belongs to feat/supabase-adapter-v0-fallback-remote)."
     }
   },
   "activeBranches": [],
