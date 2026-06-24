@@ -634,6 +634,8 @@
       "summary": "Replace duplicated U3 inecuaciones worked example (was -2x > 6) with 5 - 2x <= 11, rename visual id (vis-ex-inl-flip-intervalo-set -> vis-ex-inl-2-flip-cerrado-intervalo), update 3 tests + 1 doc line. 49 insertions / 24 deletions across 4 files. TDD RED-then-GREEN: d13b4f2 RED (3 tests fail), 9ab5f47 GREEN (42/42 pass), 499a8d5 doc cleanup, 30932fa chore STATUS. Merged via fast-forward (main was simply behind feature branch, no divergent commits); 4 work-unit commits preserved on main. typecheck/build green. 1 unrelated pre-existing migration-rls-shape.test.ts failure (reproduced on main, belongs to feat/supabase-adapter-v0-fallback-remote)."
     }
   },
-  "activeBranches": [],
+  "activeBranches": [
+    "fix/u3-inecuaciones-ejemplo-distinto-verificacion"
+  ],
   "lastAudit": "2026-06-18T22:15:00-03:00"
 }
