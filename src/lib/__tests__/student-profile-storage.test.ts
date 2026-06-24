@@ -10,6 +10,12 @@ import {
 } from "../student-profile-storage";
 import type { ProfilesState, StudentProfile } from "../../domain/student-profile/index";
 
+/** Assert that a MaybePromise result is sync (no adapter configured) and return it. */
+function asSync<T>(value: T | Promise<T>): T {
+  expect(value).not.toBeInstanceOf(Promise);
+  return value as T;
+}
+
 // ---------------------------------------------------------------------------
 // localStorage mock
 // ---------------------------------------------------------------------------
@@ -49,7 +55,7 @@ describe("PROFILES_STORAGE_KEY", () => {
 describe("loadProfiles", () => {
   // SCENARIO: empty storage returns empty state
   test("returns empty state when no key exists", () => {
-    const result = loadProfiles();
+    const result = asSync(loadProfiles());
     expect(result.profiles).toEqual([]);
     expect(result.activeStudentId).toBeNull();
   });
@@ -57,14 +63,14 @@ describe("loadProfiles", () => {
   // SCENARIO: corrupt JSON is recovered
   test("returns empty state on corrupt JSON without throwing", () => {
     localStorageMock.setItem(PROFILES_STORAGE_KEY, "not valid json {{{");
-    const result = loadProfiles();
+    const result = asSync(loadProfiles());
     expect(result.profiles).toEqual([]);
     expect(result.activeStudentId).toBeNull();
   });
 
   test("returns empty state when stored data lacks profiles array", () => {
     localStorageMock.setItem(PROFILES_STORAGE_KEY, JSON.stringify({ activeStudentId: "local-1" }));
-    const result = loadProfiles();
+    const result = asSync(loadProfiles());
     expect(result.profiles).toEqual([]);
   });
 
@@ -74,7 +80,7 @@ describe("loadProfiles", () => {
       activeStudentId: "local-abc",
     };
     localStorageMock.setItem(PROFILES_STORAGE_KEY, JSON.stringify(state));
-    const result = loadProfiles();
+    const result = asSync(loadProfiles());
     expect(result.activeStudentId).toBe("local-abc");
   });
 });
@@ -82,7 +88,7 @@ describe("loadProfiles", () => {
 describe("saveProfiles", () => {
   test("persists state to localStorage", () => {
     const state: ProfilesState = { profiles: [], activeStudentId: null };
-    const result = saveProfiles(state);
+    const result = asSync(saveProfiles(state));
     expect(result.ok).toBe(true);
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
       PROFILES_STORAGE_KEY,
@@ -96,10 +102,26 @@ describe("getActiveStudentId", () => {
     expect(getActiveStudentId()).toBeNull();
   });
 
-  test("returns activeStudentId when stored", () => {
-    const state: ProfilesState = { profiles: [], activeStudentId: "local-xyz" };
+  test("returns activeStudentId when stored and matches a profile", () => {
+    const state: ProfilesState = {
+      profiles: [
+        {
+          studentId: "local-xyz",
+          displayName: "Test",
+          createdAt: "2025-01-01T00:00:00.000Z",
+          lastActiveAt: "2025-01-01T00:00:00.000Z",
+        },
+      ],
+      activeStudentId: "local-xyz",
+    };
     localStorageMock.setItem(PROFILES_STORAGE_KEY, JSON.stringify(state));
     expect(getActiveStudentId()).toBe("local-xyz");
+  });
+
+  test("returns null when activeStudentId is dangling (not in profiles)", () => {
+    const state: ProfilesState = { profiles: [], activeStudentId: "local-xyz" };
+    localStorageMock.setItem(PROFILES_STORAGE_KEY, JSON.stringify(state));
+    expect(getActiveStudentId()).toBeNull();
   });
 });
 

@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
+import { PersistenceInitializer } from "@/components/PersistenceInitializer";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Ingenium — Preparación independiente para ingreso a Ingeniería",
   description:
-    "Preuniversitario independiente para ingreso a Ingenierías. Práctica, diagnóstico y plan de estudio personalizado.",
+    "Preuniversitario independiente para ingreso a Ingenierías. Práctica, diagnóstico inicial y un plan de estudio que se ajusta a medida que avanzás.",
   openGraph: {
     locale: "es_AR",
   },
@@ -23,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="min-h-screen flex flex-col">
+        <PersistenceInitializer />
         <a href="#main-content" className="skip-link">
           Saltar al contenido
         </a>

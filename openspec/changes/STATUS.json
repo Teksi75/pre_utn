@@ -597,16 +597,24 @@
     },
     "supabase-adapter-v0-fallback": {
       "status": "in-progress",
-      "branch": "feat/supabase-adapter-v0-fallback-port",
+      "branch": "feat/supabase-adapter-v0-fallback-remote",
       "startedAt": "2026-06-22",
       "roadmapIssue": "I-24",
       "delivery": "auto-chain; stacked-to-main",
       "pr1": {
         "branch": "feat/supabase-adapter-v0-fallback-port",
-        "status": "in-progress",
-        "summary": "PR 1 — Port + local adapter + selector/fallback: PersistenceAdapter interface, localStorage wrapper, env-based selector with fallback, async-aware withLocalFallback, injectable ops, studentId enforcement, legacy migration passthrough."
+        "status": "done",
+        "summary": "PR 1 — Port + local adapter + selector/fallback: PersistenceAdapter interface, localStorage wrapper, env-based selector with fallback, async-aware withLocalFallback, injectable ops, studentId enforcement, legacy migration passthrough. 2535 tests pass."
       },
-      "summary": "Introduce Supabase-backed persistence adapter v0 with localStorage fallback. Defines persistence port, implements local and remote adapters, keeps service role key out of client, and preserves getActiveProfileId() boundary."
+      "pr2": {
+        "branch": "feat/supabase-adapter-v0-fallback-remote",
+        "status": "in-progress",
+        "summary": "PR 2 — Supabase adapter + client factory + migration + env + RLS scan + serialization tests + isolation tests + wiring: createSupabaseAdapter with RLS scoping, createBrowserClient with public vars only, SQL migration with own-row policies, no-service-role scan, active-student isolation tests, raw implementation exports for recursion avoidance. Review fixes: resolved-failure fallback detection, malformed env try-catch, dangling activeStudentId validation, initialization race fix, remote FK profile creation, unhandled rejection protection, CustomEvent observability sink. 2635+ tests pass. Phase 12 added minimal real telemetry sink: navigator.sendBeacon + fetch keepalive fallback to internal Next.js route handler /api/persistence/fallback. 2668 tests pass. Phase 13 added payload bounds + no-JSON-leak hardening: isFallbackEventPayload enforces method <= 64, errorSummary <= 200, timestamp <= 32 via shared FALLBACK_PAYLOAD_BOUNDS; sanitizeErrorSummary non-Error path uses String() + try/catch + length guard with 'unknown-fallback-reason' sentinel. 2680 tests pass.",
+        "size_exception_accepted": true,
+        "size_exception_recorded_at": "2026-06-23",
+        "size_exception_reason": "PR2 diff (~2060 insertions / 170 deletions excluding pnpm-lock.yaml) exceeds the 450-line review budget by ~4x. The excess is minimum-real-scope: Supabase adapter v0 requires selector + remote adapter + browser client/factory + migration/RLS + .env.example + storage wiring + production initializer + fallback sink + Next.js API route + tests + OpenSpec updates. Pieces are tightly coupled; splitting them would introduce integration seams and re-verification cost without reducing real risk. Stacked-to-main strategy preserved: PR1 (#51, merge commit b9db260) is already in main; PR2 targets updated main. Compensating controls documented in openspec/changes/supabase-adapter-v0-fallback/apply-progress.md under 'PR2 size:exception acceptance'."
+      },
+      "summary": "Introduce Supabase-backed persistence adapter v0 with localStorage fallback. Defines persistence port, implements local and remote adapters, keeps service role key out of client, and preserves getActiveProfileId() boundary. PR1 complete, PR2 complete with all review fixes + Phase 12 minimal real telemetry sink (2668 tests) + Phase 13 payload bounds + no-JSON-leak hardening (2680 tests). Initialization race resolved, remote FK gap closed, unhandled rejection protected, CustomEvent observability sink added, fallback events now POSTed to internal route handler for production observability, route validator enforces length caps, sanitizeErrorSummary no longer leaks JSON for non-Error inputs."
     }
   },
   "activeBranches": [],

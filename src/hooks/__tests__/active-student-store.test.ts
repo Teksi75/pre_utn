@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ProfilesState, StudentProfile } from "../../domain/student-profile";
 import { saveProfiles } from "../../lib/student-profile-storage";
+
+/** Assert that a MaybePromise result is sync (no adapter configured) and return it. */
+function asSync<T>(value: T | Promise<T>): T {
+  expect(value).not.toBeInstanceOf(Promise);
+  return value as T;
+}
 import {
   createAndActivateActiveStudent,
   getActiveStudentSnapshot,
@@ -24,7 +30,7 @@ const bruno: StudentProfile = {
 };
 
 function persistProfiles(state: ProfilesState): void {
-  const result = saveProfiles(state);
+  const result = asSync(saveProfiles(state));
   expect(result.ok).toBe(true);
   refreshActiveStudent();
 }

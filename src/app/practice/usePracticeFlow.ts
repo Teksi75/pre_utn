@@ -108,7 +108,12 @@ export function usePracticeFlow() {
   // the state, which triggers a re-render with the real data.
   const [progress, setProgress] = useState<PracticeProgress>(EMPTY_PROGRESS);
   useEffect(() => {
-    setProgress(loadProgress());
+    const result = loadProgress();
+    if (result instanceof Promise) {
+      result.then(setProgress).catch(() => {});
+    } else {
+      setProgress(result);
+    }
   }, []);
 
   // ---------------------------------------------------------------

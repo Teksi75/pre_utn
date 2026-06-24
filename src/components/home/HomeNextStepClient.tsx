@@ -6,6 +6,8 @@ import { PILOT_SKILLS } from "../../domain/catalog/pilot-skills";
 import { deriveHomeNextStep } from "../../domain/next-step/index";
 import { loadProgress } from "../../lib/practice-progress";
 import { loadDiagnosticResult } from "../../lib/diagnostic-storage";
+import type { PracticeProgress } from "../../domain/progress/index";
+import type { DiagnosticResult } from "../../domain/diagnostic";
 import { MathWatermark } from "../math-visuals";
 import { HomeGreeting } from "./HomeGreeting";
 import { MissionCard } from "./student-home/MissionCard";
@@ -43,30 +45,53 @@ export function HomeNextStepClient() {
       setViewModel(null);
       return;
     }
-    const progress = loadProgress();
-    const activeDiagnosticResult = loadDiagnosticResult();
-    const readySkills = PILOT_SKILLS.filter(
-      (skill) => isSkillReady(skill.skillId).ready
-    ).map((skill) => ({
-      skillId: skill.skillId,
-      label: skill.label,
-    }));
 
-    const computedNextStep = deriveHomeNextStep(
-      progress,
-      readySkills,
-      [...PILOT_SKILLS],
-      activeDiagnosticResult ?? progress.diagnosticResult ?? null
-    );
-    setViewModel(
-      deriveStudentHomeViewModel({
+    const buildViewModel = (progress: PracticeProgress, activeDiagnosticResult: DiagnosticResult | null) => {
+      const readySkills = PILOT_SKILLS.filter(
+        (skill) => isSkillReady(skill.skillId).ready
+      ).map((skill) => ({
+        skillId: skill.skillId,
+        label: skill.label,
+      }));
+
+      const computedNextStep = deriveHomeNextStep(
         progress,
-        diagnosticResult: activeDiagnosticResult ?? progress.diagnosticResult ?? null,
-        availableSkills: readySkills,
-        pilotSkills: [...PILOT_SKILLS],
-        nextStep: computedNextStep,
-      })
-    );
+        readySkills,
+        [...PILOT_SKILLS],
+        activeDiagnosticResult ?? progress.diagnosticResult ?? null
+      );
+      setViewModel(
+        deriveStudentHomeViewModel({
+          progress,
+          diagnosticResult: activeDiagnosticResult ?? progress.diagnosticResult ?? null,
+          availableSkills: readySkills,
+          pilotSkills: [...PILOT_SKILLS],
+          nextStep: computedNextStep,
+        })
+      );
+    };
+
+    const progressResult = loadProgress();
+    const diagResult = loadDiagnosticResult();
+
+    // Handle MaybePromise results from both calls
+    const handleResults = (progress: PracticeProgress, diag: DiagnosticResult | null) => {
+      buildViewModel(progress, diag);
+    };
+
+    if (progressResult instanceof Promise) {
+      progressResult.then((progress) => {
+        if (diagResult instanceof Promise) {
+          diagResult.then((diag) => handleResults(progress, diag)).catch(() => handleResults(progress, null));
+        } else {
+          handleResults(progress, diagResult);
+        }
+      }).catch(() => {});
+    } else if (diagResult instanceof Promise) {
+      diagResult.then((diag) => handleResults(progressResult, diag)).catch(() => handleResults(progressResult, null));
+    } else {
+      handleResults(progressResult, diagResult);
+    }
   }, [student]);
 
   // Loading skeleton — shown while hook initializes

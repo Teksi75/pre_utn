@@ -54,6 +54,12 @@ export interface SelectorConfig {
    * remote selection. Defaults to `false` when omitted.
    */
   readonly hasRemoteSession?: boolean;
+  /**
+   * Optional observability callback invoked when a remote operation falls back
+   * to the local adapter. Called for both thrown errors and resolved failures.
+   * Client-safe: no service-role or non-public env data is passed.
+   */
+  readonly onFallback?: (method: string, error: unknown) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -74,25 +80,91 @@ export interface SelectorConfig {
  * workflow usable through local fallback or an explicit non-destructive
  * result."
  */
+/**
+ * Detect resolved failure results from write operations.
+ * Returns `true` if the result is an object with `ok: false`, which
+ * represents a real Supabase failure (network, auth, RLS) that returned
+ * a result instead of throwing.
+ */
+function isFailedResult(value: unknown): boolean {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "ok" in value &&
+    (value as { ok: boolean }).ok === false
+  );
+}
+
+/**
+ * Detect the "remote unavailable" sentinel for read operations.
+ * The Supabase adapter returns this when no auth session exists,
+ * signaling that the fallback wrapper should delegate to local storage
+ * instead of returning empty/null data that would hide local data.
+ */
+function isRemoteUnavailable(value: unknown): boolean {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "__remoteUnavailable" in value &&
+    (value as { __remoteUnavailable: boolean }).__remoteUnavailable === true
+  );
+}
+
+/**
+ * Create a sentinel value indicating the remote adapter is unavailable
+ * (no auth session, expired session, etc.). Used internally by the
+ * Supabase adapter for read methods that return nullable types.
+ */
+export function createRemoteUnavailableSentinel<T>(): T {
+  return { __remoteUnavailable: true } as unknown as T;
+}
+
 export function withLocalFallback(
   remote: PersistenceAdapter,
-  local: PersistenceAdapter
+  local: PersistenceAdapter,
+  onFallback?: (method: string, error: unknown) => void
 ): PersistenceAdapter {
   /**
    * Attempt a remote operation. Catches both synchronous throws and async
    * Promise rejections, falling back to the local adapter in either case.
+   *
+   * Also detects:
+   * - Resolved write results with `ok: false` (real Supabase failures)
+   * - "Remote unavailable" sentinel for reads (no auth session)
+   *
+   * Spec: "If a remote read or write fails because Supabase is unreachable
+   * or rejects a non-security operation, the app MUST keep the student
+   * workflow usable through local fallback."
    */
   function attempt<T>(
     remoteFn: () => MaybePromise<T>,
-    localFn: () => MaybePromise<T>
+    localFn: () => MaybePromise<T>,
+    methodName: string
   ): MaybePromise<T> {
     try {
       const result = remoteFn();
       if (result instanceof Promise) {
-        return result.catch(() => localFn());
+        return result.then(
+          (resolved) => {
+            if (isFailedResult(resolved) || isRemoteUnavailable(resolved)) {
+              onFallback?.(methodName, resolved);
+              return localFn();
+            }
+            return resolved;
+          },
+          (err) => {
+            onFallback?.(methodName, err);
+            return localFn();
+          }
+        );
+      }
+      if (isFailedResult(result) || isRemoteUnavailable(result)) {
+        onFallback?.(methodName, result);
+        return localFn();
       }
       return result;
-    } catch {
+    } catch (err) {
+      onFallback?.(methodName, err);
       return localFn();
     }
   }
@@ -101,21 +173,24 @@ export function withLocalFallback(
     loadProfiles(): MaybePromise<ProfilesState> {
       return attempt(
         () => remote.loadProfiles(),
-        () => local.loadProfiles()
+        () => local.loadProfiles(),
+        "loadProfiles"
       );
     },
 
     saveProfiles(state: ProfilesState): MaybePromise<ProfileSaveResult> {
       return attempt(
         () => remote.saveProfiles(state),
-        () => local.saveProfiles(state)
+        () => local.saveProfiles(state),
+        "saveProfiles"
       );
     },
 
     loadProgress(studentId: string): MaybePromise<PracticeProgress> {
       return attempt(
         () => remote.loadProgress(studentId),
-        () => local.loadProgress(studentId)
+        () => local.loadProgress(studentId),
+        "loadProgress"
       );
     },
 
@@ -125,14 +200,16 @@ export function withLocalFallback(
     ): MaybePromise<PersistenceResult<void>> {
       return attempt(
         () => remote.saveProgress(studentId, progress),
-        () => local.saveProgress(studentId, progress)
+        () => local.saveProgress(studentId, progress),
+        "saveProgress"
       );
     },
 
     loadDiagnosticResult(studentId: string): MaybePromise<DiagnosticResult | null> {
       return attempt(
         () => remote.loadDiagnosticResult(studentId),
-        () => local.loadDiagnosticResult(studentId)
+        () => local.loadDiagnosticResult(studentId),
+        "loadDiagnosticResult"
       );
     },
 
@@ -142,14 +219,16 @@ export function withLocalFallback(
     ): MaybePromise<PersistenceResult<void>> {
       return attempt(
         () => remote.saveDiagnosticResult(studentId, result),
-        () => local.saveDiagnosticResult(studentId, result)
+        () => local.saveDiagnosticResult(studentId, result),
+        "saveDiagnosticResult"
       );
     },
 
     loadStudyPlan(studentId: string): MaybePromise<StudyPlan | null> {
       return attempt(
         () => remote.loadStudyPlan(studentId),
-        () => local.loadStudyPlan(studentId)
+        () => local.loadStudyPlan(studentId),
+        "loadStudyPlan"
       );
     },
 
@@ -159,7 +238,8 @@ export function withLocalFallback(
     ): MaybePromise<PersistenceResult<void>> {
       return attempt(
         () => remote.saveStudyPlan(studentId, plan),
-        () => local.saveStudyPlan(studentId, plan)
+        () => local.saveStudyPlan(studentId, plan),
+        "saveStudyPlan"
       );
     },
   };
@@ -213,5 +293,5 @@ export function selectPersistenceAdapter(
   }
 
   // Step 5: All conditions met — return fallback-wrapped remote adapter
-  return withLocalFallback(remoteAdapter, localAdapter);
+  return withLocalFallback(remoteAdapter, localAdapter, config?.onFallback);
 }

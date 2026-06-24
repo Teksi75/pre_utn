@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useActiveStudent } from "../../hooks/useActiveStudent";
 import { loadProfiles } from "../../lib/student-profile-storage";
 import { validateDisplayName } from "../../domain/student-profile/index";
 import { Card } from "../ui/Card";
-import type { StudentProfile } from "../../domain/student-profile/index";
+import type { StudentProfile, ProfilesState } from "../../domain/student-profile/index";
 
 export interface StudentSwitcherProps {
   onClose: () => void;
@@ -23,7 +23,18 @@ export interface StudentSwitcherProps {
  */
 export function StudentSwitcher({ onClose }: StudentSwitcherProps) {
   const { student: activeStudent, switchTo, createAndActivate } = useActiveStudent();
-  const profiles = loadProfiles().profiles;
+  const [profilesState, setProfilesState] = useState<ProfilesState>({ profiles: [], activeStudentId: null });
+
+  useEffect(() => {
+    const result = loadProfiles();
+    if (result instanceof Promise) {
+      result.then(setProfilesState).catch(() => {});
+    } else {
+      setProfilesState(result);
+    }
+  }, []);
+
+  const profiles = profilesState.profiles;
 
   const [isCreating, setIsCreating] = useState(false);
   const [newName, setNewName] = useState("");

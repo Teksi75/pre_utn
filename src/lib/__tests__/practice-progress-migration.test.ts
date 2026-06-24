@@ -7,6 +7,12 @@ import {
 } from "../practice-progress";
 import type { PracticeProgress } from "../../domain/progress/index";
 
+/** Assert that a MaybePromise result is sync (no adapter configured) and return it. */
+function asSync<T>(value: T | Promise<T>): T {
+  expect(value).not.toBeInstanceOf(Promise);
+  return value as T;
+}
+
 // ---------------------------------------------------------------------------
 // localStorage mock
 // ---------------------------------------------------------------------------
@@ -45,7 +51,7 @@ describe("PRACTICE_STORAGE_KEY", () => {
 
 describe("loadProgress", () => {
   it("returns empty progress when nothing stored", () => {
-    const result = loadProgress();
+    const result = asSync(loadProgress());
     expect(result.attempts).toEqual([]);
     expect(result.accuracyBySkill).toEqual({});
     expect(result.trendBySkill).toEqual({});
@@ -53,7 +59,7 @@ describe("loadProgress", () => {
 
   it("returns empty progress when stored data is invalid JSON", () => {
     localStorageMock.setItem(PRACTICE_STORAGE_KEY, "not-valid-json {{{");
-    const result = loadProgress();
+    const result = asSync(loadProgress());
     expect(result.attempts).toEqual([]);
   });
 
@@ -73,7 +79,7 @@ describe("loadProgress", () => {
     };
     localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(oldData));
 
-    const result = loadProgress();
+    const result = asSync(loadProgress());
 
     // Migration runs: data is re-keyed under Alumno local
     expect(result.attempts).toHaveLength(1);
@@ -105,7 +111,7 @@ describe("loadProgress", () => {
     };
     localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(oldData));
 
-    const result = loadProgress();
+    const result = asSync(loadProgress());
 
     expect(result.attempts).toHaveLength(2);
     expect(result.attempts[0].timeMs).toBe(0);
@@ -214,7 +220,7 @@ describe("addAttempt", () => {
       attemptIndex: 1,
     });
 
-    const loaded = loadProgress();
+    const loaded = asSync(loadProgress());
     expect(loaded.attempts).toHaveLength(1);
   });
 
@@ -228,7 +234,7 @@ describe("addAttempt", () => {
       studyPlan: null,
     };
     localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(oldData));
-    loadProgress();
+    asSync(loadProgress());
 
     addAttempt({
       exerciseId: "ex.u1.01",
@@ -240,7 +246,7 @@ describe("addAttempt", () => {
       attemptIndex: 1,
     });
 
-    const loaded = loadProgress();
+    const loaded = asSync(loadProgress());
     expect(loaded.attempts[0].difficulty).toBe(4);
   });
 
@@ -254,7 +260,7 @@ describe("addAttempt", () => {
       studyPlan: null,
     };
     localStorageMock.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(oldData));
-    loadProgress();
+    asSync(loadProgress());
 
     const result = addAttempt({
       exerciseId: "ex.u1.01",
@@ -366,7 +372,7 @@ describe("addAttempt", () => {
     const raw = localStorageMock.getItem(PRACTICE_STORAGE_KEY);
     // If migration ran, there would be a students map. If not, still old shape.
     // Either way, no NEW attempt should appear without active profile
-    const loaded = loadProgress();
+    const loaded = asSync(loadProgress());
     expect(loaded.attempts).toHaveLength(0);
   });
 });

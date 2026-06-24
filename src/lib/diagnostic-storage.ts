@@ -13,6 +13,8 @@
 
 import type { DiagnosticResult, StudyPlan } from "@/domain/diagnostic";
 import { getActiveProfileId } from "./active-session";
+import { getConfiguredAdapter, getInitializationPromise } from "./persistence/adapter-config";
+import type { MaybePromise, PersistenceResult as PortPersistenceResult } from "./persistence/port";
 
 /** Versioned localStorage key to avoid collisions across experiments. */
 export const DIAGNOSTIC_STORAGE_KEY = "pre-utn.diagnostic.v1";
@@ -100,9 +102,25 @@ function persistStudyPlanMap(map: StudyPlanMap): void {
 
 /**
  * Save a diagnostic result to localStorage under the active student.
+ * Delegates through the configured persistence adapter when available.
  * Returns blocked result if no active profile exists.
+ * When a remote adapter is configured, may return a Promise.
  */
-export function saveDiagnosticResult(result: DiagnosticResult): PersistenceResult<void> {
+export function saveDiagnosticResult(result: DiagnosticResult): MaybePromise<PersistenceResult<void>> {
+  const adapter = getConfiguredAdapter();
+  if (adapter) {
+    const activeId = getActiveProfileId();
+    if (activeId) {
+      return adapter.saveDiagnosticResult(activeId, result) as MaybePromise<PersistenceResult<void>>;
+    }
+  }
+  return saveDiagnosticResultRaw(result);
+}
+
+/**
+ * Raw saveDiagnosticResult — direct localStorage, no adapter delegation.
+ */
+export function saveDiagnosticResultRaw(result: DiagnosticResult): PersistenceResult<void> {
   const activeId = getActiveProfileId();
   if (activeId === null) {
     return { ok: false, reason: "missing-active-profile" };
@@ -119,9 +137,42 @@ export function saveDiagnosticResult(result: DiagnosticResult): PersistenceResul
 
 /**
  * Load the diagnostic result for the active student.
+ * Delegates through the configured persistence adapter when available.
  * Returns null when nothing is stored, no active profile, or stored data is corrupt.
+ * When a remote adapter is configured, may return a Promise.
+ *
+ * Initialization-aware: if `initializePersistence()` is pending, awaits it
+ * before checking the adapter. This prevents the race where a caller reads
+ * before the adapter is configured and gets stale local data.
  */
-export function loadDiagnosticResult(): DiagnosticResult | null {
+export function loadDiagnosticResult(): MaybePromise<DiagnosticResult | null> {
+  const initPromise = getInitializationPromise();
+  if (initPromise) {
+    return initPromise.then(() => {
+      const adapter = getConfiguredAdapter();
+      if (adapter) {
+        const activeId = getActiveProfileId();
+        if (activeId) {
+          return adapter.loadDiagnosticResult(activeId);
+        }
+      }
+      return loadDiagnosticResultRaw();
+    });
+  }
+  const adapter = getConfiguredAdapter();
+  if (adapter) {
+    const activeId = getActiveProfileId();
+    if (activeId) {
+      return adapter.loadDiagnosticResult(activeId);
+    }
+  }
+  return loadDiagnosticResultRaw();
+}
+
+/**
+ * Raw loadDiagnosticResult — direct localStorage, no adapter delegation.
+ */
+export function loadDiagnosticResultRaw(): DiagnosticResult | null {
   const activeId = getActiveProfileId();
   if (activeId === null) return null;
 
@@ -135,9 +186,25 @@ export function loadDiagnosticResult(): DiagnosticResult | null {
 
 /**
  * Save a study plan to localStorage under the active student.
+ * Delegates through the configured persistence adapter when available.
  * Returns blocked result if no active profile exists.
+ * When a remote adapter is configured, may return a Promise.
  */
-export function saveStudyPlan(plan: StudyPlan): PersistenceResult<void> {
+export function saveStudyPlan(plan: StudyPlan): MaybePromise<PersistenceResult<void>> {
+  const adapter = getConfiguredAdapter();
+  if (adapter) {
+    const activeId = getActiveProfileId();
+    if (activeId) {
+      return adapter.saveStudyPlan(activeId, plan) as MaybePromise<PersistenceResult<void>>;
+    }
+  }
+  return saveStudyPlanRaw(plan);
+}
+
+/**
+ * Raw saveStudyPlan — direct localStorage, no adapter delegation.
+ */
+export function saveStudyPlanRaw(plan: StudyPlan): PersistenceResult<void> {
   const activeId = getActiveProfileId();
   if (activeId === null) {
     return { ok: false, reason: "missing-active-profile" };
@@ -154,9 +221,42 @@ export function saveStudyPlan(plan: StudyPlan): PersistenceResult<void> {
 
 /**
  * Load the study plan for the active student.
+ * Delegates through the configured persistence adapter when available.
  * Returns null when nothing is stored, no active profile, or stored data is corrupt.
+ * When a remote adapter is configured, may return a Promise.
+ *
+ * Initialization-aware: if `initializePersistence()` is pending, awaits it
+ * before checking the adapter. This prevents the race where a caller reads
+ * before the adapter is configured and gets stale local data.
  */
-export function loadStudyPlan(): StudyPlan | null {
+export function loadStudyPlan(): MaybePromise<StudyPlan | null> {
+  const initPromise = getInitializationPromise();
+  if (initPromise) {
+    return initPromise.then(() => {
+      const adapter = getConfiguredAdapter();
+      if (adapter) {
+        const activeId = getActiveProfileId();
+        if (activeId) {
+          return adapter.loadStudyPlan(activeId);
+        }
+      }
+      return loadStudyPlanRaw();
+    });
+  }
+  const adapter = getConfiguredAdapter();
+  if (adapter) {
+    const activeId = getActiveProfileId();
+    if (activeId) {
+      return adapter.loadStudyPlan(activeId);
+    }
+  }
+  return loadStudyPlanRaw();
+}
+
+/**
+ * Raw loadStudyPlan — direct localStorage, no adapter delegation.
+ */
+export function loadStudyPlanRaw(): StudyPlan | null {
   const activeId = getActiveProfileId();
   if (activeId === null) return null;
 

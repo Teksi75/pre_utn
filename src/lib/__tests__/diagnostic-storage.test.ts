@@ -12,6 +12,12 @@ import {
 import { PROFILES_STORAGE_KEY } from "../student-profile-storage";
 import type { DiagnosticResult, StudyPlan } from "@/domain/diagnostic";
 
+/** Assert that a MaybePromise result is sync (no adapter configured) and return it. */
+function asSync<T>(value: T | Promise<T>): T {
+  expect(value).not.toBeInstanceOf(Promise);
+  return value as T;
+}
+
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
@@ -102,20 +108,20 @@ describe("diagnostic-storage", () => {
     it("returns null when no diagnostic stored", () => {
       activateStudent();
 
-      expect(loadDiagnosticResult()).toBeNull();
+      expect(asSync(loadDiagnosticResult())).toBeNull();
     });
 
     it("round-trips a diagnostic result for the active student", () => {
       const studentId = activateStudent("local-a");
       const result = makeDiagnostic();
 
-      const saveResult = saveDiagnosticResult(result);
+      const saveResult = asSync(saveDiagnosticResult(result));
       const stored = JSON.parse(localStorageMock.getItem(DIAGNOSTIC_STORAGE_KEY) ?? "{}");
 
       expect(saveResult.ok).toBe(true);
       expect(stored.activeStudentId).toBe(studentId);
       expect(stored.students[studentId]).toEqual(result);
-      expect(loadDiagnosticResult()).toEqual(result);
+      expect(asSync(loadDiagnosticResult())).toEqual(result);
     });
 
     it("returns only the active student's diagnostic from the central map", () => {
@@ -130,22 +136,22 @@ describe("diagnostic-storage", () => {
         })
       );
 
-      expect(loadDiagnosticResult()).toEqual(activeResult);
+      expect(asSync(loadDiagnosticResult())).toEqual(activeResult);
     });
 
     it("returns null for corrupt JSON or non-map storage", () => {
       activateStudent();
       localStorageMock.setItem(DIAGNOSTIC_STORAGE_KEY, "not-json {{{{");
-      expect(loadDiagnosticResult()).toBeNull();
+      expect(asSync(loadDiagnosticResult())).toBeNull();
 
       localStorageMock.setItem(DIAGNOSTIC_STORAGE_KEY, JSON.stringify({ completedAt: "2025-06-03" }));
-      expect(loadDiagnosticResult()).toBeNull();
+      expect(asSync(loadDiagnosticResult())).toBeNull();
     });
   });
 
   describe("saveDiagnosticResult", () => {
     it("returns blocked result and writes nothing without an active profile", () => {
-      const result = saveDiagnosticResult(makeDiagnostic());
+      const result = asSync(saveDiagnosticResult(makeDiagnostic()));
 
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.reason).toBe("missing-active-profile");
@@ -158,7 +164,7 @@ describe("diagnostic-storage", () => {
         throw new Error("QuotaExceededError");
       });
 
-      expect(() => saveDiagnosticResult(makeDiagnostic())).not.toThrow();
+      expect(() => asSync(saveDiagnosticResult(makeDiagnostic()))).not.toThrow();
     });
   });
 
@@ -181,7 +187,7 @@ describe("diagnostic-storage", () => {
 
       expect(stored.students["local-a"]).toBeUndefined();
       expect(stored.students["local-b"]).toEqual(makeDiagnostic({ completedAt: "2025-06-04T10:00:00.000Z" }));
-      expect(loadDiagnosticResult()).toBeNull();
+      expect(asSync(loadDiagnosticResult())).toBeNull();
     });
 
     it("does not throw when nothing was stored", () => {
@@ -201,20 +207,20 @@ describe("study plan storage", () => {
     it("returns null when no study plan stored", () => {
       activateStudent();
 
-      expect(loadStudyPlan()).toBeNull();
+      expect(asSync(loadStudyPlan())).toBeNull();
     });
 
     it("round-trips a study plan for the active student", () => {
       const studentId = activateStudent("local-a");
       const plan = makePlan();
 
-      const saveResult = saveStudyPlan(plan);
+      const saveResult = asSync(saveStudyPlan(plan));
       const stored = JSON.parse(localStorageMock.getItem(STUDY_PLAN_STORAGE_KEY) ?? "{}");
 
       expect(saveResult.ok).toBe(true);
       expect(stored.activeStudentId).toBe(studentId);
       expect(stored.students[studentId]).toEqual(plan);
-      expect(loadStudyPlan()).toEqual(plan);
+      expect(asSync(loadStudyPlan())).toEqual(plan);
     });
 
     it("returns only the active student's study plan from the central map", () => {
@@ -229,22 +235,22 @@ describe("study plan storage", () => {
         })
       );
 
-      expect(loadStudyPlan()).toEqual(activePlan);
+      expect(asSync(loadStudyPlan())).toEqual(activePlan);
     });
 
     it("returns null for corrupt JSON or non-map storage", () => {
       activateStudent();
       localStorageMock.setItem(STUDY_PLAN_STORAGE_KEY, "not-json {{{{");
-      expect(loadStudyPlan()).toBeNull();
+      expect(asSync(loadStudyPlan())).toBeNull();
 
       localStorageMock.setItem(STUDY_PLAN_STORAGE_KEY, JSON.stringify({ createdAt: "2025-06-03" }));
-      expect(loadStudyPlan()).toBeNull();
+      expect(asSync(loadStudyPlan())).toBeNull();
     });
   });
 
   describe("saveStudyPlan", () => {
     it("returns blocked result and writes nothing without an active profile", () => {
-      const result = saveStudyPlan(makePlan());
+      const result = asSync(saveStudyPlan(makePlan()));
 
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.reason).toBe("missing-active-profile");
@@ -257,7 +263,7 @@ describe("study plan storage", () => {
         throw new Error("QuotaExceededError");
       });
 
-      expect(() => saveStudyPlan(makePlan())).not.toThrow();
+      expect(() => asSync(saveStudyPlan(makePlan()))).not.toThrow();
     });
   });
 
@@ -278,14 +284,14 @@ describe("study plan storage", () => {
 
       expect(stored.students["local-a"]).toBeUndefined();
       expect(stored.students["local-b"]).toEqual(otherPlan);
-      expect(loadStudyPlan()).toBeNull();
+      expect(asSync(loadStudyPlan())).toBeNull();
     });
 
     it("does not affect the stored diagnostic", () => {
       activateStudent("local-a");
       const diag = makeDiagnostic({ completedAt: "2025-06-03T10:00:00.000Z" });
-      saveDiagnosticResult(diag);
-      saveStudyPlan(makePlan());
+      asSync(saveDiagnosticResult(diag));
+      asSync(saveStudyPlan(makePlan()));
 
       clearStudyPlan();
 
