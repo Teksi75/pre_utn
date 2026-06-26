@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useCallback } from "react";
 import { useActiveStudent } from "../hooks/useActiveStudent";
+import { useSession } from "@/components/auth";
 
 const NAV_ITEMS = [
   { href: "/", label: "Inicio" },
@@ -14,6 +16,11 @@ const NAV_ITEMS = [
 export function Nav() {
   const pathname = usePathname();
   const { student } = useActiveStudent();
+  const { session, userEmail, isAuthEnabled, signOut } = useSession();
+
+  const handleSignOut = useCallback(async () => {
+    await signOut();
+  }, [signOut]);
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
@@ -59,6 +66,35 @@ export function Nav() {
               </span>
             </span>
           )}
+
+          {/* Sync status badge — only shown when auth is
+              configured. When not configured (env missing) we silently
+              hide the badge so the app still works in local-only mode. */}
+          {isAuthEnabled && session === null && (
+            <Link
+              href="/cuenta/ingresar"
+              className="hidden sm:inline-flex shrink-0 items-center gap-1.5 px-2.5 py-1 rounded-full border border-[var(--color-brand-300)] bg-[var(--color-surface)] text-xs font-medium text-[var(--color-brand-700)] hover:bg-[var(--color-brand-100)] transition-colors"
+              aria-label="Sin sincronizar — sincronizar tu perfil"
+            >
+              <span>Sin sincronizar</span>
+            </Link>
+          )}
+          {isAuthEnabled && session !== null && userEmail !== null && (
+            <span className="hidden sm:inline-flex shrink-0 items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--color-brand-100)] text-xs font-medium text-[var(--color-brand-700)] border border-[var(--color-brand-200)]">
+              <span>Sincronizado como</span>
+              <span className="font-semibold text-[var(--color-brand-900)] not-italic">
+                {userEmail}
+              </span>
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="ml-1 underline-offset-2 hover:underline text-[var(--color-brand-700)] hover:text-[var(--color-brand-900)] focus-visible:outline-none focus-visible:underline"
+              >
+                Cerrar la cuenta del curso
+              </button>
+            </span>
+          )}
+
           {NAV_ITEMS.map(({ href, label }) => (
             <Link
               key={href}
