@@ -336,4 +336,42 @@ describe("usePracticeFlow hook structure (source assertions)", () => {
     const assignments = handleSubmit.match(/exerciseStartTimeRef\.current\s*=\s*performance\.now\(\)/g);
     expect(assignments).toBeNull();
   });
+
+  // ---------------------------------------------------------------------------
+  // REQ-ISOL-5: post-switch view isolation on /practice.
+  //
+  // The progress-loading useEffect must re-run when the active student
+  // changes — not only on mount. Otherwise switching profiles in-place
+  // (e.g. via a future in-page switcher) keeps showing the previous
+  // student's progress.
+  //
+  // We assert via source-level regex because the project test environment
+  // is Node (no jsdom) so renderHook / act are unavailable. The hook
+  // must subscribe to the active-student store and depend on `student`
+  // in the progress-load effect.
+  // ---------------------------------------------------------------------------
+
+  it("calls useActiveStudent() to subscribe to the active-student store (REQ-ISOL-5)", () => {
+    const src = hookSource();
+    // The hook must read `student` from the active-student store so the
+    // progress-loading effect can re-run on student change.
+    expect(src).toMatch(/useActiveStudent\s*\(/);
+  });
+
+  it("depends on `student` in the progress-loading useEffect (REQ-ISOL-5)", () => {
+    const src = hookSource();
+    // Locate the useEffect that calls loadProgress(). Its dep array MUST
+    // contain `student` (and must NOT be empty).
+    const effectIdx = src.indexOf("loadProgress()");
+    expect(effectIdx).toBeGreaterThan(-1);
+    // Walk back to the enclosing useEffect(
+    const useEffectIdx = src.lastIndexOf("useEffect(", effectIdx);
+    expect(useEffectIdx).toBeGreaterThan(-1);
+    // Slice from the useEffect opening to its closing "}, [...])" pattern.
+    const effectRegion = src.slice(useEffectIdx, useEffectIdx + 600);
+    // The dep array must include `student` and must NOT be empty `[]`.
+    expect(effectRegion).toMatch(/\},\s*\[\s*student/);
+    // Defensive: must not be the empty-deps form.
+    expect(effectRegion).not.toMatch(/\},\s*\[\s*\]\s*\)/);
+  });
 });

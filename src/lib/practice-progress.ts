@@ -240,8 +240,38 @@ export function loadProgressRaw(): PracticeProgress {
 }
 
 function extractActiveProgress(map: PracticeProgressMap): PracticeProgress {
-  if (map.activeStudentId === null) return EMPTY_PROGRESS;
-  return map.students[map.activeStudentId] ?? EMPTY_PROGRESS;
+  const activeProfileId = getActiveProfileId();
+
+  // No active profile → fail closed with empty.
+  if (activeProfileId === null) return EMPTY_PROGRESS;
+
+  // Repair: if the practice pointer is stale AND points to a real student
+  // (i.e. some previous write polluted the active slot via the old
+  // addAttempt path that read through map.activeStudentId), drop the
+  // active slot and persist the cleanup. A pointer that doesn't match
+  // any student in the map (null or unknown) is just an orphan pointer
+  // and does NOT trigger repair.
+  if (
+    map.activeStudentId !== null &&
+    map.activeStudentId !== activeProfileId &&
+    map.students[map.activeStudentId] !== undefined
+  ) {
+    const repaired: PracticeProgressMap = {
+      ...map,
+      students: { ...map.students },
+    };
+    delete repaired.students[activeProfileId];
+    try {
+      localStorage.setItem(PRACTICE_STORAGE_KEY, JSON.stringify(repaired));
+    } catch {
+      // Persist failure is non-fatal — we still return EMPTY_PROGRESS for this call.
+    }
+    return EMPTY_PROGRESS;
+  }
+
+  // Read the active student's slot. Falls back to EMPTY_PROGRESS when the
+  // active student has no slot yet (first read after a switch).
+  return map.students[activeProfileId] ?? EMPTY_PROGRESS;
 }
 
 /**

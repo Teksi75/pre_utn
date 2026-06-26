@@ -47,6 +47,14 @@ export default function DiagnosticPage() {
   useEffect(() => {
     if (student === null) return;
 
+    // REQ-ISOL-6: reset in-progress state when the active student changes.
+    // Without this, a switch mid-diagnostic would carry the previous
+    // student's attempts/estimates/suggestions into the new student's
+    // session, leaking data and producing nonsensical results.
+    setAttempts([]);
+    setEstimates([]);
+    setSuggestions([]);
+
     setProfileBlocked(false);
     const catalog = loadCatalog();
     const selection = selectBalancedSet(catalog);
