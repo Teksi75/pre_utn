@@ -596,9 +596,12 @@
       "summary": "Centralized active profile ID access behind getActiveProfileId() in active-session.ts. Replaced dispersed direct localStorage.getItem reads in practice-progress and diagnostic-storage adapters. Added hasProfilesStorage() helper for legacy migration containment. Boundary scan confirms 0 violations. 2503 tests pass, typecheck, build green."
     },
     "supabase-adapter-v0-fallback": {
-      "status": "in-progress",
-      "branch": "feat/supabase-adapter-v0-fallback-remote",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-06-22",
+      "completedAt": "2026-06-24",
+      "mergedTo": "main",
+      "mergeCommit": "cfe3a75",
       "roadmapIssue": "I-24",
       "delivery": "auto-chain; stacked-to-main",
       "pr1": {
@@ -608,7 +611,9 @@
       },
       "pr2": {
         "branch": "feat/supabase-adapter-v0-fallback-remote",
-        "status": "in-progress",
+        "status": "done",
+        "mergedTo": "main",
+        "mergeCommit": "cfe3a75",
         "summary": "PR 2 — Supabase adapter + client factory + migration + env + RLS scan + serialization tests + isolation tests + wiring: createSupabaseAdapter with RLS scoping, createBrowserClient with public vars only, SQL migration with own-row policies, no-service-role scan, active-student isolation tests, raw implementation exports for recursion avoidance. Review fixes: resolved-failure fallback detection, malformed env try-catch, dangling activeStudentId validation, initialization race fix, remote FK profile creation, unhandled rejection protection, CustomEvent observability sink. 2635+ tests pass. Phase 12 added minimal real telemetry sink: navigator.sendBeacon + fetch keepalive fallback to internal Next.js route handler /api/persistence/fallback. 2668 tests pass. Phase 13 added payload bounds + no-JSON-leak hardening: isFallbackEventPayload enforces method <= 64, errorSummary <= 200, timestamp <= 32 via shared FALLBACK_PAYLOAD_BOUNDS; sanitizeErrorSummary non-Error path uses String() + try/catch + length guard with 'unknown-fallback-reason' sentinel. 2680 tests pass.",
         "size_exception_accepted": true,
         "size_exception_recorded_at": "2026-06-23",
@@ -656,5 +661,5 @@
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-18T22:15:00-03:00"
+  "lastAudit": "2026-06-26T00:00:00-03:00"
 }

@@ -14,7 +14,10 @@ const ROOT = resolve(__dirname, "../../..");
 const MIGRATION_FILE = join(ROOT, "supabase", "migrations", "20260622_supabase_adapter_v0.sql");
 
 function readMigration(): string {
-  return readFileSync(MIGRATION_FILE, "utf-8");
+  // Normalize CRLF → LF: on Windows the working tree has CRLF (git text=auto),
+  // but assertions use \n literals. Without this, multi-line toContain breaks
+  // locally while passing on Linux CI.
+  return readFileSync(MIGRATION_FILE, "utf-8").replace(/\r\n/g, "\n");
 }
 
 describe("migration RLS shape", () => {
