@@ -129,9 +129,14 @@ export function createLocalStorageAdapter(
         // can create/recover the "Alumno local" profile.
         return loadProgress();
       }
-      if (activeId !== studentId) {
-        return EMPTY_PROGRESS;
-      }
+      // Delegate consistently to the repaired loadProgress() path. The
+      // local storage is single-active-profile: identity comes from
+      // getActiveProfileId(), and `studentId` is only a contract-level
+      // parameter for the abstract adapter interface. When the practice
+      // pointer is stale, the repaired loadProgress() applies the
+      // aggressive repair and returns EMPTY_PROGRESS for the active
+      // student (REQ-ISOL-1, REQ-ISOL-2, REQ-ISOL-4).
+      void studentId;
       return loadProgress();
     },
 
