@@ -134,7 +134,7 @@ After a switch and full page reload, the active student MUST be resolved from `g
 
 **ID**: REQ-ISOL-7
 
-`src/components/study-plan/StudyPlanSection.tsx` and its dedicated test MUST be removed.
+`src/components/home/StudyPlanSection.tsx` and its dedicated test MUST be removed.
 
 #### Scenario: dead component and its test are absent
 

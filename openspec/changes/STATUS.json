@@ -634,11 +634,25 @@
       "summary": "Replace duplicated U3 inecuaciones worked example (was -2x > 6) with 5 - 2x <= 11, rename visual id (vis-ex-inl-flip-intervalo-set -> vis-ex-inl-2-flip-cerrado-intervalo), update 3 tests + 1 doc line. 49 insertions / 24 deletions across 4 files. TDD RED-then-GREEN: d13b4f2 RED (3 tests fail), 9ab5f47 GREEN (42/42 pass), 499a8d5 doc cleanup, 30932fa chore STATUS. Merged via fast-forward (main was simply behind feature branch, no divergent commits); 4 work-unit commits preserved on main. typecheck/build green. 1 unrelated pre-existing migration-rls-shape.test.ts failure (reproduced on main, belongs to feat/supabase-adapter-v0-fallback-remote)."
     },
     "fix-profile-isolation-on-switch": {
-      "status": "in-progress",
-      "branch": "fix-profile-isolation-on-switch",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-06-25",
+      "completedAt": "2026-06-25",
+      "mergedTo": "main",
+      "mergeCommit": "ee9b310b0a234d39a42437dea5b6686e0727eb3d",
       "issue": 56,
-      "summary": "Bug: student progress (practice/diagnostic/study-plan) not isolated when switching active student. Pre-existing, surfaced during PR #55 smoke."
+      "pr": 60,
+      "delivery": "single-pr",
+      "verify": "PASS WITH WARNINGS (0 CRITICAL, 1 WARNING: TDD evidence format; 2 SUGGESTIONS: RED/GREEN granularity, spec path mismatch)",
+      "deferred": [
+        "Linux GGA re-validation",
+        "REQ-ISOL-8 mirror field cleanup (PR future)",
+        "Pre-existing migration-rls-shape.test.ts failure (PR #55 out of scope)"
+      ],
+      "followUps": [
+        "Mirror field cleanup PR per REQ-ISOL-8"
+      ],
+      "summary": "Bug #56: extractActiveProgress in src/lib/practice-progress.ts was reading map.activeStudentId (persisted mirror) instead of getActiveProfileId(), freezing practice.v1.activeStudentId after a switch and returning the prior student's slice across navigations/reloads. Also addAttempt wrote into the stale slot, corrupting the new student's slot. Fix: route extractActiveProgress + addAttempt + selector-wired local-adapter through getActiveProfileId(); drop corrupted active slot on mismatch (aggressive repair); re-wire usePracticeFlow and /diagnostic to re-read on activeStudentId change; delete dead src/components/home/StudyPlanSection.tsx and clean up its negative-import assertion. 11 new tests, 5 atomic work-unit commits, --no-ff merge to main. Verify PASS WITH WARNINGS. Pre-existing migration-rls-shape.test.ts failure is out of scope (PR #55)."
     }
   },
   "activeBranches": [],

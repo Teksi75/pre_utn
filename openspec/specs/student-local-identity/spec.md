@@ -175,17 +175,105 @@ A `localStorage` adapter under `src/lib/student-profile-storage.ts` MUST expose 
 
 The practice, diagnostic, and study-plan adapters MUST internally key by `studentId` using the central map shape (`{ students: Record<studentId, T>; activeStudentId: string | null }`). Existing public signatures (`loadProgress`, `addAttempt`, `saveProgress`, `loadDiagnosticResult`, `saveDiagnosticResult`, `loadStudyPlan`, `saveStudyPlan`) MUST be preserved and MUST return data for the active student only. Adapter keys MUST stay versioned (`pre-utn.practice.v1`, `pre-utn.diagnostic.v1`, `pre-utn.study-plan.v1`).
 
-#### Scenario: loadProgress returns active student's slice
+Adapters MUST resolve the active student via `getActiveProfileId()` on every read and write and MUST NOT use `map.activeStudentId` from any progress key. `addAttempt` MUST write to the active student's slice only.
 
-- GIVEN a stored map with two students
-- WHEN `loadProgress` is called with `activeStudentId` set to student A
-- THEN it returns student A's `PracticeProgress` and never student B's
+(Strengthened by REQ-ISOL-1, REQ-ISOL-3 in `fix-profile-isolation-on-switch`: adapters must not read `map.activeStudentId` from the progress payload — the canonical identity source is `getActiveProfileId()`.)
 
-#### Scenario: addAttempt writes to active student only
+#### Scenario: stale practice pointer returns active student's slice
+
+- GIVEN `profiles.v1.activeStudentId = "B"` and `practice.v1.activeStudentId = "A"` with attempts under A only
+- WHEN `loadProgress()` is called
+- THEN it returns B's progress, not A's
+
+#### Scenario: null practice pointer returns active student's slice
+
+- GIVEN `profiles.v1.activeStudentId = "B"` and `practice.v1.activeStudentId = null`
+- WHEN `loadProgress()` is called
+- THEN it returns B's progress from `students.B`
+
+#### Scenario: unknown practice pointer returns active student's slice
+
+- GIVEN `profiles.v1.activeStudentId = "B"` and `practice.v1.activeStudentId = "ghost"`
+- WHEN `loadProgress()` is called
+- THEN it returns B's progress, not `EMPTY_PROGRESS`
+
+#### Scenario: addAttempt after switch does not corrupt new slot
+
+- GIVEN active profile is B, `practice.v1.activeStudentId = "A"`, A has `[a1]`, B has `[]`
+- WHEN `addAttempt(b1)` is called
+- THEN B's attempts equal `[b1]` and A's slot stays `[a1]`
+
+#### Scenario: existing matching-pointer behavior preserved
+
+- GIVEN a stored map with two students and matching pointers
+- WHEN `loadProgress` is called for student A
+- THEN it returns A's `PracticeProgress`
+
+#### Scenario: existing single-student addAttempt preserved
 
 - GIVEN a stored map with one student
-- WHEN `addAttempt` is called for an exercise
-- THEN the attempt is appended to that student's `attempts` and the map is re-saved
+- WHEN `addAttempt` is called
+- THEN the attempt is appended to that student's `attempts`
+
+### Requirement: Corrupted Active-Slot Repair
+
+When `loadProgress()` detects `practice.v1.activeStudentId` exists and differs from `getActiveProfileId()`, the active student's slot MUST be dropped and re-seeded from `EMPTY_PROGRESS`. Other students' slots MUST remain untouched.
+
+(Strengthens Per-Student Progress Adapter. Implemented by REQ-ISOL-2 in `fix-profile-isolation-on-switch` as the aggressive-repair branch — `map.activeStudentId !== null && map.activeStudentId !== activeProfileId && map.students[map.activeStudentId] !== undefined` triggers the drop. Persist failure is non-fatal; in-memory return is still `EMPTY_PROGRESS`.)
+
+#### Scenario: corrupted active slot is dropped
+
+- GIVEN `profiles.v1.activeStudentId = "B"`, `practice.v1.activeStudentId = "A"`, and B's slot has a hybrid blob
+- WHEN `loadProgress()` is called
+- THEN it returns `EMPTY_PROGRESS` for B and leaves A's slot intact
+
+### Requirement: Selector-Wired Local Fallback Isolation
+
+The selector-wired local fallback adapter MUST resolve the active student via `getActiveProfileId()` and apply the same corrupted-slot repair.
+
+(Strengthens Active Profile ID Boundary. Implemented by REQ-ISOL-4 in `fix-profile-isolation-on-switch`: removed the `activeId !== studentId → EMPTY_PROGRESS` branch from `local-adapter.ts` so the adapter always delegates to the repaired `loadProgress()` path consistently; the "no active profile → allow raw load" branch is preserved.)
+
+#### Scenario: fallback returns active student's slice
+
+- GIVEN selector chose local adapter and `practice.v1.activeStudentId = "A"` while active profile is B
+- WHEN fallback `loadProgress()` is called
+- THEN it returns B's progress, not A's
+
+### Requirement: Post-Switch View Isolation
+
+After a switch, `/practice`, `/diagnostic`, and the home next-step view MUST show the new student's slice (or empty state). `usePracticeFlow` MUST subscribe to active-student changes.
+
+(Strengthens Active Profile Gates Practice, Home, and Diagnostic. Implemented by REQ-ISOL-5 in `fix-profile-isolation-on-switch`: `usePracticeFlow` now subscribes to `useActiveStudent()` and the progress-loading `useEffect` dep array is `[student]` — the source-level regex assertion (`}, [student])` AND NOT `}, [])`) encodes that the effect re-runs on student change, not just on mount. The diagnostic page prepends `setAttempts([]) / setEstimates([]) / setSuggestions([])` at the top of its `[student]` effect.)
+
+#### Scenario: home shows new student's empty state
+
+- GIVEN A has a diagnostic result and B has none
+- WHEN active profile switches to B and home re-renders
+- THEN it shows B's empty-state prompt, not A's result
+
+#### Scenario: practice flow re-loads on student change
+
+- GIVEN `usePracticeFlow` is mounted with A active
+- WHEN active student changes to B without unmount
+- THEN the progress-loading effect re-runs and `progress` becomes B's slice
+
+#### Scenario: diagnostic resets in-progress state on switch
+
+- GIVEN the diagnostic page state has attempts `[a1]` for A
+- WHEN active student changes to B
+- THEN `attempts`, `estimates`, and `suggestions` become `[]`
+
+### Requirement: Reload Identity Resolution
+
+After a switch and full page reload, the active student MUST be resolved from `getActiveProfileId()`, not from any persisted `activeStudentId` shortcut.
+
+(Strengthens Active Profile ID Boundary. Implemented by REQ-ISOL-6 in `fix-profile-isolation-on-switch`: covered by the same `getActiveProfileId()` rewrite used for REQ-ISOL-1/2/3/4/5 — the boundary is the only reader of `profiles.v1.activeStudentId`, so a full reload routes through it on the next read.)
+
+#### Scenario: reload after switch is correct
+
+- GIVEN A was active, then switched to B, and `practice.v1.activeStudentId` still equals "A"
+- WHEN the page reloads and `loadProgress()` is called
+- THEN it returns B's progress, not A's
 
 ### Requirement: Legacy Global Progress Migration
 
