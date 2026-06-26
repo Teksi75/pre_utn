@@ -25,6 +25,7 @@ import type { ExerciseId, Exercise } from "@/domain/models/exercise";
 import type { TheoryNode } from "@/domain/models/theory";
 import type { WorkedExample } from "@/domain/models/worked-example";
 import type { EvaluationResult } from "@/domain/evaluator/index";
+import { useActiveStudent } from "@/hooks/useActiveStudent";
 import {
   createPreviousExerciseSnapshot,
   type PreviousExerciseSnapshot,
@@ -106,6 +107,12 @@ export function usePracticeFlow() {
   // and the client's first hydration render produce identical markup.
   // We read localStorage inside a useEffect (browser-only) and update
   // the state, which triggers a re-render with the real data.
+  //
+  // The effect depends on `student` (REQ-ISOL-5): when the active student
+  // changes, the effect re-runs and re-reads progress for the new student.
+  // Without this dep, switching profiles in-place (e.g. via a future
+  // in-page switcher) would keep showing the previous student's progress.
+  const { student } = useActiveStudent();
   const [progress, setProgress] = useState<PracticeProgress>(EMPTY_PROGRESS);
   useEffect(() => {
     const result = loadProgress();
@@ -114,7 +121,7 @@ export function usePracticeFlow() {
     } else {
       setProgress(result);
     }
-  }, []);
+  }, [student]);
 
   // ---------------------------------------------------------------
   // Retry state — session-scoped, resets on page refresh
