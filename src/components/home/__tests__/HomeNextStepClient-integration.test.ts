@@ -51,10 +51,12 @@ describe("HomeNextStepClient — integration with StudentHomeViewModel", () => {
     expect(comp).not.toMatch(/<SkillRoadmap/);
   });
 
-  test("does NOT import or render StudyPlanSection (removed from Home)", () => {
-    const comp = source(componentPath);
-    expect(comp).not.toContain("StudyPlanSection");
-  });
+  // The StudyPlanSection negative-import assertion was removed as part of
+  // the fix-profile-isolation-on-switch change: the component itself has
+  // been deleted from src/components/home/StudyPlanSection.tsx (it had
+  // a mount-only `useEffect` that ignored active-student changes). No
+  // remaining source file imports it, and the absence is now enforced by
+  // the build (any new import would fail with module-not-found).
 
   test("passes viewModel.mission to MissionCard", () => {
     const comp = source(componentPath);
