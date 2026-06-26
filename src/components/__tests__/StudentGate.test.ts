@@ -40,10 +40,14 @@ describe("StudentGate — exact copy from spec", () => {
     expect(src).toContain("Empezar a estudiar");
   });
 
-  it("has info line 'Este perfil es local. Más adelante podrá sincronizarse con la cuenta del curso.'", () => {
+  it("has info line 'Este perfil es local. Si querés, también podés sincronizarlo con la cuenta del curso.'", () => {
     const src = gateSource();
+    // PR2 (auth-ui): the info line was reworded so the present-tense
+    // secondary CTA does not contradict a future-tense hint. Sync is
+    // available now (this PR activates it), so the hint no longer says
+    // "Más adelante".
     expect(src).toContain(
-      "Este perfil es local. Más adelante podrá sincronizarse con la cuenta del curso.",
+      "Este perfil es local. Si querés, también podés sincronizarlo con la cuenta del curso.",
     );
   });
 });

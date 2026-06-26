@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useCallback } from "react";
 import { validateDisplayName } from "../domain/student-profile/index";
 import { Card } from "./ui/Card";
@@ -14,12 +15,15 @@ export interface StudentGateProps {
 /**
  * Identification card shown when no active student profile exists.
  *
- * Copy is exact per the student-local-identity spec:
+ * Copy is exact per the student-local-identity spec (updated in
+ * `auth-sign-in-v0` PR2 for present-tense consistency):
  * - heading: `¿Quién está estudiando ahora?`
  * - body: `Ingresá tu nombre o apodo para guardar tu progreso en este dispositivo. No necesitás contraseña.`
  * - input label: `Nombre o apodo`
  * - primary action: `Empezar a estudiar`
- * - info line: `Este perfil es local. Más adelante podrá sincronizarse con la cuenta del curso.`
+ * - info line: `Este perfil es local. Si querés, también podés sincronizarlo con la cuenta del curso.`
+ * - secondary CTA: `Sincronizar con la cuenta del curso` → `/cuenta/ingresar`
+ *   (added in PR2 once sync became actually available).
  *
  * Validation uses the domain `validateDisplayName` function.
  */
@@ -129,9 +133,17 @@ export function StudentGate({ onSubmitProfile, externalError }: StudentGateProps
 
         {/* Informational line */}
         <p className="text-xs text-[var(--color-brand-500)] text-center leading-relaxed">
-          Este perfil es local. Más adelante podrá sincronizarse con la cuenta del
-          curso.
+          Este perfil es local. Si querés, también podés sincronizarlo con la cuenta del curso.
         </p>
+
+        {/* Secondary CTA — optional sync with the remote course account.
+            Wired as a Next.js Link so it works without JavaScript too. */}
+        <Link
+          href="/cuenta/ingresar"
+          className="block w-full py-2.5 px-4 text-center rounded-[var(--radius-button)] bg-[var(--color-brand-100)] text-[var(--color-brand-700)] font-medium text-sm hover:bg-[var(--color-brand-200)] active:bg-[var(--color-brand-300)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-500)] focus-visible:ring-offset-2"
+        >
+          Sincronizar con la cuenta del curso
+        </Link>
       </div>
     </Card>
   );
