@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { PersistenceInitializer } from "@/components/PersistenceInitializer";
+import { SessionProvider, AuthBootstrap } from "@/components/auth";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 
@@ -24,25 +25,28 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="min-h-screen flex flex-col">
-        <PersistenceInitializer />
-        <a href="#main-content" className="skip-link">
-          Saltar al contenido
-        </a>
+        <SessionProvider>
+          <PersistenceInitializer />
+          <AuthBootstrap />
+          <a href="#main-content" className="skip-link">
+            Saltar al contenido
+          </a>
 
-        <header role="banner">
-          <Nav />
-        </header>
+          <header role="banner">
+            <Nav />
+          </header>
 
-        <main id="main-content" role="main" className="flex-1">
-          {children}
-        </main>
+          <main id="main-content" role="main" className="flex-1">
+            {children}
+          </main>
 
-        <footer className="border-t border-[var(--color-brand-200)] py-4 text-center text-xs text-[var(--color-brand-500)]">
-          <p>
-            Programa independiente de preparación preuniversitaria. No afiliado
-            a instituciones universitarias.
-          </p>
-        </footer>
+          <footer className="border-t border-[var(--color-brand-200)] py-4 text-center text-xs text-[var(--color-brand-500)]">
+            <p>
+              Programa independiente de preparación preuniversitaria. No afiliado
+              a instituciones universitarias.
+            </p>
+          </footer>
+        </SessionProvider>
       </body>
     </html>
   );
