@@ -1611,21 +1611,23 @@ describe("BLOCKER 2: public functions propagate async adapter results", () => {
 });
 
 // ---------------------------------------------------------------------------
-// WARNING: Supabase token persistence — safe auth options for v0
-// v0 has no auth UI. persistSession must be false to avoid storing
-// tokens that could confuse the client or require token management.
+// auth-sign-in-v0: Supabase SSR auth options for v0
+// With auth-sign-in-v0 the browser client opts into cookie-based session
+// storage via @supabase/ssr. `persistSession` MUST be true so reloads
+// restore the session from cookies; `autoRefreshToken` MUST be true so
+// the middleware can refresh expired access tokens; `detectSessionInUrl`
+// MUST be true so /auth/callback can capture the magic-link code.
 // ---------------------------------------------------------------------------
 
-describe("WARNING: safe Supabase browser auth options for v0", () => {
-  it("createBrowserClient sets persistSession to false (no auth UI in v0)", async () => {
+describe("auth-sign-in-v0: @supabase/ssr browser client auth options", () => {
+  it("createBrowserClient uses @supabase/ssr with persistSession=true", async () => {
     vi.resetModules();
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://test.supabase.co");
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "test-key");
 
-    // Track the options passed to createClient
     let capturedOptions: Record<string, unknown> | null = null;
-    vi.doMock("@supabase/supabase-js", () => ({
-      createClient: (_url: string, _key: string, options: Record<string, unknown>) => {
+    vi.doMock("@supabase/ssr", () => ({
+      createBrowserClient: (_url: string, _key: string, options: Record<string, unknown>) => {
         capturedOptions = options;
         return { auth: { getSession: vi.fn() } };
       },
@@ -1636,11 +1638,10 @@ describe("WARNING: safe Supabase browser auth options for v0", () => {
 
     expect(capturedOptions).not.toBeNull();
     const auth = (capturedOptions as unknown as { auth: Record<string, unknown> }).auth;
-    // v0 has no auth UI — persistSession MUST be false to avoid storing tokens
-    expect(auth.persistSession).toBe(false);
-    // autoRefreshToken MUST be false — auth flow is out of scope
-    expect(auth.autoRefreshToken).toBe(false);
+    expect(auth.persistSession).toBe(true);
+    expect(auth.autoRefreshToken).toBe(true);
+    expect(auth.detectSessionInUrl).toBe(true);
 
-    vi.doUnmock("@supabase/supabase-js");
+    vi.doUnmock("@supabase/ssr");
   });
 });

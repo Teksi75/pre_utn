@@ -1,7 +1,11 @@
 /**
  * Supabase browser client factory.
  *
- * Creates a Supabase client using ONLY public environment variables.
+ * Creates a Supabase client using ONLY public environment variables
+ * via `@supabase/ssr` (the official Next.js SSR helper). `@supabase/ssr`
+ * automatically handles cookie-based session storage on the browser, so
+ * `persistSession: true` is safe and supported.
+ *
  * This module MUST NOT import, reference, or require any admin key
  * or non-public Supabase credential.
  *
@@ -12,7 +16,8 @@
  * @module supabase/browser
  */
 
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createBrowserClient as createSsrBrowserClient } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 // ---------------------------------------------------------------------------
 // Singleton
@@ -31,6 +36,12 @@ let cachedClient: SupabaseClient | null = null;
  * module. The publishable/anon key is browser-safe by design; admin
  * keys bypass RLS and MUST NOT appear in client code.
  *
+ * Built on `@supabase/ssr`'s `createBrowserClient` so session tokens
+ * are stored in cookies (browser-managed) and survive page reloads,
+ * while `autoRefreshToken` keeps the access token fresh and
+ * `detectSessionInUrl` allows the auth callback to capture the magic-link
+ * code automatically.
+ *
  * @returns SupabaseClient instance, or null if env vars are missing or
  *          malformed (e.g. invalid URL). Returns null instead of throwing
  *          so the selector falls back to local persistence gracefully.
@@ -46,16 +57,14 @@ export function createBrowserClient(): SupabaseClient | null {
   }
 
   try {
-    cachedClient = createClient(url, key, {
+    cachedClient = createSsrBrowserClient(url, key, {
       auth: {
-        // v0 has no auth UI — do NOT persist session tokens in browser storage.
-        // This avoids stale/phantom tokens and removes the need for token
-        // management or sign-out flows that are out of scope for v0.
-        persistSession: false,
-        // Do not auto-refresh — auth flow is out of scope for v0
-        autoRefreshToken: false,
-        // Do not detect session from URL fragments — no auth redirect flow in v0
-        detectSessionInUrl: false,
+        // Cookie-based session storage managed by @supabase/ssr.
+        persistSession: true,
+        // Middleware refreshes tokens; client keeps them fresh in foreground.
+        autoRefreshToken: true,
+        // Lets /auth/callback capture the magic-link code automatically.
+        detectSessionInUrl: true,
       },
     });
   } catch {
