@@ -1,11 +1,12 @@
 /**
  * Tests for modified HomeNextStepClient — src/components/home/HomeNextStepClient.tsx
  *
- * Source-inspection tests for PR2 changes:
+ * Source-inspection tests for PR2 + PR3 changes:
  * - Uses useActiveStudent hook
- * - Renders StudentGate when no active profile
- * - Renders active student chrome when profile exists
- * - Calls refresh on student switch
+ * - Renders loading placeholder when no active profile (the global
+ *   StudentGate in layout.tsx handles the redirect to /cuenta/ingresar).
+ * - Renders active student chrome when profile exists.
+ * - PR3: StudentGate is no longer mounted here directly.
  */
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
@@ -20,73 +21,45 @@ function homeSource(): string {
   );
 }
 
-describe("HomeNextStepClient — student identity wiring (PR2)", () => {
+describe("HomeNextStepClient — student identity wiring (PR2 + PR3)", () => {
   it("imports useActiveStudent from hooks", () => {
     const src = homeSource();
     expect(src).toContain("useActiveStudent");
   });
 
-  it("imports StudentGate component", () => {
+  it("renders loading placeholder when student is null (PR3)", () => {
     const src = homeSource();
-    expect(src).toContain("StudentGate");
-  });
-
-  it("renders StudentGate when student is null", () => {
-    const src = homeSource();
-    // Pattern: {student === null && <StudentGate ...>} OR {student ? ... : <StudentGate ...>}
+    // PR3: the form-mode StudentGate is gone — we render an aria-busy
+    // placeholder while the global gate in layout.tsx redirects.
     expect(src).toMatch(/student\s*===\s*null/);
-    expect(src).toMatch(/<StudentGate/);
+    expect(src).toMatch(/aria-busy/);
   });
 
   it("renders active student chrome when student exists", () => {
     const src = homeSource();
-    // Must have conditional rendering based on student — either ternary or explicit null check
     expect(src).toMatch(/student\s*===\s*null|student\s*\?/);
-    // Must show displayName in the active state
     expect(src).toMatch(/displayName/);
   });
 
   it("warmly identifies the active student in the dashboard zone", () => {
     const src = homeSource();
-    // The legacy line now lives in the HomeGreeting sub-component
-    // (introduced in B1). The parent still wires the student's displayName
-    // through, so we keep asserting on that contract here.
     expect(src).toMatch(/HomeGreeting|student\.displayName|displayName/);
     expect(src).not.toContain("Estás estudiando como");
-    // The legacy copy itself is asserted in HomeGreeting.test.ts.
   });
 
-  it("passes onSubmitProfile to StudentGate to create and activate profile", () => {
+  it("does NOT mount StudentGate directly (the global gate owns redirects)", () => {
     const src = homeSource();
-    // StudentGate must receive onSubmitProfile callback
-    expect(src).toMatch(/<StudentGate[^>]*onSubmitProfile/);
+    expect(src).not.toMatch(/<StudentGate\b/);
   });
 
   it("calls useActiveStudent to get student state", () => {
     const src = homeSource();
-    // Pattern: const { student, ... } = useActiveStudent()
     expect(src).toMatch(/const\s*\{[^}]*student[^}]*\}\s*=\s*useActiveStudent/);
   });
 
   it("renders dashboard panels only when student is active", () => {
     const src = homeSource();
-    // MissionCard, MathRoutePanel etc. should be conditional on student
-    // They appear AFTER the student null check
-    const gateIdx = src.indexOf("StudentGate");
-    const heroIdx = src.indexOf("MissionCard");
-    if (gateIdx >= 0 && heroIdx >= 0) {
-      // MissionCard should appear after a student check, not before StudentGate
-      // At minimum, mission card should be inside a conditional that checks student
-      expect(src).toMatch(/student\s*\?|<MissionCard/);
-    }
-  });
-
-  it("MissionCard appears in a student-conditional zone", () => {
-    const src = homeSource();
-    // MissionCard must appear after the student null check (in render order)
-    // At minimum: mission card appears somewhere AND there is a student null check
     expect(src).toContain("MissionCard");
-    expect(src).toMatch(/student\s*===\s*null/);
   });
 
   it("waits for the derived view model before rendering dashboard panels", () => {
@@ -103,7 +76,6 @@ describe("HomeNextStepClient — student identity wiring (PR2)", () => {
   it("renders StudentSwitcher conditionally", () => {
     const src = homeSource();
     expect(src).toContain("StudentSwitcher");
-    // Should be conditional — only shown when switching
     expect(src).toMatch(/showSwitcher|isSwitching|switcherOpen|StudentSwitcher[^>]*>/);
   });
 

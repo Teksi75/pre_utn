@@ -19,7 +19,6 @@ import {
   type StudentHomeViewModel,
 } from "../../domain/student-home/index";
 import { useActiveStudent } from "../../hooks/useActiveStudent";
-import { StudentGate } from "../StudentGate";
 import { StudentSwitcher } from "./StudentSwitcher";
 
 /**
@@ -35,7 +34,7 @@ import { StudentSwitcher } from "./StudentSwitcher";
  * 3. Progress is loaded from the per-student storage slice.
  */
 export function HomeNextStepClient() {
-  const { student, createAndActivate, refresh, isLoading } = useActiveStudent();
+  const { student, isLoading } = useActiveStudent();
   const [showSwitcher, setShowSwitcher] = useState(false);
   const [viewModel, setViewModel] = useState<StudentHomeViewModel | null>(null);
 
@@ -114,17 +113,21 @@ export function HomeNextStepClient() {
 
   // No active profile — show the identification card
   if (student === null) {
+    // PR3: the global StudentGate in the root layout is responsible for
+    // redirecting users without a profile or session to /cuenta/ingresar.
+    // Reaching this branch means the user has neither; the redirect is
+    // already in flight. Render a stable loading placeholder so the home
+    // does not flash empty content while the navigation completes.
     return (
       <section
         aria-labelledby="student-gate-heading"
+        aria-busy="true"
+        aria-live="polite"
         className="flex items-center justify-center min-h-[60vh]"
       >
-        <StudentGate
-          onSubmitProfile={(name) => {
-            createAndActivate(name);
-          }}
-          externalError={null}
-        />
+        <div className="animate-pulse text-sm text-[var(--color-brand-500)]">
+          …
+        </div>
       </section>
     );
   }

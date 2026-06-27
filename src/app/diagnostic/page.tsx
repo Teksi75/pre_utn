@@ -25,14 +25,13 @@ import type {
   SkillEstimate,
   PracticeSuggestion,
   DiagnosticResult,
-} from "@/domain/diagnostic/index";
-import { StudentGate } from "@/components/StudentGate";
+} from "@/domain/diagnostic";
 import { useActiveStudent } from "@/hooks/useActiveStudent";
 
 type DiagnosticPhase = "loading" | "question" | "results" | "error";
 
 export default function DiagnosticPage() {
-  const { student, createAndActivate } = useActiveStudent();
+  const { student } = useActiveStudent();
   const [phase, setPhase] = useState<DiagnosticPhase>("loading");
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -210,13 +209,14 @@ export default function DiagnosticPage() {
             ← Volver al inicio
           </Link>
         </div>
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <StudentGate
-            onSubmitProfile={(name) => {
-              createAndActivate(name);
-            }}
-            externalError={null}
-          />
+        <div
+          aria-busy="true"
+          aria-live="polite"
+          className="flex items-center justify-center min-h-[50vh]"
+        >
+          <div className="animate-pulse text-sm text-[var(--color-brand-500)]">
+            …
+          </div>
         </div>
       </div>
     );

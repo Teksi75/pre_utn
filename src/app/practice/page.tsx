@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/Button";
 import { usePracticeFlow, canRetryExercise } from "./usePracticeFlow";
 import { skillLabel } from "@/lib/skill-label";
 import type { SkillId } from "@/domain/models/skill";
-import { StudentGate } from "@/components/StudentGate";
 import { useActiveStudent } from "@/hooks/useActiveStudent";
 import { ChallengeFlow } from "@/components/practice/challenges/ChallengeFlow";
 import { hasChallengesForSkill, queryChallengesBySkill } from "@/domain/catalog/challenges/index";
@@ -22,7 +21,7 @@ const TOTAL_PHASES = 4;
 
 export default function PracticePage() {
   const flow = usePracticeFlow();
-  const { student, createAndActivate } = useActiveStudent();
+  const { student } = useActiveStudent();
   const { profileBlocked, resetProfileBlocked } = flow;
 
   // Auto-unblock when a profile becomes active
@@ -32,20 +31,26 @@ export default function PracticePage() {
     }
   }, [student, profileBlocked, resetProfileBlocked]);
 
-  // Gate: no active profile OR attempt was blocked → show identification card
+  // Gate: no active profile OR attempt was blocked → minimal loading
+  // placeholder. PR3: the global StudentGate in layout.tsx redirects
+  // users without a profile or session to /cuenta/ingresar; the
+  // blocked-attempt branch is shown only when an attempted write failed
+  // (e.g., remote FK error after sign-in). In both cases the user
+  // should see a stable placeholder, not the form-mode identity card.
   if (flow.profileBlocked || student === null) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-[var(--text-2xl)] font-bold text-brand-900 mb-6">
           Práctica
         </h1>
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <StudentGate
-            onSubmitProfile={(name) => {
-              createAndActivate(name);
-            }}
-            externalError={null}
-          />
+        <div
+          aria-busy="true"
+          aria-live="polite"
+          className="flex items-center justify-center min-h-[50vh]"
+        >
+          <div className="animate-pulse text-sm text-[var(--color-brand-500)]">
+            …
+          </div>
         </div>
       </div>
     );
