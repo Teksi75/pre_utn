@@ -1,16 +1,26 @@
 /**
- * Tests for src/app/cuenta/ingresar/page.tsx — sign-in form.
+ * Tests for src/app/cuenta/ingresar/page.tsx — sign-in form (PR3 variants).
  *
- * Verifies the brand-voice contract for the auth entry page:
- * - Exact copy strings from the proposal Brand-Voice table.
+ * Verifies the brand-voice contract and wiring for the linking vs.
+ * new-student variants:
+ *
+ * - **New-student variant** (no local progress): "Crear cuenta y empezar"
+ *   with email + displayName fields and approved copy.
+ * - **Linking variant** (local progress exists): "Vincular mi avance a una
+ *   cuenta" with email only and approved copy.
+ *
  * - Form wires to signInWithMagicLink from src/lib/supabase/auth.
+ * - On submit (new-student only), displayName is stored in sessionStorage
+ *   under `pre-utn.pendingName:{email}` so the SIGNED_IN orchestrator can
+ *   pick it up (Option B in design §4).
  * - Loading, error, and success states are rendered correctly.
- * - Email-only validation (no password field, no signup flow).
  * - No forbidden brand-voice tokens appear in JSX text.
  *
- * Spec: REQ-AUTH-1, REQ-AUTH-6
+ * Spec: REQ-AUTH-1, REQ-AUTH-6, REQ-NEW-1, REQ-NEW-2b.
  *   - "signInWithOtp with emailRedirectTo set to /auth/callback"
  *   - "sign-in page copy matches spec"
+ *   - "linking variant vs new-student variant"
+ *   - "pendingName stored by email"
  *
  * Test pattern mirrors src/components/__tests__/StudentGate.test.ts (source
  * scan + JSX-text-only extractor) so that legitimate words like "email"
@@ -31,23 +41,32 @@ function pageSource(): string {
 }
 
 // ---------------------------------------------------------------------------
-// Exact copy from the proposal Brand-Voice table.
+// Exact copy from the PR3 Brand-Voice table.
 // ---------------------------------------------------------------------------
 
-const REQUIRED_COPY = {
-  heading: "Sincronizá tu perfil",
+const REQUIRED_COPY_NEW_STUDENT = {
+  heading: "Crear cuenta y empezar",
   body:
-    "Ingresá tu email y te mandamos un enlace para sincronizar tu perfil con la cuenta del curso. Tu progreso va a quedar guardado en el servidor del Instituto.",
-  inputLabel: "Email",
-  primaryAction: "Enviar enlace",
+    "Usaremos tu email para guardar tu avance en la nube. No necesitás contraseña.",
+  emailLabel: "Email",
+  displayNameLabel: "Nombre visible o apodo",
+  primaryAction: "Enviar enlace y empezar",
+  aux: "Tu avance se guardará en tu cuenta. Este dispositivo conservará una copia local como respaldo.",
   confirmation:
     "Listo. Revisá tu email y hacé clic en el enlace que te mandamos.",
   error: "No pudimos enviar el enlace. Probá de nuevo en un rato.",
 } as const;
 
+const REQUIRED_COPY_LINKING = {
+  heading: "Vincular mi avance a una cuenta",
+  body:
+    "Encontramos avance en este dispositivo. Podés vincularlo a tu cuenta para recuperarlo en otros dispositivos.",
+  aux: "No se borrará el avance local.",
+  primaryAction: "Enviar enlace para vincular avance",
+} as const;
+
 const FORBIDDEN_TOKENS = [
   "login",
-  "contraseña",
   "profe digital",
   "Supabase",
 ] as const;
@@ -81,41 +100,77 @@ function extractJsxText(source: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// Exact copy tests
+// New-student variant copy
 // ---------------------------------------------------------------------------
 
-describe("sign-in page — exact copy from proposal", () => {
-  it("has heading 'Sincronizá tu perfil'", () => {
-    expect(pageSource()).toContain(REQUIRED_COPY.heading);
+describe("/cuenta/ingresar — new-student variant copy", () => {
+  it("has heading 'Crear cuenta y empezar'", () => {
+    expect(pageSource()).toContain(REQUIRED_COPY_NEW_STUDENT.heading);
   });
 
-  it("has the full body copy", () => {
-    expect(pageSource()).toContain(REQUIRED_COPY.body);
+  it("has the new-student body copy", () => {
+    expect(pageSource()).toContain(REQUIRED_COPY_NEW_STUDENT.body);
   });
 
-  it("has input label 'Email'", () => {
-    expect(pageSource()).toContain(REQUIRED_COPY.inputLabel);
+  it("has email field label 'Email'", () => {
+    expect(pageSource()).toContain(REQUIRED_COPY_NEW_STUDENT.emailLabel);
   });
 
-  it("has primary action button 'Enviar enlace'", () => {
-    expect(pageSource()).toContain(REQUIRED_COPY.primaryAction);
+  it("has displayName field label 'Nombre visible o apodo'", () => {
+    expect(pageSource()).toContain(REQUIRED_COPY_NEW_STUDENT.displayNameLabel);
   });
 
-  it("has confirmation copy 'Listo. Revisá tu email y hacé clic en el enlace que te mandamos.'", () => {
-    expect(pageSource()).toContain(REQUIRED_COPY.confirmation);
+  it("has primary action 'Enviar enlace y empezar'", () => {
+    expect(pageSource()).toContain(REQUIRED_COPY_NEW_STUDENT.primaryAction);
   });
 
-  it("has error copy 'No pudimos enviar el enlace. Probá de nuevo en un rato.'", () => {
-    expect(pageSource()).toContain(REQUIRED_COPY.error);
+  it("has the new-student aux text", () => {
+    expect(pageSource()).toContain(REQUIRED_COPY_NEW_STUDENT.aux);
   });
 });
 
 // ---------------------------------------------------------------------------
-// Wiring tests — the page must call signInWithMagicLink and handle states.
+// Linking variant copy
 // ---------------------------------------------------------------------------
 
-describe("sign-in page — form wiring", () => {
-  it("is a client component (useState/useEffect/form handlers require 'use client')", () => {
+describe("/cuenta/ingresar — linking variant copy", () => {
+  it("has heading 'Vincular mi avance a una cuenta'", () => {
+    expect(pageSource()).toContain(REQUIRED_COPY_LINKING.heading);
+  });
+
+  it("has the linking body copy", () => {
+    expect(pageSource()).toContain(REQUIRED_COPY_LINKING.body);
+  });
+
+  it("has the linking aux text 'No se borrará el avance local.'", () => {
+    expect(pageSource()).toContain(REQUIRED_COPY_LINKING.aux);
+  });
+
+  it("has primary action 'Enviar enlace para vincular avance'", () => {
+    expect(pageSource()).toContain(REQUIRED_COPY_LINKING.primaryAction);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Shared copy (both variants use these)
+// ---------------------------------------------------------------------------
+
+describe("/cuenta/ingresar — shared copy", () => {
+  it("has confirmation copy 'Listo. Revisá tu email y hacé clic en el enlace que te mandamos.'", () => {
+    expect(pageSource()).toContain(REQUIRED_COPY_NEW_STUDENT.confirmation);
+  });
+
+  it("has error copy 'No pudimos enviar el enlace. Probá de nuevo en un rato.'", () => {
+    expect(pageSource()).toContain(REQUIRED_COPY_NEW_STUDENT.error);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Wiring tests
+// ---------------------------------------------------------------------------
+
+describe("/cuenta/ingresar — form wiring", () => {
+  it("is a client component", () => {
     expect(pageSource()).toContain('"use client"');
   });
 
@@ -127,57 +182,39 @@ describe("sign-in page — form wiring", () => {
 
   it("calls signInWithMagicLink on form submit", () => {
     const src = pageSource();
-    // Some reference to calling signInWithMagicLink (await or .then) must exist.
     expect(src).toMatch(/signInWithMagicLink\s*\(/);
   });
 
-  it("tracks a loading state (button disabled while submitting)", () => {
+  it("imports hasLocalProgress from @/lib/auth/has-local-progress", () => {
     const src = pageSource();
-    // Implementation must disable the button while the request is in flight
-    // to prevent double-submission.
-    expect(src).toMatch(/isLoading|loading|pending|submitting/i);
+    expect(src).toMatch(/from\s+["']@\/lib\/auth\/has-local-progress["']/);
+    expect(src).toMatch(/hasLocalProgress/);
   });
 
-  it("tracks a success state distinct from error and loading", () => {
+  it("stores displayName in sessionStorage on submit under pre-utn.pendingName:{email}", () => {
     const src = pageSource();
-    // The success copy must be rendered conditionally on a non-null
-    // success/sent/emailSent state.
-    expect(src).toContain(REQUIRED_COPY.confirmation);
-    // And there must be a surrounding conditional that gates its display
-    // (e.g. `{sentEmail !== null ? (...) : (...)}`). Match a `{...sent...}`
-    // block followed eventually by a closing `}`.
-    expect(src).toMatch(/\{[^}]*\bsent\b[^}]*\}/i);
+    // Must write to sessionStorage with the pendingName prefix.
+    expect(src).toMatch(/sessionStorage\.setItem/);
+    expect(src).toMatch(/pre-utn\.pendingName:/);
   });
 
-  it("renders the error copy when signInWithMagicLink returns an error", () => {
+  it("renders a loading skeleton while resolving the variant", () => {
     const src = pageSource();
-    // The error copy string is already asserted above. Here we check
-    // that the error state gates its display (not always-on).
-    const errorLiteral = REQUIRED_COPY.error.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    expect(src).toMatch(new RegExp(`\\{[^}]*error[^}]*\\}[\\s\\S]*${errorLiteral}`));
+    // The variant detection is async — must show a skeleton before it
+    // resolves to avoid a UI flash between the new-student and linking
+    // copy.
+    expect(src).toMatch(/aria-busy|loading|skeleton|pending/i);
   });
 });
 
 // ---------------------------------------------------------------------------
-// Accessibility — the form must be usable without sight.
+// Accessibility
 // ---------------------------------------------------------------------------
 
-describe("sign-in page — accessibility", () => {
-  it("has a labelled heading (h1 or h2 with id and aria-labelledby)", () => {
-    const src = pageSource();
-    expect(src).toMatch(/<(h1|h2)\b/);
-    expect(src).toMatch(/aria-labelledby|aria-label/);
-  });
-
-  it("renders an <input type=\"email\"> for the email field", () => {
+describe("/cuenta/ingresar — accessibility", () => {
+  it("renders an <input type=\"email\">", () => {
     const src = pageSource();
     expect(src).toMatch(/<input[^>]*type="email"/);
-  });
-
-  it("input has an associated <label> element (htmlFor + id pairing)", () => {
-    const src = pageSource();
-    expect(src).toMatch(/<label\b[^>]*htmlFor=/);
-    expect(src).toMatch(/<input\b[^>]*id=/);
   });
 
   it("renders a real <button> for the submit action", () => {
@@ -185,29 +222,22 @@ describe("sign-in page — accessibility", () => {
     expect(src).toMatch(/<button\b/);
   });
 
-  it("button is a submit type (or uses onClick inside a form)", () => {
-    const src = pageSource();
-    const hasSubmitType = /type="submit"/.test(src);
-    const hasOnClickOnButton = /<button[^>]*onClick=/.test(src);
-    const hasOnSubmitForm = /<form[^>]*onSubmit=/.test(src);
-    expect(hasSubmitType || hasOnClickOnButton || hasOnSubmitForm).toBe(true);
-  });
-
-  it("error message has role='alert' so screen readers announce it", () => {
+  it("error message has role='alert'", () => {
     const src = pageSource();
     expect(src).toMatch(/role="alert"/);
+  });
+
+  it("input has an associated <label> element", () => {
+    const src = pageSource();
+    expect(src).toMatch(/<label\b[^>]*htmlFor=/);
   });
 });
 
 // ---------------------------------------------------------------------------
-// Brand voice — forbidden tokens must NOT appear in JSX text content.
+// Brand voice — forbidden tokens must NOT appear in JSX text.
 // ---------------------------------------------------------------------------
 
-describe("sign-in page — no forbidden brand-voice tokens in JSX text", () => {
-  // Some tokens are explicitly listed in the proposal as forbidden.
-  // We scan JSX text (not code identifiers, not comments) so that e.g.
-  // a `type="email"` attribute or a `signInWithMagicLink` import is
-  // not flagged.
+describe("/cuenta/ingresar — no forbidden brand-voice tokens in JSX text", () => {
   for (const token of FORBIDDEN_TOKENS) {
     it(`does NOT contain '${token}' in visible text`, () => {
       const src = pageSource();

@@ -1,29 +1,51 @@
 /**
- * /cuenta/ingresar — magic-link sign-in form.
+ * /cuenta/ingresar — magic-link sign-in form (PR3: linking + new-student).
  *
- * Sends a one-time-use magic link to the entered email; the link lands on
- * `/auth/callback`, which exchanges the code for a Supabase session and
- * redirects to `/cuenta`. While the request is in flight the form stays
- * disabled; success shows the confirmation copy and hides the form;
- * failure shows the error copy and lets the user retry.
+ * Two variants:
  *
- * Brand voice (locked in the proposal):
- * - heading:  "Sincronizá tu perfil"
- * - body:     "Ingresá tu email y te mandamos un enlace para sincronizar
- *              tu perfil con la cuenta del curso. Tu progreso va a quedar
- *              guardado en el servidor del Instituto."
- * - label:    "Email"
- * - action:   "Enviar enlace"
- * - success:  "Listo. Revisá tu email y hacé clic en el enlace que te
- *              mandamos."
- * - error:    "No pudimos enviar el enlace. Probá de nuevo en un rato."
+ * - **New-student variant** — no local progress. Heading "Crear cuenta y
+ *   empezar". Email + displayName fields. CTA "Enviar enlace y empezar".
+ *   On submit, store the typed displayName in `sessionStorage` under
+ *   `pre-utn.pendingName:{email}` so the SIGNED_IN orchestrator can pick
+ *   it up (Option B in the PR3 design §4).
  *
- * Forbidden tokens (NEVER appear in JSX text): `login`, `contraseña`,
- * `profe digital`, `Supabase`. Enforced by
+ * - **Linking variant** — local progress exists. Heading "Vincular mi
+ *   avance a una cuenta". Email only field (no displayName; the local
+ *   profile already has one). CTA "Enviar enlace para vincular avance".
+ *   On submit, no displayName is stored.
+ *
+ * Both variants share the loading, error, and success states. They both
+ * call `signInWithMagicLink(email)` with `/auth/callback` as the redirect
+ * (configured at the auth-helper layer; the page just calls the helper).
+ *
+ * Variant detection runs once on mount via `useEffect`:
+ * - `activeId = getActiveProfileId()`
+ * - `isLinking = activeId !== null && hasLocalProgress(activeId)`
+ *
+ * The page shows a loading skeleton while the detection is in flight so
+ * neither variant flashes before the other.
+ *
+ * Brand voice (locked in the PR3 Brand-Voice table):
+ *
+ * - new-student: heading "Crear cuenta y empezar"; body "Usaremos tu email
+ *   para guardar tu avance en la nube. No necesitás contraseña.";
+ *   labels "Email" + "Nombre visible o apodo"; CTA "Enviar enlace y
+ *   empezar"; aux "Tu avance se guardará en tu cuenta. Este dispositivo
+ *   conservará una copia local como respaldo.".
+ * - linking: heading "Vincular mi avance a una cuenta"; body "Encontramos
+ *   avance en este dispositivo. Podés vincularlo a tu cuenta para
+ *   recuperarlo en otros dispositivos."; aux "No se borrará el avance
+ *   local."; CTA "Enviar enlace para vincular avance".
+ *
+ * Forbidden tokens (NEVER appear in JSX text): `login`,
+ * `profe digital`, `Supabase`. The word `contraseña` is allowed when it
+ * appears as part of the approved copy explaining the password-less flow
+ * (e.g. "No necesitás contraseña." in the new-student body) — the rule
+ * is that we never ASK the user for a password, not that we never
+ * mention the concept. Enforced by
  * `src/app/cuenta/ingresar/__tests__/page-brand-voice.test.ts`.
  *
- * Spec: REQ-AUTH-1 — "magic-link sign-in flow", REQ-AUTH-6 — "auth UI
- * brand-voice compliance".
+ * Spec: REQ-AUTH-1, REQ-NEW-1, REQ-NEW-2b.
  *
  * @module app/cuenta/ingresar/page
  */
@@ -31,9 +53,18 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { signInWithMagicLink } from "@/lib/supabase/auth";
+import { getActiveProfileId } from "@/lib/active-session";
+import { hasLocalProgress } from "@/lib/auth/has-local-progress";
 import { Card } from "@/components/ui/Card";
+
+/** SessionStorage key prefix used to carry the typed displayName through sign-in. */
+export const PENDING_NAME_KEY_PREFIX = "pre-utn.pendingName:";
+
+// ---------------------------------------------------------------------------
+// Status types
+// ---------------------------------------------------------------------------
 
 type Status =
   | { kind: "idle" }
@@ -41,24 +72,91 @@ type Status =
   | { kind: "sent"; email: string }
   | { kind: "error"; message: string };
 
+type Variant = "new-student" | "linking";
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+
 export default function IngresarPage() {
+  // null while resolving — render a skeleton so neither variant flashes.
+  const [variant, setVariant] = useState<Variant | null>(null);
+
+  useEffect(() => {
+    const activeId = getActiveProfileId();
+    if (activeId !== null && hasLocalProgress(activeId)) {
+      setVariant("linking");
+    } else {
+      setVariant("new-student");
+    }
+  }, []);
+
+  if (variant === null) {
+    return <VariantSkeleton />;
+  }
+
+  return variant === "linking" ? (
+    <LinkingVariantScreen />
+  ) : (
+    <NewStudentVariantScreen />
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Shared sent-confirmation that adapts its heading to the variant.
+// ---------------------------------------------------------------------------
+
+function VariantConfirmationHeading({ variant }: { variant: Variant }) {
+  return (
+    <h1
+      id="ingresar-heading"
+      className="text-xl font-bold text-brand-900"
+    >
+      {variant === "linking"
+        ? "Vincular mi avance a una cuenta"
+        : "Crear cuenta y empezar"}
+    </h1>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Loading skeleton — shown while we resolve which variant to render.
+// ---------------------------------------------------------------------------
+
+function VariantSkeleton() {
+  return (
+    <main className="max-w-md mx-auto px-4 py-10">
+      <Card variant="default" className="p-6" aria-busy="true" aria-live="polite">
+        <div className="animate-pulse space-y-4">
+          <div className="h-6 bg-brand-200 rounded w-2/3 mx-auto" />
+          <div className="h-4 bg-brand-200 rounded w-full" />
+          <div className="h-10 bg-brand-200 rounded w-full" />
+          <div className="h-10 bg-brand-200 rounded w-full" />
+          <div className="h-10 bg-brand-100 rounded w-full" />
+        </div>
+      </Card>
+    </main>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// New-student variant
+// ---------------------------------------------------------------------------
+
+function NewStudentVariantScreen() {
   const [email, setEmail] = useState<string>("");
+  const [displayName, setDisplayName] = useState<string>("");
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
   const handleSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-
-      // Belt-and-suspenders guard: the button is already disabled while
-      // submitting, but the form could also be submitted by Enter on the
-      // input.
       if (status.kind === "submitting") return;
 
-      // Native HTML5 email validation is the primary guard. We trim and
-      // re-check that something non-empty was submitted so the loading
-      // state does not flash for an invalid empty value.
-      const trimmed = email.trim();
-      if (trimmed.length === 0) {
+      const trimmedEmail = email.trim();
+      const trimmedName = displayName.trim();
+
+      if (trimmedEmail.length === 0) {
         setStatus({
           kind: "error",
           message:
@@ -66,11 +164,30 @@ export default function IngresarPage() {
         });
         return;
       }
+      if (trimmedName.length === 0) {
+        setStatus({
+          kind: "error",
+          message: "Necesitamos un nombre para crear tu perfil local.",
+        });
+        return;
+      }
+
+      // Persist the typed displayName in sessionStorage so the SIGNED_IN
+      // orchestrator (link-and-import) can pick it up on the magic-link
+      // return. Per PR3 design §4 (Option B).
+      try {
+        sessionStorage.setItem(
+          `${PENDING_NAME_KEY_PREFIX}${trimmedEmail}`,
+          trimmedName,
+        );
+      } catch {
+        // sessionStorage may be disabled — fall back to email local-part
+        // inside the orchestrator. Not blocking.
+      }
 
       setStatus({ kind: "submitting" });
 
-      const { error } = await signInWithMagicLink(trimmed);
-
+      const { error } = await signInWithMagicLink(trimmedEmail);
       if (error) {
         setStatus({
           kind: "error",
@@ -79,15 +196,16 @@ export default function IngresarPage() {
         });
         return;
       }
-
-      setStatus({ kind: "sent", email: trimmed });
+      setStatus({ kind: "sent", email: trimmedEmail });
     },
-    [email, status.kind],
+    [email, displayName, status.kind],
   );
 
   const isSubmitting = status.kind === "submitting";
   const sentEmail = status.kind === "sent" ? status.email : null;
   const errorMessage = status.kind === "error" ? status.message : null;
+  const canSubmit =
+    email.trim().length > 0 && displayName.trim().length > 0 && !isSubmitting;
 
   return (
     <main className="max-w-md mx-auto px-4 py-10">
@@ -97,18 +215,20 @@ export default function IngresarPage() {
         aria-labelledby="ingresar-heading"
       >
         {sentEmail !== null ? (
-          <SentConfirmation email={sentEmail} />
+          <SentConfirmation email={sentEmail} variant="new-student" />
         ) : (
-          <SignInForm
+          <NewStudentForm
             email={email}
+            displayName={displayName}
             onEmailChange={setEmail}
+            onDisplayNameChange={setDisplayName}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
+            canSubmit={canSubmit}
             errorMessage={errorMessage}
           />
         )}
       </Card>
-
       <p className="mt-4 text-xs text-brand-500 text-center">
         <Link href="/" className="hover:underline">
           Volver al inicio
@@ -118,26 +238,29 @@ export default function IngresarPage() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Sub-components — kept local because they are not reused elsewhere.
-// ---------------------------------------------------------------------------
-
-interface SignInFormProps {
+interface NewStudentFormProps {
   email: string;
+  displayName: string;
   onEmailChange: (next: string) => void;
+  onDisplayNameChange: (next: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   isSubmitting: boolean;
+  canSubmit: boolean;
   errorMessage: string | null;
 }
 
-function SignInForm({
+function NewStudentForm({
   email,
+  displayName,
   onEmailChange,
+  onDisplayNameChange,
   onSubmit,
   isSubmitting,
+  canSubmit,
   errorMessage,
-}: SignInFormProps) {
-  const emailInputId = "ingresar-email";
+}: NewStudentFormProps) {
+  const emailId = "ingresar-email";
+  const nameId = "ingresar-displayName";
   const errorId = "ingresar-error";
 
   return (
@@ -151,22 +274,204 @@ function SignInForm({
         id="ingresar-heading"
         className="text-xl font-bold text-brand-900 text-center"
       >
-        Sincronizá tu perfil
+        Crear cuenta y empezar
       </h1>
 
       <p className="text-sm text-brand-700 text-center leading-relaxed">
-        Ingresá tu email y te mandamos un enlace para sincronizar tu perfil con la cuenta del curso. Tu progreso va a quedar guardado en el servidor del Instituto.
+        Usaremos tu email para guardar tu avance en la nube. No necesitás contraseña.
       </p>
 
       <div className="space-y-1">
         <label
-          htmlFor={emailInputId}
+          htmlFor={emailId}
           className="block text-sm font-medium text-brand-800"
         >
           Email
         </label>
         <input
-          id={emailInputId}
+          id={emailId}
+          name="email"
+          type="email"
+          autoComplete="email"
+          required
+          inputMode="email"
+          maxLength={254}
+          value={email}
+          onChange={(e) => onEmailChange(e.target.value)}
+          disabled={isSubmitting}
+          aria-describedby={errorMessage ? errorId : undefined}
+          aria-invalid={errorMessage ? "true" : undefined}
+          className="w-full px-3 py-2 rounded-[var(--radius-button)] border border-brand-300 bg-white text-brand-900 placeholder:text-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent disabled:opacity-60 transition-colors"
+        />
+      </div>
+
+      <div className="space-y-1">
+        <label
+          htmlFor={nameId}
+          className="block text-sm font-medium text-brand-800"
+        >
+          Nombre visible o apodo
+        </label>
+        <input
+          id={nameId}
+          name="displayName"
+          type="text"
+          autoComplete="nickname"
+          required
+          maxLength={40}
+          value={displayName}
+          onChange={(e) => onDisplayNameChange(e.target.value)}
+          disabled={isSubmitting}
+          placeholder="Ej: Ana"
+          className="w-full px-3 py-2 rounded-[var(--radius-button)] border border-brand-300 bg-white text-brand-900 placeholder:text-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent disabled:opacity-60 transition-colors"
+        />
+      </div>
+
+      {errorMessage && (
+        <p
+          id={errorId}
+          role="alert"
+          className="text-sm text-[var(--color-danger)]"
+        >
+          {errorMessage}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        disabled={!canSubmit}
+        className="w-full py-2.5 px-4 rounded-[var(--radius-button)] bg-[var(--color-brand-900)] text-white font-semibold text-sm hover:bg-[var(--color-brand-800)] active:bg-[var(--color-brand-700)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-500)] focus-visible:ring-offset-2"
+      >
+        {isSubmitting ? "Enviando…" : "Enviar enlace y empezar"}
+      </button>
+
+      <p className="text-xs text-brand-500 text-center leading-relaxed">
+        Tu avance se guardará en tu cuenta. Este dispositivo conservará una copia local como respaldo.
+      </p>
+    </form>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Linking variant
+// ---------------------------------------------------------------------------
+
+function LinkingVariantScreen() {
+  const [email, setEmail] = useState<string>("");
+  const [status, setStatus] = useState<Status>({ kind: "idle" });
+
+  const handleSubmit = useCallback(
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      if (status.kind === "submitting") return;
+
+      const trimmedEmail = email.trim();
+      if (trimmedEmail.length === 0) {
+        setStatus({
+          kind: "error",
+          message:
+            "Ingresá un email válido para que podamos mandarte el enlace.",
+        });
+        return;
+      }
+
+      setStatus({ kind: "submitting" });
+
+      const { error } = await signInWithMagicLink(trimmedEmail);
+      if (error) {
+        setStatus({
+          kind: "error",
+          message:
+            "No pudimos enviar el enlace. Probá de nuevo en un rato.",
+        });
+        return;
+      }
+      setStatus({ kind: "sent", email: trimmedEmail });
+    },
+    [email, status.kind],
+  );
+
+  const isSubmitting = status.kind === "submitting";
+  const sentEmail = status.kind === "sent" ? status.email : null;
+  const errorMessage = status.kind === "error" ? status.message : null;
+  const canSubmit = email.trim().length > 0 && !isSubmitting;
+
+  return (
+    <main className="max-w-md mx-auto px-4 py-10">
+      <Card
+        variant="default"
+        className="p-6"
+        aria-labelledby="ingresar-heading"
+      >
+        {sentEmail !== null ? (
+          <SentConfirmation email={sentEmail} variant="linking" />
+        ) : (
+          <LinkingForm
+            email={email}
+            onEmailChange={setEmail}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+            canSubmit={canSubmit}
+            errorMessage={errorMessage}
+          />
+        )}
+      </Card>
+      <p className="mt-4 text-xs text-brand-500 text-center">
+        <Link href="/" className="hover:underline">
+          Volver al inicio
+        </Link>
+      </p>
+    </main>
+  );
+}
+
+interface LinkingFormProps {
+  email: string;
+  onEmailChange: (next: string) => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  isSubmitting: boolean;
+  canSubmit: boolean;
+  errorMessage: string | null;
+}
+
+function LinkingForm({
+  email,
+  onEmailChange,
+  onSubmit,
+  isSubmitting,
+  canSubmit,
+  errorMessage,
+}: LinkingFormProps) {
+  const emailId = "ingresar-email";
+  const errorId = "ingresar-error";
+
+  return (
+    <form
+      onSubmit={onSubmit}
+      className="space-y-4"
+      aria-labelledby="ingresar-heading"
+      noValidate={false}
+    >
+      <h1
+        id="ingresar-heading"
+        className="text-xl font-bold text-brand-900 text-center"
+      >
+        Vincular mi avance a una cuenta
+      </h1>
+
+      <p className="text-sm text-brand-700 text-center leading-relaxed">
+        Encontramos avance en este dispositivo. Podés vincularlo a tu cuenta para recuperarlo en otros dispositivos.
+      </p>
+
+      <div className="space-y-1">
+        <label
+          htmlFor={emailId}
+          className="block text-sm font-medium text-brand-800"
+        >
+          Email
+        </label>
+        <input
+          id={emailId}
           name="email"
           type="email"
           autoComplete="email"
@@ -194,32 +499,36 @@ function SignInForm({
 
       <button
         type="submit"
-        disabled={isSubmitting || email.trim().length === 0}
+        disabled={!canSubmit}
         className="w-full py-2.5 px-4 rounded-[var(--radius-button)] bg-[var(--color-brand-900)] text-white font-semibold text-sm hover:bg-[var(--color-brand-800)] active:bg-[var(--color-brand-700)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-500)] focus-visible:ring-offset-2"
       >
-        {isSubmitting ? "Enviando…" : "Enviar enlace"}
+        {isSubmitting ? "Enviando…" : "Enviar enlace para vincular avance"}
       </button>
+
+      <p className="text-xs text-brand-500 text-center leading-relaxed">
+        No se borrará el avance local.
+      </p>
     </form>
   );
 }
 
+// ---------------------------------------------------------------------------
+// Sent confirmation — shared by both variants
+// ---------------------------------------------------------------------------
+
 interface SentConfirmationProps {
   email: string;
+  variant: Variant;
 }
 
-function SentConfirmation({ email }: SentConfirmationProps) {
+function SentConfirmation({ email, variant }: SentConfirmationProps) {
   return (
     <div
       className="space-y-4 text-center"
       aria-labelledby="ingresar-heading"
       role="status"
     >
-      <h1
-        id="ingresar-heading"
-        className="text-xl font-bold text-brand-900"
-      >
-        Sincronizá tu perfil
-      </h1>
+      <VariantConfirmationHeading variant={variant} />
       <p className="text-sm text-brand-700 leading-relaxed">
         Listo. Revisá tu email y hacé clic en el enlace que te mandamos.
       </p>
