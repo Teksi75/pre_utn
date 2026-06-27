@@ -13,10 +13,7 @@
  * @module persistence/adapter-config
  */
 
-import type {
-  PersistenceAdapter,
-  MaybePromise,
-} from "./port";
+import type { PersistenceAdapter } from "./port";
 import { selectPersistenceAdapter, type SelectorConfig } from "./selector";
 import { createSupabaseAdapter } from "./supabase-adapter";
 import { createBrowserClient } from "../supabase/browser";
@@ -161,6 +158,64 @@ export async function loadProgressWhenReady(): Promise<
   return loadProgress() as Promise<import("./port").PracticeProgress>;
 }
 
+// ---------------------------------------------------------------------------
+// Shared selection core
+// ---------------------------------------------------------------------------
+
+/**
+ * Read the current Supabase Auth session, then run the persistence
+ * selector with `hasRemoteSession` derived from the session state.
+ *
+ * Shared by `initializePersistence()` (app startup) and
+ * `reinitializePersistence()` (called by AuthBootstrap on auth events)
+ * so both code paths exercise the exact same selector wiring.
+ *
+ * Always sets `configuredAdapter` to the result of the selector — never
+ * throws. Errors are routed through `options.onFallback` with method
+ * "initializePersistence".
+ *
+ * @param options.onFallback - Optional observability callback.
+ */
+async function selectAdapterForCurrentSession(
+  options?: { onFallback?: SelectorConfig["onFallback"] }
+): Promise<void> {
+  try {
+    const client = createBrowserClient();
+    if (!client) {
+      // No env vars or malformed — local fallback
+      configuredAdapter = null;
+      return;
+    }
+
+    // Read the current session state (after a SIGNED_IN/SIGNED_OUT event
+    // this reflects the new state).
+    const { data, error } = await client.auth.getSession();
+    if (error || !data.session) {
+      // No session — local fallback
+      configuredAdapter = null;
+      return;
+    }
+
+    // Session exists — create Supabase adapter and configure with fallback
+    const remoteAdapter = createSupabaseAdapter(client);
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+    const adapter = selectPersistenceAdapter({
+      env: { url, publishableKey: key },
+      hasRemoteSession: true,
+      remoteAdapter,
+      onFallback: options?.onFallback,
+    });
+
+    configuredAdapter = adapter;
+  } catch (err) {
+    // Degraded-local fallback: catch all errors and record the event
+    configuredAdapter = null;
+    options?.onFallback?.("initializePersistence", err);
+  }
+}
+
 /**
  * Initialize the persistence adapter for production use.
  *
@@ -183,44 +238,33 @@ export async function initializePersistence(options?: {
   onFallback?: SelectorConfig["onFallback"];
 }): Promise<void> {
   const promise = (async () => {
-    try {
-      const client = createBrowserClient();
-      if (!client) {
-        // No env vars or malformed — local fallback
-        configuredAdapter = null;
-        return;
-      }
-
-      // Check for existing Supabase Auth session
-      const { data, error } = await client.auth.getSession();
-      if (error || !data.session) {
-        // No session — local fallback
-        configuredAdapter = null;
-        return;
-      }
-
-      // Session exists — create Supabase adapter and configure with fallback
-      const remoteAdapter = createSupabaseAdapter(client);
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-      const adapter = selectPersistenceAdapter({
-        env: { url, publishableKey: key },
-        hasRemoteSession: true,
-        remoteAdapter,
-        onFallback: options?.onFallback,
-      });
-
-      configuredAdapter = adapter;
-    } catch (err) {
-      // Degraded-local fallback: catch all errors and record the event
-      configuredAdapter = null;
-      options?.onFallback?.("initializePersistence", err);
-    }
+    await selectAdapterForCurrentSession(options);
   })();
 
   initializationPromise = promise;
   await promise;
   // Clear after completion so subsequent calls don't wait again
   initializationPromise = null;
+}
+
+/**
+ * Reset the configured adapter and re-run the selection against the
+ * current Supabase Auth session state.
+ *
+ * Called by `AuthBootstrap` in response to Supabase auth events:
+ *  - `SIGNED_IN` → re-run selection so the remote adapter is wired.
+ *  - `SIGNED_OUT` → re-run selection so the adapter falls back to local.
+ *
+ * Shares its selection core with `initializePersistence()` so both
+ * code paths produce the same adapter for the same input state.
+ *
+ * @param options.onFallback - Optional observability callback for fallback events.
+ */
+export async function reinitializePersistence(options?: {
+  onFallback?: SelectorConfig["onFallback"];
+}): Promise<void> {
+  // Reset to null before re-selecting so callers reading getConfiguredAdapter()
+  // mid-reinit see a consistent null state.
+  configuredAdapter = null;
+  await selectAdapterForCurrentSession(options);
 }
