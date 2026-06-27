@@ -464,34 +464,69 @@ This slice MUST NOT introduce a `Docente` navigation item, teacher login, master
 
 ### Requirement: Active Profile ID Boundary
 
-The system MUST expose one active-session boundary for reading the current local `studentId`. Existing adapters that only need the active id MUST use `getActiveProfileId()` and MUST preserve current local profile behavior.
+The system MUST expose one active-session boundary for reading the current local `studentId`. The boundary MUST also track whether a backend-authenticated Supabase session is active; `hasRemoteSession` MUST be derived from Supabase Auth state changes and supplied to the persistence selector. Existing adapters MUST use `getActiveProfileId()` and MUST preserve current local profile behavior.
+
+(Previously: the boundary only returned the local active student id.)
 
 #### Scenario: active profile id is read through one boundary
 
-- GIVEN a valid active profile exists in local profile storage
-- WHEN practice or diagnostic storage needs the active `studentId`
-- THEN it obtains the id through `getActiveProfileId()`
-- AND the returned id matches the current active profile id
+- **Given** a valid active profile exists in local profile storage
+- **When** practice or diagnostic storage needs the active `studentId`
+- **Then** it obtains the id through `getActiveProfileId()`
+- **And** the returned id matches the current active profile id
 
 #### Scenario: no active profile remains blocked
 
-- GIVEN profile storage has no active profile
-- WHEN an adapter requests the active `studentId`
-- THEN `getActiveProfileId()` returns `null`
-- AND the adapter preserves its existing blocked/no-write behavior without falling back to global or anonymous identity
+- **Given** profile storage has no active profile
+- **When** an adapter requests the active `studentId`
+- **Then** `getActiveProfileId()` returns `null`
+- **And** the adapter preserves its existing blocked/no-write behavior
 
 #### Scenario: unsafe profile storage remains safe
 
-- GIVEN profile storage is missing, unreadable, or contains corrupt JSON
-- WHEN `getActiveProfileId()` is called
-- THEN the result preserves the current safe storage behavior
-- AND no exception escapes the boundary
+- **Given** profile storage is missing, unreadable, or contains corrupt JSON
+- **When** `getActiveProfileId()` is called
+- **Then** the result preserves the current safe storage behavior
+- **And** no exception escapes the boundary
 
 #### Scenario: profile key parsing is contained
 
-- GIVEN implementation is complete
-- WHEN source files are scanned for `localStorage.getItem("pre-utn.profiles.v1")`
-- THEN matches exist only inside the approved profile-storage or active-session boundary
+- **Given** implementation is complete
+- **When** source files are scanned for `localStorage.getItem("pre-utn.profiles.v1")`
+- **Then** matches exist only inside the approved profile-storage or active-session boundary
+
+#### Scenario: signed-in user links active profile to remote account
+
+- **Given** a signed-in user has an active local profile
+- **When** the auth listener emits `SIGNED_IN`
+- **Then** the active profile is upserted into `student_profiles` keyed by `(authUserId, studentId)`
+- **And** the local profile remains active
+
+#### Scenario: signed-out user keeps local profile
+
+- **Given** a user signs out
+- **When** the auth listener emits `SIGNED_OUT`
+- **Then** `getActiveProfileId()` still returns the same local `studentId`
+- **And** the persistence selector falls back to the local adapter
+
+#### Scenario: remote session signal comes from auth listener
+
+- **Given** the auth state changes
+- **When** `reinitializePersistence()` reconfigures the selector
+- **Then** `hasRemoteSession` is `true` on `SIGNED_IN` and `false` on `SIGNED_OUT`
+
+### Requirement: StudentGate Routes to Sign-In
+
+`StudentGate` SHALL NOT ask for a visible name as a prerequisite to using the app. When the user chooses to sync or create a course account, `StudentGate` SHALL route to `/cuenta/ingresar`. Name collection SHALL occur on `/cuenta/ingresar`.
+
+(Previously: `StudentGate` collected the visible name before entering the app.)
+
+#### Scenario: StudentGate redirects to sign-in instead of collecting name
+
+- **Given** a new student sees `StudentGate`
+- **When** they choose to start with a course account
+- **Then** they are routed to `/cuenta/ingresar`
+- **And** no name input is shown on `StudentGate`
 
 ### Requirement: Supabase-Ready Adapter Boundary
 
@@ -509,6 +544,60 @@ The profile storage adapter and the active-session boundary MUST be the ONLY mod
 - GIVEN progress, diagnostic, and study-plan adapters
 - WHEN scanned for `localStorage.getItem("pre-utn.profiles.v1")`
 - THEN no direct read is present outside the approved profile-storage or active-session boundary
+
+### Requirement: Shared Persistence Adapter Contract
+
+Identity-bearing profile and progress persistence MUST be accessible through a shared adapter contract so local storage and Supabase-backed persistence provide equivalent behavior to callers. Existing public storage operations SHOULD remain stable unless a blocked or recoverable result is already part of the persistence boundary.
+
+#### Scenario: local adapter satisfies the shared contract
+
+- GIVEN Supabase is not selected
+- WHEN profile or progress persistence is invoked
+- THEN the local adapter provides the same caller-visible behavior as before
+
+#### Scenario: callers remain adapter-agnostic
+
+- GIVEN a caller saves or loads student progress
+- WHEN the selected adapter changes between local and Supabase
+- THEN the caller does not need Supabase-specific branching
+
+### Requirement: Adapter Selection and Local Fallback
+
+The system MUST select Supabase persistence only when the required public Supabase configuration is present and usable. If configuration is missing, incomplete, or remote availability fails, the system MUST keep existing local persistence working instead of blocking the student.
+
+#### Scenario: missing env uses local fallback
+
+- GIVEN Supabase public URL or anon key is missing
+- WHEN persistence is selected
+- THEN the local adapter is used and profiles/progress still work
+
+#### Scenario: failed remote operation falls back gracefully
+
+- GIVEN Supabase was selected but a remote operation fails
+- WHEN the active student continues practice or diagnostic work
+- THEN the workflow remains usable through local fallback or an explicit recoverable result
+
+### Requirement: Active Profile Identity Boundary for Persistence
+
+Adapter-level persistence MUST use `getActiveProfileId()` as the active identity boundary. It MUST NOT introduce direct profile-key parsing outside approved boundaries, anonymous writes, service-role identity, authentication requirements, or deep `trackId`/`subjectId` migration in this slice.
+
+#### Scenario: persistence uses active profile id
+
+- GIVEN an active profile exists
+- WHEN any adapter reads or writes student-scoped data
+- THEN the active `studentId` comes from `getActiveProfileId()`
+
+#### Scenario: no active profile remains blocked
+
+- GIVEN no active profile exists
+- WHEN persistence attempts to write learning evidence
+- THEN no anonymous remote or local write is created
+
+#### Scenario: I-24 does not expand identity scope
+
+- GIVEN the I-24 change is complete
+- WHEN identity and persistence code are inspected
+- THEN there is no auth requirement, teacher identity, multi-track identity, or deep track/subject migration
 
 ## Non-Goals
 
