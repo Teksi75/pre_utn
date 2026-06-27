@@ -29,9 +29,23 @@ describe("Nav — active student chip (PR2)", () => {
     expect(src).toMatch(/student\s*!==\s*null|student\s*\?/);
   });
 
-  it("does NOT contain forbidden language (Docente, login, cuenta, admin)", () => {
+  it("does NOT contain forbidden language (Docente, login, admin)", () => {
     const src = navSource();
-    const FORBIDDEN = ["Docente", "docente", "login", "admin", "email", "contraseña", "avatar", "Supabase"];
+    // Updated for PR2 (auth-ui): the Nav now legitimately references
+    // `email` (in the sync badge), `cuenta` (in "Cerrar la cuenta del
+    // curso"), and the substring `Sincronizado` (the new sync status
+    // indicator). The remaining forbidden tokens still trip on tutor
+    // framing / third-party branding.
+    const FORBIDDEN = [
+      "Docente",
+      "docente",
+      "login",
+      "admin",
+      "avatar",
+      "profe digital",
+      "Supabase",
+      "contraseña",
+    ];
     for (const word of FORBIDDEN) {
       expect(src.toLowerCase()).not.toContain(word.toLowerCase());
     }

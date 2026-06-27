@@ -23,12 +23,12 @@ PR1 `auth-shell` ~800 lines (size:exception requested — ~60% tests; matches su
 
 ## Phase 2: PR2 — auth-ui (pages, Nav badge, StudentGate CTA)
 
-- [ ] **T-AUTH-U2.1** `/cuenta/ingresar` sign-in form (TDD source-scan). RED: heading "Sincronizá tu perfil"; body copy; `Email` label; `Enviar enlace`; forbids `login|contraseña|profe digital|Supabase`. GREEN: form → `signInWithMagicLink`; loading/error/success. Files: `cuenta/ingresar/page.tsx`, `__tests__/page-brand-voice.test.ts`. Deps: S1.3.
-- [ ] **T-AUTH-U2.2** `/auth/callback` route (TDD). RED: `?code` → server exchange → redirect `/cuenta`; missing → redirect `/cuenta/ingresar` (no throw). Files: `auth/callback/route.ts`, `__tests__/route.test.ts`. Deps: S1.4.
-- [ ] **T-AUTH-U2.3** `/cuenta` account stub (TDD source-scan). RED: sync status + `Cerrar la cuenta del curso` button via `useSession().signOut()`. Files: `cuenta/page.tsx`, `__tests__/page-brand-voice.test.ts`. Deps: S1.7.
-- [ ] **T-AUTH-U2.4** `Nav.tsx` sync badge + sign-out (TDD source-scan). RED: `Sin sincronizar` / `Sincronizado como {email}` + `Cerrar la cuenta del curso`. Update `Nav-student.test.ts` allowlist. Files: `Nav.tsx`, `__tests__/Nav-student.test.ts`. Deps: S1.7.
-- [ ] **T-AUTH-U2.5** `StudentGate.tsx` secondary CTA (TDD source-scan). RED: `Sincronizar con la cuenta del curso` button → `/cuenta/ingresar`. Files: `StudentGate.tsx`, `__tests__/StudentGate.test.ts`. Deps: none.
-- [ ] **T-AUTH-U2.6** Document `NEXT_PUBLIC_SUPABASE_*` + emailRedirectTo convention. Files: `.env.example`. Deps: none.
+- [x] **T-AUTH-U2.1** `/cuenta/ingresar` sign-in form (TDD source-scan). RED: heading "Sincronizá tu perfil"; body copy; `Email` label; `Enviar enlace`; forbids `login|contraseña|profe digital|Supabase`. GREEN: form → `signInWithMagicLink`; loading/error/success. Files: `cuenta/ingresar/page.tsx`, `__tests__/page-brand-voice.test.ts`. Deps: S1.3.
+- [x] **T-AUTH-U2.2** `/auth/callback` route (TDD). RED: `?code` → server exchange → redirect `/cuenta`; missing → redirect `/cuenta/ingresar` (no throw). Files: `auth/callback/route.ts`, `__tests__/route.test.ts`. Deps: S1.4.
+- [x] **T-AUTH-U2.3** `/cuenta` account stub (TDD source-scan). RED: sync status + `Cerrar la cuenta del curso` button via `useSession().signOut()`. Files: `cuenta/page.tsx`, `__tests__/page-brand-voice.test.ts`. Deps: S1.7.
+- [x] **T-AUTH-U2.4** `Nav.tsx` sync badge + sign-out (TDD source-scan). RED: `Sin sincronizar` / `Sincronizado como {email}` + `Cerrar la cuenta del curso`. Update `Nav-student.test.ts` allowlist. Files: `Nav.tsx`, `__tests__/Nav-student.test.ts`. Deps: S1.7.
+- [x] **T-AUTH-U2.5** `StudentGate.tsx` secondary CTA (TDD source-scan). RED: `Sincronizar con la cuenta del curso` button → `/cuenta/ingresar`. Files: `StudentGate.tsx`, `__tests__/StudentGate.test.ts`. Deps: none.
+- [x] **T-AUTH-U2.6** Document `NEXT_PUBLIC_SUPABASE_*` + emailRedirectTo convention. Files: `.env.example`. Deps: none.
 
 ## Rollout Checklist (orchestrator action, before PR2 merge)
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { PersistenceInitializer } from "@/components/PersistenceInitializer";
+import { StudentGate } from "@/components/StudentGate";
 import { SessionProvider, AuthBootstrap } from "@/components/auth";
 import "katex/dist/katex.min.css";
 import "./globals.css";
@@ -37,7 +38,10 @@ export default function RootLayout({
           </header>
 
           <main id="main-content" role="main" className="flex-1">
-            {children}
+            {/* Global student gate (PR3): every page renders only when
+                there is an active local profile or a Supabase session.
+                Otherwise the gate redirects to /cuenta/ingresar. */}
+            <StudentGate>{children}</StudentGate>
           </main>
 
           <footer className="border-t border-[var(--color-brand-200)] py-4 text-center text-xs text-[var(--color-brand-500)]">

@@ -2,21 +2,24 @@
  * Tests for src/components/auth/AuthBootstrap.tsx
  *
  * Verifies the listener wires Supabase auth events to persistence:
- * - SIGNED_IN → calls linkActiveProfileToAuthUser() FIRST, then
+ * - SIGNED_IN → calls linkAndImportLocalProgress(session) FIRST, then
  *   reinitializePersistence() (FK row must exist before remote
- *   persistence flips on).
+ *   persistence flips on; the orchestrator handles the import).
  * - SIGNED_OUT → calls reinitializePersistence() only.
  * - TOKEN_REFRESHED and other events → no-op.
  * - Uses useEffect with cleanup; one listener survives Strict Mode.
  * - Renders nothing.
  *
- * Spec: REQ-AUTH-3 — "AuthBootstrap MUST subscribe to onAuthStateChange;
- * on SIGNED_IN it MUST call linkActiveProfileToAuthUser() then
- * reinitializePersistence(); on SIGNED_OUT it MUST call
- * reinitializePersistence()."
+ * PR3 (T-REV-5): AuthBootstrap delegates the SIGNED_IN side effects to
+ * the orchestrator (`linkAndImportLocalProgress`) instead of calling
+ * `linkActiveProfileToAuthUser` directly. The orchestrator is the new
+ * contract; the inner link helper is still exported (re-used by the
+ * orchestrator) but AuthBootstrap no longer references it directly.
+ *
+ * Spec: REQ-AUTH-3, REQ-NEW-2a, REQ-NEW-2b, REQ-NEW-2c.
  */
 
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -64,10 +67,11 @@ describe("AuthBootstrap — effect wiring", () => {
   });
 });
 
-describe("AuthBootstrap — SIGNED_IN flow (REQ-AUTH-3, REQ-AUTH-4)", () => {
-  it("imports linkActiveProfileToAuthUser", () => {
+describe("AuthBootstrap — SIGNED_IN flow (REQ-AUTH-3, T-REV-5)", () => {
+  it("imports linkAndImportLocalProgress from @/lib/auth/link-and-import", () => {
     const src = authBootstrapSource();
-    expect(src).toMatch(/linkActiveProfileToAuthUser\b/);
+    expect(src).toMatch(/linkAndImportLocalProgress\b/);
+    expect(src).toMatch(/from\s+["']@\/lib\/auth\/link-and-import["']/);
   });
 
   it("imports reinitializePersistence", () => {
@@ -80,34 +84,44 @@ describe("AuthBootstrap — SIGNED_IN flow (REQ-AUTH-3, REQ-AUTH-4)", () => {
     expect(src).toContain("SIGNED_IN");
   });
 
-  it("calls linkActiveProfileToAuthUser BEFORE reinitializePersistence on SIGNED_IN", () => {
+  it("calls linkAndImportLocalProgress(session) BEFORE reinitializePersistence on SIGNED_IN", () => {
     const src = authBootstrapSource();
-    const linkPos = src.indexOf("linkActiveProfileToAuthUser");
+    const linkPos = src.indexOf("linkAndImportLocalProgress");
     const reinitPos = src.indexOf("reinitializePersistence");
-    // Both must be present.
     expect(linkPos).toBeGreaterThan(-1);
     expect(reinitPos).toBeGreaterThan(-1);
-    // The link call must come before the reinitialize call in the SIGNED_IN
-    // branch. Find the SIGNED_IN branch first.
+    // The orchestrator call must come before the reinitialize call in
+    // the SIGNED_IN branch.
     const signedInPos = src.indexOf("SIGNED_IN");
-    // Use the closest link/reinit references after SIGNED_IN to check
-    // ordering within the SIGNED_IN branch.
-    const linkAfterSignIn = src.indexOf("linkActiveProfileToAuthUser", signedInPos);
+    const linkAfterSignIn = src.indexOf("linkAndImportLocalProgress", signedInPos);
     const reinitAfterSignIn = src.indexOf("reinitializePersistence", signedInPos);
     expect(linkAfterSignIn).toBeGreaterThan(signedInPos);
     expect(reinitAfterSignIn).toBeGreaterThan(signedInPos);
     expect(linkAfterSignIn).toBeLessThan(reinitAfterSignIn);
   });
 
-  it("awaits linkActiveProfileToAuthUser (sequential ordering)", () => {
+  it("awaits linkAndImportLocalProgress (sequential ordering)", () => {
     const src = authBootstrapSource();
-    // link must be awaited so reinit sees the FK row already created.
-    expect(src).toMatch(/await\s+linkActiveProfileToAuthUser/);
+    expect(src).toMatch(/await\s+linkAndImportLocalProgress/);
   });
 
-  it("awaits reinitializePersistence after link", () => {
+  it("passes the session object to linkAndImportLocalProgress", () => {
+    const src = authBootstrapSource();
+    // The orchestrator requires the Supabase Session; AuthBootstrap must
+    // forward whatever the auth state change callback supplied.
+    expect(src).toMatch(/linkAndImportLocalProgress\s*\(\s*session\s*\)/);
+  });
+
+  it("awaits reinitializePersistence after the orchestrator", () => {
     const src = authBootstrapSource();
     expect(src).toMatch(/await\s+reinitializePersistence/);
+  });
+
+  it("does NOT call linkActiveProfileToAuthUser directly (orchestrator owns it now)", () => {
+    const src = authBootstrapSource();
+    // The wiring should not have a direct call to the inner helper.
+    // Allow comments / JSDoc to mention it, but no invocation.
+    expect(src).not.toMatch(/await\s+linkActiveProfileToAuthUser\s*\(/);
   });
 });
 
@@ -119,24 +133,25 @@ describe("AuthBootstrap — SIGNED_OUT flow", () => {
 
   it("SIGNED_OUT branch contains reinitializePersistence", () => {
     const src = authBootstrapSource();
-    // Find the SIGNED_OUT branch by looking for the surrounding `else if` clause.
     const signedOutIdx = src.indexOf('"SIGNED_OUT"');
     expect(signedOutIdx).toBeGreaterThan(-1);
-    // Slice from SIGNED_OUT to end of the else-if block — look for
-    // reinitializePersistence appearing in that window.
     const afterSignOut = src.slice(signedOutIdx);
     expect(afterSignOut).toMatch(/reinitializePersistence/);
+  });
+
+  it("SIGNED_OUT branch does NOT run the orchestrator", () => {
+    const src = authBootstrapSource();
+    // After SIGNED_OUT we only want reinit; no orchestrator call.
+    const signedOutIdx = src.indexOf('"SIGNED_OUT"');
+    const afterSignOut = src.slice(signedOutIdx);
+    expect(afterSignOut).not.toMatch(/linkAndImportLocalProgress/);
   });
 });
 
 describe("AuthBootstrap — unused events are no-ops", () => {
   it("only branches on SIGNED_IN and SIGNED_OUT (no default handler that re-inits)", () => {
     const src = authBootstrapSource();
-    // The implementation must NOT have a fall-through that calls
-    // reinitializePersistence for all events. Only the two named
-    // branches should drive persistence.
     const branchCount = (src.match(/(SIGNED_IN|SIGNED_OUT)/g) ?? []).length;
-    // Two literal string occurrences (one per branch).
     expect(branchCount).toBeGreaterThanOrEqual(2);
   });
 });
