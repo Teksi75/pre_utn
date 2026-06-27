@@ -621,6 +621,51 @@
       },
       "summary": "Introduce Supabase-backed persistence adapter v0 with localStorage fallback. Defines persistence port, implements local and remote adapters, keeps service role key out of client, and preserves getActiveProfileId() boundary. PR1 complete, PR2 complete with all review fixes + Phase 12 minimal real telemetry sink (2668 tests) + Phase 13 payload bounds + no-JSON-leak hardening (2680 tests). Initialization race resolved, remote FK gap closed, unhandled rejection protected, CustomEvent observability sink added, fallback events now POSTed to internal route handler for production observability, route validator enforces length caps, sanitizeErrorSummary no longer leaks JSON for non-Error inputs."
     },
+    "auth-sign-in-v0": {
+      "status": "done",
+      "branch": null,
+      "startedAt": "2026-06-26",
+      "completedAt": "2026-06-27",
+      "mergedTo": "main",
+      "mergeCommit": "55acc0e",
+      "roadmapIssue": "I-25",
+      "issue": 63,
+      "delivery": "chained-prs; stacked-to-main (2 PRs)",
+      "pr1": {
+        "branch": "feat/auth-sign-in-v0-shell",
+        "status": "done",
+        "mergedTo": "main",
+        "mergeCommit": "d40fe05",
+        "pr": 64,
+        "summary": "PR 1 — Auth shell: @supabase/ssr dependency, browser client swap with cookie-based session, Next.js middleware for token refresh, SessionProvider/AuthBootstrap contexts, reinitializePersistence() for reactive adapter switching on auth state, linkActiveProfileToAuthUser FK upsert. 70 new tests (2773 total). typecheck + build green."
+      },
+      "pr2": {
+        "branch": "feat/auth-sign-in-v0-ui",
+        "status": "done",
+        "mergedTo": "main",
+        "mergeCommit": "55acc0e",
+        "pr": 65,
+        "summary": "PR 2 — Sign-in variants (/cuenta/ingresar new-student + linking), /auth/callback route, /cuenta account stub, Nav sync badge, StudentGate repurposed as global router, linkAndImportLocalProgress 4-branch orchestrator (local-empty/remote-empty × local-has/remote-has), importLocalProgressToRemote non-destructive import, probeRemoteState, hasLocalProgress, ANON_KEY fallback removed from callback route, no-anon-key-scan test, brand-voice source-scan extended with PR3 forbidden tokens + positive CTA tests. 36 new tests (2848→2884). Verify PASS all 11 user-mandated product/security criteria. CRLF bug from PR #55 verified fixed. Strict TDD throughout (RED→GREEN→REFACTOR per task). size:exception requested: PR2+PR3 delta combined diff ~2100 lines, ~60% tests."
+      },
+      "size_exception": {
+        "approved": true,
+        "approvedBy": "user",
+        "approvedAt": "2026-06-27",
+        "reason": "PR1 ~2403 lines + PR2 ~2100 lines, both above 400-line budget, ~60-70% tests. Cohesive auth surface — splitting would force mid-stack retargets. Precedent: supabase-adapter-v0-fallback PR2."
+      },
+      "production_activation": {
+        "status": "decoupled_pending_user_action",
+        "note": "Vercel env vars NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY NOT loaded in production yet. Code is merged but auth is dormant in prod (selector falls back to localStorage). Activation requires: load Vercel envs, enable Supabase Auth Email provider, set Site URL + /auth/callback Redirect URL, redeploy, manual smoke with new-student + linking-student flows."
+      },
+      "follow_ups": [
+        "Supabase activation stage: load Vercel envs + enable Email Auth + redirect URL + redeploy + smoke",
+        "Revoke public EXECUTE on public.rls_auto_enable() in Supabase (advisor warning, pre-existing from project creation)",
+        "Rename middleware.ts → proxy.ts (Next.js 16 deprecation, non-blocking)",
+        "Conflict-resolution UI for local-has + remote-has branch (future change; v0 documents remote-as-canonical, local preserved as backup)",
+        "Linux GGA re-validation when available (bypassed on Windows per AGENTS.md)"
+      ],
+      "summary": "Activate dormant Supabase remote persistence via magic-link sign-in. Two-state /cuenta/ingresar (new-student with email + visible name vs linking variant with email only). Non-destructive local→remote import orchestrator (4-branch). ANON_KEY fallback removed. Brand-voice compliance verified. All 11 user-mandated product/security criteria OK. ~3900 net lines, ~60% tests. 2884 total tests, typecheck clean, build green (11 routes)."
+    },
   "u3-inecuaciones-ejemplo-distinto": {
       "status": "done",
       "branch": null,
@@ -661,5 +706,5 @@
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-06-26T00:00:00-03:00"
+  "lastAudit": "2026-06-27T13:00:00-03:00"
 }
