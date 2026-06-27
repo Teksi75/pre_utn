@@ -47,13 +47,17 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-    // Fallback to the legacy non-public-key env if the publishable one
-    // is not set. Both `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and
-    // `NEXT_PUBLIC_SUPABASE_ANON_KEY` are public credentials and are
-    // safe to read in a browser bundle.
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  /**
+   * Use only the modern publishable key. The legacy
+   * `NEXT_PUBLIC_SUPABASE_ANON_KEY` env var was removed in PR3 (T-REV-9)
+   * so a stale `.env` cannot ship an outdated credential to the browser
+   * bundle.
+   *
+   * @deprecated `NEXT_PUBLIC_SUPABASE_ANON_KEY` is no longer accepted.
+   * Set `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (the current Supabase
+   * SSR convention) and redeploy.
+   */
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
     // Local-only / env-not-configured path: no client, no exchange.
