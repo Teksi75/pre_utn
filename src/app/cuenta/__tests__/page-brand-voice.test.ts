@@ -9,9 +9,13 @@
  *   `useSession().signOut()`.
  * - No forbidden brand-voice tokens.
  *
- * Spec: REQ-AUTH-5, REQ-AUTH-6
+ * PR3 (T-REV-10): extended FORBIDDEN_TOKENS to reject technical jargon
+ * that would leak the auth implementation details to the student.
+ *
+ * Spec: REQ-AUTH-5, REQ-AUTH-6, REQ-NEW-3.
  *   - "sign-out clears remote session"
  *   - "Nav badge and StudentGate CTA match spec"
+ *   - "no jargon in student UI"
  */
 
 import { describe, it, expect } from "vitest";
@@ -30,13 +34,33 @@ const REQUIRED_COPY = {
   signOutAction: "Cerrar la cuenta del curso",
 } as const;
 
-const FORBIDDEN_TOKENS = [
+/**
+ * Forbidden tokens that must NEVER appear in JSX text on this page.
+ * The "source-only" tokens are checked against the whole source (less
+ * JSDoc) so they never leak as visible copy. The "JSX-text-only"
+ * tokens are checked against the JSX-text extractor so they remain
+ * available in code identifiers/imports but never appear as rendered
+ * copy the student could read.
+ */
+const FORBIDDEN_TOKENS_SOURCE = [
+  // PR3 additions (T-REV-10): tech jargon that must not leak.
+  "Regla de seguridad",
+  "RLS",
+  "merge strategy",
+  "overwrite",
+] as const;
+
+const FORBIDDEN_TOKENS_JSX_TEXT = [
   "login",
   "contraseña",
   "profe digital",
   "Supabase",
   "Docente",
   "docente",
+  // PR3 additions (T-REV-10): JSX-text only — fine in code identifiers
+  // but never as rendered copy the student could read.
+  "localStorage",
+  "remote/local",
 ] as const;
 
 // ---------------------------------------------------------------------------
@@ -111,11 +135,23 @@ describe("/cuenta — wiring", () => {
 });
 
 // ---------------------------------------------------------------------------
-// Brand voice — no forbidden tokens.
+// Brand voice — no forbidden tokens in JSX text.
 // ---------------------------------------------------------------------------
 
-describe("/cuenta — no forbidden brand-voice tokens", () => {
-  for (const token of FORBIDDEN_TOKENS) {
+describe("/cuenta — no forbidden brand-voice tokens (source scan, PR3)", () => {
+  for (const token of FORBIDDEN_TOKENS_SOURCE) {
+    it(`does NOT contain '${token}' in source code (outside JSDoc)`, () => {
+      const src = pageSource();
+      // Strip JSDoc blocks so the page's own documentation of forbidden
+      // tokens is not flagged as a violation.
+      const stripped = src.replace(/\/\*\*[\s\S]*?\*\//g, " ");
+      expect(stripped.toLowerCase()).not.toContain(token.toLowerCase());
+    });
+  }
+});
+
+describe("/cuenta — no forbidden brand-voice tokens (JSX text)", () => {
+  for (const token of FORBIDDEN_TOKENS_JSX_TEXT) {
     it(`does NOT contain '${token}' in visible text`, () => {
       const text = extractJsxText(pageSource()).toLowerCase();
       expect(text).not.toContain(token.toLowerCase());

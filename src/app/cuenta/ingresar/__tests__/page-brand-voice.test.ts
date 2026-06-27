@@ -65,10 +65,29 @@ const REQUIRED_COPY_LINKING = {
   primaryAction: "Enviar enlace para vincular avance",
 } as const;
 
-const FORBIDDEN_TOKENS = [
+/**
+ * Forbidden tokens that must NEVER appear in JSX text on this page.
+ * The "source-only" tokens are checked against the whole source (less
+ * JSDoc); the "JSX-text-only" tokens (`localStorage`, `remote/local`)
+ * are checked against the JSX-text extractor so they remain available
+ * in code identifiers/imports but never appear as rendered copy.
+ */
+const FORBIDDEN_TOKENS_SOURCE = [
+  // PR3 additions (T-REV-10): tech jargon that must not leak.
+  "Regla de seguridad",
+  "RLS",
+  "merge strategy",
+  "overwrite",
+] as const;
+
+const FORBIDDEN_TOKENS_JSX_TEXT = [
   "login",
   "profe digital",
   "Supabase",
+  // PR3 additions (T-REV-10): JSX-text only — fine in code identifiers
+  // but never as rendered copy the student could read.
+  "localStorage",
+  "remote/local",
 ] as const;
 
 // ---------------------------------------------------------------------------
@@ -148,6 +167,18 @@ describe("/cuenta/ingresar — linking variant copy", () => {
 
   it("has primary action 'Enviar enlace para vincular avance'", () => {
     expect(pageSource()).toContain(REQUIRED_COPY_LINKING.primaryAction);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Positive variant tests (T-REV-10) — both CTAs are present.
+// ---------------------------------------------------------------------------
+
+describe("/cuenta/ingresar — both variant CTAs present (T-REV-10)", () => {
+  it("contains both 'Crear cuenta y empezar' and 'Vincular mi avance a una cuenta'", () => {
+    const src = pageSource();
+    expect(src).toContain(REQUIRED_COPY_NEW_STUDENT.heading);
+    expect(src).toContain(REQUIRED_COPY_LINKING.heading);
   });
 });
 
@@ -234,11 +265,23 @@ describe("/cuenta/ingresar — accessibility", () => {
 });
 
 // ---------------------------------------------------------------------------
-// Brand voice — forbidden tokens must NOT appear in JSX text.
+// Brand voice — forbidden tokens must NOT appear in source.
 // ---------------------------------------------------------------------------
 
-describe("/cuenta/ingresar — no forbidden brand-voice tokens in JSX text", () => {
-  for (const token of FORBIDDEN_TOKENS) {
+describe("/cuenta/ingresar — no forbidden brand-voice tokens (source scan, PR3)", () => {
+  for (const token of FORBIDDEN_TOKENS_SOURCE) {
+    it(`does NOT contain '${token}' in source code (outside JSDoc)`, () => {
+      const src = pageSource();
+      // Strip JSDoc blocks so the page's own documentation of forbidden
+      // tokens is not flagged as a violation.
+      const stripped = src.replace(/\/\*\*[\s\S]*?\*\//g, " ");
+      expect(stripped.toLowerCase()).not.toContain(token.toLowerCase());
+    });
+  }
+});
+
+describe("/cuenta/ingresar — no forbidden brand-voice tokens (JSX text)", () => {
+  for (const token of FORBIDDEN_TOKENS_JSX_TEXT) {
     it(`does NOT contain '${token}' in visible text`, () => {
       const src = pageSource();
       const text = extractJsxText(src).toLowerCase();
