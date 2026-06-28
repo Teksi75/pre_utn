@@ -34,6 +34,7 @@ pnpm-debug.log*
 
 # Local generated caches
 .atl/
+.codegraph/
 .gga-tmp/
 opencode-quota/
 opencode.json
