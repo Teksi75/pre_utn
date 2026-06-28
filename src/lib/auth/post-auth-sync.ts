@@ -106,6 +106,43 @@ let nextEntryToken = 0;
 const completedByUser = new Map<string, PostAuthSyncStatus>();
 
 // ---------------------------------------------------------------------------
+// External subscribers for live status UI
+// ---------------------------------------------------------------------------
+//
+// Nav and other UI components subscribe via `useSyncExternalStore` so the
+// sync pill re-renders as the status transitions. The listener set is
+// module-level; `subscribePostAuthSyncChange` registers a callback that
+// fires after every transition (sign-out, sync start, sync completion).
+// Returning the unsubscribe handle from `subscribe` keeps the contract
+// compatible with React's `useSyncExternalStore`.
+
+type PostAuthSyncListener = () => void;
+const listeners = new Set<PostAuthSyncListener>();
+
+function emitPostAuthSyncChange(): void {
+  for (const listener of listeners) {
+    listener();
+  }
+}
+
+/**
+ * Register a listener that fires after every post-auth sync status
+ * transition. The returned function unsubscribes.
+ *
+ * The Nav sync pill uses this via the `usePostAuthSyncStatus` hook to
+ * re-render as the status transitions from signed-out → pending → ready
+ * | local-fallback.
+ */
+export function subscribePostAuthSyncChange(
+  listener: PostAuthSyncListener,
+): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
 
@@ -117,6 +154,19 @@ const completedByUser = new Map<string, PostAuthSyncStatus>();
  */
 export function getPostAuthSyncStatus(): PostAuthSyncStatus {
   return currentStatus;
+}
+
+// ---------------------------------------------------------------------------
+// Server snapshot for useSyncExternalStore SSR safety
+// ---------------------------------------------------------------------------
+//
+// useSyncExternalStore requires a server snapshot for SSR rendering.
+// The server cannot read Supabase state, so it must return a safe
+// non-ready default. "signed-out" is the documented safe non-ready
+// state (see `clearPostAuthSyncStatus`).
+
+export function getPostAuthSyncServerSnapshot(): PostAuthSyncStatus {
+  return "signed-out";
 }
 
 /**
@@ -135,6 +185,7 @@ export async function beginPostAuthSync(
   // No session → signed-out, no work.
   if (!session) {
     currentStatus = "signed-out";
+    emitPostAuthSyncChange();
     return currentStatus;
   }
 
@@ -155,11 +206,13 @@ export async function beginPostAuthSync(
   // orchestrator will actually do.
   if (!tryCreateBrowserClient()) {
     currentStatus = "disabled";
+    emitPostAuthSyncChange();
     return currentStatus;
   }
 
   // Start the sync if one is not already in flight for THIS userId.
   currentStatus = "pending";
+  emitPostAuthSyncChange();
   let entry = inflightByUser.get(userId);
   if (!entry) {
     const token = nextEntryToken++;
@@ -179,6 +232,7 @@ export async function beginPostAuthSync(
           outcome.kind === "local-fallback" ? "local-fallback" : "ready";
         currentStatus = settled;
         completedByUser.set(userId, settled);
+        emitPostAuthSyncChange();
       } catch {
         // The orchestrator is documented as never-throws (its
         // LinkImportOutcome covers all failure modes), but defend
@@ -187,6 +241,7 @@ export async function beginPostAuthSync(
         if (inflightByUser.get(userId)?.token !== token) return;
         currentStatus = "local-fallback";
         completedByUser.set(userId, "local-fallback");
+        emitPostAuthSyncChange();
       } finally {
         // Only remove OUR entry — a new sign-in may have already
         // installed a fresh entry with a different token.
@@ -248,6 +303,7 @@ export function clearPostAuthSyncStatus(userId: string): void {
   inflightByUser.delete(userId);
   clearPostAuthSyncState(userId);
   currentStatus = "signed-out";
+  emitPostAuthSyncChange();
 }
 
 /**
@@ -259,4 +315,5 @@ export function resetPostAuthSyncStatusForTests(): void {
   inflightByUser.clear();
   completedByUser.clear();
   nextEntryToken = 0;
+  listeners.clear();
 }

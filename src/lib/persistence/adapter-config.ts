@@ -21,6 +21,8 @@ import {
   beginPostAuthSync,
   clearPostAuthSyncStatus,
   getPostAuthSyncStatus,
+  getPostAuthSyncServerSnapshot,
+  subscribePostAuthSyncChange,
   waitForPostAuthSync,
 } from "../auth/post-auth-sync";
 
@@ -37,6 +39,8 @@ export {
   beginPostAuthSync,
   clearPostAuthSyncStatus,
   getPostAuthSyncStatus,
+  getPostAuthSyncServerSnapshot,
+  subscribePostAuthSyncChange,
   waitForPostAuthSync,
 };
 

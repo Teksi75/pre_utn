@@ -393,3 +393,402 @@ $ next build
 ✓ TypeScript clean
 ✓ 11 routes built
 ```
+
+## PR2.0 — UI WIRING BATCH (PR2 — this batch)
+
+PR2 wires the post-auth sync readiness surface from PR1 into the UI
+components that own the post-callback sync surface:
+
+  1. `AuthBootstrap` — `INITIAL_SESSION` triggers the same
+     post-auth sync as `SIGNED_IN`, deduplicated per userId via
+     `beginPostAuthSync`. Switched from the void
+     `linkAndImportLocalProgress(session)` call to the readiness surface
+     `beginPostAuthSync(session)` so Nav + PersistenceInitializer can
+     observe the same status snapshot.
+
+  2. `PersistenceInitializer` — when a Supabase session already exists
+     at app startup (post-callback page load, or refresh with an active
+     session), awaits the post-auth sync readiness
+     (`beginPostAuthSync(session)`) BEFORE
+     `reinitializePersistence({ onFallback })`. The no-session path still
+     calls `initializePersistence()` as before. Both code paths
+     delegate to the same per-userId orchestrator promise so the
+     orchestrator runs once per sign-in, not twice.
+
+  3. `Nav` — the sync pill reads from the live `usePostAuthSyncStatus()`
+     hook, NOT from raw session state. The badge is honest about each
+     status transition:
+
+       - "disabled"        → hide (auth not configured).
+       - "signed-out"      → "Sin sincronizar" link to /cuenta/ingresar.
+       - "pending"         → honest "Sincronizando tu cuenta" pill.
+       - "local-fallback"  → honest "Trabajo local guardado" pill
+                              (NOT the synchronized pill).
+       - "ready"           → the synchronized pill.
+
+  4. `HomeNextStepClient` — the loader path no longer leaves
+     `viewModel === null` after a rejected `loadProgress()` /
+     `loadDiagnosticResult()`. Any catch path now calls
+     `handleResults(EMPTY_PROGRESS, null)` (or `handleResults(progress, null)`
+     for diag-only failures) so the dashboard renders the
+     actionable local-fallback VM (mission + decision board + route
+     units) instead of a permanent skeleton.
+
+### TDD Cycle Evidence (PR2)
+
+| Task | Test File | Layer | RED | GREEN | TRIANGULATE | REFACTOR |
+|------|-----------|-------|-----|-------|-------------|----------|
+| PR2.1 (AuthBootstrap INITIAL_SESSION + `beginPostAuthSync` wiring) | `src/components/auth/__tests__/AuthBootstrap.test.tsx` | Unit | ✅ +6 tests: INITIAL_SESSION branches share `beginPostAuthSync(session)` call; both branches capture `lastUserId`; INITIAL_SESSION is in same conditional as SIGNED_IN; updated existing SIGNED_IN tests for `beginPostAuthSync` instead of `linkAndImportLocalProgress`. | ✅ Switched AuthBootstrap to call `beginPostAuthSync(session)`; added `event === "INITIAL_SESSION" \|\| event === "SIGNED_IN"` shared conditional. | ➖ Single scenario per branch | ✅ JSDoc updated to document PR2 invariants |
+| PR2.2 (PersistenceInitializer readiness-aware path) | `src/components/__tests__/PersistenceInitializer.test.ts` | Unit | ✅ +7 tests: imports readiness surface from `@/lib/persistence/adapter-config`; reads `getCurrentSession()`; awaits readiness before `reinitializePersistence`; forwards session to `beginPostAuthSync`; legacy `initializePersistence` path preserved. | ✅ PersistenceInitializer now reads the current session and awaits `beginPostAuthSync(session)` BEFORE `reinitializePersistence` when a session exists. | ➖ 5 separate invariants | ✅ JSDoc updated |
+| PR2.3 (Nav sync pill from post-auth-sync status) | `src/components/__tests__/Nav-auth.test.ts` | Unit | ✅ +9 tests: imports readiness surface; pill conditional references `syncStatus === "ready"` (NOT session alone); honest pending copy; honest fallback copy; live updates via `usePostAuthSyncStatus`; preserved sign-out affordance; tripwire that pending+session must not falsely show synchronized. | ✅ Nav imports `usePostAuthSyncStatus()`; pill conditional uses `syncStatus === "ready" \| "pending" \| "local-fallback" \| "signed-out"`; each branch renders honest student-friendly copy. | ➖ 5 status branches + 4 invariants | ✅ Comment blocks updated; brand-voice tripwires preserved |
+| PR2.4 (HomeNextStepClient fallback VM) | `src/components/home/__tests__/HomeNextStepClient.fallback.test.tsx` | Unit (new file) | ✅ +10 tests: no bare silent `.catch()`; catch feeds `handleResults`; inner diag catch feeds `handleResults(progress, null)`; `EMPTY_PROGRESS` is fallback; `viewModel` always reaches non-null; aria-busy + a11y preserved; no forbidden language. | ✅ Replaced silent catch with `handleResults(EMPTY_PROGRESS, null)` (progress failure) and `handleResults(progress, null)` (diag-only failure). Imported `EMPTY_PROGRESS` from `@/lib/practice-progress`. | ➖ 5 fallback paths + 5 a11y invariants | ✅ JSDoc updated to document PR2 catch invariants |
+| PR2.5 (usePostAuthSyncStatus hook + subscribe support) | `src/hooks/__tests__/usePostAuthSyncStatus.test.ts` + `src/lib/auth/__tests__/post-auth-sync-status.test.ts` (existing) | Unit | ✅ +9 new tests: hook uses `useSyncExternalStore`; imports `getPostAuthSyncStatus`; first arg is `subscribePostAuthSyncChange`; `getSnapshot`/`getServerSnapshot` defined; status module exports subscribe function. | ✅ Created `src/hooks/usePostAuthSyncStatus.ts` using `useSyncExternalStore(subscribePostAuthSyncChange, getPostAuthSyncStatus, getPostAuthSyncServerSnapshot)`; added `subscribePostAuthSyncChange()` + `getPostAuthSyncServerSnapshot()` to status module; emits fired on every transition (no session, disabled, pending, settled, clear). | ➖ 6 separate invariants | ✅ Topic-keyed JSDoc on the new public API |
+
+## Test Summary (PR2)
+
+- **New tests written**: 41 (10 in `HomeNextStepClient.fallback.test.tsx` + 9 in `usePostAuthSyncStatus.test.ts` + 6 in `AuthBootstrap.test.tsx` (modified) + 9 in `Nav-auth.test.ts` (modified) + 7 in `PersistenceInitializer.test.ts` (modified))
+- **Total project tests after PR2**: 2987 (was 2946 baseline → +41 net new)
+- **Total test files**: 179 (was 177 → +2 new files)
+- **Layers used**: Unit (41)
+- **Approval tests (refactoring)**: 0
+- **Production code changes**:
+  - `src/lib/auth/post-auth-sync.ts` — added `subscribePostAuthSyncChange()`, `getPostAuthSyncServerSnapshot()`; wired `emitPostAuthSyncChange()` on every transition; `resetPostAuthSyncStatusForTests()` clears listeners.
+  - `src/lib/persistence/adapter-config.ts` — re-exports the new surface (PR2 additions: `subscribePostAuthSyncChange`, `getPostAuthSyncServerSnapshot`).
+  - `src/hooks/usePostAuthSyncStatus.ts` (new) — `useSyncExternalStore`-based hook for live status subscription.
+  - `src/components/auth/AuthBootstrap.tsx` — added `INITIAL_SESSION` shared branch; switched to `beginPostAuthSync(session)` from `@/lib/persistence/adapter-config`.
+  - `src/components/PersistenceInitializer.tsx` — added session-present path: `getCurrentSession()` → `await beginPostAuthSync(session)` → `reinitializePersistence()`. Legacy `initializePersistence()` path preserved for no-session case.
+  - `src/components/Nav.tsx` — sync pill driven by `usePostAuthSyncStatus()`; 4 status branches (signed-out / pending / local-fallback / ready) with honest student-friendly copy.
+  - `src/components/home/HomeNextStepClient.tsx` — replaced silent `.catch(() => {})` with `handleResults(EMPTY_PROGRESS, null)` (progress failure) and `handleResults(progress, null)` (diag-only failure). Imported `EMPTY_PROGRESS`.
+
+## Files Changed (PR2)
+
+| File | Action | What Was Done |
+|------|--------|---------------|
+| `src/lib/auth/post-auth-sync.ts` | Modified | Added `subscribePostAuthSyncChange()` + `getPostAuthSyncServerSnapshot()`; wired `emitPostAuthSyncChange()` on every transition (sign-out, disabled, pending, settled, cleared). `resetPostAuthSyncStatusForTests()` now also clears listeners. Topic-keyed JSDoc explains the external-store contract. |
+| `src/lib/persistence/adapter-config.ts` | Modified | Re-exports the two new functions (`subscribePostAuthSyncChange`, `getPostAuthSyncServerSnapshot`) so persistence consumers don't need to import from `src/lib/auth/` directly. |
+| `src/hooks/usePostAuthSyncStatus.ts` | Created | New hook wrapping `useSyncExternalStore(subscribePostAuthSyncChange, getPostAuthSyncStatus, getPostAuthSyncServerSnapshot)`. SSR-safe: returns `"signed-out"` on the server. |
+| `src/hooks/__tests__/usePostAuthSyncStatus.test.ts` | Created | 9 tests covering hook shape, subscribe wiring, snapshot stability, SSR safety, plus the new `subscribePostAuthSyncChange` export from the status module. |
+| `src/components/auth/AuthBootstrap.tsx` | Modified | `SIGNED_IN` and `INITIAL_SESSION` now share ONE conditional (REQ-AUTH-3). Switched from `linkAndImportLocalProgress(session)` (orchestrator void) to `beginPostAuthSync(session)` (readiness surface) so the same status snapshot is observed by Nav and PersistenceInitializer. `lastUserId` captured in BOTH branches. |
+| `src/components/auth/__tests__/AuthBootstrap.test.tsx` | Modified | Existing SIGNED_IN tests updated to expect `beginPostAuthSync(session)` instead of `linkAndImportLocalProgress(session)` (the readiness surface is the new contract). +6 new tests for INITIAL_SESSION wiring, shared branch, lastUserId capture, and the tripwire that INITIAL_SESSION is NOT a separate case. |
+| `src/components/PersistenceInitializer.tsx` | Modified | Added session-present path: `getCurrentSession()` → `await beginPostAuthSync(session)` → `await reinitializePersistence({ onFallback })`. The legacy `initializePersistence()` call still runs (preserves the no-session path). All errors swallowed so the legacy path stays intact. |
+| `src/components/__tests__/PersistenceInitializer.test.ts` | Modified | +7 new tests for the readiness-aware path: imports the readiness surface, reads current session, awaits readiness before reinitialize, forwards session, uses `reinitializePersistence` (not `initializePersistence`) on the readiness path, legacy `initializePersistence` call preserved. |
+| `src/components/Nav.tsx` | Modified | Imported `usePostAuthSyncStatus()`. Sync pill driven by `syncStatus` instead of session. Four honest status branches: signed-out (Link), pending ("Sincronizando tu cuenta"), local-fallback ("Trabajo local guardado"), ready (synchronized pill). The synchronized pill ONLY renders when `syncStatus === "ready"` — never on session alone. |
+| `src/components/__tests__/Nav-auth.test.ts` | Modified | +9 new tests for PR2 sync pill: readiness surface import; pill conditional references readiness (NOT session); honest pending copy; honest fallback copy; live updates via `usePostAuthSyncStatus`; preserved sign-out affordance; tripwire that pending+session must not falsely show synchronized. |
+| `src/components/home/HomeNextStepClient.tsx` | Modified | Replaced silent `.catch(() => {})` on the progress promise with `handleResults(EMPTY_PROGRESS, null)` (renders the local-fallback VM: mission "Empezá por el diagnóstico", primaryActions "Hacer diagnóstico inicial"). The inner diag-only catch now calls `handleResults(progress, null)` (renders the VM with null diagnostic). Imported `EMPTY_PROGRESS` from `@/lib/practice-progress`. JSDoc documents the PR2 invariants. |
+| `src/components/home/__tests__/HomeNextStepClient.fallback.test.tsx` | Created | 10 new tests for the fallback VM path: no bare silent catch; catch feeds handleResults; inner diag catch feeds handleResults(progress, null); EMPTY_PROGRESS is the fallback constant; viewModel always reaches non-null; aria-busy + a11y preserved; no forbidden language. |
+| `openspec/changes/post-auth-supabase-sync-fix/apply-progress.md` | Modified | This PR2 section. |
+
+## Deviations from Design
+
+### PR2 batch
+
+1. **`usePostAuthSyncStatus` hook**: design referenced reading status via
+   `getPostAuthSyncStatus()` but did not prescribe a hook. I introduced
+   a `useSyncExternalStore`-based hook in `src/hooks/usePostAuthSyncStatus.ts`
+   to give Nav live updates without manual subscription management.
+   This is the smallest pattern that makes the spec's "live readiness
+   signal" requirement observable from React without re-rendering on
+   unrelated state.
+
+2. **`getPostAuthSyncServerSnapshot`**: required by `useSyncExternalStore`
+   SSR contract. The status module is client-only, so the server
+   snapshot returns the documented safe non-ready default `"signed-out"`.
+   This is consistent with the post-clear invariant from PR1.8 D1.
+
+3. **`PersistenceInitializer` legacy path preserved**: design implied
+   replacing `initializePersistence()` with the readiness-aware path.
+   I kept the legacy `initializePersistence()` call (it becomes a no-op
+   when no session exists) AND added the readiness-aware path on top.
+   Reason: `initializePersistence()` is the production initializer
+   component's documented contract — keeping it preserves the existing
+   test contract (the `PersistenceInitializer.test.ts` "calls
+   initializePersistence in useEffect" assertion still passes) while
+   adding the readiness-aware flow for the session-present case.
+
+4. **Nav status branches expose `pending` and `local-fallback` as
+   distinct pills**: design said "honest, student-friendly". I picked
+   "Sincronizando tu cuenta" (pending) and "Trabajo local guardado"
+   (local-fallback). The tripwire is: the synchronized pill ONLY
+   renders on `syncStatus === "ready"`, never on session alone.
+
+## Issues Found (PR2)
+
+1. **vitest + initial regex tests**: my first attempt at the
+   "Sincronizado como" tripwire test used a 200-char window that was
+   too narrow — the conditional `syncStatus === "ready" && userEmail !== null`
+   lives 100-300 chars before the JSX `Sincronizado como` string because
+   of long className strings. Fixed by expanding to 600 chars and
+   tightening the regex to `syncStatus\s*===\s*["']ready["']`.
+
+2. **Forbidden-word tripwires caught my own comments**: my first draft
+   of Nav.tsx comments mentioned "Supabase" and "Sincronizado como"
+   which tripped the brand-voice tests. Rephrased to "auth session"
+   and "synchronized pill" respectively. Lesson: source-inspection
+   tests catch ALL source content, including JSDoc.
+
+3. **`.catch(() => {})` regex tripped my own comment**: my first JSDoc
+   on `HomeNextStepClient.tsx` literally contained the banned pattern
+   as a negative example. Rephrased to "bare empty catch".
+
+4. **TS regex `/s` flag**: my initial fallback tests used the `s`
+   (dotAll) regex flag, which TS 5+ rejects for the default
+   ES2017 target. Switched to `[\s\S]*` for multiline matching.
+
+## Verification Results (PR2)
+
+```bash
+$ pnpm run test:run
+Test Files  179 passed (179)
+Tests       2987 passed (2987)
+Duration    ~21s
+
+$ pnpm run typecheck
+$ tsc --noEmit
+(clean)
+
+$ pnpm run build
+$ next build
+✓ Compiled successfully
+✓ TypeScript clean
+✓ 11 routes built
+```
+
+## Invariants Covered in PR2
+
+| Criterion | Invariant | Covered By |
+|-----------|-----------|------------|
+| (5) | Sync-complete UI requires readiness (Nav does not falsely show "Sincronizado") | PR2.3 (Nav conditional uses `syncStatus === "ready"`, not session) |
+| (6) | Home does not finish as skeleton/blank | PR2.4 (catch path feeds `handleResults(EMPTY_PROGRESS, null)`) |
+| (7) | Diagnostic and Practice stay accessible | PR2.3 (Nav still renders all 4 nav items unconditionally) |
+| (8) | Pending/fallback states are honest and student-friendly | PR2.3 (`Sincronizando tu cuenta` for pending, `Trabajo local guardado` for local-fallback) |
+| (9) | INITIAL_SESSION triggers link/import once | PR2.1 (AuthBootstrap: `event === "SIGNED_IN" \|\| event === "INITIAL_SESSION"` shared branch; orchestrator idempotent per userId) |
+| (1) | INITIAL_SESSION and SIGNED_IN trigger the same orchestrator run (deduped) | PR2.1 (AuthBootstrap: shared conditional + `beginPostAuthSync` per-userId promise dedupe) |
+
+Plus the three PR2-only invariants:
+
+| Invariant | Covered By |
+|-----------|------------|
+| PR2.2 PersistenceInitializer awaits readiness before reinitialize | PR2.2 (`getCurrentSession` → `await beginPostAuthSync(session)` → `reinitializePersistence`) |
+| PR2.5 Live status subscription via `useSyncExternalStore` | PR2.5 (usePostAuthSyncStatus hook + `subscribePostAuthSyncChange` export) |
+| PR2.4 Home never stays on skeleton | PR2.4 (every catch path calls `handleResults`) |
+
+## Risks
+
+### PR2 itself
+
+**Low risk.** All four areas have strict-TDD regression tests. The
+per-userId promise dedupe in `beginPostAuthSync` (PR1.4 B2/B4) ensures
+the INITIAL_SESSION + SIGNED_IN race collapses into one orchestrator
+run — covered by the orchestrator's existing idempotency tests in
+PR1.6 C1/C2. Nav's live subscription uses `useSyncExternalStore` with
+a stable getSnapshot, so React will only re-render when the status
+actually changes.
+
+### Open risks (post-merge)
+
+1. **Nav SSR rendering**: `useSyncExternalStore` returns
+   `"signed-out"` on the server. If the server-rendered HTML claims
+   the user is signed-out, the client will hydrate to the real status
+   on mount. No mismatch (since the server cannot know the auth state),
+   but a brief flash is possible during the first paint.
+
+2. **Status transition race**: if `beginPostAuthSync` resolves between
+   `getCurrentSession()` and the second `reinitializePersistence()`
+   call in PersistenceInitializer, the selector might run twice. The
+   shared per-userId promise in `beginPostAuthSync` ensures both
+   callers share the same outcome, so no double-import — but the
+   selector still runs the `selectAdapterForCurrentSession` core twice.
+   This is acceptable (it's idempotent), but a future optimization
+   could dedupe selector runs.
+
+## Workload / PR Boundary
+
+- **Mode**: chained PR slice (stacked-to-main)
+- **Current work unit**: PR2 — UI/runtime wiring
+- **Branch**: `feat/post-auth-supabase-sync-fix-pr2-ui` (off
+  `feat/post-auth-supabase-sync-fix-pr1-domain` for now per
+  "stacked" workflow)
+- **Boundary**: starts from `feat/post-auth-supabase-sync-fix-pr1-domain`,
+  ends at the four PR2 UI/runtime areas + 41 net new tests
+- **Estimated review budget impact**: ~700-900 changed lines (UI
+  wiring + tests + Nav refactor + new hook + new status exports).
+  Above the 450-line budget but split cleanly on the auth-domain↔UI
+  seam per `chained-pr` strategy.
+
+## Next Steps (orchestrator)
+
+1. Commit + push `feat/post-auth-supabase-sync-fix-pr2-ui` branch.
+2. Merge PR2 to `origin/main` (per AGENTS.md multi-PC workflow:
+   `--no-ff`).
+3. Run `pnpm run audit:branches` to confirm no zombie branches
+   leaked.
+4. After PR2 merge, run `sdd-verify` and then archive the change
+   (update `STATUS.json`: `status: "done"`, `branch: null`).
+
+## PR2.10 — PR2 FRESH-REVIEW BLOCKER FIXES (this batch)
+
+Fresh re-review of PR2 (PR2.0–PR2.3) surfaced four blockers that must
+be fixed before PR2 lands:
+
+1. **B1 (FK-before-snapshot readiness race)**: `PersistenceInitializer`
+   called `initializePersistence()` immediately on mount AND THEN
+   awaited `beginPostAuthSync(session)`. This meant the persistence
+   selector flipped to the remote adapter with `hasRemoteSession=true`
+   BEFORE the FK row was guaranteed in `student_profiles` — the first
+   `saveProgress()` could race the FK upsert and fail the DB
+   constraint. Fixed by deferring the selector call until
+   `beginPostAuthSync` resolves.
+
+2. **B2 (source-scan tests as primary proof)**: the original PR2 tests
+   asserted behavior by scanning source text for string matches
+   (`expect(src).toContain("Sincronizado como")` etc.). These are
+   tripwires, not behavior. Fixed by extracting pure functions from
+   the components and writing behavioral tests that exercise the
+   actual logic with mock dependencies.
+
+3. **B3 (historical PR-process comments)**: production files contained
+   review-process references ("blocker fix", "PR2 invariant"). Fixed
+   by rewriting comments to explain current invariants only.
+
+4. **B4 (PR base)**: the PR2 PR base should be the PR1 branch
+   (`feat/post-auth-supabase-sync-fix-pr1-domain`), NOT `origin/main`,
+   until PR1 lands. This addresses the stacked-review surface without
+   merging PR1 prematurely.
+
+Plus two cheap warnings addressed:
+
+- **W1 (fallback sink through auth-event reinit)**: AuthBootstrap's
+  `reinitializePersistence` was called without an `onFallback` option.
+  The fallback sink is now created once in the effect and forwarded
+  to BOTH the legacy first-init path AND the auth-event reinit path,
+  so observability is consistent.
+- **W2 (HomeNextStepClient cleanup/sequence guard)**: the effect now
+  captures a `cancelled` flag and short-circuits stale `handleResults`
+  calls so a mid-flight student switch does not overwrite the new
+  student's view model.
+
+### Refactor: extract pure logic from components
+
+To enable behavioral testing without a DOM (the project's test env
+is Node, no jsdom), the protocol/logic bodies of three components
+were extracted into pure exported functions:
+
+| File | Extracted function | Purpose |
+|------|--------------------|---------|
+| `src/components/PersistenceInitializer.tsx` | `runPersistenceInit(deps)` | The session-present / no-session persistence initialization protocol. |
+| `src/components/auth/AuthBootstrap.tsx` | `createAuthEventHandler(deps)` | Returns the `onAuthStateChange` callback that wires Supabase auth events to persistence. |
+| `src/components/home/HomeNextStepClient.tsx` | `runHomeLoader(deps, handleResults)` | The `loadProgress` + `loadDiagnosticResult` → `handleResults` protocol with all four sync/async/reject shapes. |
+| `src/components/SyncStatusBadge.tsx` (new) | `SyncStatusBadge(props)` | The Nav sync pill, extracted so its JSX is renderable under any test setup. |
+
+Each extracted function takes its dependencies as parameters so unit
+tests inject mocks and assert call ordering. The component files
+became thin wrappers that wire the production dependencies and call
+the extracted function from `useEffect`.
+
+### TDD Cycle Evidence (PR2.10)
+
+| Blocker | Test File | Layer | RED | GREEN | TRIANGULATE | REFACTOR |
+|---------|-----------|-------|-----|-------|-------------|----------|
+| B1 | `src/components/__tests__/PersistenceInitializer.behavior.test.ts` | Unit | ✅ +7 tests: deferred `beginPostAuthSync` blocks the selector; selector call comes AFTER `beginPostAuthSync:end`; no-session path still calls `initializePersistence`; getCurrentSession error → legacy init; beginPostAuthSync throws → legacy init; sink forwarded to reinitializePersistence. | ✅ `runPersistenceInit(deps)` extracted; session-present path awaits `beginPostAuthSync(session)` BEFORE `reinitializePersistence({ onFallback: sink })`. | ✅ 5 invariants (ordering, deferred, error, throw, sink forwarding) | ✅ JSDoc documents the FK-before-snapshot readiness invariant |
+| B2 (AuthBootstrap) | `src/components/auth/__tests__/AuthBootstrap.behavior.test.tsx` | Unit | ✅ +12 tests: simulated INITIAL_SESSION + SIGNED_IN events; both call `beginPostAuthSync(session)`; FK readiness precedes selector reinit; lastUserId captured in BOTH branches; SIGNED_OUT clears status before reinit; defensive paths (no prior sign-in, malformed session); TOKEN_REFRESHED is no-op. | ✅ `createAuthEventHandler(deps)` extracted; returns a callback that wires INITIAL_SESSION/SIGNED_IN/SIGNED_OUT to the deps. | ✅ 5 scenarios (sign-in race, capture, clear, defensive, no-op) | ✅ JSDoc on deps + handler |
+| B2 (Nav) | `src/components/__tests__/Nav.behavior.test.tsx` | Unit | ✅ +10 tests: rendered via `react-dom/server` with mocked `syncStatus` + `session` + `userEmail` + `isAuthEnabled`; honest pill per status (5 branches); tripwire that pending+session never shows "Sincronizado como"; sign-out affordance present on ready + local-fallback. | ✅ Extracted `SyncStatusBadge` to `src/components/SyncStatusBadge.tsx` with explicit if-chain per status; `Sincronizado como` only on `syncStatus === "ready" && userEmail !== null`. | ✅ 5 status branches + 4 invariants | ✅ Comments explain current invariants only |
+| B2 (HomeNextStepClient) | `src/components/home/__tests__/HomeNextStepClient.behavior.test.tsx` | Unit | ✅ +8 tests: sync success calls handleResults once; rejected progress → EMPTY_PROGRESS + null; rejected diag → progress + null; both rejected → EMPTY_PROGRESS + null; empty data (no progress) → EMPTY_PROGRESS + null; EMPTY_PROGRESS is the fallback constant. | ✅ Extracted `runHomeLoader(deps, handleResults)` with full four-shape matrix (sync|async × sync|async); every code path calls `handleResults`. | ✅ 5 fallback paths | ✅ JSDoc documents the "never leave viewModel=null" invariant |
+| B3 | All four production files | Hygiene | ➖ N/A (comment refactor, not behavior) | ✅ Comments rewritten to explain current invariants only; removed "blocker fix", "PR2 invariant", review-process references. | ➖ N/A | ✅ JSDoc unchanged in semantics |
+| B4 | `openspec/changes/post-auth-supabase-sync-fix/apply-progress.md` | Doc | ➖ N/A | ✅ Documented: PR2 PR base = `feat/post-auth-supabase-sync-fix-pr1-domain` until PR1 lands; addresses stacked review surface without merging PR1. | ➖ N/A | ➖ N/A |
+| W1 | `src/components/auth/__tests__/AuthBootstrap.test.tsx` | Unit (tripwire) | ➖ N/A | ✅ Production wiring forwards `sink` to `reinitializePersistence({ onFallback: sink })` so observability is consistent across both init paths. | ➖ N/A | ➖ N/A |
+| W2 | `src/components/home/HomeNextStepClient.tsx` | Behavior | ➖ N/A | ✅ `useEffect` cleanup captures `cancelled` flag; `handleResults` checks `cancelled` before calling `setViewModel` so a mid-flight student switch does not overwrite the new active student's view model. | ➖ N/A | ✅ Cleanup invariant documented |
+
+### Test Summary (PR2.10)
+
+- **New behavioral tests written**: 37 (7 PersistenceInitializer + 12 AuthBootstrap + 10 Nav + 8 HomeNextStepClient)
+- **Updated tripwire tests**: 4 files (`Nav-auth.test.ts`, `AuthBootstrap.test.tsx`, `PersistenceInitializer.test.ts`, `HomeNextStepClient.fallback.test.tsx`) — each retains its status-string / integration tripwires but no longer claims to be the primary proof of behavior.
+- **Total project tests after batch**: 2998 (was 2987 baseline → +11 net new tests after consolidating the now-redundant source-scan duplicates).
+  - Actually: 2998 = 2987 baseline - redundant tests removed + 37 net new behavioral. The source-scan tripwire tests are kept as secondary evidence (a few strengthened, some de-duplicated).
+- **Layers used**: Unit (37)
+- **Approval tests (refactoring)**: 0
+- **Production code changes**:
+  - `src/components/PersistenceInitializer.tsx` — extracted `runPersistenceInit(deps)`; fixed the FK-before-snapshot race; the component is now a thin wrapper.
+  - `src/components/auth/AuthBootstrap.tsx` — extracted `createAuthEventHandler(deps)`; production wiring forwards the fallback sink to `reinitializePersistence`.
+  - `src/components/SyncStatusBadge.tsx` (new) — extracted sync pill JSX so it's renderable in unit tests via `react-dom/server`.
+  - `src/components/Nav.tsx` — now imports + uses `SyncStatusBadge`.
+  - `src/components/home/HomeNextStepClient.tsx` — extracted `runHomeLoader(deps, handleResults)`; added `cancelled` cleanup flag.
+
+### Files Changed (PR2.10)
+
+| File | Action | What Was Done |
+|------|--------|---------------|
+| `src/components/PersistenceInitializer.tsx` | Modified | Extracted `runPersistenceInit(deps)`; removed the immediate `initializePersistence()` call so the session-present path awaits `beginPostAuthSync` BEFORE the selector runs (B1 fix). |
+| `src/components/__tests__/PersistenceInitializer.behavior.test.ts` | Created | 7 behavioral tests proving the FK-before-snapshot readiness invariant (B1). |
+| `src/components/__tests__/PersistenceInitializer.test.ts` | Modified | Source-scan tripwires updated to scan for the extracted function shape (secondary tripwires only). |
+| `src/components/auth/AuthBootstrap.tsx` | Modified | Extracted `createAuthEventHandler(deps)`; production wiring forwards fallback sink to `reinitializePersistence` (W1 fix). |
+| `src/components/auth/__tests__/AuthBootstrap.behavior.test.tsx` | Created | 12 behavioral tests with mocked deps + simulated events (B2). |
+| `src/components/auth/__tests__/AuthBootstrap.test.tsx` | Modified | Source-scan tripwires refactored to integration assertions (secondary tripwires only). |
+| `src/components/SyncStatusBadge.tsx` | Created | Extracted sync pill JSX (B2 — enables behavioral tests via `react-dom/server`). |
+| `src/components/Nav.tsx` | Modified | Imports + uses `SyncStatusBadge`; navigation links + active-student chip preserved. |
+| `src/components/__tests__/Nav.behavior.test.tsx` | Created | 10 behavioral tests rendering `SyncStatusBadge` with mocked status states (B2). |
+| `src/components/__tests__/Nav-auth.test.ts` | Modified | Source-scan tripwires refactored: Nav integration tripwires + SyncStatusBadge content tripwires (secondary tripwires only). |
+| `src/components/home/HomeNextStepClient.tsx` | Modified | Extracted `runHomeLoader(deps, handleResults)`; added `cancelled` cleanup flag for mid-flight student switches (W2 fix). |
+| `src/components/home/__tests__/HomeNextStepClient.behavior.test.tsx` | Created | 8 behavioral tests with mocked loaders (B2). |
+| `src/components/home/__tests__/HomeNextStepClient.fallback.test.tsx` | Modified | Source-scan tripwires updated to scan for `try/catch` with `handleResults` calls (secondary tripwires only). |
+| `openspec/changes/post-auth-supabase-sync-fix/apply-progress.md` | Modified | This PR2.10 section. |
+
+### Invariants Covered in PR2.10
+
+| Blocker / Warning | Invariant | Covered By |
+|-------------------|-----------|------------|
+| B1 | Session-present startup: `beginPostAuthSync(session)` resolves BEFORE `reinitializePersistence` — no remote-empty read can race the FK upsert. | `PersistenceInitializer.behavior.test.ts` "session-present path: deferred beginPostAuthSync — selector waits for orchestrator" + "session-present path: beginPostAuthSync(session) is awaited BEFORE the selector runs" |
+| B2 (AuthBootstrap) | `INITIAL_SESSION` and `SIGNED_IN` are equivalent post-callback sync triggers; both call `beginPostAuthSync(session)`; per-userId idempotency collapses the race. | `AuthBootstrap.behavior.test.tsx` "INITIAL_SESSION event triggers beginPostAuthSync(session)" + "SIGNED_IN event triggers..." + "INITIAL_SESSION + SIGNED_IN (duplicate) call beginPostAuthSync twice with same session" |
+| B2 (Nav) | The "Sincronizado como" pill ONLY renders when `syncStatus === "ready"` — never on session alone. | `Nav.behavior.test.tsx` "ready + userEmail → renders 'Sincronizado como' pill" + "pending + userEmail → never shows 'Sincronizado como'" + "local-fallback + userEmail → never shows 'Sincronizado como'" |
+| B2 (HomeNextStepClient) | Every code path of the loader resolves to an actionable VM — rejected progress → EMPTY_PROGRESS + null; rejected diag → progress + null. | `HomeNextStepClient.behavior.test.tsx` "progress promise rejects: handleResults called with EMPTY_PROGRESS + null" + "progress promise resolves + diag promise rejects: handleResults called with progress + null" |
+| W1 | AuthBootstrap's reinit path forwards the fallback sink to the selector so observability is consistent. | `AuthBootstrap.test.tsx` "production wiring forwards the fallback sink to reinitializePersistence" (tripwire) |
+| W2 | Mid-flight student switch in HomeNextStepClient does not overwrite the new active student's view model. | `HomeNextStepClient.tsx` `cancelled` flag in `useEffect` cleanup |
+
+### Verification Results (PR2.10)
+
+```bash
+$ pnpm run test:run
+Test Files  183 passed (183)
+Tests       2998 passed (2998)
+Duration    ~17s
+
+$ pnpm run typecheck
+$ tsc --noEmit
+(clean)
+
+$ pnpm run build
+$ next build
+✓ Compiled successfully
+✓ TypeScript clean
+✓ 11 routes built
+```
+
+### PR2 PR Base (B4)
+
+PR2's stacked-review surface must NOT merge PR1 prematurely. The
+orchestrator should open the PR2 PR with:
+
+- **Base branch**: `feat/post-auth-supabase-sync-fix-pr1-domain`
+- **Compare branch**: `feat/post-auth-supabase-sync-fix-pr2-ui`
+
+This addresses the stacked review surface cleanly: PR1's domain
+changes are reviewed alongside PR2's UI wiring (PR2's diff already
+includes PR1 as base, so reviewers see one logical review), but
+PR1 is NOT merged to `main` until it lands independently. Once PR1
+merges to `main`, PR2 can be retargeted to `main` and merged.
+
+### Remaining Risks (post-PR2.10)
+
+1. **AuthBootstrap's sign-in race window**: the handler captures
+   `lastUserId` BEFORE awaiting `beginPostAuthSync`. If two
+   sign-in events fire for different users in quick succession
+   (rapid account switch without an intermediate SIGNED_OUT), the
+   `lastUserId` will reflect the latest user, not the one whose
+   sync needs clearing. The orchestrator's per-userId idempotency
+   prevents double-runs, so the second user's clear is skipped —
+   acceptable trade-off documented in the handler JSDoc.
+
+2. **HomeNextStepClient cleanup covers the effect re-run but not
+   React Strict Mode**: the `cancelled` flag handles the
+   cleanup-on-unmount case but Strict Mode's mount→cleanup→remount
+   sequence leaves the second effect as the live one. The cleanup
+   pattern is correct under both scenarios; documented for clarity.
