@@ -32,44 +32,65 @@ import { loadProfiles } from "../student-profile-storage";
 import type { ProfilesState } from "../persistence/port";
 
 /**
+ * Result of attempting to link the active local profile to the remote
+ * `student_profiles` table. The orchestrator (link-and-import) needs to
+ * know whether the FK row was actually written so it can decide whether
+ * to proceed with the import branch — if the FK is not in place, the
+ * import would violate the FK constraint on `student_progress_snapshots`.
+ */
+export type LinkProfileResult =
+  | { ok: true }
+  | {
+      ok: false;
+      reason:
+        | "no-active-profile"
+        | "no-session"
+        | "auth-disabled"
+        | "no-profile-row"
+        | "remote-failed";
+    };
+
+/**
  * Upsert the active local profile into the remote `student_profiles`
  * table so that subsequent remote progress saves can satisfy the FK.
  *
- * Safe to call repeatedly; safe to call without an active session or
- * without auth configured; never throws.
+ * Returns a discriminated `LinkProfileResult` so the orchestrator can
+ * act on the outcome. The function NEVER throws — every error path is
+ * captured as `{ ok: false, reason: ... }`.
  *
  * Spec: REQ-AUTH-4 — "linkActiveProfileToAuthUser() MUST read the active
  * local profile and call saveProfiles() so the remote adapter upserts a
  * student_profiles row keyed by (authUserId, studentId). It MUST be
  * idempotent and best-effort."
  */
-export async function linkActiveProfileToAuthUser(): Promise<void> {
+export async function linkActiveProfileToAuthUserWithResult(): Promise<LinkProfileResult> {
   // 1. Resolve active profile id. No profile → no-op.
   const activeId = getActiveProfileId();
   if (!activeId) {
-    return;
+    return { ok: false, reason: "no-active-profile" };
   }
 
   // 2. Build a remote-capable client. Auth disabled → no-op.
   const client = createBrowserClient();
   if (!client) {
-    return;
+    return { ok: false, reason: "auth-disabled" };
   }
 
   // 3. Confirm a Supabase session exists. No session → no-op.
-  //    Best-effort: errors here are swallowed.
   try {
     const { data, error } = await client.auth.getSession();
     if (error || !data.session) {
-      return;
+      return { ok: false, reason: "no-session" };
     }
 
     // 4. Load the full local profile state (we need displayName, createdAt,
     //    lastActiveAt for the upsert).
     const state: ProfilesState = loadProfiles() as ProfilesState;
-    const profile = state.profiles.find((p: { studentId: string }) => p.studentId === activeId);
+    const profile = state.profiles.find(
+      (p: { studentId: string }) => p.studentId === activeId
+    );
     if (!profile) {
-      return;
+      return { ok: false, reason: "no-profile-row" };
     }
 
     // 5. Build a remote adapter and upsert the profile. The adapter uses
@@ -77,14 +98,31 @@ export async function linkActiveProfileToAuthUser(): Promise<void> {
     //    which is the idempotency guarantee at the DB layer.
     const remoteAdapter = createSupabaseAdapter(client);
 
-    // Best-effort: any throw or {ok:false} is swallowed. The caller
-    // (AuthBootstrap) treats linking as fire-and-forget.
-    await remoteAdapter.saveProfiles({
+    const result = await remoteAdapter.saveProfiles({
       profiles: [profile],
       activeStudentId: activeId,
     });
+
+    if (!result.ok) {
+      return { ok: false, reason: "remote-failed" };
+    }
+
+    return { ok: true };
   } catch {
-    // Swallow — best-effort.
-    return;
+    // Any unexpected throw is captured as a remote failure so the
+    // orchestrator can decide not to run the import branch.
+    return { ok: false, reason: "remote-failed" };
   }
+}
+
+/**
+ * Fire-and-forget wrapper around `linkActiveProfileToAuthUserWithResult`
+ * that preserves the original void return contract. AuthBootstrap and
+ * other fire-and-forget callers should keep using this entrypoint.
+ *
+ * Never throws. The result is intentionally discarded because callers
+ * that use this helper do not need to act on the failure mode.
+ */
+export async function linkActiveProfileToAuthUser(): Promise<void> {
+  await linkActiveProfileToAuthUserWithResult();
 }

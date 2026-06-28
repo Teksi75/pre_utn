@@ -146,6 +146,27 @@ describe("AuthBootstrap — SIGNED_OUT flow", () => {
     const afterSignOut = src.slice(signedOutIdx);
     expect(afterSignOut).not.toMatch(/linkAndImportLocalProgress/);
   });
+
+  it("SIGNED_OUT branch clears the per-userId post-auth sync status", () => {
+    // AuthBootstrap must call clearPostAuthSyncStatus(userId) on SIGNED_OUT
+    // so the next sign-in for the same user re-runs the orchestrator
+    // instead of replaying a stale cached status.
+    const src = authBootstrapSource();
+    const signedOutIdx = src.indexOf('"SIGNED_OUT"');
+    expect(signedOutIdx).toBeGreaterThan(-1);
+    const afterSignOut = src.slice(signedOutIdx);
+    expect(afterSignOut).toMatch(/clearPostAuthSyncStatus\s*\(/);
+  });
+
+  it("tracks the previous userId so SIGNED_OUT can clear it", () => {
+    // On SIGNED_OUT, the session is null, so we cannot read userId from
+    // session.user.id. AuthBootstrap must capture the userId from the
+    // last SIGNED_IN and forward it to clearPostAuthSyncStatus.
+    const src = authBootstrapSource();
+    // The variable holding the previous userId is referenced in BOTH the
+    // SIGNED_IN branch (capture) and the SIGNED_OUT branch (use).
+    expect(src).toMatch(/lastUserId|lastSignedInUserId|previousUserId|trackedUserId/);
+  });
 });
 
 describe("AuthBootstrap — unused events are no-ops", () => {
