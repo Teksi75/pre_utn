@@ -7,15 +7,18 @@
  * callback and dispatch auth events (`SIGNED_IN`, `INITIAL_SESSION`,
  * `SIGNED_OUT`, ignored events). Behavior is verified purely through
  * observable calls to the mocked downstream modules (`beginPostAuthSync`,
- * `reinitializePersistence`, `clearPostAuthSyncStatus`) — not by reading the
- * source file or matching regex/textual ordering.
+ * `reinitializePersistence`, `resetPersistenceToLocal`,
+ * `clearPostAuthSyncStatus`) — not by reading the source file or
+ * matching regex/textual ordering.
  *
  * Coverage:
  * - SIGNED_IN / INITIAL_SESSION → `beginPostAuthSync(session)` runs first,
  *   is awaited, then `reinitializePersistence()` runs (FK row must exist
  *   before the selector flips to the remote adapter).
  * - SIGNED_OUT → `clearPostAuthSyncStatus(lastUserId)` then
- *   `reinitializePersistence()`; never invokes the sync orchestrator.
+ *   `resetPersistenceToLocal()` (session-blind local reset, never the
+ *   session-reading `reinitializePersistence()` which would race a
+ *   concurrent sign-in); never invokes the sync orchestrator.
  * - The userId captured at SIGNED_IN / INITIAL_SESSION is forwarded to the
  *   clear at SIGNED_OUT so the per-userId post-auth sync state is reset for
  *   the next sign-in of the same user.
@@ -74,6 +77,9 @@ const mocks = vi.hoisted(() => {
   const reinitializePersistence = vi.fn(async (): Promise<void> => {
     state.callOrder.push("reinitializePersistence");
   });
+  const resetPersistenceToLocal = vi.fn(async (): Promise<void> => {
+    state.callOrder.push("resetPersistenceToLocal");
+  });
   const clearPostAuthSyncStatus = vi.fn((_userId: string): void => {
     state.callOrder.push("clearPostAuthSyncStatus");
   });
@@ -81,6 +87,7 @@ const mocks = vi.hoisted(() => {
     onAuthStateChange,
     beginPostAuthSync,
     reinitializePersistence,
+    resetPersistenceToLocal,
     clearPostAuthSyncStatus,
   };
 });
@@ -89,6 +96,7 @@ const {
   onAuthStateChange: onAuthStateChangeMock,
   beginPostAuthSync: beginPostAuthSyncMock,
   reinitializePersistence: reinitializePersistenceMock,
+  resetPersistenceToLocal: resetPersistenceToLocalMock,
   clearPostAuthSyncStatus: clearPostAuthSyncStatusMock,
 } = mocks;
 
@@ -99,6 +107,7 @@ vi.mock("@/lib/supabase/auth", () => ({
 vi.mock("@/lib/persistence/adapter-config", () => ({
   beginPostAuthSync: mocks.beginPostAuthSync,
   reinitializePersistence: mocks.reinitializePersistence,
+  resetPersistenceToLocal: mocks.resetPersistenceToLocal,
 }));
 
 vi.mock("@/lib/auth/post-auth-sync", () => ({
@@ -263,10 +272,15 @@ describe("AuthBootstrap — SIGNED_IN flow", () => {
       await dispatch("SIGNED_IN", null);
     });
 
-    // No session to sync on; reinitializePersistence still fires to
-    // keep the selector consistent with the bootstrap contract.
+    // No session to sync on — the sync orchestrator must not run.
     expect(beginPostAuthSyncMock).not.toHaveBeenCalled();
-    expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
+    // A null session is a stale/no-session tail: it must NOT call the
+    // session-reading reinitializePersistence (which could observe a
+    // concurrent SIGNED_IN B and select remote for B before B's readiness).
+    // It uses the session-blind local reset instead — same path as
+    // SIGNED_OUT.
+    expect(reinitializePersistenceMock).not.toHaveBeenCalled();
+    expect(resetPersistenceToLocalMock).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -329,7 +343,7 @@ describe("AuthBootstrap — SIGNED_OUT flow", () => {
     container.remove();
   });
 
-  it("clears the previously captured userId and reinitializes persistence", async () => {
+  it("clears the previously captured userId and resets persistence to local", async () => {
     // Establish a signed-in user so the component captures its userId.
     await act(async () => {
       await dispatch("SIGNED_IN", makeSession("user-789"));
@@ -342,10 +356,13 @@ describe("AuthBootstrap — SIGNED_OUT flow", () => {
 
     expect(clearPostAuthSyncStatusMock).toHaveBeenCalledTimes(1);
     expect(clearPostAuthSyncStatusMock).toHaveBeenCalledWith("user-789");
-    expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
+    // SIGNED_OUT uses the session-blind local reset (race safety);
+    // the session-reading reinit must NOT fire on SIGNED_OUT.
+    expect(resetPersistenceToLocalMock).toHaveBeenCalledTimes(1);
+    expect(reinitializePersistenceMock).not.toHaveBeenCalled();
   });
 
-  it("runs clearPostAuthSyncStatus before reinitializePersistence (clear-then-reinit)", async () => {
+  it("runs clearPostAuthSyncStatus before resetPersistenceToLocal (clear-then-local)", async () => {
     await act(async () => {
       await dispatch("SIGNED_IN", makeSession("user-clear-order"));
     });
@@ -357,10 +374,10 @@ describe("AuthBootstrap — SIGNED_OUT flow", () => {
     });
 
     expect(clearPostAuthSyncStatusMock).toHaveBeenCalledTimes(1);
-    expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
+    expect(resetPersistenceToLocalMock).toHaveBeenCalledTimes(1);
     expect(state.callOrder).toEqual([
       "clearPostAuthSyncStatus",
-      "reinitializePersistence",
+      "resetPersistenceToLocal",
     ]);
   });
 
@@ -384,8 +401,10 @@ describe("AuthBootstrap — SIGNED_OUT flow", () => {
     });
 
     expect(clearPostAuthSyncStatusMock).not.toHaveBeenCalled();
-    // Reinit still runs so the selector resets to the local adapter.
-    expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
+    // The session-blind local reset still runs so the adapter resets
+    // to local even with no prior sign-in.
+    expect(resetPersistenceToLocalMock).toHaveBeenCalledTimes(1);
+    expect(reinitializePersistenceMock).not.toHaveBeenCalled();
   });
 });
 

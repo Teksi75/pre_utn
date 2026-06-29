@@ -210,27 +210,29 @@ before PR2 can be merged:
 
 - [x] B1 RED `src/components/__tests__/PersistenceInitializer.behavior.test.ts`: 7 behavioral tests proving the FK-before-snapshot readiness invariant (session-present path awaits `beginPostAuthSync(session)` BEFORE `reinitializePersistence`).
 - [x] B1 GREEN `src/components/PersistenceInitializer.tsx`: extracted `runPersistenceInit(deps)`; session-present path now awaits the orchestrator BEFORE the selector runs (no remote-empty read can race the FK upsert). The no-session path still calls `initializePersistence` for the legacy contract.
-- [x] B2 (AuthBootstrap) RED `src/components/auth/__tests__/AuthBootstrap.behavior.test.tsx`: 12 behavioral tests with mocked deps simulating INITIAL_SESSION + SIGNED_IN events; asserts dedupe, FK-before-snapshot ordering, lastUserId capture, clear path, defensive paths, no-op events.
+- [x] B2 (AuthBootstrap) RED `src/components/auth/__tests__/AuthBootstrap.behavior.test.tsx`: behavioral tests with mocked deps simulating INITIAL_SESSION + SIGNED_IN events; asserts dedupe, FK-before-snapshot ordering, lastUserId capture, clear path, defensive paths, no-op events, and stale session-change suppression.
 - [x] B2 (AuthBootstrap) GREEN `src/components/auth/AuthBootstrap.tsx`: extracted `createAuthEventHandler(deps)` returning the `onAuthStateChange` callback. Component is a thin wrapper wiring the production deps.
 - [x] B2 (Nav) RED `src/components/__tests__/Nav.behavior.test.tsx`: 10 behavioral tests rendering `SyncStatusBadge` with mocked status states via `react-dom/server`.
 - [x] B2 (Nav) GREEN `src/components/SyncStatusBadge.tsx`: NEW file extracting the sync pill JSX. `src/components/Nav.tsx` now imports + uses it.
-- [x] B2 (HomeNextStepClient) RED `src/components/home/__tests__/HomeNextStepClient.behavior.test.tsx`: 8 behavioral tests with mocked `loadProgress` + `loadDiagnosticResult` covering the full sync/async/reject matrix.
-- [x] B2 (HomeNextStepClient) GREEN `src/components/home/HomeNextStepClient.tsx`: extracted `runHomeLoader(deps, handleResults)` with all four shape combinations. Every code path calls `handleResults`.
+- [x] B2 (HomeNextStepClient) RED `src/components/home/__tests__/HomeNextStepClient.behavior.test.tsx`: behavioral tests with mocked `loadProgress` + `loadDiagnosticResult` covering the sync/async/reject matrix, including progress failing before a delayed diagnostic rejection.
+- [x] B2 (HomeNextStepClient) GREEN `src/components/home/HomeNextStepClient.tsx`: extracted `runHomeLoader(deps, handleResults)` and settled both loaders explicitly. Every code path calls `handleResults` and no loader promise is left floating.
 - [x] B3 hygiene: rewrote production comments to explain current invariants only. Removed "blocker fix", "PR2 invariant", and other review-process references from PersistenceInitializer, AuthBootstrap, Nav, HomeNextStepClient.
 - [x] B4 doc: noted in `apply-progress.md` PR2.10 section that PR2 PR base should be `feat/post-auth-supabase-sync-fix-pr1-domain` (not `origin/main`) until PR1 lands. Addresses stacked review surface without merging PR1 prematurely.
 - [x] W1 (fallback sink) `src/components/auth/AuthBootstrap.tsx`: production wiring forwards the fallback sink to `reinitializePersistence({ onFallback: sink })` so observability is consistent across legacy first-init + auth-event reinit paths.
 - [x] W2 (HomeNextStepClient cleanup) `src/components/home/HomeNextStepClient.tsx`: `useEffect` captures `cancelled` flag in cleanup; `handleResults` checks `cancelled` before calling `setViewModel` so a mid-flight student switch does not overwrite the new active student's view model.
+- [x] W3 (AuthBootstrap stale handler guard) `src/components/auth/AuthBootstrap.tsx`: session-changing auth events increment a generation guard; stale sign-in handlers abort before `reinitializePersistence()` if sign-out/sign-in changed the active session while their sync awaited.
+- [x] W4 (HomeNextStepClient promise handling) `src/components/home/HomeNextStepClient.tsx`: `runHomeLoader()` uses `Promise.allSettled` so a diagnostic rejection cannot float when progress fails first.
+- [x] W5 (AuthBootstrap sign-out local reset) `src/lib/persistence/adapter-config.ts` + `src/components/auth/AuthBootstrap.tsx`: SIGNED_OUT now resets persistence explicitly to local without reading the live Supabase session, so a concurrent/new sign-in cannot be selected by a stale sign-out tail.
 
 ## PR2.11 — Gate (PR2.10 batch)
 
-- [x] 11.1 `pnpm run test:run` — PR2 green, no regressions. (2998/2998 tests pass — +37 net new behavioral tests, source-scan tests preserved as secondary tripwires.)
+- [x] 11.1 `pnpm run test:run` — PR2 green, no regressions.
 - [x] 11.2 `pnpm run typecheck` clean.
 - [x] 11.3 `pnpm run build` clean (11 routes built).
-- [ ] 11.4 Open PR2 PR with base = `feat/post-auth-supabase-sync-fix-pr1-domain`. (Orchestrator responsibility per `apply` instruction: do not commit/push in this batch.)
-- [ ] 11.5 Merge PR2 to PR1 branch (do NOT retarget to `main` until PR1 lands).
-- [ ] 11.6 After PR1 lands in `main`, retarget PR2 to `main` and merge.
+- [x] 11.4 PR2 opened and later retargeted to `main` after PR1 landed.
+- [x] 11.5 PR2 diff verified clean against `main` after PR1 merge.
+- [x] 11.6 Fresh review against PR2 + `main` completed; blocker fixes tracked in W3/W4 and PR metadata.
 - [ ] 11.7 GGA pre-commit pass. (Orchestrator responsibility.)
-- [ ] 11.8 Re-run fresh review against PR2 + `origin/main`. (Orchestrator responsibility.)
 
 ## Blocker → Task Map (PR2.10)
 

@@ -650,10 +650,9 @@ be fixed before PR2 lands:
    review-process references ("blocker fix", "PR2 invariant"). Fixed
    by rewriting comments to explain current invariants only.
 
-4. **B4 (PR base)**: the PR2 PR base should be the PR1 branch
-   (`feat/post-auth-supabase-sync-fix-pr1-domain`), NOT `origin/main`,
-   until PR1 lands. This addresses the stacked-review surface without
-   merging PR1 prematurely.
+4. **B4 (PR base)**: while PR1 was pending, PR2 used the PR1 branch as
+   its base. After PR1 landed, PR2 was retargeted to `main` and its diff
+   was verified clean of PR1 foundation work.
 
 Plus two cheap warnings addressed:
 
@@ -666,6 +665,10 @@ Plus two cheap warnings addressed:
   captures a `cancelled` flag and short-circuits stale `handleResults`
   calls so a mid-flight student switch does not overwrite the new
   student's view model.
+- **W3/W5 (stale auth tails)**: AuthBootstrap suppresses stale sign-in
+  handlers with a generation guard, and SIGNED_OUT uses an explicit
+  local reset that does not read the live Supabase session. A newer
+  sign-in owns its own final remote reinitialization after readiness.
 
 ### Refactor: extract pure logic from components
 
@@ -694,15 +697,16 @@ the extracted function from `useEffect`.
 | B2 (Nav) | `src/components/__tests__/Nav.behavior.test.tsx` | Unit | ✅ +10 tests: rendered via `react-dom/server` with mocked `syncStatus` + `session` + `userEmail` + `isAuthEnabled`; honest pill per status (5 branches); tripwire that pending+session never shows "Sincronizado como"; sign-out affordance present on ready + local-fallback. | ✅ Extracted `SyncStatusBadge` to `src/components/SyncStatusBadge.tsx` with explicit if-chain per status; `Sincronizado como` only on `syncStatus === "ready" && userEmail !== null`. | ✅ 5 status branches + 4 invariants | ✅ Comments explain current invariants only |
 | B2 (HomeNextStepClient) | `src/components/home/__tests__/HomeNextStepClient.behavior.test.tsx` | Unit | ✅ +8 tests: sync success calls handleResults once; rejected progress → EMPTY_PROGRESS + null; rejected diag → progress + null; both rejected → EMPTY_PROGRESS + null; empty data (no progress) → EMPTY_PROGRESS + null; EMPTY_PROGRESS is the fallback constant. | ✅ Extracted `runHomeLoader(deps, handleResults)` with full four-shape matrix (sync|async × sync|async); every code path calls `handleResults`. | ✅ 5 fallback paths | ✅ JSDoc documents the "never leave viewModel=null" invariant |
 | B3 | All four production files | Hygiene | ➖ N/A (comment refactor, not behavior) | ✅ Comments rewritten to explain current invariants only; removed "blocker fix", "PR2 invariant", review-process references. | ➖ N/A | ✅ JSDoc unchanged in semantics |
-| B4 | `openspec/changes/post-auth-supabase-sync-fix/apply-progress.md` | Doc | ➖ N/A | ✅ Documented: PR2 PR base = `feat/post-auth-supabase-sync-fix-pr1-domain` until PR1 lands; addresses stacked review surface without merging PR1. | ➖ N/A | ➖ N/A |
+| B4 | `openspec/changes/post-auth-supabase-sync-fix/apply-progress.md` | Doc | ➖ N/A | ✅ Documented the chain transition: PR2 was stacked on PR1 while PR1 was pending, then retargeted to `main` after PR1 landed with a clean PR2-only diff. | ➖ N/A | ➖ N/A |
 | W1 | `src/components/auth/__tests__/AuthBootstrap.test.tsx` | Unit (tripwire) | ➖ N/A | ✅ Production wiring forwards `sink` to `reinitializePersistence({ onFallback: sink })` so observability is consistent across both init paths. | ➖ N/A | ➖ N/A |
 | W2 | `src/components/home/HomeNextStepClient.tsx` | Behavior | ➖ N/A | ✅ `useEffect` cleanup captures `cancelled` flag; `handleResults` checks `cancelled` before calling `setViewModel` so a mid-flight student switch does not overwrite the new active student's view model. | ➖ N/A | ✅ Cleanup invariant documented |
+| W3/W5 | `src/components/auth/__tests__/AuthBootstrap.behavior.test.tsx` | Unit | ✅ Slow session/sign-out/sign-in interleavings prove stale tails do not own the final persistence state. | ✅ Generation guard suppresses stale sign-in tails; SIGNED_OUT resets local explicitly via `resetPersistenceToLocal()` instead of reading the live session. | ✅ Sign-in stale + sign-out stale variants | ✅ Comments describe durable session-ownership invariant |
 
 ### Test Summary (PR2.10)
 
 - **New behavioral tests written**: 37 (7 PersistenceInitializer + 12 AuthBootstrap + 10 Nav + 8 HomeNextStepClient)
 - **Updated tripwire tests**: 4 files (`Nav-auth.test.ts`, `AuthBootstrap.test.tsx`, `PersistenceInitializer.test.ts`, `HomeNextStepClient.fallback.test.tsx`) — each retains its status-string / integration tripwires but no longer claims to be the primary proof of behavior.
-- **Total project tests after batch**: 2998 (was 2987 baseline → +11 net new tests after consolidating the now-redundant source-scan duplicates).
+- **Total project tests after PR2.10 batch**: 2998 (historical baseline at PR2.10 close — was 2987 baseline → +11 net new tests after consolidating the now-redundant source-scan duplicates). The current count after the fresh-review fixes is recorded in the "Fresh-Review Verification" section below.
   - Actually: 2998 = 2987 baseline - redundant tests removed + 37 net new behavioral. The source-scan tripwire tests are kept as secondary evidence (a few strengthened, some de-duplicated).
 - **Layers used**: Unit (37)
 - **Approval tests (refactoring)**: 0
@@ -743,7 +747,7 @@ the extracted function from `useEffect`.
 | W1 | AuthBootstrap's reinit path forwards the fallback sink to the selector so observability is consistent. | `AuthBootstrap.test.tsx` "production wiring forwards the fallback sink to reinitializePersistence" (tripwire) |
 | W2 | Mid-flight student switch in HomeNextStepClient does not overwrite the new active student's view model. | `HomeNextStepClient.tsx` `cancelled` flag in `useEffect` cleanup |
 
-### Verification Results (PR2.10)
+### Verification Results (PR2.10 — historical)
 
 ```bash
 $ pnpm run test:run
@@ -762,19 +766,49 @@ $ next build
 ✓ 11 routes built
 ```
 
-### PR2 PR Base (B4)
+### Fresh-Review Verification (current)
 
-PR2's stacked-review surface must NOT merge PR1 prematurely. The
-orchestrator should open the PR2 PR with:
+After the fresh-review blocker fixes (null-session AuthBootstrap race,
+identity-aware selector guard, and cross-user cached/global status
+ownership) the current verification is:
 
-- **Base branch**: `feat/post-auth-supabase-sync-fix-pr1-domain`
+```bash
+$ pnpm run test:run
+Test Files  183 passed (183)
+Tests       3019 passed (3019)
+Duration    ~25s
+
+$ pnpm run typecheck
+$ tsc --noEmit
+(clean)
+
+$ pnpm run build
+$ next build
+✓ Compiled successfully
+✓ TypeScript clean
+```
+
+The +21 net tests vs the PR2.10 baseline (2998 → 3019) come from:
+- AuthBootstrap session-tail race coverage,
+- PersistenceInitializer + adapter-config identity-aware selector coverage,
+- post-auth-sync cross-user global/cached status ownership coverage,
+- HomeNextStepClient settled-promise fallback coverage,
+- intervening fixes landed between PR2.10 and the fresh review.
+
+### PR2 PR Base (B4 — retargeted to main)
+
+PR1 (`feat/post-auth-supabase-sync-fix-pr1-domain`) has merged to
+`main`. PR2 is therefore retargeted to `main` and is no longer stacked
+on PR1's feature branch.
+
+- **Base branch**: `main`
 - **Compare branch**: `feat/post-auth-supabase-sync-fix-pr2-ui`
 
-This addresses the stacked review surface cleanly: PR1's domain
-changes are reviewed alongside PR2's UI wiring (PR2's diff already
-includes PR1 as base, so reviewers see one logical review), but
-PR1 is NOT merged to `main` until it lands independently. Once PR1
-merges to `main`, PR2 can be retargeted to `main` and merged.
+The earlier stacked-review guidance (open PR2 against PR1's feature
+branch so PR1 was not merged prematurely) is obsolete: PR1 landed
+independently, and PR2's diff against `main` is a clean PR2-only
+surface. The stale "should open with PR1 base" instruction has been
+removed.
 
 ### Remaining Risks (post-PR2.10)
 

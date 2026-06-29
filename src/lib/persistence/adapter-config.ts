@@ -200,10 +200,28 @@ export async function loadProgressWhenReady(): Promise<
  * throws. Errors are routed through `options.onFallback` with method
  * "initializePersistence".
  *
+ * Identity-aware selection: when `options.expectedUserId` is provided,
+ * the live session read below is the authoritative point where
+ * persistence actually flips, so the identity check MUST happen here —
+ * not only at the caller. Auth can flip from A to B between a caller's
+ * pre-call guard and this function's own `client.auth.getSession()`
+ * read; without this check, a stale A run would select remote for B
+ * before B's own readiness flow settles. On mismatch the adapter is
+ * left in the safe local (null) state; B's own path owns the final
+ * remote selection.
+ *
  * @param options.onFallback - Optional observability callback.
+ * @param options.expectedUserId - Identity this run was started for.
+ *        When provided, the selector refuses to select remote if the
+ *        live session's user id no longer matches. Undefined means
+ *        "no identity expectation" (the session-blind local reset and
+ *        no-session/error fallback paths intentionally omit it).
  */
 async function selectAdapterForCurrentSession(
-  options?: { onFallback?: SelectorConfig["onFallback"] }
+  options?: {
+    onFallback?: SelectorConfig["onFallback"];
+    expectedUserId?: string;
+  }
 ): Promise<void> {
   try {
     const client = createBrowserClient();
@@ -218,6 +236,23 @@ async function selectAdapterForCurrentSession(
     const { data, error } = await client.auth.getSession();
     if (error || !data.session) {
       // No session — local fallback
+      configuredAdapter = null;
+      return;
+    }
+
+    // Identity-aware selection guard. The caller may have captured a
+    // user id before awaiting readiness; this live read is the
+    // authoritative point where persistence actually flips, so the
+    // identity check MUST happen here — a caller-side guard alone is
+    // not sufficient because auth can flip from A to B between that
+    // guard and this read. On mismatch, leave the adapter in the safe
+    // local (null) state so a stale A run cannot select remote for B
+    // before B's own readiness flow settles.
+    const expectedUserId = options?.expectedUserId;
+    if (
+      expectedUserId !== undefined &&
+      data.session.user?.id !== expectedUserId
+    ) {
       configuredAdapter = null;
       return;
     }
@@ -277,20 +312,61 @@ export async function initializePersistence(options?: {
  * Reset the configured adapter and re-run the selection against the
  * current Supabase Auth session state.
  *
- * Called by `AuthBootstrap` in response to Supabase auth events:
- *  - `SIGNED_IN` → re-run selection so the remote adapter is wired.
- *  - `SIGNED_OUT` → re-run selection so the adapter falls back to local.
+ * Called by `AuthBootstrap` in response to `SIGNED_IN` / `INITIAL_SESSION`
+ * auth events to re-run selection so the remote adapter is wired when a
+ * session exists. The caller is responsible for awaiting the post-auth sync
+ * readiness (FK row guaranteed) before invoking this — once it runs, it
+ * observes the live session and may select the remote adapter.
+ *
+ * NOT used on `SIGNED_OUT`: a sign-out tail must not read the live
+ * session, because a concurrent `SIGNED_IN B` arriving while this
+ * function awaits `client.auth.getSession()` would have its session
+ * observed by the stale sign-out tail, flipping persistence to remote
+ * for B before B's FK-before-snapshot readiness completes. Use
+ * `resetPersistenceToLocal()` for the sign-out tail instead.
  *
  * Shares its selection core with `initializePersistence()` so both
  * code paths produce the same adapter for the same input state.
  *
+ * Identity-aware: callers that captured a user id before awaiting
+ * readiness (`PersistenceInitializer`, `AuthBootstrap`'s
+ * SIGNED_IN/INITIAL_SESSION path) forward `expectedUserId` so the
+ * shared selection core can refuse to select remote when auth has
+ * flipped to a different user by the time it reads
+ * `client.auth.getSession()`. The session-blind local reset paths
+ * (`SIGNED_OUT`, null session) intentionally omit it.
+ *
  * @param options.onFallback - Optional observability callback for fallback events.
+ * @param options.expectedUserId - Identity this reinitialize run was
+ *        started for. Forwarded to the selection core's identity guard.
  */
 export async function reinitializePersistence(options?: {
   onFallback?: SelectorConfig["onFallback"];
+  expectedUserId?: string;
 }): Promise<void> {
   // Reset to null before re-selecting so callers reading getConfiguredAdapter()
   // mid-reinit see a consistent null state.
   configuredAdapter = null;
   await selectAdapterForCurrentSession(options);
+}
+
+/**
+ * Explicitly reset the persistence adapter to local (raw localStorage)
+ * WITHOUT reading the current Supabase Auth session.
+ *
+ * Used by `AuthBootstrap` on `SIGNED_OUT`. Unlike `reinitializePersistence()`,
+ * this function never reads the live session — it always selects the local
+ * adapter. Reading the live session on the sign-out tail would race a
+ * concurrent `SIGNED_IN B`: the sign-out tail's `client.auth.getSession()`
+ * could resolve with B's session, selecting remote for B before B's
+ * FK-before-snapshot readiness completes. The sign-out tail must produce a
+ * final effect that is provably session-blind so a newer session arriving
+ * after the auth-event stale-handler guard cannot be observed.
+ *
+ * The subsequent `SIGNED_IN B` handler re-runs `reinitializePersistence()`
+ * once its own FK readiness completes, so the final persistence state for
+ * B is owned by B's path — not by the (now-stale) sign-out path.
+ */
+export async function resetPersistenceToLocal(): Promise<void> {
+  configuredAdapter = null;
 }

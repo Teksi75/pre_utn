@@ -71,57 +71,51 @@ type MaybePromise<T> = T | Promise<T>;
  * Home loader protocol — the single source of truth for the
  * "never leave `viewModel === null`" invariant.
  *
- * Resolves the loaders in parallel. Every code path calls
- * `handleResults(progress, diag)` so the caller can build the view
- * model. The fallback inputs are `EMPTY_PROGRESS` + `null` so the
- * dashboard renders the no-attempts local-fallback VM ("Empezá por
- * el diagnóstico inicial", "Hacer diagnóstico inicial") instead of
- * a permanent skeleton.
+ * Starts both loaders eagerly and settles them with `Promise.allSettled`,
+ * so EVERY promise has an explicit handler. This eliminates the
+ * floating-diagnostic-promise race: previously, when `loadProgress`
+ * rejected first, its catch returned the fallback VM while
+ * `loadDiagnosticResult` was still pending; if that diagnostic promise
+ * later rejected, nothing was listening → an unhandledrejection event.
+ * `allSettled` attaches a handler to each promise up front, so a
+ * late rejection is always observed and never floats.
+ *
+ * Every code path calls `handleResults(progress, diag)` so the caller
+ * can build the view model. The fallback inputs are `EMPTY_PROGRESS` +
+ * `null` so the dashboard renders the no-attempts local-fallback VM
+ * ("Empezá por el diagnóstico inicial", "Hacer diagnóstico inicial")
+ * instead of a permanent skeleton.
  */
 export async function runHomeLoader(
   deps: HomeLoaderDeps,
   handleResults: (progress: PracticeProgress, diag: DiagnosticResult | null) => void,
 ): Promise<void> {
-  const progressResult = deps.loadProgress();
-  const diagResult = deps.loadDiagnosticResult();
+  // Wrap both results in Promise.resolve so allSettled handles the
+  // sync | async shapes uniformly. A sync value wrapped here can never
+  // reject, so allSettled always reports "fulfilled" for it; an async
+  // rejecting loader is observed and reported as "rejected" — never
+  // unhandled.
+  const results = await Promise.allSettled([
+    Promise.resolve(deps.loadProgress()),
+    Promise.resolve(deps.loadDiagnosticResult()),
+  ]);
+  const progressSettled = results[0] as PromiseSettledResult<PracticeProgress>;
+  const diagSettled = results[1] as PromiseSettledResult<DiagnosticResult | null>;
 
-  // Handle the four-shape matrix: sync | async | rejected for each
-  // loader. Every path MUST call handleResults — there is no silent
-  // swallow (a bare empty catch would leave viewModel=null forever).
-  if (progressResult instanceof Promise) {
-    try {
-      const progress = await progressResult;
-      if (diagResult instanceof Promise) {
-        try {
-          const diag = await diagResult;
-          handleResults(progress, diag);
-        } catch {
-          // Diag-only failure: build VM from progress + null diag.
-          handleResults(progress, null);
-        }
-      } else {
-        handleResults(progress, diagResult);
-      }
-    } catch {
-      // Progress failure (or both failures chained): fall back to
-      // EMPTY_PROGRESS so the dashboard renders the no-attempts
-      // local-fallback VM.
-      handleResults(EMPTY_PROGRESS, null);
-    }
-    return;
-  }
-  // progress is sync.
-  if (diagResult instanceof Promise) {
-    try {
-      const diag = await diagResult;
-      handleResults(progressResult, diag);
-    } catch {
-      handleResults(progressResult, null);
-    }
-    return;
-  }
-  // Both sync.
-  handleResults(progressResult, diagResult);
+  const progress =
+    progressSettled.status === "fulfilled"
+      ? progressSettled.value
+      : EMPTY_PROGRESS;
+  // Preserve the documented fallback contract: when progress fails the
+  // dashboard renders the EMPTY_PROGRESS fallback VM and the diagnostic
+  // is dropped (null) — matching the pre-fix observable behavior on the
+  // progress-failure path so the view model is unchanged.
+  const diag =
+    progressSettled.status === "fulfilled" && diagSettled.status === "fulfilled"
+      ? diagSettled.value
+      : null;
+
+  handleResults(progress, diag);
 }
 
 // Suppress unused warnings for the shared type (used for documentation

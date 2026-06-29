@@ -1,8 +1,6 @@
 /**
  * Behavioral tests for HomeNextStepClient fallback VM path.
  *
- * PR2 (post-auth-supabase-sync-fix) — fresh-review blocker fix.
- *
  * Goal: prove the dashboard never stays on a permanent skeleton
  * after the async load settles. Any rejection (remote-null,
  * thrown-promise, rejected-progress) MUST produce an actionable
@@ -42,7 +40,7 @@ function makeDeps(overrides: {
   };
 }
 
-describe("HomeNextStepClient — PR2 fallback VM (behavioral)", () => {
+describe("HomeNextStepClient — fallback VM (behavioral)", () => {
   it("sync success path: handleResults is called with the loaded progress + diag", async () => {
     const handleResults = vi.fn();
     const progress = { ...EMPTY_PROGRESS, totalAttempts: 5 };
@@ -116,6 +114,38 @@ describe("HomeNextStepClient — PR2 fallback VM (behavioral)", () => {
 
     expect(handleResults).toHaveBeenCalledTimes(1);
     expect(handleResults).toHaveBeenCalledWith(EMPTY_PROGRESS, null);
+  });
+
+  it("progress rejects first and delayed diagnostic rejection is observed", async () => {
+    const unhandled = vi.fn();
+    const onUnhandled = (reason: unknown) => {
+      unhandled(reason);
+    };
+    process.on("unhandledRejection", onUnhandled);
+
+    let rejectDiagnostic!: (reason?: unknown) => void;
+    const diagnosticPromise = new Promise<DiagnosticResult | null>((_resolve, reject) => {
+      rejectDiagnostic = reject;
+    });
+    const handleResults = vi.fn();
+    const deps = makeDeps({
+      loadProgress: vi.fn(() => Promise.reject(new Error("progress-down"))),
+      loadDiagnosticResult: vi.fn(() => diagnosticPromise),
+    });
+
+    try {
+      const loader = runHomeLoader(deps, handleResults);
+      await Promise.resolve();
+      rejectDiagnostic(new Error("diag-down"));
+      await loader;
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(handleResults).toHaveBeenCalledTimes(1);
+      expect(handleResults).toHaveBeenCalledWith(EMPTY_PROGRESS, null);
+      expect(unhandled).not.toHaveBeenCalled();
+    } finally {
+      process.off("unhandledRejection", onUnhandled);
+    }
   });
 
   it("sync empty data (progress returns EMPTY_PROGRESS, diag returns null): handleResults called once", async () => {

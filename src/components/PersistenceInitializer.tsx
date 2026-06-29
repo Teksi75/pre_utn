@@ -66,8 +66,19 @@ export interface PersistenceInitDeps {
   ) => Promise<unknown>;
   /** First-call entrypoint that runs the selector against current state. */
   initializePersistence: (options: { onFallback: SelectorConfig["onFallback"] }) => Promise<void>;
-  /** Re-run the selector against the current state (readiness-aware path). */
-  reinitializePersistence: (options: { onFallback: SelectorConfig["onFallback"] }) => Promise<void>;
+  /**
+   * Re-run the selector against the current state (readiness-aware
+   * path). Forwards `expectedUserId` so the selector's own live
+   * session read is identity-aware: a stale run whose captured user
+   * no longer matches the live session refuses to select remote. The
+   * caller-side guard in this protocol is not sufficient on its own
+   * because auth can flip between that guard and the selector's
+   * `client.auth.getSession()` read.
+   */
+  reinitializePersistence: (options: {
+    onFallback: SelectorConfig["onFallback"];
+    expectedUserId?: string;
+  }) => Promise<void>;
   /** Production fallback sink (or test mock) forwarded to the selector. */
   sink: SelectorConfig["onFallback"];
 }
@@ -82,6 +93,12 @@ export interface PersistenceInitDeps {
  * legacy `initializePersistence()` immediately so the local adapter
  * is wired without delay.
  *
+ * Stale-startup-session invariant: the session that started this run
+ * MUST still be the current session when the selector is invoked. If
+ * auth flipped to a different session while the orchestrator was
+ * pending, this run aborts silently so it cannot flip persistence for
+ * the new session before that session's own readiness flow settles.
+ *
  * Never throws. Errors from `getCurrentSession` or `beginPostAuthSync`
  * fall back to the no-session path so the app remains usable.
  */
@@ -89,11 +106,44 @@ export async function runPersistenceInit(deps: PersistenceInitDeps): Promise<voi
   try {
     const { session } = await deps.getCurrentSession();
     if (session) {
+      // Capture the identity that owns this initialization run. If
+      // auth changes to a different user while we await the
+      // orchestrator, the stale run must NOT flip persistence for the
+      // new user before that user's own readiness flow completes.
+      const expectedUserId = session.user.id;
+
       // FK-before-snapshot readiness: await the orchestrator so the
       // `student_profiles` row is guaranteed before the selector
       // flips to the remote adapter.
       await deps.beginPostAuthSync(session);
-      await deps.reinitializePersistence({ onFallback: deps.sink });
+
+      // Stale-startup-session guard: re-read the current session and
+      // confirm it is still the same user that started this run. If
+      // auth flipped to a different session (e.g. a fresh sign-in
+      // landed while the orchestrator was pending), abort silently —
+      // the new session's own initialization path is responsible for
+      // wiring persistence for that user. Calling
+      // `reinitializePersistence` here would select against the NEW
+      // session before its readiness surface has settled, recreating
+      // the FK race this protocol exists to prevent.
+      const { session: currentSession } = await deps.getCurrentSession();
+      if (currentSession?.user?.id !== expectedUserId) {
+        return;
+      }
+
+      // Forward the captured identity so the selector's live session
+      // read is identity-aware. The caller-side guard above only
+      // checks the session BEFORE calling reinitialize; the selector
+      // reads the live session AGAIN via client.auth.getSession(), and
+      // auth can flip from A to B between the guard and that read.
+      // Without this forwarding, a stale A run would select remote for
+      // B before B's own readiness flow settles. The selector refuses
+      // to select remote on a user-id mismatch and leaves the adapter
+      // in the safe local (null) state.
+      await deps.reinitializePersistence({
+        onFallback: deps.sink,
+        expectedUserId,
+      });
       return;
     }
   } catch {

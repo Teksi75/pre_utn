@@ -33,6 +33,15 @@
  * suppressed so a stale outcome does not leak into the per-userId cache
  * or the global `currentStatus`.
  *
+ * A second, cross-user guard tracks the latest userId to begin a sync
+ * (`activeStatusUserId`). The token guard only checks whether THIS user's
+ * entry is still current, so a slow sync for user A that was never cleared
+ * could still stomp `currentStatus = "ready"` after user B has begun and
+ * set `currentStatus = "pending"`. The active-user check closes that gap:
+ * a late A resolution may still update A's per-user `completedByUser`
+ * cache, but it must NOT overwrite the global `currentStatus` or emit a
+ * ready signal for B's UI.
+ *
  * The status is set from the orchestrator's discriminated `LinkImportOutcome`:
  *   `{ kind: "ready" }`           → status = "ready"
  *   `{ kind: "local-fallback" }`  → status = "local-fallback"
@@ -104,6 +113,24 @@ let nextEntryToken = 0;
  * sign-in cycle can re-run the sync.
  */
 const completedByUser = new Map<string, PostAuthSyncStatus>();
+
+/**
+ * The userId that currently owns the global `currentStatus` snapshot.
+ * Set every time `beginPostAuthSync(session)` starts a sync for a real
+ * session. A late-resolving sync for a PREVIOUS user checks this before
+ * writing `currentStatus` / emitting: if a newer user has begun a sync
+ * since, the stale sync may still update its own per-user
+ * `completedByUser` cache (so a caller re-invoking it gets its own
+ * settled status back) but MUST NOT overwrite the global status or emit
+ * a ready signal for the newer user's UI.
+ *
+ * This guards the cross-user race the per-userId token guard does NOT
+ * cover: the token guard only checks whether THIS user's in-flight entry
+ * is still current, so a slow A sync that was never cleared can still
+ * stomp `currentStatus = "ready"` after B has begun and set
+ * `currentStatus = "pending"`. The active-user check closes that gap.
+ */
+let activeStatusUserId: string | null = null;
 
 // ---------------------------------------------------------------------------
 // External subscribers for live status UI
@@ -197,6 +224,32 @@ export async function beginPostAuthSync(
   // have been overwritten by a later user signing in or signing out).
   const cached = completedByUser.get(userId);
   if (cached !== undefined) {
+    // Cached branch for a real session user: claim GLOBAL ownership for
+    // this user before returning. Without this, the global snapshot
+    // (currentStatus + activeStatusUserId) keeps reflecting whichever
+    // user last wrote it — not the user the caller is now asking about
+    // — so Nav, which reads getPostAuthSyncStatus(), would render a
+    // stale pill for the wrong user.
+    //
+    // Cross-user stale-snapshot scenario this closes:
+    //   1. A signs in → sync settles "local-fallback" (cached for A).
+    //   2. B signs in → sync settles "ready"; global currentStatus =
+    //      "ready", activeStatusUserId = B.
+    //   3. A signs in again → beginPostAuthSync(A) hits THIS cached
+    //      branch. On the OLD behavior it returned A's cached
+    //      "local-fallback" but left global currentStatus = "ready"
+    //      (B's stale value), so Nav would show a false "ready" for A.
+    //
+    // Claiming ownership here makes the global snapshot honestly track
+    // the user the caller just asked us to sync, matching the cached
+    // value we return. Emit only when the snapshot actually changes so
+    // a no-op re-invocation (same user, same status) does not spam
+    // subscribers with a redundant transition.
+    if (activeStatusUserId !== userId || currentStatus !== cached) {
+      activeStatusUserId = userId;
+      currentStatus = cached;
+      emitPostAuthSyncChange();
+    }
     return cached;
   }
 
@@ -211,6 +264,11 @@ export async function beginPostAuthSync(
   }
 
   // Start the sync if one is not already in flight for THIS userId.
+  // Claim ownership of the global status snapshot: a later
+  // beginPostAuthSync for a different user will overwrite this; a late
+  // resolution for a previous user checks activeStatusUserId before
+  // writing currentStatus so it cannot stomp on the newer user's UI.
+  activeStatusUserId = userId;
   currentStatus = "pending";
   emitPostAuthSyncChange();
   let entry = inflightByUser.get(userId);
@@ -230,18 +288,33 @@ export async function beginPostAuthSync(
         if (inflightByUser.get(userId)?.token !== token) return;
         const settled =
           outcome.kind === "local-fallback" ? "local-fallback" : "ready";
-        currentStatus = settled;
+        // Per-user cache is always updated — a caller re-invoking
+        // beginPostAuthSync for THIS user gets its own settled status
+        // back regardless of who owns the global snapshot.
         completedByUser.set(userId, settled);
-        emitPostAuthSyncChange();
+        // Global status + emission are scoped to the active status
+        // owner. If a newer user has begun a sync since this one
+        // started, this late resolution MUST NOT overwrite currentStatus
+        // or emit a ready signal for the newer user's UI (the cross-user
+        // race the per-userId token guard alone does not close).
+        if (activeStatusUserId === userId) {
+          currentStatus = settled;
+          emitPostAuthSyncChange();
+        }
       } catch {
         // The orchestrator is documented as never-throws (its
         // LinkImportOutcome covers all failure modes), but defend
         // against future regressions — any unhandled error must NOT
         // leave the app in a permanently broken "pending" state.
         if (inflightByUser.get(userId)?.token !== token) return;
-        currentStatus = "local-fallback";
         completedByUser.set(userId, "local-fallback");
-        emitPostAuthSyncChange();
+        // Same active-owner guard as the success path: a stale sync
+        // for a previous user must not overwrite the newer user's
+        // global status or emit for its UI.
+        if (activeStatusUserId === userId) {
+          currentStatus = "local-fallback";
+          emitPostAuthSyncChange();
+        }
       } finally {
         // Only remove OUR entry — a new sign-in may have already
         // installed a fresh entry with a different token.
@@ -312,6 +385,7 @@ export function clearPostAuthSyncStatus(userId: string): void {
  */
 export function resetPostAuthSyncStatusForTests(): void {
   currentStatus = "signed-out";
+  activeStatusUserId = null;
   inflightByUser.clear();
   completedByUser.clear();
   nextEntryToken = 0;

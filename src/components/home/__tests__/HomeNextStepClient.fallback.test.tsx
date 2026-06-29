@@ -57,28 +57,18 @@ describe("HomeNextStepClient — PR2 fallback VM (no permanent skeleton)", () =>
     expect(src).not.toMatch(/\.catch\s*\(\s*\(\s*\)\s*=>\s*\{\s*\}\s*\)/);
   });
 
-  it("catch handler for the progress promise feeds handleResults with an empty / fallback progress", () => {
-    // When loadProgress() rejects, the catch must still invoke the
-    // view-model builder so the user sees the local-fallback VM.
+  it("settled progress failure feeds handleResults with an empty / fallback progress", () => {
+    // When loadProgress() rejects, the settled-result fallback must still
+    // invoke the view-model builder so the user sees the local-fallback VM.
     //
     // The load → handleResults protocol was extracted to
     // `runHomeLoader(deps, handleResults)` — the tripwire scans for
     // `EMPTY_PROGRESS` appearing inside the extracted function so the
     // fallback invariant is locked in.
     const src = homeSource();
-    const hasCatch =
-      /\.catch\s*\(/.test(src) ||
-      /catch\s*(\([^)]*\))?\s*\{/.test(src);
-    expect(hasCatch).toBe(true);
-    // The catch path must invoke the VM builder. Accept either:
-    //   (a) `handleResults(EMPTY_PROGRESS, null)` in a catch
-    //   (b) `setViewModel(<fallback VM>)` in a catch
-    // The extracted function uses try/catch with `handleResults`
-    // calls — allow both styles.
-    const usesHandleInCatch =
-      /catch[\s\S]*handleResults/.test(src) ||
-      /catch[\s\S]*setViewModel/.test(src);
-    expect(usesHandleInCatch).toBe(true);
+    expect(src).toContain("Promise.allSettled");
+    expect(src).toMatch(/progressSettled\.status === "fulfilled"[\s\S]*EMPTY_PROGRESS/);
+    expect(src).toMatch(/handleResults\(progress, diag\)/);
   });
 
   it("catch handler for the diag promise (inner catch) feeds handleResults with null diagnostic", () => {
@@ -102,8 +92,10 @@ describe("HomeNextStepClient — PR2 fallback VM (no permanent skeleton)", () =>
     expect(src).toContain("EMPTY_PROGRESS");
     // And EMPTY_PROGRESS must appear inside a catch or a fallback path,
     // not just as a forgotten import. Allow multiline with [\s\S].
-    const emptyInCatch = /catch[\s\S]*EMPTY_PROGRESS/.test(src);
-    expect(emptyInCatch).toBe(true);
+    const emptyInFallback =
+      /catch[\s\S]*EMPTY_PROGRESS/.test(src) ||
+      /progressSettled\.status === "fulfilled"[\s\S]*EMPTY_PROGRESS/.test(src);
+    expect(emptyInFallback).toBe(true);
   });
 
   it("viewModel state always reaches a non-null value (never stuck on skeleton)", () => {

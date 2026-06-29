@@ -1,8 +1,6 @@
 /**
  * Behavioral tests for src/components/PersistenceInitializer.tsx
  *
- * PR2 (post-auth-supabase-sync-fix) — fresh-review blocker fix.
- *
  * Goal: prove that when a Supabase Auth session already exists at app
  * startup, the post-auth sync readiness surface (`beginPostAuthSync`)
  * resolves BEFORE the persistence selector is invoked with
@@ -37,10 +35,10 @@ function makeSink() {
   return vi.fn();
 }
 
-describe("PersistenceInitializer — PR2 blocker fix (behavioral)", () => {
+describe("PersistenceInitializer — readiness-aware initialization", () => {
   it("no-session path: initializePersistence() runs immediately (legacy contract)", async () => {
     // Baseline: when no session exists, the initializer must still call
-    // initializePersistence() so the local adapter is wired. PR2 must
+    // initializePersistence() so the local adapter is wired. The session-aware path must
     // NOT regress this case.
     const initializePersistence = vi.fn(async () => undefined);
     const reinitializePersistence = vi.fn(async () => undefined);
@@ -65,7 +63,7 @@ describe("PersistenceInitializer — PR2 blocker fix (behavioral)", () => {
   });
 
   it("session-present path: beginPostAuthSync(session) is awaited BEFORE the selector runs", async () => {
-    // Blocker fix: when a session exists, the FK row must be guaranteed
+    // When a session exists, the FK row must be guaranteed
     // (via the orchestrator) BEFORE the selector flips to remote. So
     // beginPostAuthSync MUST resolve before the selector is invoked.
     // The previous behavior called initializePersistence immediately,
@@ -149,6 +147,114 @@ describe("PersistenceInitializer — PR2 blocker fix (behavioral)", () => {
     // The session-present path uses reinitializePersistence (not
     // initializePersistence) — design intent: this is a re-run.
     expect(reinitializePersistence).toHaveBeenCalledTimes(1);
+    expect(initializePersistence).not.toHaveBeenCalled();
+  });
+
+  it("stale-startup-session guard: session A slow -> auth changes to B -> A resolves -> initializer does NOT call reinitializePersistence for stale A", async () => {
+    // Reliability invariant: runPersistenceInit captures startup
+    // session A, then awaits beginPostAuthSync(A). If auth flips to a
+    // different session B while A's orchestrator is pending, the
+    // stale A run must NOT call reinitializePersistence — that would
+    // select against the NEW session B before B's own readiness
+    // surface has settled, recreating the FK race this protocol
+    // exists to prevent. The guard re-reads the session before the
+    // selector and aborts silently on a user-id mismatch.
+    const dBegin = deferred<"ready">();
+    const initializePersistence = vi.fn(async () => undefined);
+    const reinitializePersistence = vi.fn(async () => undefined);
+    const beginPostAuthSync = vi.fn(() => dBegin.promise);
+
+    const sessionA = { user: { id: "user-A" }, access_token: "tA" };
+    const sessionB = { user: { id: "user-B" }, access_token: "tB" };
+    // First read returns the startup session A; the guard's second
+    // read returns the post-flip session B.
+    const getCurrentSession = vi.fn();
+    getCurrentSession
+      .mockResolvedValueOnce({ session: sessionA, error: null })
+      .mockResolvedValueOnce({ session: sessionB, error: null });
+
+    const run = runPersistenceInit({
+      getCurrentSession: getCurrentSession as never,
+      beginPostAuthSync: beginPostAuthSync as never,
+      initializePersistence: initializePersistence as never,
+      reinitializePersistence: reinitializePersistence as never,
+      sink: makeSink() as never,
+    });
+
+    // While the orchestrator is pending, neither selector has run.
+    await new Promise((r) => setTimeout(r, 0));
+    expect(reinitializePersistence).not.toHaveBeenCalled();
+    expect(initializePersistence).not.toHaveBeenCalled();
+
+    // Resolve A's orchestrator — the guard re-reads the session,
+    // finds B (different user), and aborts silently.
+    dBegin.resolve("ready");
+    await run;
+
+    expect(beginPostAuthSync).toHaveBeenCalledTimes(1);
+    expect(beginPostAuthSync).toHaveBeenCalledWith(sessionA);
+    expect(getCurrentSession).toHaveBeenCalledTimes(2);
+    // The stale A run must NOT flip persistence for B.
+    expect(reinitializePersistence).not.toHaveBeenCalled();
+    expect(initializePersistence).not.toHaveBeenCalled();
+  });
+
+  it("guard-passes-then-flip race: guard sees A, but selector's own live read can see B — caller forwards expectedUserId so the selector is identity-aware", async () => {
+    // Reliability blocker — guard-passes-then-flip race.
+    // The caller-side stale-session guard re-reads the session and
+    // only proceeds when it still matches the captured user A. But
+    // the selector itself reads the live session AGAIN via
+    // client.auth.getSession(), and auth can flip from A to B between
+    // the guard's read and the selector's read. Without forwarding
+    // the captured identity into the selector, a stale A run would
+    // select remote for B before B's own readiness flow settles.
+    //
+    // This test proves the caller side of the contract: even when the
+    // guard passes (both reads return A), the initializer MUST
+    // forward expectedUserId to reinitializePersistence so the
+    // selector can perform its own identity check on the live read.
+    // The selector-side identity guard (refusing to select remote on
+    // mismatch) is covered in adapter-config-reinit.test.ts.
+    const dBegin = deferred<"ready">();
+    const initializePersistence = vi.fn(async () => undefined);
+    const reinitializePersistence = vi.fn(async () => undefined);
+    const beginPostAuthSync = vi.fn(() => dBegin.promise);
+
+    const sessionA = { user: { id: "user-A" }, access_token: "tA" };
+    // Both caller-side reads return A — the guard passes. The flip
+    // to B happens INSIDE reinitializePersistence's own getSession()
+    // (not visible at this layer), so the only way the selector can
+    // catch it is if the caller forwarded expectedUserId.
+    const getCurrentSession = vi.fn(async () => ({
+      session: sessionA,
+      error: null,
+    }));
+
+    const run = runPersistenceInit({
+      getCurrentSession: getCurrentSession as never,
+      beginPostAuthSync: beginPostAuthSync as never,
+      initializePersistence: initializePersistence as never,
+      reinitializePersistence: reinitializePersistence as never,
+      sink: makeSink() as never,
+    });
+
+    // While the orchestrator is pending, neither selector has run.
+    await new Promise((r) => setTimeout(r, 0));
+    expect(reinitializePersistence).not.toHaveBeenCalled();
+
+    // Resolve A's orchestrator — the guard re-reads the session,
+    // finds A again (guard passes), and forwards expectedUserId="user-A"
+    // to reinitializePersistence.
+    dBegin.resolve("ready");
+    await run;
+
+    expect(getCurrentSession).toHaveBeenCalledTimes(2);
+    expect(reinitializePersistence).toHaveBeenCalledTimes(1);
+    // The captured identity MUST be forwarded so the selector is
+    // identity-aware on its own live read.
+    expect(reinitializePersistence).toHaveBeenCalledWith(
+      expect.objectContaining({ expectedUserId: "user-A" }),
+    );
     expect(initializePersistence).not.toHaveBeenCalled();
   });
 
@@ -249,7 +355,10 @@ describe("PersistenceInitializer — PR2 blocker fix (behavioral)", () => {
       sink: sink as never,
     });
 
-    expect(reinitializePersistence).toHaveBeenCalledWith({ onFallback: sink });
+    expect(reinitializePersistence).toHaveBeenCalledWith({
+      onFallback: sink,
+      expectedUserId: "auth-user-1",
+    });
     expect(initializePersistence).not.toHaveBeenCalled();
   });
 });

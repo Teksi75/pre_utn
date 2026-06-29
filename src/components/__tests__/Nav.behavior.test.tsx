@@ -1,8 +1,6 @@
 /**
  * Behavioral tests for the sync status badge rendered by Nav.
  *
- * PR2 (post-auth-supabase-sync-fix) — fresh-review blocker fix.
- *
  * Goal: prove the sync badge reflects the post-auth-sync status
  * honestly across all five status values. The badge must NEVER
  * advertise the user as "Sincronizado" (ready) when the status is
@@ -51,7 +49,7 @@ function badgeHtml(opts: Partial<Parameters<typeof SyncStatusBadge>[0]> = {}): s
   );
 }
 
-describe("Nav SyncStatusBadge — honest pill per status (PR2)", () => {
+describe("Nav SyncStatusBadge — honest pill per status", () => {
   it("auth disabled → renders nothing (no badge, no link)", () => {
     const html = badgeHtml({
       syncStatus: "ready",
