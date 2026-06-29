@@ -330,4 +330,104 @@ describe("reinitializePersistence()", () => {
     const barrel = await import("../index");
     expect(typeof barrel.reinitializePersistence).toBe("function");
   });
+
+  it("does not select remote when expectedUserId does not match the live session user (identity-aware guard)", async () => {
+    // Guard-passes-then-flip race, selector side.
+    // The caller (PersistenceInitializer / AuthBootstrap) captured user A
+    // and forwarded expectedUserId="user-A". Auth flipped to B before the
+    // selector's own client.auth.getSession() read. The selector MUST NOT
+    // select remote for B — that would let a stale A run flip persistence
+    // for B before B's own readiness flow settles. The adapter is left in
+    // the safe local (null) state; B's own path owns the final remote
+    // selection.
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://test.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "test-publishable-key");
+
+    // Live session is B, but the caller expects A.
+    const mockClient = makeSupabaseClient({ user: { id: "user-B" } });
+    vi.doMock("../../supabase/browser", () => ({
+      createBrowserClient: () => mockClient,
+    }));
+
+    setActiveProfile("local-student");
+
+    const {
+      reinitializePersistence,
+      getConfiguredAdapter,
+      resetPersistenceAdapter,
+    } = await loadModule();
+
+    await reinitializePersistence({ expectedUserId: "user-A" });
+
+    // Stale A run must NOT select remote for B.
+    expect(getConfiguredAdapter()).toBeNull();
+    // The live getSession was read (proving the race window was
+    // entered) but the identity guard refused to select remote for
+    // the wrong user.
+    expect(mockClient.auth.getSession).toHaveBeenCalledTimes(1);
+
+    resetPersistenceAdapter();
+    vi.doUnmock("../../supabase/browser");
+  });
+
+  it("selects remote when expectedUserId matches the live session user (happy path)", async () => {
+    // Complement to the mismatch case: when the live session user
+    // matches the captured expectedUserId, the selector MUST still
+    // select remote. The identity guard must not break the happy
+    // path.
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://test.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "test-publishable-key");
+
+    const mockClient = makeSupabaseClient({ user: { id: "user-A" } });
+    vi.doMock("../../supabase/browser", () => ({
+      createBrowserClient: () => mockClient,
+    }));
+
+    setActiveProfile("local-student");
+
+    const {
+      reinitializePersistence,
+      getConfiguredAdapter,
+      resetPersistenceAdapter,
+    } = await loadModule();
+
+    await reinitializePersistence({ expectedUserId: "user-A" });
+
+    expect(getConfiguredAdapter()).not.toBeNull();
+    expect(mockClient.auth.getSession).toHaveBeenCalledTimes(1);
+
+    resetPersistenceAdapter();
+    vi.doUnmock("../../supabase/browser");
+  });
+
+  it("expectedUserId undefined preserves legacy behavior (selects remote for the live session user)", async () => {
+    // The session-blind local reset paths and the no-session/error
+    // fallbacks intentionally omit expectedUserId. The selector must
+    // keep its legacy behavior for those callers — select remote for
+    // whichever user the live session reports — so the identity guard
+    // is a no-op when expectedUserId is undefined.
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://test.supabase.co");
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "test-publishable-key");
+
+    const mockClient = makeSupabaseClient({ user: { id: "user-B" } });
+    vi.doMock("../../supabase/browser", () => ({
+      createBrowserClient: () => mockClient,
+    }));
+
+    setActiveProfile("local-student");
+
+    const {
+      reinitializePersistence,
+      getConfiguredAdapter,
+      resetPersistenceAdapter,
+    } = await loadModule();
+
+    // No expectedUserId — legacy behavior.
+    await reinitializePersistence();
+
+    expect(getConfiguredAdapter()).not.toBeNull();
+
+    resetPersistenceAdapter();
+    vi.doUnmock("../../supabase/browser");
+  });
 });

@@ -150,24 +150,30 @@ covers the case. The new tests are regression-prevention guards for the
 
 ## PR2.1 — UI Wiring RED
 
-- [ ] 7.1 RED `src/components/auth/__tests__/AuthBootstrap.test.tsx`: `INITIAL_SESSION` triggers orchestrator once even if `SIGNED_IN` follows.
-- [ ] 7.2 RED new `src/components/home/__tests__/HomeNextStepClient.fallback.test.tsx`: pending/rejected → actionable VM, no skeleton.
-- [ ] 7.3 RED new `src/components/__tests__/Nav.sync-status.test.tsx`: `pending` → no sync pill; Diagnostic + Practice remain.
+- [x] 7.1 RED `src/components/auth/__tests__/AuthBootstrap.test.tsx`: `INITIAL_SESSION` triggers orchestrator once even if `SIGNED_IN` follows. (+6 tests: shared branch with `beginPostAuthSync`, lastUserId capture in both branches, no separate case.)
+- [x] 7.2 RED new `src/components/home/__tests__/HomeNextStepClient.fallback.test.tsx`: pending/rejected → actionable VM, no skeleton. (10 tests: no silent catch, EMPTY_PROGRESS fallback, viewModel always non-null, a11y preserved.)
+- [x] 7.3 RED `src/components/__tests__/Nav-auth.test.ts`: `pending` → no sync pill; Diagnostic + Practice remain. (+9 tests: pill gated on `syncStatus === "ready"` not session, honest pending/fallback copy, live updates via `usePostAuthSyncStatus`.)
+- [x] 7.4 RED `src/components/__tests__/PersistenceInitializer.test.ts`: session-aware readiness path. (+7 tests: imports readiness surface, reads `getCurrentSession()`, awaits `beginPostAuthSync` before `reinitializePersistence`, forwards session, legacy `initializePersistence` preserved.)
+- [x] 7.5 RED new `src/hooks/__tests__/usePostAuthSyncStatus.test.ts`: live status subscription hook. (9 tests: `useSyncExternalStore` shape, `subscribePostAuthSyncChange` as first arg, `getSnapshot`/`getServerSnapshot`, SSR safety.)
 
 ## PR2.2 — UI Wiring GREEN
 
-- [ ] 8.1 GREEN `src/components/auth/AuthBootstrap.tsx`: branch `INITIAL_SESSION` to same orchestrator flow as `SIGNED_IN`.
-- [ ] 8.2 GREEN `src/components/PersistenceInitializer.tsx`: `await waitForPostAuthSync()` before `reinitializePersistence` when session exists.
-- [ ] 8.3 GREEN `src/components/Nav.tsx`: sync pill from `getPostAuthSyncStatus()`, not session alone.
-- [ ] 8.4 GREEN `src/components/home/HomeNextStepClient.tsx`: replace silent `.catch(() => {})` with explicit local fallback VM.
+- [x] 8.1 GREEN `src/components/auth/AuthBootstrap.tsx`: branch `INITIAL_SESSION` to same orchestrator flow as `SIGNED_IN` (shared `event === "SIGNED_IN" || event === "INITIAL_SESSION"` conditional; switched to `beginPostAuthSync(session)` from `@/lib/persistence/adapter-config`).
+- [x] 8.2 GREEN `src/components/PersistenceInitializer.tsx`: `getCurrentSession()` → `await beginPostAuthSync(session)` → `await reinitializePersistence()` when session exists. Legacy `initializePersistence()` path preserved.
+- [x] 8.3 GREEN `src/components/Nav.tsx`: sync pill from `usePostAuthSyncStatus()`, not session alone. Four honest status branches: signed-out (Link to /cuenta/ingresar), pending ("Sincronizando tu cuenta"), local-fallback ("Trabajo local guardado"), ready (synchronized pill).
+- [x] 8.4 GREEN `src/components/home/HomeNextStepClient.tsx`: replace silent `.catch(() => {})` with `handleResults(EMPTY_PROGRESS, null)` for progress failures and `handleResults(progress, null)` for diag-only failures. Imported `EMPTY_PROGRESS`.
+- [x] 8.5 GREEN new `src/hooks/usePostAuthSyncStatus.ts`: `useSyncExternalStore(subscribePostAuthSyncChange, getPostAuthSyncStatus, getPostAuthSyncServerSnapshot)` hook for live status subscription.
+- [x] 8.6 GREEN `src/lib/auth/post-auth-sync.ts`: added `subscribePostAuthSyncChange()` + `getPostAuthSyncServerSnapshot()` exports; wired `emitPostAuthSyncChange()` on every transition (sign-out, disabled, pending, settled, cleared).
+- [x] 8.7 GREEN `src/lib/persistence/adapter-config.ts`: re-exports the new surface (`subscribePostAuthSyncChange`, `getPostAuthSyncServerSnapshot`).
 
 ## PR2.3 — Gate
 
-- [ ] 9.1 `pnpm run test` green incl. 3 new PR2 suites.
-- [ ] 9.2 `pnpm run typecheck` clean.
-- [ ] 9.3 `pnpm run build` clean.
-- [ ] 9.4 GGA pre-commit pass.
-- [ ] 9.5 Fresh review: re-run 10 criteria vs PR2 + `origin/main`.
+- [x] 9.1 `pnpm run test:run` green incl. 5 new PR2 suites. (2987/2987 tests pass — +41 vs PR1.12 baseline 2946.)
+- [x] 9.2 `pnpm run typecheck` clean.
+- [x] 9.3 `pnpm run build` clean (11 routes built).
+- [ ] 9.4 GGA pre-commit pass. (Orchestrator responsibility per `apply` instruction: do not commit/push in this batch.)
+- [ ] 9.5 Fresh review: re-run 10 criteria vs PR2 + `origin/main`. (Orchestrator responsibility per `apply` instruction: do not commit/push in this batch.)
+- [ ] 9.6 Merge PR2 to `origin/main`. (Orchestrator responsibility per `apply` instruction: do not commit/push in this batch.)
 
 ## Archive
 
@@ -196,3 +202,43 @@ Blocker → Task Map:
 - E1 (wrapper hides local diagnostic/study-plan when remote is null): PR1.10 E1
 - F1 (test-coverage gap: remote canonical when both adapters have different data — diagnostic): PR1.12 F1
 - F2 (test-coverage gap: remote canonical when both adapters have different data — study plan): PR1.12 F2
+
+## PR2.10 — PR2 FRESH-REVIEW BLOCKER FIXES
+
+A fresh 4R review of PR2 surfaced four blockers that must be fixed
+before PR2 can be merged:
+
+- [x] B1 RED `src/components/__tests__/PersistenceInitializer.behavior.test.ts`: 7 behavioral tests proving the FK-before-snapshot readiness invariant (session-present path awaits `beginPostAuthSync(session)` BEFORE `reinitializePersistence`).
+- [x] B1 GREEN `src/components/PersistenceInitializer.tsx`: extracted `runPersistenceInit(deps)`; session-present path now awaits the orchestrator BEFORE the selector runs (no remote-empty read can race the FK upsert). The no-session path still calls `initializePersistence` for the legacy contract.
+- [x] B2 (AuthBootstrap) RED `src/components/auth/__tests__/AuthBootstrap.behavior.test.tsx`: behavioral tests with mocked deps simulating INITIAL_SESSION + SIGNED_IN events; asserts dedupe, FK-before-snapshot ordering, lastUserId capture, clear path, defensive paths, no-op events, and stale session-change suppression.
+- [x] B2 (AuthBootstrap) GREEN `src/components/auth/AuthBootstrap.tsx`: extracted `createAuthEventHandler(deps)` returning the `onAuthStateChange` callback. Component is a thin wrapper wiring the production deps.
+- [x] B2 (Nav) RED `src/components/__tests__/Nav.behavior.test.tsx`: 10 behavioral tests rendering `SyncStatusBadge` with mocked status states via `react-dom/server`.
+- [x] B2 (Nav) GREEN `src/components/SyncStatusBadge.tsx`: NEW file extracting the sync pill JSX. `src/components/Nav.tsx` now imports + uses it.
+- [x] B2 (HomeNextStepClient) RED `src/components/home/__tests__/HomeNextStepClient.behavior.test.tsx`: behavioral tests with mocked `loadProgress` + `loadDiagnosticResult` covering the sync/async/reject matrix, including progress failing before a delayed diagnostic rejection.
+- [x] B2 (HomeNextStepClient) GREEN `src/components/home/HomeNextStepClient.tsx`: extracted `runHomeLoader(deps, handleResults)` and settled both loaders explicitly. Every code path calls `handleResults` and no loader promise is left floating.
+- [x] B3 hygiene: rewrote production comments to explain current invariants only. Removed "blocker fix", "PR2 invariant", and other review-process references from PersistenceInitializer, AuthBootstrap, Nav, HomeNextStepClient.
+- [x] B4 doc: noted in `apply-progress.md` PR2.10 section that PR2 PR base should be `feat/post-auth-supabase-sync-fix-pr1-domain` (not `origin/main`) until PR1 lands. Addresses stacked review surface without merging PR1 prematurely.
+- [x] W1 (fallback sink) `src/components/auth/AuthBootstrap.tsx`: production wiring forwards the fallback sink to `reinitializePersistence({ onFallback: sink })` so observability is consistent across legacy first-init + auth-event reinit paths.
+- [x] W2 (HomeNextStepClient cleanup) `src/components/home/HomeNextStepClient.tsx`: `useEffect` captures `cancelled` flag in cleanup; `handleResults` checks `cancelled` before calling `setViewModel` so a mid-flight student switch does not overwrite the new active student's view model.
+- [x] W3 (AuthBootstrap stale handler guard) `src/components/auth/AuthBootstrap.tsx`: session-changing auth events increment a generation guard; stale sign-in handlers abort before `reinitializePersistence()` if sign-out/sign-in changed the active session while their sync awaited.
+- [x] W4 (HomeNextStepClient promise handling) `src/components/home/HomeNextStepClient.tsx`: `runHomeLoader()` uses `Promise.allSettled` so a diagnostic rejection cannot float when progress fails first.
+- [x] W5 (AuthBootstrap sign-out local reset) `src/lib/persistence/adapter-config.ts` + `src/components/auth/AuthBootstrap.tsx`: SIGNED_OUT now resets persistence explicitly to local without reading the live Supabase session, so a concurrent/new sign-in cannot be selected by a stale sign-out tail.
+
+## PR2.11 — Gate (PR2.10 batch)
+
+- [x] 11.1 `pnpm run test:run` — PR2 green, no regressions.
+- [x] 11.2 `pnpm run typecheck` clean.
+- [x] 11.3 `pnpm run build` clean (11 routes built).
+- [x] 11.4 PR2 opened and later retargeted to `main` after PR1 landed.
+- [x] 11.5 PR2 diff verified clean against `main` after PR1 merge.
+- [x] 11.6 Fresh review against PR2 + `main` completed; blocker fixes tracked in W3/W4 and PR metadata.
+- [ ] 11.7 GGA pre-commit pass. (Orchestrator responsibility.)
+
+## Blocker → Task Map (PR2.10)
+
+- B1 (FK-before-snapshot readiness race): PR2.10 B1
+- B2 (source-scan tests as primary proof): PR2.10 B2 (AuthBootstrap / Nav / HomeNextStepClient)
+- B3 (review-process comments in production): PR2.10 B3
+- B4 (PR base for stacked review): PR2.10 B4
+- W1 (fallback sink through reinit): PR2.10 W1
+- W2 (HomeNextStepClient cleanup/sequence guard): PR2.10 W2

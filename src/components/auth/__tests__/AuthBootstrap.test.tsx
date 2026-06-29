@@ -4,23 +4,26 @@
  * These tests mount the real component in a happy-dom environment so the
  * `useEffect` actually runs and registers a listener with `onAuthStateChange`.
  * The Supabase auth listener is mocked so tests can capture the registered
- * callback and dispatch auth events (`SIGNED_IN`, `SIGNED_OUT`, ignored
- * events). Behavior is verified purely through observable calls to the
- * mocked downstream modules (`linkAndImportLocalProgress`,
- * `reinitializePersistence`, `clearPostAuthSyncStatus`) — not by reading the
- * source file or matching regex/textual ordering.
+ * callback and dispatch auth events (`SIGNED_IN`, `INITIAL_SESSION`,
+ * `SIGNED_OUT`, ignored events). Behavior is verified purely through
+ * observable calls to the mocked downstream modules (`beginPostAuthSync`,
+ * `reinitializePersistence`, `resetPersistenceToLocal`,
+ * `clearPostAuthSyncStatus`) — not by reading the source file or
+ * matching regex/textual ordering.
  *
  * Coverage:
- * - SIGNED_IN → `linkAndImportLocalProgress(session)` runs first, is awaited,
- *   then `reinitializePersistence()` runs (FK row must exist before the
- *   selector flips to the remote adapter).
+ * - SIGNED_IN / INITIAL_SESSION → `beginPostAuthSync(session)` runs first,
+ *   is awaited, then `reinitializePersistence()` runs (FK row must exist
+ *   before the selector flips to the remote adapter).
  * - SIGNED_OUT → `clearPostAuthSyncStatus(lastUserId)` then
- *   `reinitializePersistence()`; never invokes the import orchestrator.
- * - The userId captured at SIGNED_IN is forwarded to the clear at SIGNED_OUT
- *   so the per-userId post-auth sync state is reset for the next sign-in of
- *   the same user.
- * - Non-relevant events (`TOKEN_REFRESHED`, `INITIAL_SESSION`, etc.) do not
- *   trigger sync, import, reinit, or clear.
+ *   `resetPersistenceToLocal()` (session-blind local reset, never the
+ *   session-reading `reinitializePersistence()` which would race a
+ *   concurrent sign-in); never invokes the sync orchestrator.
+ * - The userId captured at SIGNED_IN / INITIAL_SESSION is forwarded to the
+ *   clear at SIGNED_OUT so the per-userId post-auth sync state is reset for
+ *   the next sign-in of the same user.
+ * - Non-relevant events (`TOKEN_REFRESHED`, `PASSWORD_RECOVERY`, etc.) do not
+ *   trigger sync, reinit, or clear.
  * - Mounting renders nothing (empty subtree) — confirms side-effect-only
  *   component contract.
  * - Strict-mode-style unmount unsubscribes the listener handle exactly once.
@@ -68,27 +71,32 @@ const mocks = vi.hoisted(() => {
     state.registeredListener = cb;
     return { unsubscribe: state.unsubscribeSpy };
   });
-  const linkAndImport = vi.fn(async (_session: Session): Promise<void> => {
-    state.callOrder.push("linkAndImport");
+  const beginPostAuthSync = vi.fn(async (_session: Session): Promise<void> => {
+    state.callOrder.push("beginPostAuthSync");
   });
   const reinitializePersistence = vi.fn(async (): Promise<void> => {
     state.callOrder.push("reinitializePersistence");
+  });
+  const resetPersistenceToLocal = vi.fn(async (): Promise<void> => {
+    state.callOrder.push("resetPersistenceToLocal");
   });
   const clearPostAuthSyncStatus = vi.fn((_userId: string): void => {
     state.callOrder.push("clearPostAuthSyncStatus");
   });
   return {
     onAuthStateChange,
-    linkAndImport,
+    beginPostAuthSync,
     reinitializePersistence,
+    resetPersistenceToLocal,
     clearPostAuthSyncStatus,
   };
 });
 
 const {
   onAuthStateChange: onAuthStateChangeMock,
-  linkAndImport: linkAndImportMock,
+  beginPostAuthSync: beginPostAuthSyncMock,
   reinitializePersistence: reinitializePersistenceMock,
+  resetPersistenceToLocal: resetPersistenceToLocalMock,
   clearPostAuthSyncStatus: clearPostAuthSyncStatusMock,
 } = mocks;
 
@@ -97,11 +105,9 @@ vi.mock("@/lib/supabase/auth", () => ({
 }));
 
 vi.mock("@/lib/persistence/adapter-config", () => ({
+  beginPostAuthSync: mocks.beginPostAuthSync,
   reinitializePersistence: mocks.reinitializePersistence,
-}));
-
-vi.mock("@/lib/auth/link-and-import", () => ({
-  linkAndImportLocalProgress: mocks.linkAndImport,
+  resetPersistenceToLocal: mocks.resetPersistenceToLocal,
 }));
 
 vi.mock("@/lib/auth/post-auth-sync", () => ({
@@ -115,7 +121,7 @@ vi.mock("@/lib/auth/post-auth-sync", () => ({
 function makeSession(userId: string): Session {
   // Minimal `Session` shape — only the fields the component reads are real;
   // the rest are stubbed to satisfy the type without coupling the test to
-  // SDK internals.
+  // the SDK internals.
   return {
     access_token: `access-${userId}`,
     refresh_token: `refresh-${userId}`,
@@ -219,26 +225,26 @@ describe("AuthBootstrap — SIGNED_IN flow", () => {
     container.remove();
   });
 
-  it("runs linkAndImportLocalProgress THEN reinitializePersistence with the session", async () => {
+  it("runs beginPostAuthSync THEN reinitializePersistence with the session", async () => {
     const session = makeSession("user-123");
     await act(async () => {
       await dispatch("SIGNED_IN", session);
     });
 
-    expect(linkAndImportMock).toHaveBeenCalledTimes(1);
-    expect(linkAndImportMock).toHaveBeenCalledWith(session);
+    expect(beginPostAuthSyncMock).toHaveBeenCalledTimes(1);
+    expect(beginPostAuthSyncMock).toHaveBeenCalledWith(session);
     expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
   });
 
-  it("awaits linkAndImportLocalProgress before reinitializePersistence (FK-before-flip)", async () => {
+  it("awaits beginPostAuthSync before reinitializePersistence (FK-before-flip)", async () => {
     const session = makeSession("user-456");
 
-    let resolveImport: () => void = () => {};
-    linkAndImportMock.mockImplementationOnce(
+    let resolveSync: () => void = () => {};
+    beginPostAuthSyncMock.mockImplementationOnce(
       () =>
         new Promise<void>((resolve) => {
-          state.callOrder.push("linkAndImport");
-          resolveImport = resolve;
+          state.callOrder.push("beginPostAuthSync");
+          resolveSync = resolve;
         })
     );
 
@@ -246,30 +252,77 @@ describe("AuthBootstrap — SIGNED_IN flow", () => {
       const pending = dispatch("SIGNED_IN", session);
       // Yield once so the listener body reaches the first await.
       await Promise.resolve();
-      // Import is in flight and blocking reinit — neither must have advanced.
-      expect(linkAndImportMock).toHaveBeenCalledTimes(1);
+      // Sync is in flight and blocking reinit — neither must have advanced.
+      expect(beginPostAuthSyncMock).toHaveBeenCalledTimes(1);
       expect(reinitializePersistenceMock).not.toHaveBeenCalled();
 
-      resolveImport();
+      resolveSync();
       await pending;
     });
 
-    // After the import resolves, reinit runs exactly once.
+    // After the sync resolves, reinit runs exactly once.
     expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
 
-    // Observed call order proves the import call happened before reinit.
-    expect(state.callOrder).toEqual(["linkAndImport", "reinitializePersistence"]);
+    // Observed call order proves the sync call happened before reinit.
+    expect(state.callOrder).toEqual(["beginPostAuthSync", "reinitializePersistence"]);
   });
 
-  it("does not invoke the import orchestrator when session is null", async () => {
+  it("does not invoke the sync orchestrator when session is null", async () => {
     await act(async () => {
       await dispatch("SIGNED_IN", null);
     });
 
-    // No session to link/import on; reinitializePersistence still fires to
-    // keep the selector consistent with the bootstrap contract.
-    expect(linkAndImportMock).not.toHaveBeenCalled();
+    // No session to sync on — the sync orchestrator must not run.
+    expect(beginPostAuthSyncMock).not.toHaveBeenCalled();
+    // A null session is a stale/no-session tail: it must NOT call the
+    // session-reading reinitializePersistence (which could observe a
+    // concurrent SIGNED_IN B and select remote for B before B's readiness).
+    // It uses the session-blind local reset instead — same path as
+    // SIGNED_OUT.
+    expect(reinitializePersistenceMock).not.toHaveBeenCalled();
+    expect(resetPersistenceToLocalMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("AuthBootstrap — INITIAL_SESSION flow", () => {
+  let container: HTMLDivElement;
+  let root: Root;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetListenerState();
+    container = document.createElement("div");
+    document.body.appendChild(container);
+    root = mount(container);
+  });
+
+  afterEach(() => {
+    unmount(root);
+    container.remove();
+  });
+
+  it("handles INITIAL_SESSION like SIGNED_IN (beginPostAuthSync then reinit)", async () => {
+    const session = makeSession("user-initial");
+    await act(async () => {
+      await dispatch("INITIAL_SESSION", session);
+    });
+
+    expect(beginPostAuthSyncMock).toHaveBeenCalledTimes(1);
+    expect(beginPostAuthSyncMock).toHaveBeenCalledWith(session);
     expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("captures userId from INITIAL_SESSION for the SIGNED_OUT clear", async () => {
+    await act(async () => {
+      await dispatch("INITIAL_SESSION", makeSession("user-initial-cap"));
+    });
+    vi.clearAllMocks();
+
+    await act(async () => {
+      await dispatch("SIGNED_OUT", null);
+    });
+
+    expect(clearPostAuthSyncStatusMock).toHaveBeenCalledWith("user-initial-cap");
   });
 });
 
@@ -290,7 +343,7 @@ describe("AuthBootstrap — SIGNED_OUT flow", () => {
     container.remove();
   });
 
-  it("clears the previously captured userId and reinitializes persistence", async () => {
+  it("clears the previously captured userId and resets persistence to local", async () => {
     // Establish a signed-in user so the component captures its userId.
     await act(async () => {
       await dispatch("SIGNED_IN", makeSession("user-789"));
@@ -303,10 +356,13 @@ describe("AuthBootstrap — SIGNED_OUT flow", () => {
 
     expect(clearPostAuthSyncStatusMock).toHaveBeenCalledTimes(1);
     expect(clearPostAuthSyncStatusMock).toHaveBeenCalledWith("user-789");
-    expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
+    // SIGNED_OUT uses the session-blind local reset (race safety);
+    // the session-reading reinit must NOT fire on SIGNED_OUT.
+    expect(resetPersistenceToLocalMock).toHaveBeenCalledTimes(1);
+    expect(reinitializePersistenceMock).not.toHaveBeenCalled();
   });
 
-  it("runs clearPostAuthSyncStatus before reinitializePersistence (clear-then-reinit)", async () => {
+  it("runs clearPostAuthSyncStatus before resetPersistenceToLocal (clear-then-local)", async () => {
     await act(async () => {
       await dispatch("SIGNED_IN", makeSession("user-clear-order"));
     });
@@ -318,16 +374,16 @@ describe("AuthBootstrap — SIGNED_OUT flow", () => {
     });
 
     expect(clearPostAuthSyncStatusMock).toHaveBeenCalledTimes(1);
-    expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
+    expect(resetPersistenceToLocalMock).toHaveBeenCalledTimes(1);
     expect(state.callOrder).toEqual([
       "clearPostAuthSyncStatus",
-      "reinitializePersistence",
+      "resetPersistenceToLocal",
     ]);
   });
 
-  it("never invokes the import orchestrator on SIGNED_OUT", async () => {
+  it("never invokes the sync orchestrator on SIGNED_OUT", async () => {
     await act(async () => {
-      await dispatch("SIGNED_IN", makeSession("user-no-import-on-signout"));
+      await dispatch("SIGNED_IN", makeSession("user-no-sync-on-signout"));
     });
     vi.clearAllMocks();
 
@@ -335,7 +391,7 @@ describe("AuthBootstrap — SIGNED_OUT flow", () => {
       await dispatch("SIGNED_OUT", null);
     });
 
-    expect(linkAndImportMock).not.toHaveBeenCalled();
+    expect(beginPostAuthSyncMock).not.toHaveBeenCalled();
   });
 
   it("does not call clearPostAuthSyncStatus when no userId was captured", async () => {
@@ -345,8 +401,10 @@ describe("AuthBootstrap — SIGNED_OUT flow", () => {
     });
 
     expect(clearPostAuthSyncStatusMock).not.toHaveBeenCalled();
-    // Reinit still runs so the selector resets to the local adapter.
-    expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
+    // The session-blind local reset still runs so the adapter resets
+    // to local even with no prior sign-in.
+    expect(resetPersistenceToLocalMock).toHaveBeenCalledTimes(1);
+    expect(reinitializePersistenceMock).not.toHaveBeenCalled();
   });
 });
 
@@ -367,43 +425,33 @@ describe("AuthBootstrap — non-relevant events", () => {
     container.remove();
   });
 
-  it("ignores TOKEN_REFRESHED (no sync, import, reinit, or clear)", async () => {
+  it("ignores TOKEN_REFRESHED (no sync, reinit, or clear)", async () => {
     await act(async () => {
       await dispatch("TOKEN_REFRESHED", makeSession("user-refresh"));
     });
 
-    expect(linkAndImportMock).not.toHaveBeenCalled();
+    expect(beginPostAuthSyncMock).not.toHaveBeenCalled();
     expect(reinitializePersistenceMock).not.toHaveBeenCalled();
     expect(clearPostAuthSyncStatusMock).not.toHaveBeenCalled();
   });
 
-  it("ignores INITIAL_SESSION (no sync, import, reinit, or clear)", async () => {
-    await act(async () => {
-      await dispatch("INITIAL_SESSION", makeSession("user-initial"));
-    });
-
-    expect(linkAndImportMock).not.toHaveBeenCalled();
-    expect(reinitializePersistenceMock).not.toHaveBeenCalled();
-    expect(clearPostAuthSyncStatusMock).not.toHaveBeenCalled();
-  });
-
-  it("ignores PASSWORD_RECOVERY (no sync, import, reinit, or clear)", async () => {
+  it("ignores PASSWORD_RECOVERY (no sync, reinit, or clear)", async () => {
     await act(async () => {
       await dispatch("PASSWORD_RECOVERY", makeSession("user-recovery"));
     });
 
-    expect(linkAndImportMock).not.toHaveBeenCalled();
+    expect(beginPostAuthSyncMock).not.toHaveBeenCalled();
     expect(reinitializePersistenceMock).not.toHaveBeenCalled();
     expect(clearPostAuthSyncStatusMock).not.toHaveBeenCalled();
   });
 
   it("does not accumulate sync side effects across ignored events", async () => {
     await act(async () => {
-      await dispatch("INITIAL_SESSION", makeSession("u1"));
       await dispatch("TOKEN_REFRESHED", makeSession("u1"));
+      await dispatch("PASSWORD_RECOVERY", makeSession("u1"));
     });
 
-    expect(linkAndImportMock).not.toHaveBeenCalled();
+    expect(beginPostAuthSyncMock).not.toHaveBeenCalled();
     expect(reinitializePersistenceMock).not.toHaveBeenCalled();
     expect(clearPostAuthSyncStatusMock).not.toHaveBeenCalled();
   });

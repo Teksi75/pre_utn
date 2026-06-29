@@ -362,6 +362,180 @@ describe("beginPostAuthSync() idempotency", () => {
 });
 
 // ---------------------------------------------------------------------------
+// Cross-user global status ownership (active-user guard)
+// ---------------------------------------------------------------------------
+// The per-userId token guard only checks whether THIS user's in-flight entry
+// is still current. It does NOT close the cross-user race where a slow sync
+// for user A (never cleared) resolves "ready" AFTER user B has begun and set
+// currentStatus = "pending". Without the active-user guard, A would stomp
+// currentStatus = "ready" over B's "pending", surfacing a false ready for
+// B's UI. The active-user check (activeStatusUserId) scopes global writes to
+// the latest user to begin a sync; a stale A may still update its own
+// per-user completedByUser cache, but must NOT overwrite the global snapshot.
+
+describe("beginPostAuthSync() cross-user global status ownership", () => {
+  it("A slow sync + B begins pending: A resolving ready does NOT overwrite global status; B owns it; B resolves ready", async () => {
+    // Scenario:
+    //   1. A begins a slow sync — currentStatus = "pending", A owns global.
+    //   2. B begins its own sync — currentStatus = "pending", B now owns
+    //      global (activeStatusUserId = B).
+    //   3. A's slow orchestrator resolves "ready". A may update its own
+    //      per-user completedByUser cache, but MUST NOT overwrite the
+    //      global currentStatus or emit ready for B's UI.
+    //   4. assert getPostAuthSyncStatus() remains "pending" (B-owned),
+    //      not "ready" from A.
+    //   5. B resolves "ready" → currentStatus becomes "ready".
+    //
+    // On the OLD behavior, the per-userId token guard alone did NOT close
+    // this race: A's entry was never cleared, so A's token still matched
+    // and A wrote currentStatus = "ready" over B's "pending" — this test
+    // would fail there.
+
+    let resolveA: (outcome: { kind: "ready"; branch: string }) => void =
+      () => undefined;
+    const slowA = new Promise<{ kind: "ready"; branch: string }>((resolve) => {
+      resolveA = resolve;
+    });
+    let resolveB: (outcome: { kind: "ready"; branch: string }) => void =
+      () => undefined;
+    const slowB = new Promise<{ kind: "ready"; branch: string }>((resolve) => {
+      resolveB = resolve;
+    });
+
+    const mockOrchestrator = vi.fn((session: { user: { id: string } }) => {
+      if (session.user.id === "auth-user-A") return slowA;
+      if (session.user.id === "auth-user-B") return slowB;
+      return Promise.resolve({ kind: "ready" as const, branch: "link-only" });
+    });
+
+    vi.doMock("../../supabase/browser", () => ({
+      createBrowserClient: () => makeSupabaseClient(),
+    }));
+    vi.doMock("../link-and-import", () => ({
+      linkAndImportLocalProgress: mockOrchestrator,
+      clearPostAuthSyncState: vi.fn(),
+    }));
+
+    setActiveProfile("student-1");
+    const {
+      beginPostAuthSync,
+      getPostAuthSyncStatus,
+      resetPostAuthSyncStatusForTests,
+    } = await import("../post-auth-sync");
+
+    resetPostAuthSyncStatusForTests();
+
+    const sessionA = {
+      user: { id: "auth-user-A", email: "a@example.com" },
+      access_token: "tok-a",
+      refresh_token: "ref-a",
+    };
+    const sessionB = {
+      user: { id: "auth-user-B", email: "b@example.com" },
+      access_token: "tok-b",
+      refresh_token: "ref-b",
+    };
+
+    // 1. A begins — pending, A owns global.
+    const inflightA = beginPostAuthSync(sessionA as never);
+    expect(getPostAuthSyncStatus()).toBe("pending");
+
+    // 2. B begins — pending, B now owns global.
+    const inflightB = beginPostAuthSync(sessionB as never);
+    expect(getPostAuthSyncStatus()).toBe("pending");
+
+    // 3. A resolves "ready". A updates its per-user cache but MUST NOT
+    //    overwrite the global currentStatus (B owns it).
+    resolveA({ kind: "ready", branch: "link-only" });
+    const resultA = await inflightA;
+    expect(resultA).toBe("ready"); // A's own cached status
+    // Global status must remain pending (B-owned), NOT "ready" from A.
+    expect(getPostAuthSyncStatus()).toBe("pending");
+
+    // 4. B resolves "ready" → global status becomes "ready" (B owns it).
+    resolveB({ kind: "ready", branch: "link-only" });
+    const resultB = await inflightB;
+    expect(resultB).toBe("ready");
+    expect(getPostAuthSyncStatus()).toBe("ready");
+  });
+
+  it("A slow sync + B begins: A resolving local-fallback does NOT overwrite global status (B owns it)", async () => {
+    // Complement to the ready variant: a stale A local-fallback resolution
+    // must also NOT stomp B's pending global status. A's per-user cache
+    // records local-fallback; the global stays pending until B resolves.
+    let resolveA: (
+      outcome: { kind: "local-fallback"; reason: string; branch: string },
+    ) => void = () => undefined;
+    const slowA = new Promise<{
+      kind: "local-fallback";
+      reason: string;
+      branch: string;
+    }>((resolve) => {
+      resolveA = resolve;
+    });
+    let resolveB: (outcome: { kind: "ready"; branch: string }) => void =
+      () => undefined;
+    const slowB = new Promise<{ kind: "ready"; branch: string }>((resolve) => {
+      resolveB = resolve;
+    });
+
+    const mockOrchestrator = vi.fn((session: { user: { id: string } }) => {
+      if (session.user.id === "auth-user-A") return slowA;
+      if (session.user.id === "auth-user-B") return slowB;
+      return Promise.resolve({ kind: "ready" as const, branch: "link-only" });
+    });
+
+    vi.doMock("../../supabase/browser", () => ({
+      createBrowserClient: () => makeSupabaseClient(),
+    }));
+    vi.doMock("../link-and-import", () => ({
+      linkAndImportLocalProgress: mockOrchestrator,
+      clearPostAuthSyncState: vi.fn(),
+    }));
+
+    setActiveProfile("student-1");
+    const {
+      beginPostAuthSync,
+      getPostAuthSyncStatus,
+      resetPostAuthSyncStatusForTests,
+    } = await import("../post-auth-sync");
+
+    resetPostAuthSyncStatusForTests();
+
+    const sessionA = {
+      user: { id: "auth-user-A", email: "a@example.com" },
+      access_token: "tok-a",
+      refresh_token: "ref-a",
+    };
+    const sessionB = {
+      user: { id: "auth-user-B", email: "b@example.com" },
+      access_token: "tok-b",
+      refresh_token: "ref-b",
+    };
+
+    const inflightA = beginPostAuthSync(sessionA as never);
+    const inflightB = beginPostAuthSync(sessionB as never);
+    expect(getPostAuthSyncStatus()).toBe("pending");
+
+    // A resolves local-fallback — global must stay pending (B-owned).
+    resolveA({
+      kind: "local-fallback",
+      reason: "profile-link-failed",
+      branch: "link-only",
+    });
+    const resultA = await inflightA;
+    expect(resultA).toBe("local-fallback"); // A's own cached status
+    expect(getPostAuthSyncStatus()).toBe("pending");
+
+    // B resolves ready — global becomes ready.
+    resolveB({ kind: "ready", branch: "link-only" });
+    const resultB = await inflightB;
+    expect(resultB).toBe("ready");
+    expect(getPostAuthSyncStatus()).toBe("ready");
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Per-userId completed-status cache
 // ---------------------------------------------------------------------------
 // The status module caches the final outcome per userId so a caller that
@@ -422,6 +596,268 @@ describe("beginPostAuthSync() per-userId completed-status cache", () => {
     // And the orchestrator must NOT have been re-invoked for A — A is
     // still in the completed cache.
     expect(mockOrchestrator).toHaveBeenCalledTimes(2);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Cached branch global ownership claim
+// ---------------------------------------------------------------------------
+// The per-userId completed cache returns THIS user's cached status on a
+// re-invoke, but it MUST also claim the GLOBAL snapshot (currentStatus +
+// activeStatusUserId) for that user before returning. Otherwise the global
+// snapshot keeps reflecting whichever user last wrote it, and Nav — which
+// reads getPostAuthSyncStatus() — renders a stale pill for the wrong user.
+//
+// Scenario this guards:
+//   1. A signs in → sync settles "local-fallback" (cached for A).
+//   2. B signs in → sync settles "ready"; global currentStatus = "ready",
+//      activeStatusUserId = B.
+//   3. A signs in again → beginPostAuthSync(A) hits the cached branch.
+//      OLD behavior returned A's "local-fallback" but left global
+//      currentStatus = "ready" (B's stale value), so Nav showed a false
+//      "Sincronizado como <A>" for A. The fix claims global ownership for
+//      A in the cached branch so the snapshot matches the cached return.
+
+describe("beginPostAuthSync() cached branch claims global ownership", () => {
+  it("A cached local-fallback after B ready → re-invoking A updates global currentStatus back to A's local-fallback (no stale ready for A)", async () => {
+    // After B reaches ready, the
+    // global snapshot says "ready" with B as owner. Re-invoking A must
+    // NOT leave that stale "ready" visible to Nav: the cached branch
+    // must claim ownership for A and flip global currentStatus to A's
+    // cached "local-fallback".
+    const sessionA = {
+      user: { id: "auth-user-A", email: "a@example.com" },
+      access_token: "tok-a",
+      refresh_token: "ref-a",
+    };
+    const sessionB = {
+      user: { id: "auth-user-B", email: "b@example.com" },
+      access_token: "tok-b",
+      refresh_token: "ref-b",
+    };
+
+    const mockOrchestrator = vi.fn((session: { user: { id: string } }) => {
+      if (session.user.id === "auth-user-A") {
+        return Promise.resolve({
+          kind: "local-fallback" as const,
+          reason: "profile-link-failed",
+          branch: "link-only",
+        });
+      }
+      return Promise.resolve({ kind: "ready" as const, branch: "link-only" });
+    });
+
+    vi.doMock("../../supabase/browser", () => ({
+      createBrowserClient: () => makeSupabaseClient(),
+    }));
+    vi.doMock("../link-and-import", () => ({
+      linkAndImportLocalProgress: mockOrchestrator,
+      clearPostAuthSyncState: vi.fn(),
+    }));
+
+    setActiveProfile("student-1");
+    const {
+      beginPostAuthSync,
+      getPostAuthSyncStatus,
+      resetPostAuthSyncStatusForTests,
+    } = await import("../post-auth-sync");
+
+    resetPostAuthSyncStatusForTests();
+
+    // A completes → cached "local-fallback", A owns global.
+    const resultA = await beginPostAuthSync(sessionA as never);
+    expect(resultA).toBe("local-fallback");
+    expect(getPostAuthSyncStatus()).toBe("local-fallback");
+
+    // B completes → global overwritten to "ready", B owns it.
+    const resultB = await beginPostAuthSync(sessionB as never);
+    expect(resultB).toBe("ready");
+    expect(getPostAuthSyncStatus()).toBe("ready");
+
+    // Re-invoke A (cached branch). Must return A's cached local-fallback
+    // AND flip the global snapshot back to A's status so Nav does not
+    // keep showing B's stale "ready" for A.
+    const resultAAgain = await beginPostAuthSync(sessionA as never);
+    expect(resultAAgain).toBe("local-fallback");
+    expect(getPostAuthSyncStatus()).toBe("local-fallback");
+
+    // The cached branch must NOT re-run the orchestrator for A.
+    expect(mockOrchestrator).toHaveBeenCalledTimes(2);
+  });
+
+  it("cached ready updates global owner back to A (ready variant)", async () => {
+    // Complement to the local-fallback variant: a cached "ready" for A
+    // must also reclaim global ownership from B. After B settles
+    // local-fallback (global = local-fallback, owner = B), re-invoking
+    // A must flip global currentStatus back to A's cached "ready".
+    const sessionA = {
+      user: { id: "auth-user-A", email: "a@example.com" },
+      access_token: "tok-a",
+      refresh_token: "ref-a",
+    };
+    const sessionB = {
+      user: { id: "auth-user-B", email: "b@example.com" },
+      access_token: "tok-b",
+      refresh_token: "ref-b",
+    };
+
+    const mockOrchestrator = vi.fn((session: { user: { id: string } }) => {
+      if (session.user.id === "auth-user-A") {
+        return Promise.resolve({ kind: "ready" as const, branch: "link-only" });
+      }
+      return Promise.resolve({
+        kind: "local-fallback" as const,
+        reason: "import-failed",
+        branch: "link-and-import",
+      });
+    });
+
+    vi.doMock("../../supabase/browser", () => ({
+      createBrowserClient: () => makeSupabaseClient(),
+    }));
+    vi.doMock("../link-and-import", () => ({
+      linkAndImportLocalProgress: mockOrchestrator,
+      clearPostAuthSyncState: vi.fn(),
+    }));
+
+    setActiveProfile("student-1");
+    const {
+      beginPostAuthSync,
+      getPostAuthSyncStatus,
+      resetPostAuthSyncStatusForTests,
+    } = await import("../post-auth-sync");
+
+    resetPostAuthSyncStatusForTests();
+
+    // A completes → cached "ready", A owns global.
+    const resultA = await beginPostAuthSync(sessionA as never);
+    expect(resultA).toBe("ready");
+    expect(getPostAuthSyncStatus()).toBe("ready");
+
+    // B completes → global overwritten to "local-fallback", B owns it.
+    const resultB = await beginPostAuthSync(sessionB as never);
+    expect(resultB).toBe("local-fallback");
+    expect(getPostAuthSyncStatus()).toBe("local-fallback");
+
+    // Re-invoke A (cached branch). Must reclaim global ownership and
+    // flip currentStatus back to A's cached "ready".
+    const resultAAgain = await beginPostAuthSync(sessionA as never);
+    expect(resultAAgain).toBe("ready");
+    expect(getPostAuthSyncStatus()).toBe("ready");
+
+    expect(mockOrchestrator).toHaveBeenCalledTimes(2);
+  });
+
+  it("cached branch emits a transition when the global snapshot changes", async () => {
+    // The ownership claim must notify subscribers so useSyncExternalStore
+    // consumers (Nav) re-render with the corrected pill. A listener
+    // registered before the re-invoke must fire exactly once for the
+    // ready → local-fallback transition.
+    const sessionA = {
+      user: { id: "auth-user-A", email: "a@example.com" },
+      access_token: "tok-a",
+      refresh_token: "ref-a",
+    };
+    const sessionB = {
+      user: { id: "auth-user-B", email: "b@example.com" },
+      access_token: "tok-b",
+      refresh_token: "ref-b",
+    };
+
+    const mockOrchestrator = vi.fn((session: { user: { id: string } }) => {
+      if (session.user.id === "auth-user-A") {
+        return Promise.resolve({
+          kind: "local-fallback" as const,
+          reason: "profile-link-failed",
+          branch: "link-only",
+        });
+      }
+      return Promise.resolve({ kind: "ready" as const, branch: "link-only" });
+    });
+
+    vi.doMock("../../supabase/browser", () => ({
+      createBrowserClient: () => makeSupabaseClient(),
+    }));
+    vi.doMock("../link-and-import", () => ({
+      linkAndImportLocalProgress: mockOrchestrator,
+      clearPostAuthSyncState: vi.fn(),
+    }));
+
+    setActiveProfile("student-1");
+    const {
+      beginPostAuthSync,
+      subscribePostAuthSyncChange,
+      resetPostAuthSyncStatusForTests,
+    } = await import("../post-auth-sync");
+
+    resetPostAuthSyncStatusForTests();
+
+    // Run A (local-fallback) then B (ready) to set up the stale global.
+    await beginPostAuthSync(sessionA as never);
+    await beginPostAuthSync(sessionB as never);
+
+    // Subscribe AFTER B has settled ready, so the only transition the
+    // listener observes is the cached-branch ownership claim for A.
+    let emissions = 0;
+    const unsubscribe = subscribePostAuthSyncChange(() => {
+      emissions += 1;
+    });
+
+    try {
+      await beginPostAuthSync(sessionA as never);
+      // Exactly one emission for the ready → local-fallback transition.
+      expect(emissions).toBe(1);
+    } finally {
+      unsubscribe();
+    }
+  });
+
+  it("cached branch does NOT emit when re-invoking the active owner with the same status", async () => {
+    // No-op re-invoke (same user still owns global, same cached status)
+    // must not spam subscribers with a redundant transition. Guards
+    // against the fix over-emitting on every cached return.
+    const sessionA = {
+      user: { id: "auth-user-A", email: "a@example.com" },
+      access_token: "tok-a",
+      refresh_token: "ref-a",
+    };
+
+    vi.doMock("../../supabase/browser", () => ({
+      createBrowserClient: () => makeSupabaseClient(),
+    }));
+    vi.doMock("../link-and-import", () => ({
+      linkAndImportLocalProgress: vi.fn(async () => ({
+        kind: "ready",
+        branch: "link-only",
+      })),
+      clearPostAuthSyncState: vi.fn(),
+    }));
+
+    setActiveProfile("student-1");
+    const {
+      beginPostAuthSync,
+      subscribePostAuthSyncChange,
+      resetPostAuthSyncStatusForTests,
+    } = await import("../post-auth-sync");
+
+    resetPostAuthSyncStatusForTests();
+
+    // A completes → A owns global, status "ready".
+    await beginPostAuthSync(sessionA as never);
+
+    let emissions = 0;
+    const unsubscribe = subscribePostAuthSyncChange(() => {
+      emissions += 1;
+    });
+
+    try {
+      // Re-invoke A: cached branch, owner is already A, status already
+      // "ready" → no transition, no emission.
+      await beginPostAuthSync(sessionA as never);
+      expect(emissions).toBe(0);
+    } finally {
+      unsubscribe();
+    }
   });
 });
 

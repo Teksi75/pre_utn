@@ -23,5 +23,5 @@ export type { LocalStorageOperations } from "./local-adapter";
 export { selectPersistenceAdapter, withLocalFallback, createRemoteUnavailableSentinel } from "./selector";
 export type { SelectorConfig, SupabaseEnvConfig } from "./selector";
 export { createSupabaseAdapter } from "./supabase-adapter";
-export { configurePersistenceAdapter, getConfiguredAdapter, resetPersistenceAdapter, initializePersistence, reinitializePersistence, getInitializationPromise, loadProgressWhenReady } from "./adapter-config";
+export { configurePersistenceAdapter, getConfiguredAdapter, resetPersistenceAdapter, initializePersistence, reinitializePersistence, resetPersistenceToLocal, getInitializationPromise, loadProgressWhenReady } from "./adapter-config";
 export type { ConfiguredAdapter } from "./adapter-config";
