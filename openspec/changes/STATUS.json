@@ -703,6 +703,24 @@
         "Mirror field cleanup PR per REQ-ISOL-8"
       ],
       "summary": "Bug #56: extractActiveProgress in src/lib/practice-progress.ts was reading map.activeStudentId (persisted mirror) instead of getActiveProfileId(), freezing practice.v1.activeStudentId after a switch and returning the prior student's slice across navigations/reloads. Also addAttempt wrote into the stale slot, corrupting the new student's slot. Fix: route extractActiveProgress + addAttempt + selector-wired local-adapter through getActiveProfileId(); drop corrupted active slot on mismatch (aggressive repair); re-wire usePracticeFlow and /diagnostic to re-read on activeStudentId change; delete dead src/components/home/StudyPlanSection.tsx and clean up its negative-import assertion. 11 new tests, 5 atomic work-unit commits, --no-ff merge to main. Verify PASS WITH WARNINGS. Pre-existing migration-rls-shape.test.ts failure is out of scope (PR #55)."
+    },
+    "post-auth-supabase-sync-fix": {
+      "status": "in-progress",
+      "branch": "feat/post-auth-supabase-sync-fix-pr1-domain",
+      "startedAt": "2026-06-28",
+      "issue": 67,
+      "delivery": "chained-prs-stacked-to-main (2 PRs)",
+      "pr1": {
+        "branch": "feat/post-auth-supabase-sync-fix-pr1-domain",
+        "status": "ready-to-merge",
+        "summary": "PR1 — Auth Domain + Persistence (DONE in working tree, 2930/2930 tests, typecheck + build green). Idempotent orchestrator (Map<userId, Promise<LinkImportOutcome>>), FK-before-import ordering, post-auth sync status API (disabled/signed-out/pending/ready/local-fallback) with per-userId completed-status cache (Map) and per-entry token guard against stale in-flight writes, selector remote-empty + local-has fallback, supabase-adapter EMPTY_PROGRESS sentinel preserved via characterization tests, AuthBootstrap minimal SIGNED_OUT → clearPostAuthSyncStatus(lastUserId) wire-up. 36 net new tests (B0: 22 + PR1.4 B1-B6: 14 + this round C1-C3: 4 - 4 deduplicated). No Nav or Home UI changes. See apply-progress.md."
+      },
+      "pr2": {
+        "branch": "feat/post-auth-supabase-sync-fix-pr2-ui",
+        "status": "pending",
+        "summary": "PR2 — UI Wiring (depends on PR1): AuthBootstrap INITIAL_SESSION, PersistenceInitializer awaits waitForPostAuthSync(), Nav sync-status pill, Home non-skeleton fallback. Out of scope for this PR1 batch. Orchestrator will open PR2 branch off updated origin/main after PR1 merges."
+      },
+      "summary": "Fix post-activation Supabase Auth sync: INITIAL_SESSION must trigger link/import, remote profile FK must precede snapshot writes, Nav must not falsely claim sync complete, and Home must not stay skeleton when remote is empty but local progress exists."
     }
   },
   "activeBranches": [],

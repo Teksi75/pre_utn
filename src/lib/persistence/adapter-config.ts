@@ -17,6 +17,28 @@ import type { PersistenceAdapter } from "./port";
 import { selectPersistenceAdapter, type SelectorConfig } from "./selector";
 import { createSupabaseAdapter } from "./supabase-adapter";
 import { createBrowserClient } from "../supabase/browser";
+import {
+  beginPostAuthSync,
+  clearPostAuthSyncStatus,
+  getPostAuthSyncStatus,
+  waitForPostAuthSync,
+} from "../auth/post-auth-sync";
+
+// ---------------------------------------------------------------------------
+// Post-auth sync readiness surface (re-exports)
+// ---------------------------------------------------------------------------
+//
+// Persistence initialization and other consumers must be
+// able to await the post-auth sync without importing from src/lib/auth/
+// directly. Re-exporting here keeps the layering clean: persistence
+// depends on the status surface, not on the orchestrator internals.
+
+export {
+  beginPostAuthSync,
+  clearPostAuthSyncStatus,
+  getPostAuthSyncStatus,
+  waitForPostAuthSync,
+};
 
 // ---------------------------------------------------------------------------
 // Adapter interface — derived from PersistenceAdapter (no duplication)

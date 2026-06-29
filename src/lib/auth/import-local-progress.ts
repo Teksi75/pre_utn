@@ -12,12 +12,18 @@
  * - Sequential remote saves (one after another) so we do not contend
  *   for the same `student_progress_snapshots` row.
  * - Each save is wrapped in its own try/catch; the helper never throws.
- * - On partial success: importedFields lists the successes; error carries
- *   the first failure observed.
- * - On all-success: ok:true with all three field names.
- * - On all-failure: ok:false with empty importedFields and the first error.
- * - When local state is fully empty, ok:true with importedFields:[] —
- *   nothing to import is a successful no-op.
+ * - `ok` means "nothing failed" — `true` ONLY when:
+ *     * there was nothing local to attempt (noop), OR
+ *     * every attempted remote save succeeded.
+ * - On partial success: `ok` is FALSE so the orchestrator can map to
+ *   `local-fallback / import-partial` and the public post-auth sync
+ *   status flips to "local-fallback" instead of falsely reporting
+ *   "ready". This matters because a remote `null` for a missing field
+ *   would silently hide local diagnostic/study-plan data behind the
+ *   Supabase row on the next remote read.
+ * - `importedFields` lists what made it; `failedFields` lists what
+ *   didn't (present on partial / full failure, empty otherwise);
+ *   `error` carries the first failure observed.
  *
  * @module auth/import-local-progress
  */
@@ -29,11 +35,24 @@ import { loadDiagnosticResultRaw, loadStudyPlanRaw } from "../diagnostic-storage
 /** Fields that can be imported from local to remote. */
 export type ImportableField = "progress" | "diagnostic" | "studyPlan";
 
-/** Result of an import attempt. `ok` is false only when EVERY attempted field failed. */
+/**
+ * Result of an import attempt.
+ *
+ * - `ok` is true ONLY when no field failed: either nothing was
+ *   attempted (noop), or every attempted remote save succeeded.
+ * - On partial failure, `ok` is FALSE even if some fields imported
+ *   successfully — the caller (orchestrator → status module) MUST
+ *   treat this as `local-fallback`, never as "ready".
+ * - `failedFields` is always present and lists every field that
+ *   existed locally but did not write remotely. Empty on noop and on
+ *   full success.
+ */
 export interface ImportResult {
   ok: boolean;
   /** Names of fields that were successfully written to the remote adapter. */
   importedFields: ImportableField[];
+  /** Names of fields that existed locally but failed to write remotely. */
+  failedFields: ImportableField[];
   /** First error observed, if any. Present on partial or full failure. */
   error?: Error;
 }
@@ -52,6 +71,7 @@ export async function importLocalProgressToRemote(
   studentId: string
 ): Promise<ImportResult> {
   const importedFields: ImportableField[] = [];
+  const failedFields: ImportableField[] = [];
   let firstError: Error | undefined;
 
   // Snapshot local state once. We never write back — localStorage is
@@ -66,8 +86,9 @@ export async function importLocalProgressToRemote(
   const hasLocalPlan = localPlan !== null;
 
   // Nothing to import → successful no-op. Skips the network entirely.
+  // failedFields stays empty — there's nothing to fail.
   if (!hasLocalProgress && !hasLocalDiagnostic && !hasLocalPlan) {
-    return { ok: true, importedFields: [] };
+    return { ok: true, importedFields: [], failedFields: [] };
   }
 
   // ----- Step 1: progress (sequential, awaited) -----
@@ -78,10 +99,14 @@ export async function importLocalProgressToRemote(
       );
       if (result.ok) {
         importedFields.push("progress");
-      } else if (!firstError) {
-        firstError = new Error(`saveProgress returned ok:false (${result.reason})`);
+      } else {
+        failedFields.push("progress");
+        if (!firstError) {
+          firstError = new Error(`saveProgress returned ok:false (${result.reason})`);
+        }
       }
     } catch (e) {
+      failedFields.push("progress");
       if (!firstError) {
         firstError = e instanceof Error ? e : new Error(String(e));
       }
@@ -96,12 +121,16 @@ export async function importLocalProgressToRemote(
       );
       if (result.ok) {
         importedFields.push("diagnostic");
-      } else if (!firstError) {
-        firstError = new Error(
-          `saveDiagnosticResult returned ok:false (${result.reason})`,
-        );
+      } else {
+        failedFields.push("diagnostic");
+        if (!firstError) {
+          firstError = new Error(
+            `saveDiagnosticResult returned ok:false (${result.reason})`,
+          );
+        }
       }
     } catch (e) {
+      failedFields.push("diagnostic");
       if (!firstError) {
         firstError = e instanceof Error ? e : new Error(String(e));
       }
@@ -116,10 +145,14 @@ export async function importLocalProgressToRemote(
       );
       if (result.ok) {
         importedFields.push("studyPlan");
-      } else if (!firstError) {
-        firstError = new Error(`saveStudyPlan returned ok:false (${result.reason})`);
+      } else {
+        failedFields.push("studyPlan");
+        if (!firstError) {
+          firstError = new Error(`saveStudyPlan returned ok:false (${result.reason})`);
+        }
       }
     } catch (e) {
+      failedFields.push("studyPlan");
       if (!firstError) {
         firstError = e instanceof Error ? e : new Error(String(e));
       }
@@ -127,8 +160,13 @@ export async function importLocalProgressToRemote(
   }
 
   return {
-    ok: importedFields.length > 0,
+    // ok = "nothing failed". A noop (no fields attempted) keeps failedFields
+    // empty → ok:true. Any failure flips ok to false so the orchestrator
+    // maps to local-fallback/import-partial (or import-failed when nothing
+    // imported). Partial import must NOT report ok:true.
+    ok: failedFields.length === 0,
     importedFields,
+    failedFields,
     ...(firstError ? { error: firstError } : {}),
   };
 }

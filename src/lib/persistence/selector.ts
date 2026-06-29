@@ -33,6 +33,33 @@ import { createLocalStorageAdapter } from "./local-adapter";
 import { getActiveProfileId } from "../active-session";
 
 // ---------------------------------------------------------------------------
+// Empty-progress detection helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * True when a remote progress read returns "no data" — either a missing
+ * row represented as `EMPTY_PROGRESS` (empty attempts) or a value that
+ * cannot be inspected at all. Used by `withLocalFallback` to decide when
+ * a local-progress read should override a remote-empty read (REQ-NEW-2c).
+ */
+function isEmptyProgressValue(value: unknown): boolean {
+  if (typeof value !== "object" || value === null) return true;
+  const p = value as { attempts?: unknown };
+  return !Array.isArray(p.attempts) || p.attempts.length === 0;
+}
+
+/**
+ * True when a progress value carries real student evidence — non-empty
+ * attempts array. Used by `withLocalFallback` to decide whether the
+ * local slice should win over an empty remote read.
+ */
+function hasMeaningfulProgress(value: unknown): boolean {
+  if (typeof value !== "object" || value === null) return false;
+  const p = value as { attempts?: unknown };
+  return Array.isArray(p.attempts) && p.attempts.length > 0;
+}
+
+// ---------------------------------------------------------------------------
 // Config types
 // ---------------------------------------------------------------------------
 
@@ -186,12 +213,77 @@ export function withLocalFallback(
       );
     },
 
+    /**
+     * Specialized loadProgress that handles the post-auth-sync scenario:
+     * a freshly linked remote account starts with no data, but the
+     * student's local progress is real and must keep rendering.
+     *
+     * Algorithm — two stages:
+     *   1. Standard fallback first (preserves prior semantics):
+     *      - throws/rejects → local + emit fallback event
+     *      - `__remoteUnavailable` sentinel → local + emit fallback event
+     *        (the sentinel must NEVER leak past the wrapper for reads)
+     *   2. Remote-empty + local-has recovery branch:
+     *      - remote returns `EMPTY_PROGRESS` (empty attempts) AND local
+     *        has real attempts → return local + emit fallback event
+     *      - Otherwise → return remote (remote wins when it has data)
+     *
+     * Stage 1 runs first so the sentinel and thrown errors always delegate
+     * to local, regardless of whether local has data. This matches the
+     * existing `attempt()` semantics for every other method on the wrapper.
+     */
     loadProgress(studentId: string): MaybePromise<PracticeProgress> {
-      return attempt(
-        () => remote.loadProgress(studentId),
-        () => local.loadProgress(studentId),
-        "loadProgress"
-      );
+      return (async (): Promise<PracticeProgress> => {
+        // Stage 1: standard fallback for failure cases.
+        let remoteResult: unknown;
+        let remoteFailed = false;
+        let remoteUnavailable = false;
+        try {
+          remoteResult = await Promise.resolve(remote.loadProgress(studentId));
+          if (isRemoteUnavailable(remoteResult)) {
+            remoteUnavailable = true;
+          }
+        } catch (err) {
+          onFallback?.("loadProgress", err);
+          remoteFailed = true;
+        }
+
+        // Throws / `__remoteUnavailable` → always delegate to local,
+        // regardless of whether local has data. The sentinel must never
+        // leak past the wrapper for reads.
+        if (remoteFailed || remoteUnavailable) {
+          // Emit the fallback event for observability parity with the
+          // standard `attempt()` path used by other wrapper methods.
+          if (remoteUnavailable) {
+            onFallback?.("loadProgress", remoteResult);
+          }
+          return await Promise.resolve(local.loadProgress(studentId));
+        }
+
+        // Stage 2: specialized remote-empty + local-has recovery branch.
+        if (isEmptyProgressValue(remoteResult)) {
+          try {
+            const localResult = await Promise.resolve(
+              local.loadProgress(studentId)
+            );
+            if (hasMeaningfulProgress(localResult)) {
+              onFallback?.("loadProgress", remoteResult);
+              return localResult;
+            }
+            // Both empty: return the local empty progress (NOT the
+            // remote empty, which would still be EMPTY_PROGRESS but the
+            // local empty is the canonical "this student has nothing yet"
+            // reading from the active storage layer).
+            return localResult;
+          } catch {
+            // Local read failed too — fall back to the remote empty
+            // result rather than propagating the local error.
+            return remoteResult as PracticeProgress;
+          }
+        }
+
+        return remoteResult as PracticeProgress;
+      })();
     },
 
     saveProgress(
@@ -205,12 +297,81 @@ export function withLocalFallback(
       );
     },
 
+    /**
+     * Specialized loadDiagnosticResult — structural twin of loadProgress.
+     *
+     * Reads are nullable (`DiagnosticResult | null`): a freshly linked
+     * remote account has no prepared diagnostic snapshot, so the Supabase
+     * adapter returns `null`. The standard `attempt()` wrapper would treat
+     * that remote `null` as success and hide any local diagnostic the
+     * student already completed — even when post-auth-sync status was
+     * `local-fallback`, a successful remote null read would erase local
+     * evidence from the UI.
+     *
+     * Algorithm — two stages (same as loadProgress, empty predicate is
+     * just `=== null` because the read is nullable):
+     *   1. Standard fallback for failure cases (sentinel / throws →
+     *      local + emit fallback event — sentinel must never leak).
+     *   2. Remote-null + local-has recovery branch:
+     *      - remote returns null AND local has data → return local +
+     *        emit fallback event (local evidence must survive a null
+     *        remote read).
+     *      - Both null → return local null (no fallback event — there's
+     *        no "empty" to recover from).
+     *      - Remote has data → return remote (remote wins).
+     *
+     * Why this matters: the wrapper itself must recover local diagnostic
+     * data when remote is null. A `local-fallback` status alone is not
+     * enough because the adapter selector can still go remote. Same
+     * invariant as loadProgress, applied to nullable reads.
+     */
     loadDiagnosticResult(studentId: string): MaybePromise<DiagnosticResult | null> {
-      return attempt(
-        () => remote.loadDiagnosticResult(studentId),
-        () => local.loadDiagnosticResult(studentId),
-        "loadDiagnosticResult"
-      );
+      return (async (): Promise<DiagnosticResult | null> => {
+        // Stage 1: standard fallback for failure cases.
+        let remoteResult: unknown;
+        let remoteFailed = false;
+        let remoteUnavailable = false;
+        try {
+          remoteResult = await Promise.resolve(
+            remote.loadDiagnosticResult(studentId)
+          );
+          if (isRemoteUnavailable(remoteResult)) {
+            remoteUnavailable = true;
+          }
+        } catch (err) {
+          onFallback?.("loadDiagnosticResult", err);
+          remoteFailed = true;
+        }
+
+        if (remoteFailed || remoteUnavailable) {
+          if (remoteUnavailable) {
+            onFallback?.("loadDiagnosticResult", remoteResult);
+          }
+          return await Promise.resolve(local.loadDiagnosticResult(studentId));
+        }
+
+        // Stage 2: specialized remote-null + local-has recovery branch.
+        if (remoteResult === null) {
+          try {
+            const localResult = await Promise.resolve(
+              local.loadDiagnosticResult(studentId)
+            );
+            if (localResult !== null) {
+              onFallback?.("loadDiagnosticResult", remoteResult);
+              return localResult;
+            }
+            // Both null: return the local null. There is nothing to
+            // recover, so no fallback event is emitted.
+            return localResult;
+          } catch {
+            // Local read failed too — return the remote null rather than
+            // propagating the local error.
+            return remoteResult as DiagnosticResult | null;
+          }
+        }
+
+        return remoteResult as DiagnosticResult | null;
+      })();
     },
 
     saveDiagnosticResult(
@@ -225,11 +386,54 @@ export function withLocalFallback(
     },
 
     loadStudyPlan(studentId: string): MaybePromise<StudyPlan | null> {
-      return attempt(
-        () => remote.loadStudyPlan(studentId),
-        () => local.loadStudyPlan(studentId),
-        "loadStudyPlan"
-      );
+      return (async (): Promise<StudyPlan | null> => {
+        // Stage 1: standard fallback for failure cases (sentinel / throws
+        // → local + emit fallback event — sentinel must never leak).
+        let remoteResult: unknown;
+        let remoteFailed = false;
+        let remoteUnavailable = false;
+        try {
+          remoteResult = await Promise.resolve(
+            remote.loadStudyPlan(studentId)
+          );
+          if (isRemoteUnavailable(remoteResult)) {
+            remoteUnavailable = true;
+          }
+        } catch (err) {
+          onFallback?.("loadStudyPlan", err);
+          remoteFailed = true;
+        }
+
+        if (remoteFailed || remoteUnavailable) {
+          if (remoteUnavailable) {
+            onFallback?.("loadStudyPlan", remoteResult);
+          }
+          return await Promise.resolve(local.loadStudyPlan(studentId));
+        }
+
+        // Stage 2: specialized remote-null + local-has recovery branch.
+        // The study plan is a derived snapshot of the diagnostic, so when
+        // remote has no prepared row but local has a real plan, the
+        // wrapper MUST preserve the local slice (see loadDiagnosticResult
+        // for the same invariant on the diagnostic read).
+        if (remoteResult === null) {
+          try {
+            const localResult = await Promise.resolve(
+              local.loadStudyPlan(studentId)
+            );
+            if (localResult !== null) {
+              onFallback?.("loadStudyPlan", remoteResult);
+              return localResult;
+            }
+            // Both null: nothing to recover, no fallback event.
+            return localResult;
+          } catch {
+            return remoteResult as StudyPlan | null;
+          }
+        }
+
+        return remoteResult as StudyPlan | null;
+      })();
     },
 
     saveStudyPlan(

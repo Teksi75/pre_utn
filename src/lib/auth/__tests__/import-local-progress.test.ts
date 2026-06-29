@@ -10,16 +10,20 @@
  * - Calls remoteAdapter.saveProgress/saveDiagnosticResult/saveStudyPlan
  *   sequentially (avoids row contention on student_progress_snapshots).
  * - Each step is wrapped in its own try/catch; the function never throws.
- * - On partial success: importedFields lists what made it, error carries
- *   the first failure.
- * - All success: ok:true with all three fields.
- * - All failure: ok:false with empty importedFields and the first error.
+ * - On partial success: ok is FALSE (so the orchestrator maps to
+ *   local-fallback, not falsely "ready"); importedFields lists what made
+ *   it, failedFields lists what did not, error carries the first failure.
+ * - All success: ok:true with all three fields in importedFields.
+ * - All failure: ok:false with empty importedFields, all three in
+ *   failedFields, and the first error.
+ * - Empty local state (noop): ok:true with importedFields:[] and
+ *   failedFields:[] — nothing to import is a successful no-op.
  * - localStorage is never touched.
  *
- * Case (a) — all local null → ok:true, importedFields:[]
- * Case (b) — all 3 succeed → ok:true, all three fields
- * Case (c) — progress fails, others ok → ok:true, [diagnostic, studyPlan], error
- * Case (d) — all fail → ok:false, importedFields:[], error
+ * Case (a) — all local null → ok:true, importedFields:[], failedFields:[]
+ * Case (b) — all 3 succeed → ok:true, all three in importedFields, failedFields:[]
+ * Case (c) — progress fails, others ok → ok:FALSE, [diagnostic, studyPlan], failedFields:[progress], error
+ * Case (d) — all fail → ok:false, importedFields:[], failedFields:[all], error
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
@@ -173,12 +177,16 @@ async function loadModule() {
 // ---------------------------------------------------------------------------
 
 describe("importLocalProgressToRemote()", () => {
-  it("(a) returns ok:true, importedFields:[] when local state is empty", async () => {
+  it("(a) returns ok:true, importedFields:[], failedFields:[] when local state is empty", async () => {
     setActiveProfile("student-1");
     const adapter = makeAdapter({});
     const { importLocalProgressToRemote } = await loadModule();
     const result = await importLocalProgressToRemote(adapter, "student-1");
-    expect(result).toEqual({ ok: true, importedFields: [] });
+    expect(result).toEqual({
+      ok: true,
+      importedFields: [],
+      failedFields: [],
+    });
   });
 
   it("(b) imports all three fields when local state is full and all remote saves succeed", async () => {
@@ -207,10 +215,16 @@ describe("importLocalProgressToRemote()", () => {
     expect(result).toEqual({
       ok: true,
       importedFields: ["progress", "diagnostic", "studyPlan"],
+      failedFields: [],
     });
   });
 
-  it("(c) returns ok:true with importedFields minus the failed one and an error", async () => {
+  it("(c) partial failure → ok:FALSE with importedFields minus the failed one, failedFields, and an error", async () => {
+    // Partial import must report ok:false so the orchestrator maps to
+    // local-fallback/import-partial. Otherwise a remote-null for the
+    // missing field hides local diagnostic/study-plan data behind
+    // the Supabase row, which is exactly the "ready" misrepresentation
+    // this contract is designed to prevent.
     setActiveProfile("student-1");
     setProgressFor("student-1", [
       {
@@ -241,12 +255,13 @@ describe("importLocalProgressToRemote()", () => {
 
     const { importLocalProgressToRemote } = await loadModule();
     const result = await importLocalProgressToRemote(adapter, "student-1");
-    expect(result.ok).toBe(true);
+    expect(result.ok).toBe(false);
     expect(result.importedFields).toEqual(["diagnostic", "studyPlan"]);
+    expect(result.failedFields).toEqual(["progress"]);
     expect(result.error).toBeDefined();
   });
 
-  it("(d) returns ok:false, importedFields:[] when all remote saves fail", async () => {
+  it("(d) returns ok:false, importedFields:[], failedFields:[all] when all remote saves fail", async () => {
     setActiveProfile("student-1");
     setProgressFor("student-1", [
       {
@@ -282,6 +297,7 @@ describe("importLocalProgressToRemote()", () => {
     const result = await importLocalProgressToRemote(adapter, "student-1");
     expect(result.ok).toBe(false);
     expect(result.importedFields).toEqual([]);
+    expect(result.failedFields).toEqual(["progress", "diagnostic", "studyPlan"]);
     expect(result.error).toBeInstanceOf(Error);
   });
 
