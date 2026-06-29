@@ -48,10 +48,15 @@ import { AuthBootstrap } from "@/components/auth/AuthBootstrap";
 // import).
 // ---------------------------------------------------------------------------
 
-type AuthListener = (
-  event: string,
-  session: Session | null
-) => void | Promise<void>;
+type AuthListener = ((event: string, session: Session | null) => void) & {
+  /**
+   * Latest deferred post-auth promise exposed by the synchronous
+   * Supabase callback (see `createDeferredAuthStateCallback`). Production
+   * never reads this; the test harness awaits it before asserting on
+   * downstream side effects.
+   */
+  readonly __deferred?: Promise<void> | null;
+};
 
 const state = vi.hoisted(() => ({
   /** Listener registered by AuthBootstrap on mount. Reset per test. */
@@ -157,18 +162,28 @@ function unmount(root: Root): void {
 
 /**
  * Dispatch an auth event through the registered listener and flush the
- * async branch the component awaits. Returns the listener's promise so the
- * caller can await ordering deterministically.
+ * deferred post-auth sync. Returns a promise that resolves once the
+ * deferred post-auth body has settled, so callers can await the
+ * awaited downstream calls before asserting.
+ *
+ * After the post-auth-defer fix, the Supabase listener returns
+ * synchronously (void) and the async post-auth sync runs in a
+ * microtask; the deferred promise is exposed as `__deferred` on the
+ * listener. `dispatch` invokes the listener, then awaits that deferred
+ * promise so existing tests can assert on `beginPostAuthSync` /
+ * `reinitializePersistence` / `resetPersistenceToLocal` having actually
+ * run, without having to await explicit microtask flushes themselves.
  */
 function dispatch(event: string, session: Session | null): Promise<void> {
   const listener = state.registeredListener;
   if (!listener) {
     throw new Error("AuthBootstrap did not register an auth listener on mount");
   }
-  const result = listener(event, session);
-  // The listener is `async`; normalize to a promise so callers can await
-  // the awaited downstream calls before asserting.
-  return Promise.resolve(result as Promise<void>);
+  // Synchronous listener call: it captures event+session and stashes
+  // the deferred post-auth promise on `__deferred`.
+  listener(event, session);
+  const deferred = listener.__deferred ?? Promise.resolve();
+  return Promise.resolve(deferred);
 }
 
 function resetListenerState(): void {

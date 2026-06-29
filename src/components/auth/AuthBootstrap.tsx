@@ -61,7 +61,10 @@
 
 import { useEffect } from "react";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
-import { onAuthStateChange } from "@/lib/supabase/auth";
+import {
+  onAuthStateChange,
+  type AuthStateChangeCallback,
+} from "@/lib/supabase/auth";
 import {
   beginPostAuthSync,
   reinitializePersistence,
@@ -215,6 +218,139 @@ export function createAuthEventHandler(
 }
 
 // ---------------------------------------------------------------------------
+// Supabase-callback-safe wrapper — defer async post-auth sync to a microtask
+// ---------------------------------------------------------------------------
+
+/**
+ * Synchronous `onAuthStateChange` callback that defers the async
+ * post-auth sync to a microtask.
+ *
+ * Production bug context (post-auth sync stuck in `"pending"`):
+ *   The async handler returned by `createAuthEventHandler(deps)` was
+ *   passed directly to Supabase's `onAuthStateChange`. The handler
+ *   awaits the orchestrator (`beginPostAuthSync` →
+ *   `linkAndImportLocalProgress` → `linkActiveProfileToAuthUserWithResult`
+ *   → `remoteAdapter.saveProfiles`) INSIDE the Supabase callback. The
+ *   orchestrator's downstream calls reach `client.auth.getSession()`
+ *   (in `link-profile.ts` and inside the remote Supabase adapter) while
+ *   the Supabase client is mid-transition through the auth event that
+ *   delivered the callback. That `getSession()` await never resolves —
+ *   no rejection, no console error — so the public
+ *   `PostAuthSyncStatus` is set to `"pending"` and never moved on, the
+ *   Nav pill hangs on "Sincronizando tu cuenta", and no
+ *   `student_profiles` row is ever written to Supabase.
+ *
+ * Fix:
+ *   Capture `event`, `session` (and the derived `session.user?.id`)
+ *   synchronously inside the Supabase callback; return synchronously;
+ *   defer the async post-auth sync to a microtask so the orchestrator
+ *   and the downstream `client.auth.getSession()` calls run AFTER the
+ *   Supabase client's auth-state transition has settled. The await
+ *   then completes normally and `beginPostAuthSync()` resolves to
+ *   `"ready"` or `"local-fallback"` — never stuck in `"pending"`.
+ *
+ * `session.user?.id` is captured at callback entry and forwarded
+ * explicitly through the deferred flow (`beginPostAuthSync(session)`
+ * receives the session, and the handler forwards `session.user?.id`
+ * as `expectedUserId` to `reinitializePersistence`). The deferred
+ * body never needs to re-read the Supabase session to recover the
+ * identity the event was originally about.
+ *
+ * Existing protections preserved verbatim:
+ *   - generation guard (stale handler abort before
+ *     `reinitializePersistence`);
+ *   - identity-aware `expectedUserId` reinitialize;
+ *   - `SIGNED_OUT` uses `resetPersistenceToLocal` (session-blind local
+ *     reset);
+ *   - null `INITIAL_SESSION` / `SIGNED_IN` uses
+ *     `resetPersistenceToLocal`;
+ *   - `SIGNED_IN` / `INITIAL_SESSION` with a valid session awaits
+ *     `beginPostAuthSync(session)` then `reinitializePersistence({
+ *     onFallback, expectedUserId: session.user.id })`.
+ *
+ * Spec: REQ-AUTH-3 + REQ-NEW-2a..d + bug-fix: defer post-auth sync out
+ * of the Supabase auth callback.
+ */
+export interface DeferredAuthStateCallback extends AuthStateChangeCallback {
+  /**
+   * Latest deferred post-auth promise produced by the most recent
+   * callback invocation. Production never reads this — it is exposed
+   * so the test harness can await the deferred work before asserting
+   * on downstream side effects.
+   */
+  readonly __deferred: Promise<void> | null;
+}
+
+/**
+ * Build a Supabase-callback-safe synchronous wrapper around the async
+ * `createAuthEventHandler(deps)` handler. The returned callback:
+ *   - captures `event` + `session` synchronously;
+ *   - defers the async post-auth sync to a microtask via
+ *     `Promise.resolve().then(...)` (equivalent to `queueMicrotask` but
+ *     also exposes the deferred promise so tests can await it);
+ *   - returns synchronously (the `onAuthStateChange` contract is `void`).
+ *
+ * The deferred body never throws — it awaits `createAuthEventHandler`'s
+ * handler (documented never-throwing), and a defensive `.catch`
+ * guarantees the deferred promise settles even if a future regression
+ * slips an unhandled rejection through.
+ */
+export function createDeferredAuthStateCallback(
+  deps: AuthEventHandlerDeps
+): DeferredAuthStateCallback {
+  const asyncHandle = createAuthEventHandler(deps);
+  let latestDeferred: Promise<void> | null = null;
+
+  // `Object.assign` seeds the `__deferred` data property so the type
+  // checks (the property exists at construction time); the subsequent
+  // `Object.defineProperty` reconfigures it as a live getter so callers
+  // always observe the most recent deferred promise.
+  const callback = Object.assign(
+    (event: AuthChangeEvent, session: Session | null) => {
+      // Capture event + session synchronously inside the callback so
+      // the deferred body never has to re-read the live Supabase
+      // session: `beginPostAuthSync(session)` forwards the captured
+      // session, and the handler forwards `session.user?.id` as
+      // `expectedUserId` to `reinitializePersistence`.
+      const capturedEvent = event;
+      const capturedSession = session;
+      // Defer the async orchestrator + reinit to a microtask. The
+      // `onAuthStateChange` callback MUST return synchronously: running
+      // `linkAndImportLocalProgress` (which awaits
+      // `client.auth.getSession()` inside
+      // `linkActiveProfileToAuthUserWithResult` and inside the remote
+      // adapter's `saveProfiles`) inside the callback deadlocks with
+      // the Supabase client's internal auth-state transition during
+      // auth events — the await never resolves, no error is logged,
+      // the public `PostAuthSyncStatus` hangs in `"pending"` and no
+      // `student_profiles` row is ever written. Deferring to a
+      // microtask runs that work after the auth-state transition has
+      // settled, so the downstream `client.auth.getSession()` calls
+      // complete normally.
+      latestDeferred = Promise.resolve()
+        .then(() => asyncHandle(capturedEvent, capturedSession))
+        .catch(() => {
+          // `createAuthEventHandler` is documented as never-throwing;
+          // this guard keeps the deferred promise settled if a future
+          // regression slips an unhandled rejection through, so a
+          // waiter in tests never hangs at `await callback.__deferred`.
+        });
+      // Return synchronously — do NOT await the deferred work here.
+      return;
+    },
+    { __deferred: null as Promise<void> | null },
+  ) as DeferredAuthStateCallback;
+
+  Object.defineProperty(callback, "__deferred", {
+    get: () => latestDeferred,
+    enumerable: true,
+    configurable: true,
+  });
+
+  return callback;
+}
+
+// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
@@ -223,11 +359,17 @@ export function createAuthEventHandler(
  * changes and updates the persistence adapter in response to sign-in /
  * initial-session / sign-out events. Renders nothing — it is a
  * side-effect-only component.
+ *
+ * The listener registered with `onAuthStateChange` is the asynchronous
+ * handler wrapped by `createDeferredAuthStateCallback` so the callback
+ * itself returns synchronously and the async post-auth sync runs
+ * deferred (microtask) — see the wrapper's JSDoc for the production
+ * deadlock bug this prevents.
  */
 export function AuthBootstrap(): null {
   useEffect(() => {
     const sink = createProductionFallbackSink();
-    const handle = createAuthEventHandler({
+    const handle = createDeferredAuthStateCallback({
       beginPostAuthSync,
       reinitializePersistence: (opts) =>
         reinitializePersistence({
