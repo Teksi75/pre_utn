@@ -24,7 +24,7 @@
  *   remote-unavailable  | any                | local           | YES (unavailable)
  *
  * Behavior matrix for `loadDiagnosticResult(studentId)` and
- * `loadStudyPlan(studentId)` (post PR1.10 — partial-import blocker fix):
+ * `loadStudyPlan(studentId)` after a partial import falls back locally:
  *
  *   remote result       | local result       | wrapper returns | fallback event
  *   --------------------|--------------------|-----------------|---------------
@@ -42,7 +42,7 @@
  *   - the post-auth-sync scenario (linked account, fresh empty remote)
  *   - the partial-import local-fallback scenario (sync status
  *     "local-fallback" because import-partial failed, but local data
- *     must keep rendering — see PR1.10 blocker)
+ *     must keep rendering)
  *
  * Note: `{ok:false}` semantics apply only to WRITE methods (`saveProgress`,
  * `saveDiagnosticResult`, `saveStudyPlan`, `saveProfiles`) which return
@@ -361,7 +361,7 @@ const REMOTE_STUDY_PLAN: StudyPlan = {
 };
 
 // ---------------------------------------------------------------------------
-// loadDiagnosticResult — remote-null + local-has fallback (PR1.10 BLOCKER FIX)
+// loadDiagnosticResult — remote-null + local-has fallback
 //
 // Rationale: a partial-import scenario can leave post-auth-sync status at
 // "local-fallback". Even when the adapter selector keeps going remote, the
@@ -371,7 +371,7 @@ const REMOTE_STUDY_PLAN: StudyPlan = {
 // ---------------------------------------------------------------------------
 
 describe("withLocalFallback — loadDiagnosticResult remote-null + local-has branch", () => {
-  it("remote returns null + local has diagnostic → returns LOCAL + emits fallback event (BLOCKER FIX)", async () => {
+  it("remote returns null + local has diagnostic → returns LOCAL + emits fallback event", async () => {
     const onFallback = vi.fn();
     const remote = makeRemoteAdapter(
       vi.fn(async () => EMPTY_PROGRESS),
@@ -436,7 +436,7 @@ describe("withLocalFallback — loadDiagnosticResult remote-null + local-has bra
   });
 
   it("remote returns REAL diagnostic + local has DIFFERENT diagnostic → returns REMOTE (remote wins, no fallback)", async () => {
-    // Coverage complement of the BLOCKER FIX case: when BOTH adapters have
+    // Coverage complement of the remote-null fallback case: when BOTH adapters have
     // data and they DISAGREE, the remote is canonical. The wrapper must NOT
     // trigger the remote-null + local-has recovery branch (remote is not
     // null) and must NOT emit a fallback event.
@@ -508,7 +508,7 @@ describe("withLocalFallback — loadDiagnosticResult remote-null + local-has bra
 });
 
 // ---------------------------------------------------------------------------
-// loadStudyPlan — remote-null + local-has fallback (PR1.10 BLOCKER FIX)
+// loadStudyPlan — remote-null + local-has fallback
 //
 // Same invariant as loadDiagnosticResult. The study plan is a derived
 // snapshot of the diagnostic, so when remote has no prepared row but
@@ -516,7 +516,7 @@ describe("withLocalFallback — loadDiagnosticResult remote-null + local-has bra
 // ---------------------------------------------------------------------------
 
 describe("withLocalFallback — loadStudyPlan remote-null + local-has branch", () => {
-  it("remote returns null + local has studyPlan → returns LOCAL + emits fallback event (BLOCKER FIX)", async () => {
+  it("remote returns null + local has studyPlan → returns LOCAL + emits fallback event", async () => {
     const onFallback = vi.fn();
     const remote = makeRemoteAdapter(
       vi.fn(async () => EMPTY_PROGRESS),
@@ -587,7 +587,7 @@ describe("withLocalFallback — loadStudyPlan remote-null + local-has branch", (
   });
 
   it("remote returns REAL studyPlan + local has DIFFERENT studyPlan → returns REMOTE (remote wins, no fallback)", async () => {
-    // Coverage complement of the BLOCKER FIX case: when BOTH adapters have
+    // Coverage complement of the remote-null fallback case: when BOTH adapters have
     // data and they DISAGREE, the remote is canonical. The wrapper must NOT
     // trigger the remote-null + local-has recovery branch (remote is not
     // null) and must NOT emit a fallback event.

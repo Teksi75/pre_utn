@@ -303,10 +303,10 @@ export function withLocalFallback(
      * Reads are nullable (`DiagnosticResult | null`): a freshly linked
      * remote account has no prepared diagnostic snapshot, so the Supabase
      * adapter returns `null`. The standard `attempt()` wrapper would treat
-     * that remote `null` as success and HIDE any local diagnostic the
-     * student already completed. That was the partial-import blocker:
-     * even when post-auth-sync status was `local-fallback`, a successful
-     * remote null read would erase local evidence from the UI.
+     * that remote `null` as success and hide any local diagnostic the
+     * student already completed — even when post-auth-sync status was
+     * `local-fallback`, a successful remote null read would erase local
+     * evidence from the UI.
      *
      * Algorithm — two stages (same as loadProgress, empty predicate is
      * just `=== null` because the read is nullable):
@@ -314,15 +314,16 @@ export function withLocalFallback(
      *      local + emit fallback event — sentinel must never leak).
      *   2. Remote-null + local-has recovery branch:
      *      - remote returns null AND local has data → return local +
-     *        emit fallback event (the BLOCKER FIX)
+     *        emit fallback event (local evidence must survive a null
+     *        remote read).
      *      - Both null → return local null (no fallback event — there's
      *        no "empty" to recover from).
      *      - Remote has data → return remote (remote wins).
      *
-     * Why this matters: PR1.10 — partial-import local-fallback status is
-     * not enough because the adapter selector can still go remote; the
-     * wrapper itself must recover local diagnostic data when remote is
-     * null. Same invariant as loadProgress, applied to nullable reads.
+     * Why this matters: the wrapper itself must recover local diagnostic
+     * data when remote is null. A `local-fallback` status alone is not
+     * enough because the adapter selector can still go remote. Same
+     * invariant as loadProgress, applied to nullable reads.
      */
     loadDiagnosticResult(studentId: string): MaybePromise<DiagnosticResult | null> {
       return (async (): Promise<DiagnosticResult | null> => {

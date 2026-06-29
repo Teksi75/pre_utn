@@ -2,7 +2,7 @@
  * Tests for post-auth sync re-exports in src/lib/persistence/adapter-config.ts
  *
  * The adapter-config barrel exposes `waitForPostAuthSync()` and
- * `getPostAuthSyncStatus()` so PersistenceInitializer (PR2) and other
+ * `getPostAuthSyncStatus()` so persistence initialization and other
  * persistence consumers do not need to import from `src/lib/auth/`
  * directly. This keeps the layering clean: persistence depends on the
  * status surface, not on the orchestrator internals.

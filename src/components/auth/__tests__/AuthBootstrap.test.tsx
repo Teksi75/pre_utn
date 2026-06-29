@@ -1,178 +1,428 @@
 /**
- * Tests for src/components/auth/AuthBootstrap.tsx
+ * AuthBootstrap — behavior tests.
  *
- * Verifies the listener wires Supabase auth events to persistence:
- * - SIGNED_IN → calls linkAndImportLocalProgress(session) FIRST, then
- *   reinitializePersistence() (FK row must exist before remote
- *   persistence flips on; the orchestrator handles the import).
- * - SIGNED_OUT → calls reinitializePersistence() only.
- * - TOKEN_REFRESHED and other events → no-op.
- * - Uses useEffect with cleanup; one listener survives Strict Mode.
- * - Renders nothing.
+ * These tests mount the real component in a happy-dom environment so the
+ * `useEffect` actually runs and registers a listener with `onAuthStateChange`.
+ * The Supabase auth listener is mocked so tests can capture the registered
+ * callback and dispatch auth events (`SIGNED_IN`, `SIGNED_OUT`, ignored
+ * events). Behavior is verified purely through observable calls to the
+ * mocked downstream modules (`linkAndImportLocalProgress`,
+ * `reinitializePersistence`, `clearPostAuthSyncStatus`) — not by reading the
+ * source file or matching regex/textual ordering.
  *
- * PR3 (T-REV-5): AuthBootstrap delegates the SIGNED_IN side effects to
- * the orchestrator (`linkAndImportLocalProgress`) instead of calling
- * `linkActiveProfileToAuthUser` directly. The orchestrator is the new
- * contract; the inner link helper is still exported (re-used by the
- * orchestrator) but AuthBootstrap no longer references it directly.
+ * Coverage:
+ * - SIGNED_IN → `linkAndImportLocalProgress(session)` runs first, is awaited,
+ *   then `reinitializePersistence()` runs (FK row must exist before the
+ *   selector flips to the remote adapter).
+ * - SIGNED_OUT → `clearPostAuthSyncStatus(lastUserId)` then
+ *   `reinitializePersistence()`; never invokes the import orchestrator.
+ * - The userId captured at SIGNED_IN is forwarded to the clear at SIGNED_OUT
+ *   so the per-userId post-auth sync state is reset for the next sign-in of
+ *   the same user.
+ * - Non-relevant events (`TOKEN_REFRESHED`, `INITIAL_SESSION`, etc.) do not
+ *   trigger sync, import, reinit, or clear.
+ * - Mounting renders nothing (empty subtree) — confirms side-effect-only
+ *   component contract.
+ * - Strict-mode-style unmount unsubscribes the listener handle exactly once.
  *
- * Spec: REQ-AUTH-3, REQ-NEW-2a, REQ-NEW-2b, REQ-NEW-2c.
+ * Spec: REQ-AUTH-3, REQ-NEW-2a, REQ-NEW-2b, REQ-NEW-2c, REQ-NEW-ARCH-1.
  */
 
-import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+// @vitest-environment happy-dom
 
-const repoRoot = process.cwd();
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { act } from "react";
+import { createRoot } from "react-dom/client";
+import type { Root } from "react-dom/client";
+import type { Session } from "@supabase/supabase-js";
 
-function authBootstrapSource(): string {
-  return readFileSync(
-    join(repoRoot, "src/components/auth/AuthBootstrap.tsx"),
-    "utf8"
-  );
+import { AuthBootstrap } from "@/components/auth/AuthBootstrap";
+
+// ---------------------------------------------------------------------------
+// Mocks — capture the listener registered by the component and observe
+// downstream module calls. vi.hoisted keeps the mock fns and shared state
+// reachable from inside the hoisted vi.mock factories (which run before any
+// import).
+// ---------------------------------------------------------------------------
+
+type AuthListener = (
+  event: string,
+  session: Session | null
+) => void | Promise<void>;
+
+const state = vi.hoisted(() => ({
+  /** Listener registered by AuthBootstrap on mount. Reset per test. */
+  registeredListener: null as AuthListener | null,
+  /** Unsubscribe spy handed back in the auth handle. Reset per test. */
+  unsubscribeSpy: (() => undefined) as ReturnType<typeof vi.fn>,
+  /**
+   * Ordered log of downstream calls recorded inside each mock impl.
+   * Decouples ordering assertions from vitest's internal invocation counter
+   * (which `vi.clearAllMocks()` wipes between tests). Reset per test.
+   */
+  callOrder: [] as string[],
+}));
+
+const mocks = vi.hoisted(() => {
+  const onAuthStateChange = vi.fn((cb: AuthListener) => {
+    state.registeredListener = cb;
+    return { unsubscribe: state.unsubscribeSpy };
+  });
+  const linkAndImport = vi.fn(async (_session: Session): Promise<void> => {
+    state.callOrder.push("linkAndImport");
+  });
+  const reinitializePersistence = vi.fn(async (): Promise<void> => {
+    state.callOrder.push("reinitializePersistence");
+  });
+  const clearPostAuthSyncStatus = vi.fn((_userId: string): void => {
+    state.callOrder.push("clearPostAuthSyncStatus");
+  });
+  return {
+    onAuthStateChange,
+    linkAndImport,
+    reinitializePersistence,
+    clearPostAuthSyncStatus,
+  };
+});
+
+const {
+  onAuthStateChange: onAuthStateChangeMock,
+  linkAndImport: linkAndImportMock,
+  reinitializePersistence: reinitializePersistenceMock,
+  clearPostAuthSyncStatus: clearPostAuthSyncStatusMock,
+} = mocks;
+
+vi.mock("@/lib/supabase/auth", () => ({
+  onAuthStateChange: mocks.onAuthStateChange,
+}));
+
+vi.mock("@/lib/persistence/adapter-config", () => ({
+  reinitializePersistence: mocks.reinitializePersistence,
+}));
+
+vi.mock("@/lib/auth/link-and-import", () => ({
+  linkAndImportLocalProgress: mocks.linkAndImport,
+}));
+
+vi.mock("@/lib/auth/post-auth-sync", () => ({
+  clearPostAuthSyncStatus: mocks.clearPostAuthSyncStatus,
+}));
+
+// ---------------------------------------------------------------------------
+// Fixtures
+// ---------------------------------------------------------------------------
+
+function makeSession(userId: string): Session {
+  // Minimal `Session` shape — only the fields the component reads are real;
+  // the rest are stubbed to satisfy the type without coupling the test to
+  // SDK internals.
+  return {
+    access_token: `access-${userId}`,
+    refresh_token: `refresh-${userId}`,
+    expires_in: 3600,
+    token_type: "bearer",
+    user: {
+      id: userId,
+      app_metadata: {},
+      user_metadata: {},
+      aud: "authenticated",
+      created_at: "2026-01-01T00:00:00.000Z",
+    } as Session["user"],
+  } as Session;
 }
 
-describe("AuthBootstrap — component shape", () => {
-  it("exports AuthBootstrap as a named export", () => {
-    const src = authBootstrapSource();
-    expect(src).toMatch(/export\s+(?:const|function)\s+AuthBootstrap\b/);
+// ---------------------------------------------------------------------------
+// Mount harness — fires the component effect so the listener is captured.
+// ---------------------------------------------------------------------------
+
+function mount(target: HTMLElement): Root {
+  const root = createRoot(target);
+  act(() => {
+    root.render(<AuthBootstrap />);
+  });
+  return root;
+}
+
+function unmount(root: Root): void {
+  act(() => {
+    root.unmount();
+  });
+}
+
+/**
+ * Dispatch an auth event through the registered listener and flush the
+ * async branch the component awaits. Returns the listener's promise so the
+ * caller can await ordering deterministically.
+ */
+function dispatch(event: string, session: Session | null): Promise<void> {
+  const listener = state.registeredListener;
+  if (!listener) {
+    throw new Error("AuthBootstrap did not register an auth listener on mount");
+  }
+  const result = listener(event, session);
+  // The listener is `async`; normalize to a promise so callers can await
+  // the awaited downstream calls before asserting.
+  return Promise.resolve(result as Promise<void>);
+}
+
+function resetListenerState(): void {
+  state.registeredListener = null;
+  state.unsubscribeSpy = vi.fn();
+  state.callOrder = [];
+}
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
+
+describe("AuthBootstrap — mount contract", () => {
+  let container: HTMLDivElement;
+  let root: Root;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetListenerState();
+    container = document.createElement("div");
+    document.body.appendChild(container);
+    root = mount(container);
   });
 
-  it("is a client component", () => {
-    const src = authBootstrapSource();
-    expect(src).toContain('"use client"');
+  afterEach(() => {
+    unmount(root);
+    container.remove();
   });
 
-  it("renders nothing (returns null)", () => {
-    const src = authBootstrapSource();
-    expect(src).toMatch(/return\s+null/);
+  it("registers exactly one auth listener via onAuthStateChange on mount", () => {
+    expect(onAuthStateChangeMock).toHaveBeenCalledTimes(1);
+    expect(state.registeredListener).not.toBeNull();
+  });
+
+  it("renders nothing (empty subtree) — side-effect-only component", () => {
+    expect(container.innerHTML).toBe("");
   });
 });
 
-describe("AuthBootstrap — effect wiring", () => {
-  it("uses useEffect", () => {
-    const src = authBootstrapSource();
-    expect(src).toMatch(/useEffect\s*\(/);
+describe("AuthBootstrap — SIGNED_IN flow", () => {
+  let container: HTMLDivElement;
+  let root: Root;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetListenerState();
+    container = document.createElement("div");
+    document.body.appendChild(container);
+    root = mount(container);
   });
 
-  it("subscribes to onAuthStateChange via useEffect", () => {
-    const src = authBootstrapSource();
-    expect(src).toMatch(/onAuthStateChange\s*\(/);
+  afterEach(() => {
+    unmount(root);
+    container.remove();
   });
 
-  it("returns cleanup that unsubscribes (Strict Mode safe)", () => {
-    const src = authBootstrapSource();
-    expect(src).toMatch(/return\s+\(\s*\)\s*=>/);
-    expect(src).toMatch(/handle\.unsubscribe\s*\(\s*\)/);
-  });
-});
+  it("runs linkAndImportLocalProgress THEN reinitializePersistence with the session", async () => {
+    const session = makeSession("user-123");
+    await act(async () => {
+      await dispatch("SIGNED_IN", session);
+    });
 
-describe("AuthBootstrap — SIGNED_IN flow (REQ-AUTH-3, T-REV-5)", () => {
-  it("imports linkAndImportLocalProgress from @/lib/auth/link-and-import", () => {
-    const src = authBootstrapSource();
-    expect(src).toMatch(/linkAndImportLocalProgress\b/);
-    expect(src).toMatch(/from\s+["']@\/lib\/auth\/link-and-import["']/);
+    expect(linkAndImportMock).toHaveBeenCalledTimes(1);
+    expect(linkAndImportMock).toHaveBeenCalledWith(session);
+    expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
   });
 
-  it("imports reinitializePersistence", () => {
-    const src = authBootstrapSource();
-    expect(src).toMatch(/reinitializePersistence\b/);
+  it("awaits linkAndImportLocalProgress before reinitializePersistence (FK-before-flip)", async () => {
+    const session = makeSession("user-456");
+
+    let resolveImport: () => void = () => {};
+    linkAndImportMock.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          state.callOrder.push("linkAndImport");
+          resolveImport = resolve;
+        })
+    );
+
+    await act(async () => {
+      const pending = dispatch("SIGNED_IN", session);
+      // Yield once so the listener body reaches the first await.
+      await Promise.resolve();
+      // Import is in flight and blocking reinit — neither must have advanced.
+      expect(linkAndImportMock).toHaveBeenCalledTimes(1);
+      expect(reinitializePersistenceMock).not.toHaveBeenCalled();
+
+      resolveImport();
+      await pending;
+    });
+
+    // After the import resolves, reinit runs exactly once.
+    expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
+
+    // Observed call order proves the import call happened before reinit.
+    expect(state.callOrder).toEqual(["linkAndImport", "reinitializePersistence"]);
   });
 
-  it("branches on event === 'SIGNED_IN'", () => {
-    const src = authBootstrapSource();
-    expect(src).toContain("SIGNED_IN");
-  });
+  it("does not invoke the import orchestrator when session is null", async () => {
+    await act(async () => {
+      await dispatch("SIGNED_IN", null);
+    });
 
-  it("calls linkAndImportLocalProgress(session) BEFORE reinitializePersistence on SIGNED_IN", () => {
-    const src = authBootstrapSource();
-    const linkPos = src.indexOf("linkAndImportLocalProgress");
-    const reinitPos = src.indexOf("reinitializePersistence");
-    expect(linkPos).toBeGreaterThan(-1);
-    expect(reinitPos).toBeGreaterThan(-1);
-    // The orchestrator call must come before the reinitialize call in
-    // the SIGNED_IN branch.
-    const signedInPos = src.indexOf("SIGNED_IN");
-    const linkAfterSignIn = src.indexOf("linkAndImportLocalProgress", signedInPos);
-    const reinitAfterSignIn = src.indexOf("reinitializePersistence", signedInPos);
-    expect(linkAfterSignIn).toBeGreaterThan(signedInPos);
-    expect(reinitAfterSignIn).toBeGreaterThan(signedInPos);
-    expect(linkAfterSignIn).toBeLessThan(reinitAfterSignIn);
-  });
-
-  it("awaits linkAndImportLocalProgress (sequential ordering)", () => {
-    const src = authBootstrapSource();
-    expect(src).toMatch(/await\s+linkAndImportLocalProgress/);
-  });
-
-  it("passes the session object to linkAndImportLocalProgress", () => {
-    const src = authBootstrapSource();
-    // The orchestrator requires the Supabase Session; AuthBootstrap must
-    // forward whatever the auth state change callback supplied.
-    expect(src).toMatch(/linkAndImportLocalProgress\s*\(\s*session\s*\)/);
-  });
-
-  it("awaits reinitializePersistence after the orchestrator", () => {
-    const src = authBootstrapSource();
-    expect(src).toMatch(/await\s+reinitializePersistence/);
-  });
-
-  it("does NOT call linkActiveProfileToAuthUser directly (orchestrator owns it now)", () => {
-    const src = authBootstrapSource();
-    // The wiring should not have a direct call to the inner helper.
-    // Allow comments / JSDoc to mention it, but no invocation.
-    expect(src).not.toMatch(/await\s+linkActiveProfileToAuthUser\s*\(/);
+    // No session to link/import on; reinitializePersistence still fires to
+    // keep the selector consistent with the bootstrap contract.
+    expect(linkAndImportMock).not.toHaveBeenCalled();
+    expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
   });
 });
 
 describe("AuthBootstrap — SIGNED_OUT flow", () => {
-  it("branches on event === 'SIGNED_OUT'", () => {
-    const src = authBootstrapSource();
-    expect(src).toContain("SIGNED_OUT");
+  let container: HTMLDivElement;
+  let root: Root;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetListenerState();
+    container = document.createElement("div");
+    document.body.appendChild(container);
+    root = mount(container);
   });
 
-  it("SIGNED_OUT branch contains reinitializePersistence", () => {
-    const src = authBootstrapSource();
-    const signedOutIdx = src.indexOf('"SIGNED_OUT"');
-    expect(signedOutIdx).toBeGreaterThan(-1);
-    const afterSignOut = src.slice(signedOutIdx);
-    expect(afterSignOut).toMatch(/reinitializePersistence/);
+  afterEach(() => {
+    unmount(root);
+    container.remove();
   });
 
-  it("SIGNED_OUT branch does NOT run the orchestrator", () => {
-    const src = authBootstrapSource();
-    // After SIGNED_OUT we only want reinit; no orchestrator call.
-    const signedOutIdx = src.indexOf('"SIGNED_OUT"');
-    const afterSignOut = src.slice(signedOutIdx);
-    expect(afterSignOut).not.toMatch(/linkAndImportLocalProgress/);
+  it("clears the previously captured userId and reinitializes persistence", async () => {
+    // Establish a signed-in user so the component captures its userId.
+    await act(async () => {
+      await dispatch("SIGNED_IN", makeSession("user-789"));
+    });
+    vi.clearAllMocks();
+
+    await act(async () => {
+      await dispatch("SIGNED_OUT", null);
+    });
+
+    expect(clearPostAuthSyncStatusMock).toHaveBeenCalledTimes(1);
+    expect(clearPostAuthSyncStatusMock).toHaveBeenCalledWith("user-789");
+    expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
   });
 
-  it("SIGNED_OUT branch clears the per-userId post-auth sync status", () => {
-    // AuthBootstrap must call clearPostAuthSyncStatus(userId) on SIGNED_OUT
-    // so the next sign-in for the same user re-runs the orchestrator
-    // instead of replaying a stale cached status.
-    const src = authBootstrapSource();
-    const signedOutIdx = src.indexOf('"SIGNED_OUT"');
-    expect(signedOutIdx).toBeGreaterThan(-1);
-    const afterSignOut = src.slice(signedOutIdx);
-    expect(afterSignOut).toMatch(/clearPostAuthSyncStatus\s*\(/);
+  it("runs clearPostAuthSyncStatus before reinitializePersistence (clear-then-reinit)", async () => {
+    await act(async () => {
+      await dispatch("SIGNED_IN", makeSession("user-clear-order"));
+    });
+    vi.clearAllMocks();
+    state.callOrder = [];
+
+    await act(async () => {
+      await dispatch("SIGNED_OUT", null);
+    });
+
+    expect(clearPostAuthSyncStatusMock).toHaveBeenCalledTimes(1);
+    expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
+    expect(state.callOrder).toEqual([
+      "clearPostAuthSyncStatus",
+      "reinitializePersistence",
+    ]);
   });
 
-  it("tracks the previous userId so SIGNED_OUT can clear it", () => {
-    // On SIGNED_OUT, the session is null, so we cannot read userId from
-    // session.user.id. AuthBootstrap must capture the userId from the
-    // last SIGNED_IN and forward it to clearPostAuthSyncStatus.
-    const src = authBootstrapSource();
-    // The variable holding the previous userId is referenced in BOTH the
-    // SIGNED_IN branch (capture) and the SIGNED_OUT branch (use).
-    expect(src).toMatch(/lastUserId|lastSignedInUserId|previousUserId|trackedUserId/);
+  it("never invokes the import orchestrator on SIGNED_OUT", async () => {
+    await act(async () => {
+      await dispatch("SIGNED_IN", makeSession("user-no-import-on-signout"));
+    });
+    vi.clearAllMocks();
+
+    await act(async () => {
+      await dispatch("SIGNED_OUT", null);
+    });
+
+    expect(linkAndImportMock).not.toHaveBeenCalled();
+  });
+
+  it("does not call clearPostAuthSyncStatus when no userId was captured", async () => {
+    // SIGNED_OUT with no prior SIGNED_IN → lastUserId is null → no clear.
+    await act(async () => {
+      await dispatch("SIGNED_OUT", null);
+    });
+
+    expect(clearPostAuthSyncStatusMock).not.toHaveBeenCalled();
+    // Reinit still runs so the selector resets to the local adapter.
+    expect(reinitializePersistenceMock).toHaveBeenCalledTimes(1);
   });
 });
 
-describe("AuthBootstrap — unused events are no-ops", () => {
-  it("only branches on SIGNED_IN and SIGNED_OUT (no default handler that re-inits)", () => {
-    const src = authBootstrapSource();
-    const branchCount = (src.match(/(SIGNED_IN|SIGNED_OUT)/g) ?? []).length;
-    expect(branchCount).toBeGreaterThanOrEqual(2);
+describe("AuthBootstrap — non-relevant events", () => {
+  let container: HTMLDivElement;
+  let root: Root;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetListenerState();
+    container = document.createElement("div");
+    document.body.appendChild(container);
+    root = mount(container);
+  });
+
+  afterEach(() => {
+    unmount(root);
+    container.remove();
+  });
+
+  it("ignores TOKEN_REFRESHED (no sync, import, reinit, or clear)", async () => {
+    await act(async () => {
+      await dispatch("TOKEN_REFRESHED", makeSession("user-refresh"));
+    });
+
+    expect(linkAndImportMock).not.toHaveBeenCalled();
+    expect(reinitializePersistenceMock).not.toHaveBeenCalled();
+    expect(clearPostAuthSyncStatusMock).not.toHaveBeenCalled();
+  });
+
+  it("ignores INITIAL_SESSION (no sync, import, reinit, or clear)", async () => {
+    await act(async () => {
+      await dispatch("INITIAL_SESSION", makeSession("user-initial"));
+    });
+
+    expect(linkAndImportMock).not.toHaveBeenCalled();
+    expect(reinitializePersistenceMock).not.toHaveBeenCalled();
+    expect(clearPostAuthSyncStatusMock).not.toHaveBeenCalled();
+  });
+
+  it("ignores PASSWORD_RECOVERY (no sync, import, reinit, or clear)", async () => {
+    await act(async () => {
+      await dispatch("PASSWORD_RECOVERY", makeSession("user-recovery"));
+    });
+
+    expect(linkAndImportMock).not.toHaveBeenCalled();
+    expect(reinitializePersistenceMock).not.toHaveBeenCalled();
+    expect(clearPostAuthSyncStatusMock).not.toHaveBeenCalled();
+  });
+
+  it("does not accumulate sync side effects across ignored events", async () => {
+    await act(async () => {
+      await dispatch("INITIAL_SESSION", makeSession("u1"));
+      await dispatch("TOKEN_REFRESHED", makeSession("u1"));
+    });
+
+    expect(linkAndImportMock).not.toHaveBeenCalled();
+    expect(reinitializePersistenceMock).not.toHaveBeenCalled();
+    expect(clearPostAuthSyncStatusMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("AuthBootstrap — unsubscribe on unmount (Strict Mode safe)", () => {
+  it("calls unsubscribe exactly once when the component unmounts", () => {
+    vi.clearAllMocks();
+    resetListenerState();
+
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = mount(container);
+
+    expect(state.unsubscribeSpy).not.toHaveBeenCalled();
+
+    unmount(root);
+    expect(state.unsubscribeSpy).toHaveBeenCalledTimes(1);
+
+    container.remove();
   });
 });

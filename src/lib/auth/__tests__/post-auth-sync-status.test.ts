@@ -1,7 +1,7 @@
 /**
  * Tests for src/lib/auth/post-auth-sync.ts — PostAuthSyncStatus state machine.
  *
- * The status module is the public surface AuthBootstrap (PR2) reads to know
+ * The status module is the public surface auth and persistence UI consumers read to know
  * whether it is safe to claim "Sincronizado" in the Nav and to drive the
  * Home fallback view model.
  *

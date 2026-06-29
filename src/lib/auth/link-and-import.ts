@@ -136,8 +136,8 @@ export type Branch =
  * branch should the orchestrator execute? Exported for unit testing.
  *
  * Conflict rule: any non-empty remote field counts as `remote has`,
- * because overwriting ANY of them would silently destroy user data.
- * Per design §3 of the PR3 delta.
+ * because overwriting ANY of them would silently destroy user data
+ * (see `design.md` §3 — conflict-avoidance rule).
  */
 export function decideBranch(localHas: boolean, remote: RemoteState): Branch {
   const remoteHas =

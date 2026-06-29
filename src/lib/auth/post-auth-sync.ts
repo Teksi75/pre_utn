@@ -1,7 +1,7 @@
 /**
  * post-auth-sync — public status surface for the post-callback sync.
  *
- * AuthBootstrap (PR2) reads this module to know:
+ * Auth and persistence UI consumers read this module to know:
  *   - whether it is safe to claim "Sincronizado" in the Nav,
  *   - whether PersistenceInitializer should wait before selecting remote,
  *   - whether HomeNextStepClient must render a local fallback view model.
@@ -210,7 +210,7 @@ export async function beginPostAuthSync(
 
 /**
  * Wait for the in-flight post-auth sync to finish, or return `null` if
- * no sync is running. PersistenceInitializer (PR2) uses this to defer
+ * no sync is running. Persistence initialization uses this to defer
  * `reinitializePersistence()` until the FK row is guaranteed.
  *
  * Returns null AFTER a sync has completed — there is nothing to wait
@@ -218,7 +218,7 @@ export async function beginPostAuthSync(
  */
 export function waitForPostAuthSync(): Promise<void> | null {
   // Aggregate the in-flight promises across all users. This is a
-  // best-effort signal for PR2 callers that don't have a specific
+  // best-effort signal for callers that don't have a specific
   // userId context — any in-flight sync will do.
   if (inflightByUser.size === 0) {
     return null;

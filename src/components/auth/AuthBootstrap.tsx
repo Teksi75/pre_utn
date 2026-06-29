@@ -31,11 +31,12 @@
  * so React Strict Mode's mount→cleanup→remount cycle leaves exactly one
  * listener attached.
  *
- * PR3 (T-REV-5): the direct `linkActiveProfileToAuthUser()` call was
- * replaced with `linkAndImportLocalProgress(session)` so the
- * import-on-link logic lives in a testable orchestrator module instead
- * of inline in the React effect. The inner helper is still exported for
- * the orchestrator's internal use.
+ * The import-on-link side effect is delegated to the
+ * `linkAndImportLocalProgress(session)` orchestrator (a standalone,
+ * unit-testable module) rather than inlined in this React effect. The
+ * orchestrator owns the 4-branch link + import flow and is awaited here
+ * so the `(user_id, student_id)` row exists before the selector flips to
+ * the remote adapter.
  *
  * Spec: REQ-AUTH-3 + REQ-NEW-2a..d + REQ-NEW-ARCH-1.
  *

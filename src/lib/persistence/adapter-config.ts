@@ -28,7 +28,7 @@ import {
 // Post-auth sync readiness surface (re-exports)
 // ---------------------------------------------------------------------------
 //
-// PersistenceInitializer (PR2) and other persistence consumers must be
+// Persistence initialization and other consumers must be
 // able to await the post-auth sync without importing from src/lib/auth/
 // directly. Re-exporting here keeps the layering clean: persistence
 // depends on the status surface, not on the orchestrator internals.
