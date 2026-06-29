@@ -9,8 +9,8 @@
  *   the per-userId cache.
  * - Calls `clearPostAuthSyncStatus(lastUserId)` BEFORE
  *   `resetPersistenceToLocal()` on SIGNED_OUT so the next sign-in
- *   re-runs the orchestrator. SIGNED_OUT uses the session-blind
- *   local reset (never the session-reading `reinitializePersistence`,
+ *   re-runs the orchestrator. SIGNED_OUT uses the session-blind local
+ *   reset (never the session-reading `reinitializePersistence`,
  *   which would race a concurrent sign-in B).
  * - Treats INITIAL_SESSION and SIGNED_IN as equivalent (no separate
  *   conditional branch).
@@ -20,10 +20,33 @@
  * Strategy: the component delegates to an extracted pure function
  * `createAuthEventHandler(deps)` that returns a callback for
  * `onAuthStateChange`. Tests inject mock deps and simulate events.
+ *
+ * Bug-fix suite (post-auth sync stuck in "pending" — see
+ * `createDeferredAuthStateCallback` JSDoc in AuthBootstrap.tsx):
+ * - The Supabase `onAuthStateChange` callback returns SYNCHRONOUSLY
+ *   without awaiting the post-auth sync.
+ * - The post-auth sync runs deferred on a microtask AFTER the
+ *   callback returns.
+ * - New student scenario (no local profile): INITIAL_SESSION fires →
+ *   local profile created → remote upsert (`saveProfiles` /
+ *   `client.from("student_profiles").upsert`) is attempted on the
+ *   remote adapter with the captured auth userId → final
+ *   `PostAuthSyncStatus` is `"ready"` (success) or `"local-fallback"`
+ *   (failure), never stuck in `"pending"`.
+ * - Remote upsert fails → status becomes `"local-fallback"`, NOT
+ *   `"pending"`.
+ * - Regression: aluno novo with a just-created local `local-` prefix
+ *   studentId → INITIAL_SESSION → local profile stays intact → remote
+ *   upsert attempted with the new auth userId → final status is NOT
+ *   `"pending"`.
  */
 
-import { describe, it, expect, vi } from "vitest";
-import { createAuthEventHandler } from "@/components/auth/AuthBootstrap";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import {
+  createAuthEventHandler,
+  createDeferredAuthStateCallback,
+} from "@/components/auth/AuthBootstrap";
+import type { Session } from "@supabase/supabase-js";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -646,5 +669,508 @@ describe("AuthBootstrap — readiness wiring (behavioral)", () => {
     expect(beginPostAuthSync).not.toHaveBeenCalled();
     expect(reinitializePersistence).not.toHaveBeenCalled();
     expect(resetPersistenceToLocal).toHaveBeenCalledTimes(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Bug fix: post-auth sync must run DEFERRED, not inside the Supabase
+// onAuthStateChange callback (production bug: Nav hung on
+// "Sincronizando tu cuenta" with syncStatus === "pending" because the
+// async orchestrator awaited `client.auth.getSession()` inside the
+// Supabase callback while Supabase was mid-transition).
+// ---------------------------------------------------------------------------
+//
+// The test layer proves two complementary properties:
+//
+//   1. The synchronous-return property: `createDeferredAuthStateCallback`
+//      returns a callback whose Supabase-invoked body returns
+//      SYNCHRONOUSLY (`undefined`) without awaiting the post-auth sync.
+//      Assertable directly by calling the callback and checking the
+//      return value is `undefined` and `beginPostAuthSync` has NOT
+//      been called yet (the deferred body has not run).
+//
+//   2. The deferred-completion property: after one microtask flush the
+//      deferred body has called `beginPostAuthSync(session)` with the
+//      captured session, and the exposed `__deferred` promise settles
+//      it. Await `callback.__deferred` to drive downstream side-effect
+//      assertions.
+//
+//   3-5. The integration property: a full new-student scenario through the
+//      REAL `beginPostAuthSync` + REAL orchestrator + REAL
+//      `linkActiveProfileToAuthUserWithResult` + REAL Supabase adapter,
+//      with lower-level module boundaries mocked (Supabase browser
+//      client, active session, profile storage, probe/import helpers),
+//      resolves to a final status of `"ready"` (success) or
+//      `"local-fallback"` (failure), NEVER stuck in `"pending"`. The
+//      remote `student_profiles` upsert is fired with the captured auth
+//      userId.
+//
+// These tests use `vi.doMock` (scoped to subsequent `await import()`
+// calls) so the existing top-level `createAuthEventHandler` import —
+// used by the readiness-suite tests above — keeps the original (un-mocked)
+// module resolution. `vi.resetModules()` per test re-evaluates the mocked
+// modules so each integration test starts from a clean `post-auth-sync`
+// state-machine and a clean `link-and-import` `syncPromises` map.
+
+// Shared mutable mock state for the integration tests in this describe
+// block. Reset per test in `beforeEach`.
+interface IntegrationState {
+  /** Latest active local student id (set by `createProfileAndActivate`
+   *  or pre-seeded by tests). */
+  activeProfileId: string | null;
+  /** Latest created-or-pre-existing local profile. Read by the fake
+   *  `loadProfiles` so the real `linkActiveProfileToAuthUserWithResult`
+   *  can find the profile row to upsert. */
+  profile: {
+    studentId: string;
+    displayName: string;
+    createdAt: string;
+    lastActiveAt: string;
+  } | null;
+  /** Spy on the Supabase `.from("student_profiles").upsert(row, opts)`
+   *  call. Tests assert it received the captured auth userId. */
+  upsertSpy: ReturnType<typeof vi.fn<UpsertFn>>;
+  /** Spy on `client.auth.getSession` — used by `link-profile` to verify
+   *  a session exists, and by the real Supabase adapter's `getAuthUserId`
+   *  to read the auth userId for the upsert row. */
+  getSessionSpy: ReturnType<typeof vi.fn<GetSessionFn>>;
+  /** Spy on `createProfileAndActivate`. */
+  createProfileSpy: ReturnType<typeof vi.fn<CreateProfileFn>>;
+  /** Spy on `loadProfiles`. */
+  loadProfilesSpy: ReturnType<typeof vi.fn<LoadProfilesFn>>;
+}
+
+const REPO_ROOT_PREFIX = "@/";
+
+type UpsertFn = (row: unknown, opts?: unknown) => Promise<{
+  data: unknown;
+  error: unknown;
+}>;
+
+type GetSessionFn = () => Promise<{
+  data: { session: Session | null };
+  error: unknown;
+}>;
+
+type CreateProfileFn = (input: { displayName: string }) => {
+  ok: boolean;
+  state?: unknown;
+};
+
+type LoadProfilesFn = () => {
+  profiles: Array<{
+    studentId: string;
+    displayName: string;
+    createdAt: string;
+    lastActiveAt: string;
+  }>;
+  activeStudentId: string | null;
+};
+
+function makeIntegrationState(): IntegrationState {
+  return {
+    activeProfileId: null,
+    profile: null,
+    upsertSpy: vi.fn<UpsertFn>(async () => ({ data: null, error: null })),
+    getSessionSpy: vi.fn<GetSessionFn>(),
+    createProfileSpy: vi.fn<CreateProfileFn>(),
+    loadProfilesSpy: vi.fn<LoadProfilesFn>(),
+  };
+}
+
+// The new-student session exercised across the integration tests.
+const NEW_STUDENT_SESSION = {
+  user: { id: "auth-user-new", email: "newbie@example.com" },
+  access_token: "tok-new",
+  refresh_token: "ref-new",
+} as unknown as Session;
+
+// Profile-shape util — local profiles use the documented `local-` prefix
+// studentId convention (see AGENTS.md and student-profile-storage).
+const PROFILES_STORAGE_KEY = "pre-utn.profiles.v1";
+
+function seedLocalProfile(
+  state: IntegrationState,
+  studentId: string,
+  displayName: string,
+): void {
+  state.profile = {
+    studentId,
+    displayName,
+    createdAt: "t0",
+    lastActiveAt: "t0",
+  };
+  state.activeProfileId = studentId;
+}
+
+/**
+ * Install the per-test module mocks (Supabase browser client, active
+ * session, profile storage, probe/import helpers) so the REAL
+ * `beginPostAuthSync` + REAL `linkAndImportLocalProgress` + REAL
+ * `linkActiveProfileToAuthUserWithResult` + REAL Supabase adapter run
+ * against the mocks. Must be called AFTER `vi.resetModules()` and BEFORE
+ * the test imports the modules it exercises.
+ *
+ * `state.upsertSpy` is the singlehandle the orchestrator uses to upsert
+ * the `student_profiles` row. Reconfigure via
+ * `state.upsertSpy.mockResolvedValueOnce({ data, error })` /
+ * `mockRejectedValueOnce` per test.
+ */
+function installIntegrationMocks(state: IntegrationState): void {
+  // Auth env present so `tryCreateBrowserClient` returns the fake client
+  // rather than bailing into the "auth-disabled" status branch.
+  vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co");
+  vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "test-publishable-key");
+
+  // `client.auth.getSession` resolves with the new-student session so
+  // `link-profile`'s session check passes AND the real Supabase adapter's
+  // `getAuthUserId()` reads `data.session.user.id` (= "auth-user-new").
+  state.getSessionSpy.mockImplementation(async () => ({
+    data: { session: NEW_STUDENT_SESSION },
+    error: null,
+  }));
+
+  // Default: upsert succeeds (no error). Per-test `mockImplementationOnce`
+  // / `mockRejectedValueOnce` override this to simulate remote failure.
+  state.upsertSpy.mockImplementation(async () => ({
+    data: null,
+    error: null,
+  }));
+
+  // `createProfileAndActivate` simulates the real behavior: generate a
+  // `local-` prefixed studentId, store it in shared state, reflect it
+  // in `getActiveProfileId` and `loadProfiles` so the orchestrator's
+  // subsequent reads see the freshly-created profile.
+  state.createProfileSpy.mockImplementation(({ displayName }: { displayName: string }) => {
+    const studentId = `local-new-${Math.random().toString(36).slice(2, 10)}`;
+    const profile = {
+      studentId,
+      displayName,
+      createdAt: "t0",
+      lastActiveAt: "t0",
+    };
+    state.profile = profile;
+    state.activeProfileId = studentId;
+    return { ok: true, state: { profiles: [profile], activeStudentId: studentId } };
+  });
+
+  // `loadProfiles` returns whatever the shared state currently holds.
+  // The real `link-profile.ts` reads this to find the active profile row
+  // and upsert it.
+  state.loadProfilesSpy.mockImplementation(() => {
+    if (state.profile) {
+      return {
+        profiles: [state.profile],
+        activeStudentId: state.profile.studentId,
+      };
+    }
+    return { profiles: [], activeStudentId: null };
+  });
+
+  // Fake Supabase browser client: `auth.getSession` + `from(table).upsert`.
+  // The `upsert` method is the spy itself (a callable vi.fn); the
+  // wrapper defers to it so test-side `mockImplementationOnce` /
+  // `mockRejectedValueOnce` overrides take effect.
+  const fakeClient = {
+    auth: {
+      getSession: state.getSessionSpy,
+    },
+    from: () => ({
+      upsert: state.upsertSpy,
+    }),
+  };
+
+  vi.doMock(`${REPO_ROOT_PREFIX}lib/supabase/browser`, () => ({
+    createBrowserClient: () => fakeClient,
+  }));
+
+  vi.doMock(`${REPO_ROOT_PREFIX}lib/active-session`, () => ({
+    getActiveProfileId: () => state.activeProfileId,
+  }));
+
+  vi.doMock(`${REPO_ROOT_PREFIX}lib/student-profile-storage`, async () => {
+    const actual =
+      await vi.importActual<typeof import("@/lib/student-profile-storage")>(
+        `${REPO_ROOT_PREFIX}lib/student-profile-storage`,
+      );
+    return {
+      ...actual,
+      PROFILES_STORAGE_KEY,
+      createProfileAndActivate: state.createProfileSpy,
+      loadProfiles: state.loadProfilesSpy,
+      getActiveStudentId: () => state.activeProfileId,
+    };
+  });
+
+  vi.doMock(`${REPO_ROOT_PREFIX}lib/auth/probe-remote`, () => ({
+    probeRemoteState: async () => ({
+      hasRemoteProgress: false,
+      hasDiagnostic: false,
+      hasStudyPlan: false,
+    }),
+  }));
+
+  vi.doMock(`${REPO_ROOT_PREFIX}lib/auth/has-local-progress`, () => ({
+    hasLocalProgress: () => false,
+  }));
+
+  vi.doMock(`${REPO_ROOT_PREFIX}lib/auth/import-local-progress`, () => ({
+    importLocalProgressToRemote: async () => ({ ok: true, importedFields: [] }),
+  }));
+}
+
+describe("createDeferredAuthStateCallback — Supabase callback returns synchronously + defers post-auth sync (bug fix)", () => {
+  it("onAuthStateChange callback returns synchronously without awaiting post-auth sync", async () => {
+    const beginPostAuthSync = vi.fn(async () => "ready" as const);
+    const deps = makeDeps({ beginPostAuthSync });
+    const callback = createDeferredAuthStateCallback(deps);
+
+    // Synchronous call to the callback MUST return `undefined` — it
+    // must NOT return a promise that awaits the post-auth sync. The
+    // Supabase `onAuthStateChange` callback contract is `void`.
+    const result = callback("SIGNED_IN", SESSION_A as never);
+
+    expect(result).toBeUndefined();
+
+    // The deferral guarantees the orchestrator has NOT started yet at
+    // the moment the callback returns. Without the deferral, the async
+    // handler would have synchronously reached `beginPostAuthSync`
+    // before the callback returned — exactly the deadlock scenario.
+    expect(beginPostAuthSync).not.toHaveBeenCalled();
+
+    // Clean up the deferred promise so the microtask completes
+    // (the handler body runs but does nothing observable because the
+    // mock deps resolve immediately).
+    await callback.__deferred;
+  });
+
+  it("post-auth sync runs deferred (microtask) after the callback returns", async () => {
+    const beginPostAuthSync = vi.fn(async () => "ready" as const);
+    const deps = makeDeps({ beginPostAuthSync });
+    const callback = createDeferredAuthStateCallback(deps);
+
+    callback("INITIAL_SESSION", SESSION_A as never);
+    expect(beginPostAuthSync).not.toHaveBeenCalled();
+
+    // One microtask flush: the deferred body has now run the handler
+    // up to `await deps.beginPostAuthSync(session)`, so the mock fn
+    // has been called with the captured session.
+    await Promise.resolve();
+    expect(beginPostAuthSync).toHaveBeenCalledTimes(1);
+    expect(beginPostAuthSync).toHaveBeenCalledWith(SESSION_A);
+
+    // Await the deferred promise so all chained microtasks settle —
+    // reinit was called, no unhandled-rejection leak.
+    await callback.__deferred;
+  });
+});
+
+describe("createDeferredAuthStateCallback — new student integration (no local profile)", () => {
+  let state: IntegrationState;
+
+  beforeEach(() => {
+    state = makeIntegrationState();
+    vi.resetModules();
+    vi.unstubAllEnvs();
+    installIntegrationMocks(state);
+  });
+
+  it("INITIAL_SESSION for a brand-new aluno: profile created locally, remote upsert attempted with the captured auth userId, final status is ready (never pending)", async () => {
+    // Pre-state: no local profile, no active id.
+    expect(state.activeProfileId).toBeNull();
+
+    const { beginPostAuthSync, getPostAuthSyncStatus } =
+      await import("@/lib/auth/post-auth-sync");
+    const reinitializePersistence = vi.fn(async () => undefined);
+    const resetPersistenceToLocal = vi.fn(async () => undefined);
+    const clearPostAuthSyncStatus = vi.fn();
+
+    const callback = createDeferredAuthStateCallback({
+      beginPostAuthSync,
+      reinitializePersistence,
+      resetPersistenceToLocal,
+      clearPostAuthSyncStatus,
+    });
+
+    // Dispatch INITIAL_SESSION synchronously — must NOT block; the
+    // orchestrator runs deferred. At the moment the callback returns,
+    // the deferred body has NOT started yet, so the global status is
+    // still the initial "signed-out" (NOT ready and NOT
+    // local-fallback — prove the orchestrator has not run yet).
+    const returnAtCallTime = callback("INITIAL_SESSION", NEW_STUDENT_SESSION);
+    expect(returnAtCallTime).toBeUndefined();
+    expect(getPostAuthSyncStatus()).not.toBe("ready");
+    expect(getPostAuthSyncStatus()).not.toBe("local-fallback");
+
+    // Await the deferred body so the orchestrator chain settles. The
+    // deferred body sets `currentStatus = "pending"` synchronously
+    // inside `beginPostAuthSync`, then transitions to "ready" (or
+    // "local-fallback" on remote failure) once the orchestrator
+    // resolves.
+    await callback.__deferred;
+
+    // Final status: ready (success) — NEVER stuck in "pending".
+    expect(getPostAuthSyncStatus()).not.toBe("pending");
+    expect(getPostAuthSyncStatus()).toBe("ready");
+
+    // The local profile was created locally (mock side effect).
+    expect(state.createProfileSpy).toHaveBeenCalledTimes(1);
+    expect(state.activeProfileId).not.toBeNull();
+    expect(state.activeProfileId).toMatch(/^local-new-/);
+
+    // The remote upsert was attempted on the remote adapter, scoped to
+    // the captured auth userId (the нового aluno scoping rule).
+    expect(state.upsertSpy).toHaveBeenCalledTimes(1);
+    expect(state.upsertSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        user_id: NEW_STUDENT_SESSION.user.id,
+        student_id: state.activeProfileId,
+        display_name: "newbie",
+      }),
+      expect.objectContaining({ onConflict: "user_id,student_id" }),
+    );
+
+    // `reinitializePersistence` was awaited with the captured userId
+    // (identity-aware — the deferred flow forwards session.user.id
+    // explicitly, no extra `client.auth.getSession()` inside the
+    // callback context for identity recovery).
+    expect(reinitializePersistence).toHaveBeenCalledTimes(1);
+    expect(reinitializePersistence).toHaveBeenCalledWith(
+      expect.objectContaining({
+        expectedUserId: NEW_STUDENT_SESSION.user.id,
+      }),
+    );
+  });
+
+  it("aluno nuevo regression: existing local- prefix profile creates no new local profile; remote upsert still attempted with the new auth userId; final status NOT pending", async () => {
+    // Pre-seed a local `local-` prefix profile as if the student was
+    // created on a previous sign-in attempt. The orchestrator must
+    // NOT call `createProfileAndActivate` again; it must reuse the
+    // existing profile and still upsert the `student_profiles` row
+    // with the captured auth userId.
+    const preExistingStudentId = "local-existing-aaa";
+    seedLocalProfile(state, preExistingStudentId, "Anita");
+
+    const { beginPostAuthSync, getPostAuthSyncStatus } =
+      await import("@/lib/auth/post-auth-sync");
+    const reinitializePersistence = vi.fn(async () => undefined);
+    const resetPersistenceToLocal = vi.fn(async () => undefined);
+    const clearPostAuthSyncStatus = vi.fn();
+
+    const callback = createDeferredAuthStateCallback({
+      beginPostAuthSync,
+      reinitializePersistence,
+      resetPersistenceToLocal,
+      clearPostAuthSyncStatus,
+    });
+
+    const returnAtCallTime = callback("INITIAL_SESSION", NEW_STUDENT_SESSION);
+    expect(returnAtCallTime).toBeUndefined();
+    expect(getPostAuthSyncStatus()).not.toBe("ready");
+    expect(getPostAuthSyncStatus()).not.toBe("local-fallback");
+
+    await callback.__deferred;
+
+    // Final status NOT pending (ready or local-fallback — the remote
+    // upsert succeeds here, so "ready").
+    expect(getPostAuthSyncStatus()).not.toBe("pending");
+    expect(getPostAuthSyncStatus()).toBe("ready");
+
+    // Local profile stays intact — no second local profile created.
+    expect(state.createProfileSpy).not.toHaveBeenCalled();
+    expect(state.activeProfileId).toBe(preExistingStudentId);
+
+    // Remote upsert attempted with the captured auth userId.
+    expect(state.upsertSpy).toHaveBeenCalledTimes(1);
+    expect(state.upsertSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        user_id: NEW_STUDENT_SESSION.user.id,
+        student_id: preExistingStudentId,
+      }),
+      expect.objectContaining({ onConflict: "user_id,student_id" }),
+    );
+  });
+
+  it("upsert fails (remote throws): status becomes local-fallback, NOT pending", async () => {
+    // Simulate a remote-side throw: `link-profile.ts` wraps `saveProfiles`
+    // in a try/catch that collapses throws into `{ ok: false, reason:
+    // "remote-failed" }`, so the orchestrator reports
+    // `{ kind: "local-fallback", reason: "profile-link-failed" }` and the
+    // status module flips to "local-fallback" — never "pending".
+    state.upsertSpy.mockImplementation(async () => {
+      throw new Error("remote-down");
+    });
+
+    const { beginPostAuthSync, getPostAuthSyncStatus } =
+      await import("@/lib/auth/post-auth-sync");
+    const reinitializePersistence = vi.fn(async () => undefined);
+    const resetPersistenceToLocal = vi.fn(async () => undefined);
+    const clearPostAuthSyncStatus = vi.fn();
+
+    const callback = createDeferredAuthStateCallback({
+      beginPostAuthSync,
+      reinitializePersistence,
+      resetPersistenceToLocal,
+      clearPostAuthSyncStatus,
+    });
+
+    callback("INITIAL_SESSION", NEW_STUDENT_SESSION);
+    // At the moment the callback returns, the deferred body has NOT
+    // started yet, so the global status is still the initial
+    // "signed-out" — NOT yet "local-fallback".
+    expect(getPostAuthSyncStatus()).not.toBe("local-fallback");
+
+    await callback.__deferred;
+
+    expect(getPostAuthSyncStatus()).not.toBe("pending");
+    expect(getPostAuthSyncStatus()).toBe("local-fallback");
+
+    // The upsert attempt happened (before failing).
+    expect(state.upsertSpy).toHaveBeenCalledTimes(1);
+
+    // On a "local-fallback" outcome, `beginPostAuthSync` returns
+    // "local-fallback" and the handler's generation guard does NOT abort
+    // (no newer event) → `reinitializePersistence` is still called with
+    // the identity captured at entry.
+    expect(reinitializePersistence).toHaveBeenCalledTimes(1);
+    expect(reinitializePersistence).toHaveBeenCalledWith(
+      expect.objectContaining({
+        expectedUserId: NEW_STUDENT_SESSION.user.id,
+      }),
+    );
+  });
+
+  it("upsert returns ok:false (storage-unavailable): status becomes local-fallback, NOT pending", async () => {
+    // Mirror the real Supabase adapter error contract: `upsert` returns
+    // `{ data: null, error: {...} }`. The adapter's `saveProfiles`
+    // collapses that into `{ ok: false, reason: "storage-unavailable" }`;
+    // `link-profile` returns `{ ok: false, reason: "remote-failed" }`;
+    // the orchestrator returns
+    // `{ kind: "local-fallback", reason: "profile-link-failed" }`; the
+    // status module flips to "local-fallback".
+    state.upsertSpy.mockImplementation(async () => ({
+      data: null,
+      error: { code: "23505", message: "duplicate" },
+    }));
+
+    const { beginPostAuthSync, getPostAuthSyncStatus } =
+      await import("@/lib/auth/post-auth-sync");
+    const reinitializePersistence = vi.fn(async () => undefined);
+    const resetPersistenceToLocal = vi.fn(async () => undefined);
+    const clearPostAuthSyncStatus = vi.fn();
+
+    const callback = createDeferredAuthStateCallback({
+      beginPostAuthSync,
+      reinitializePersistence,
+      resetPersistenceToLocal,
+      clearPostAuthSyncStatus,
+    });
+
+    callback("INITIAL_SESSION", NEW_STUDENT_SESSION);
+
+    await callback.__deferred;
+
+    expect(getPostAuthSyncStatus()).not.toBe("pending");
+    expect(getPostAuthSyncStatus()).toBe("local-fallback");
   });
 });
