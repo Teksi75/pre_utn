@@ -541,9 +541,11 @@
       "summary": "Add a dedicated interval-set pedagogical visual for U3 inequality solution sets while preserving sign-chart for sign reasoning."
     },
     "implement-unit-3-mathematics": {
-      "status": "in-progress",
+      "status": "done",
       "branch": null,
       "startedAt": "2026-06-20",
+      "completedAt": "2026-06-20",
+      "mergedTo": "main",
       "delivery": "chained-prs-stacked-to-main (PR 1 + PR 2 + PR 3)",
       "pr1": {
         "summary": "PR 1 — Domain + Content (DONE in working tree): 8 u3_* taxonomy tags, 7 U3 error-tagging detectors, unit-3.json theory (8 nodes) + examples (16 worked examples) + feedback (8 mappings), 2195/2195 tests, typecheck + build green."
@@ -552,9 +554,9 @@
         "summary": "PR 2 — Catalog + Exercises (DONE in working tree): unit-3.json exercises (32 new entries, ≥4 per skill), content-loaders.ts + catalog/index.ts wiring, UNIT_THRESHOLDS[unit-3]=24, catalog-split-equivalence baseline bumped to 184/37, 2233/2233 tests, typecheck + build green. Judgment-day fix: tsconfig .next globs removed + ex.u3.recta.2 distractor 6/3→-2."
       },
       "pr3": {
-        "summary": "PR 3 — Pilot Activation + UI + tests + verify (DONE in working tree, pending commit): 8 PilotSkill entries appended (mat.u3.ecuaciones_lineales/cuadraticas/inecuaciones_lineales/inecuaciones_valor_absoluto/recta/sistemas/exponenciales/logaritmicas), UNIT_LABELS/UNIT_KEYS extended with unit-3, home pilot badge updated to 'Unidades 1, 2 y 3', /learn description mentions U3, U3 'not-pilot' fixtures in start-skill.test.ts + practice-link.test.ts replaced with mat.u4.perimetro_area_volumen, accessibility.test.ts U3 accuracy entries + U1→U3 prereq assertions (valor_absoluto→inecuaciones_valor_absoluto, potencias_raices→exponenciales, logaritmos→logaritmicas), readiness.ts vacuous-truth + unit-scope filter (skills with empty commonErrorTags or only cross-unit legacy tags are contentReady). 2252/2252 tests, typecheck + build green. Do not archive yet — orchestrator will commit and merge."
+        "summary": "PR 3 — Pilot Activation + UI + tests + verify (DONE and merged to main): 8 PilotSkill entries appended (mat.u3.ecuaciones_lineales/cuadraticas/inecuaciones_lineales/inecuaciones_valor_absoluto/recta/sistemas/exponenciales/logaritmicas), UNIT_LABELS/UNIT_KEYS extended with unit-3, home pilot badge updated to 'Unidades 1, 2 y 3', /learn description mentions U3, U3 'not-pilot' fixtures in start-skill.test.ts + practice-link.test.ts replaced with mat.u4.perimetro_area_volumen, accessibility.test.ts U3 accuracy entries + U1→U3 prereq assertions (valor_absoluto→inecuaciones_valor_absoluto, potencias_raices→exponenciales, logaritmos→logaritmicas), readiness.ts vacuous-truth + unit-scope filter (skills with empty commonErrorTags or only cross-unit legacy tags are contentReady). Verify report complete."
       },
-      "summary": "Unit 3 (Ecuaciones y sistemas) vertical slice: 8 pilot skills, theory/examples/feedback/exercises content, 3-PR stacked delivery, pending commit."
+      "summary": "Unit 3 (Ecuaciones y sistemas) vertical slice complete: 8 pilot skills, theory/examples/feedback/exercises content, 3-PR stacked delivery, verify report complete, merged to main."
     },
     "issue-37-practice-theory-disclosures": {
       "status": "done",
@@ -705,22 +707,45 @@
       "summary": "Bug #56: extractActiveProgress in src/lib/practice-progress.ts was reading map.activeStudentId (persisted mirror) instead of getActiveProfileId(), freezing practice.v1.activeStudentId after a switch and returning the prior student's slice across navigations/reloads. Also addAttempt wrote into the stale slot, corrupting the new student's slot. Fix: route extractActiveProgress + addAttempt + selector-wired local-adapter through getActiveProfileId(); drop corrupted active slot on mismatch (aggressive repair); re-wire usePracticeFlow and /diagnostic to re-read on activeStudentId change; delete dead src/components/home/StudyPlanSection.tsx and clean up its negative-import assertion. 11 new tests, 5 atomic work-unit commits, --no-ff merge to main. Verify PASS WITH WARNINGS. Pre-existing migration-rls-shape.test.ts failure is out of scope (PR #55)."
     },
     "post-auth-supabase-sync-fix": {
-      "status": "in-progress",
-      "branch": "feat/post-auth-supabase-sync-fix-pr1-domain",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-06-28",
+      "completedAt": "2026-06-29",
+      "mergedTo": "main",
+      "mergeCommit": "0246f9c",
       "issue": 67,
-      "delivery": "chained-prs-stacked-to-main (2 PRs)",
+      "delivery": "chained-prs-stacked-to-main (2 PRs + follow-up fix-forwards #70/#71)",
       "pr1": {
         "branch": "feat/post-auth-supabase-sync-fix-pr1-domain",
-        "status": "ready-to-merge",
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "fce360e",
         "summary": "PR1 — Auth Domain + Persistence (DONE in working tree, 2930/2930 tests, typecheck + build green). Idempotent orchestrator (Map<userId, Promise<LinkImportOutcome>>), FK-before-import ordering, post-auth sync status API (disabled/signed-out/pending/ready/local-fallback) with per-userId completed-status cache (Map) and per-entry token guard against stale in-flight writes, selector remote-empty + local-has fallback, supabase-adapter EMPTY_PROGRESS sentinel preserved via characterization tests, AuthBootstrap minimal SIGNED_OUT → clearPostAuthSyncStatus(lastUserId) wire-up. 36 net new tests (B0: 22 + PR1.4 B1-B6: 14 + this round C1-C3: 4 - 4 deduplicated). No Nav or Home UI changes. See apply-progress.md."
       },
       "pr2": {
         "branch": "feat/post-auth-supabase-sync-fix-pr2-ui",
-        "status": "pending",
-        "summary": "PR2 — UI Wiring (depends on PR1): AuthBootstrap INITIAL_SESSION, PersistenceInitializer awaits waitForPostAuthSync(), Nav sync-status pill, Home non-skeleton fallback. Out of scope for this PR1 batch. Orchestrator will open PR2 branch off updated origin/main after PR1 merges."
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "0246f9c",
+        "summary": "PR2 — UI Wiring merged: AuthBootstrap INITIAL_SESSION, PersistenceInitializer awaits waitForPostAuthSync(), Nav sync-status pill, Home non-skeleton fallback, and follow-up readiness fixes."
       },
-      "summary": "Fix post-activation Supabase Auth sync: INITIAL_SESSION must trigger link/import, remote profile FK must precede snapshot writes, Nav must not falsely claim sync complete, and Home must not stay skeleton when remote is empty but local progress exists."
+      "fixForwards": [
+        {
+          "branch": "fix/post-auth-sync-defer",
+          "status": "merged",
+          "mergedTo": "main",
+          "mergeCommit": "655930f",
+          "summary": "Deferred post-auth sync out of the Supabase auth callback."
+        },
+        {
+          "branch": "fix/grant-authenticated-student-sync-tables",
+          "status": "merged",
+          "mergedTo": "main",
+          "mergeCommit": "906c341",
+          "summary": "Granted authenticated access to student sync tables via migration 20260629_grant_authenticated_student_sync_tables.sql."
+        }
+      ],
+      "summary": "Fix post-activation Supabase Auth sync complete: INITIAL_SESSION triggers link/import, remote profile FK precedes snapshot writes, Nav avoids false sync-complete claims, Home avoids skeleton when remote is empty but local progress exists, post-auth sync is deferred out of the auth callback, and authenticated grants are present."
     }
   },
   "activeBranches": [],
