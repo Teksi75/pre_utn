@@ -47,6 +47,7 @@ describe("Exercise Catalog", () => {
         "mat.u2.gauss",
         "mat.u2.mcm_mcd_polinomios",
         "mat.u2.ecuaciones_fraccionarias",
+        "mat.u3.traduccion_lenguaje_verbal",
         "mat.u3.ecuaciones_lineales",
         "mat.u3.ecuaciones_cuadraticas",
         "mat.u3.inecuaciones_lineales",

@@ -36,6 +36,12 @@ const SPEC_U3_TAGS = [
   "u3_propiedad_logaritmo",
 ] as const;
 
+const PR1_MODELING_TAGS = [
+  "u3_traduccion_incorrecta",
+  "u3_verificacion_omitida",
+  "u3_interpretacion_contextual_incorrecta",
+] as const;
+
 describe("U3 error taxonomy — U3-TAG-001 (8 tags, one per U3 skill)", () => {
   test("filterByUnit(3) includes all 8 spec U3 tags (legacy tags permitted)", () => {
     const unit3Tags = filterByUnit(3);
@@ -147,4 +153,16 @@ describe("U3 error taxonomy — legacy tag compatibility", () => {
       "Legacy tag u3_direccion_desigualdad must be present in unit 3 filter"
     ).toContain("u3_direccion_desigualdad");
   });
+});
+
+describe("U3 error taxonomy — PR 1 modeling tags", () => {
+  for (const tagId of PR1_MODELING_TAGS) {
+    test(`${tagId} is lookupable as a Unit 3 modeling tag`, () => {
+      const tag = lookupTag(tagId);
+      expect(tag, `Tag ${tagId} should be defined in the taxonomy`).toBeDefined();
+      expect(tag!.unit).toBe(3);
+      expect(tag!.description.trim().length).toBeGreaterThan(10);
+      expect(tag!.examples.length).toBeGreaterThan(0);
+    });
+  }
 });

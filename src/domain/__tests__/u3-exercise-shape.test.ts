@@ -17,7 +17,7 @@ import {
 } from "../catalog/content-loaders";
 import type { Exercise } from "../models/exercise";
 
-/** The 8 U3 skill IDs declared for this unit. */
+/** The 9 U3 skill IDs declared for this unit. */
 const U3_SKILL_IDS: readonly string[] = [
   "mat.u3.ecuaciones_lineales",
   "mat.u3.ecuaciones_cuadraticas",
@@ -27,6 +27,7 @@ const U3_SKILL_IDS: readonly string[] = [
   "mat.u3.sistemas",
   "mat.u3.exponenciales",
   "mat.u3.logaritmicas",
+  "mat.u3.traduccion_lenguaje_verbal",
 ];
 
 function allU3Exercises(): Exercise[] {
@@ -205,10 +206,13 @@ describe("U3 exercise shape — commonErrorTags only for declared u3_* tags", ()
       "u3_dos_valores_absoluto",
       "u3_factorizacion_cuadratica",
       "u3_igualdad_exponenciales",
+      "u3_interpretacion_contextual_incorrecta",
       "u3_pendiente_o_ordenada",
       "u3_propiedad_logaritmo",
       "u3_signo_desigualdad",
       "u3_sustitucion_o_eliminacion",
+      "u3_traduccion_incorrecta",
+      "u3_verificacion_omitida",
     ]);
     for (const entry of source) {
       const tags: unknown[] = Array.isArray(entry.commonErrorTags) ? entry.commonErrorTags : [];

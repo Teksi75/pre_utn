@@ -151,6 +151,7 @@ describe("LearnMatematicaPage — section card visible contract", () => {
 
 describe("LearnMatematicaPage — Unit 3 section card visible contract", () => {
   const U3_SKILL_IDS: readonly string[] = [
+    "mat.u3.traduccion_lenguaje_verbal",
     "mat.u3.ecuaciones_lineales",
     "mat.u3.ecuaciones_cuadraticas",
     "mat.u3.inecuaciones_lineales",
@@ -199,7 +200,7 @@ describe("LearnMatematicaPage — Unit 3 section card visible contract", () => {
     expect(html).toContain("Unidad 3 — Ecuaciones y sistemas");
   });
 
-  test("Unit 3 section has exactly 8 rendered cards", () => {
+  test("Unit 3 section has exactly 9 rendered cards", () => {
     const html = renderPage();
     const u3Section = extractUnit3Section(html);
     expect(u3Section, "Unit 3 section not found").not.toBeNull();
@@ -212,8 +213,8 @@ describe("LearnMatematicaPage — Unit 3 section card visible contract", () => {
       ) ?? [];
     expect(
       u3Cards,
-      `expected 8 U3 card links, got ${u3Cards.length}`,
-    ).toHaveLength(8);
+      `expected 9 U3 card links, got ${u3Cards.length}`,
+    ).toHaveLength(9);
   });
 
   test("each U3 card links to /learn/matematica/{skillId}", () => {

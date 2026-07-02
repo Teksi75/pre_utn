@@ -6,20 +6,20 @@
  * same ordering. Exact baseline assertions catch regressions that weak
  * thresholds (>= 30) would miss.
  *
- * Baseline values (post-PR2 / implement-unit-3-mathematics):
- *   loadCatalog().length = 184       (152 + 32 new U3 exercises)
+ * Baseline values (post-PR1 / fortalecer-u3-lenguaje-modelizacion-transferencia):
+ *   loadCatalog().length = 189       (184 + 5 new translation exercises)
  *   queryByUnit(1).length = 101
- *   queryByUnit(3).length = 37        (32 new U3 + 5 legacy .1 entries)
+ *   queryByUnit(3).length = 42        (37 + 5 new translation exercises)
  *   queryBySkill("mat.u1.conjuntos_numericos").length = 44
  */
 
 import { describe, test, expect } from "vitest";
 import { loadCatalog, queryBySkill, queryByUnit } from "../catalog/index";
 
-/** Pre-PR3 baseline counts — must hold after any content split. */
-const BASELINE_TOTAL = 184;
+/** Pre-PR1 baseline counts — must hold after any content split. */
+const BASELINE_TOTAL = 189;
 const BASELINE_UNIT_1 = 101;
-const BASELINE_UNIT_3 = 37;
+const BASELINE_UNIT_3 = 42;
 const BASELINE_CONJUNTOS_NUMERICOS = 44;
 
 describe("catalog split equivalence — baseline snapshot", () => {

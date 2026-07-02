@@ -83,6 +83,11 @@ export const PILOT_SKILLS: readonly PilotSkill[] = [
     label: "Ecuaciones fraccionarias",
   },
   {
+    skillId: "mat.u3.traduccion_lenguaje_verbal",
+    unitKey: "unit-3",
+    label: "Traducción del lenguaje verbal al algebraico",
+  },
+  {
     skillId: "mat.u3.ecuaciones_lineales",
     unitKey: "unit-3",
     label: "Ecuaciones lineales",

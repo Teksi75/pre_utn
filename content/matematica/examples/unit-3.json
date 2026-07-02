@@ -1,5 +1,51 @@
 [
   {
+    "id": "example-traduccion-lenguaje-verbal-1",
+    "skillId": "mat.u3.traduccion_lenguaje_verbal",
+    "problem": "El doble de un número, menos 3, es igual a 15. ¿Cuál es el número?",
+    "steps": [
+      { "order": 1, "explanation": "Paso 1 — definir la incógnita. La cantidad pedida es el número. Llamamos $x$ al número buscado. Anotamos: $x$ = número buscado." },
+      { "order": 2, "explanation": "Paso 2 — traducir el enunciado. \"El doble de un número\" = $2x$. \"El doble de un número, menos 3\" = $2x - 3$. \"Es igual a 15\" = $= 15$." },
+      { "order": 3, "explanation": "Paso 3 — plantear la ecuación: $2x - 3 = 15$." },
+      { "order": 4, "explanation": "Paso 4 — resolver. Sumamos 3 a ambos lados: $2x = 18$. Dividimos por 2: $x = 9$." },
+      { "order": 5, "explanation": "Paso 5 — verificar en el contexto. Si el número es 9, el doble es 18, y 18 menos 3 es 15 ✓. La respuesta es coherente con el enunciado y con las unidades (un número, no negativo)." },
+      { "order": 6, "explanation": "Paso 6 — interpretar. El número pedido es 9." }
+    ],
+    "finalAnswer": "x = 9 (el número pedido es 9)",
+    "pedagogicalNote": "Error frecuente: plantear $2x + 3 = 15$ invirtiendo el signo de \"menos 3\", u olvidar dividir por 2 al final. La verificación en el contexto (reemplazar 9 en la frase original) confirma ambas opciones: $2 \\cdot 9 - 3 = 15$ ✓ y $2 \\cdot 9 + 3 = 21 \\neq 15$ ✗.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 1: Modelización — doble de un número",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Demostrar la cadena completa: definición de incógnita, traducción, planteo, resolución, verificación contextual e interpretación del resultado"
+      }
+    ]
+  },
+  {
+    "id": "example-traduccion-lenguaje-verbal-2",
+    "skillId": "mat.u3.traduccion_lenguaje_verbal",
+    "problem": "La suma de tres números consecutivos es 36. ¿Cuáles son los números?",
+    "steps": [
+      { "order": 1, "explanation": "Paso 1 — definir la incógnita. La cantidad pedida son los tres números. Llamamos $x$ al número menor, de modo que los tres números consecutivos son $x$, $x+1$ y $x+2$." },
+      { "order": 2, "explanation": "Paso 2 — traducir. \"La suma de los tres\" se traduce como $x + (x+1) + (x+2)$. \"Es 36\" se traduce como $= 36$." },
+      { "order": 3, "explanation": "Paso 3 — plantear: $x + (x+1) + (x+2) = 36$." },
+      { "order": 4, "explanation": "Paso 4 — resolver. Sumamos: $3x + 3 = 36$. Restamos 3: $3x = 33$. Dividimos por 3: $x = 11$." },
+      { "order": 5, "explanation": "Paso 5 — verificar. Los números son 11, 12 y 13. Suma: $11 + 12 + 13 = 36$ ✓. Además son consecutivos (difieren de a 1) y todos positivos, lo cual es coherente con que se pida \"números\" sin más contexto." },
+      { "order": 6, "explanation": "Paso 6 — interpretar. Los tres números consecutivos cuya suma es 36 son 11, 12 y 13." }
+    ],
+    "finalAnswer": "Los números son 11, 12 y 13",
+    "pedagogicalNote": "Error frecuente: plantear $x + x + x = 36$ (olvidar el \"consecutivo\" y asignar el mismo valor a los tres). También es común olvidar el desplazamiento +1, +2 y obtener respuestas como 12, 12, 12. La verificación de que la suma da 36 NO alcanza: hay que verificar que la diferencia entre los tres sea exactamente 1.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 1: Modelización — números consecutivos",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Mostrar cómo la elección de la incógnita ($x$ = el menor) y el uso de expresiones en función de $x$ (consecutivos) llevan a una sola ecuación lineal en una variable"
+      }
+    ]
+  },
+  {
     "id": "example-ecuaciones-lineales-1",
     "skillId": "mat.u3.ecuaciones_lineales",
     "problem": "Resolver la ecuación $3x - 5 = 10$",

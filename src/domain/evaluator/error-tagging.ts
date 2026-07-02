@@ -96,6 +96,9 @@ const U3_IGUALDAD_EXPONENCIALES_TAGS = new Set(["u3_igualdad_exponenciales"]);
 /** Tags for log-property misuse (log(a+b) ≠ log a + log b, etc.). */
 const U3_PROPIEDAD_LOGARITMO_TAGS = new Set(["u3_propiedad_logaritmo"]);
 
+/** Tags for incorrect translation from verbal language to algebraic language. */
+const U3_TRADUCCION_INCORRECTA_TAGS = new Set(["u3_traduccion_incorrecta"]);
+
 const SUPERSCRIPT_DIGITS: Readonly<Record<string, string>> = {
   "⁰": "0",
   "¹": "1",
@@ -1185,6 +1188,44 @@ function isU3PropiedadLogaritmoError(
   return productConfusion || powerConfusion;
 }
 
+function isU3VerificacionOmitidaError(
+  exercise: Exercise,
+  userAnswer: string,
+): boolean {
+  if (exercise.type !== "multiple-choice") return false;
+  if (userAnswer.trim() === exercise.expectedAnswer.trim()) return false;
+  const prompt = exercise.prompt.toLowerCase();
+  const student = userAnswer.toLowerCase();
+  return (
+    prompt.includes("verifica") && prompt.includes("interpreta") &&
+    (student.includes("falta resolver") || student.includes("falta verificar"))
+  );
+}
+
+function isU3InterpretacionContextualIncorrectaError(
+  exercise: Exercise,
+  userAnswer: string,
+): boolean {
+  if (exercise.type !== "multiple-choice") return false;
+  if (userAnswer.trim() === exercise.expectedAnswer.trim()) return false;
+  const student = userAnswer.toLowerCase();
+  return (
+    exercise.prompt.toLowerCase().includes("interpreta") &&
+    (student.includes("perímetro mide") || student.includes("verificación actual") ||
+      student.includes("confunde edades futuras"))
+  );
+}
+
+function isU3TraduccionIncorrectaError(
+  exercise: Exercise,
+  userAnswer: string,
+): boolean {
+  if (exercise.type !== "multiple-choice") return false;
+  if (exercise.skillId !== "mat.u3.traduccion_lenguaje_verbal") return false;
+  if (userAnswer.trim() === exercise.expectedAnswer.trim()) return false;
+  return true;
+}
+
 /**
  * Match the user's answer against known error patterns and return a
  * declared commonErrorTag if one fits, or undefined.
@@ -1412,6 +1453,22 @@ export function tagError(
   if (isU3PropiedadLogaritmoError(exercise, userAnswer)) {
     for (const tag of tags) {
       if (U3_PROPIEDAD_LOGARITMO_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isU3VerificacionOmitidaError(exercise, userAnswer)) {
+    if (tags.includes("u3_verificacion_omitida")) return "u3_verificacion_omitida";
+  }
+
+  if (isU3InterpretacionContextualIncorrectaError(exercise, userAnswer)) {
+    if (tags.includes("u3_interpretacion_contextual_incorrecta")) return "u3_interpretacion_contextual_incorrecta";
+  }
+
+  if (isU3TraduccionIncorrectaError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U3_TRADUCCION_INCORRECTA_TAGS.has(tag)) {
         return tag;
       }
     }

@@ -1,5 +1,23 @@
 [
   {
+    "errorTag": "u3_traduccion_incorrecta",
+    "type": "conceptual",
+    "message": "El error está en la TRADUCCIÓN del enunciado a lenguaje algebraico, no en la resolución. Vuelve a leer el problema y haz tres chequeos en orden: (1) ¿la incógnita representa la cantidad que el enunciado PIDE o la que ENTREGA? Si elegiste la equivocada, cambia la letra. (2) ¿el conector está bien traducido? \"Menos 3\" se traduce como RESTAR 3 a la expresión, no como restar 3 al argumento ni como sumar. \"El doble de\" se traduce como MULTIPLICAR por 2, no como sumar 2. (3) ¿la igualdad declarada en el enunciado está representada por UN igual en la ecuación, y ambos lados miden lo mismo (no se suman cantidades con unidades distintas)? Reescribe el planteo paso a paso antes de volver a intentar.",
+    "recoveryTarget": "example-traduccion-lenguaje-verbal-1"
+  },
+  {
+    "errorTag": "u3_verificacion_omitida",
+    "type": "procedural",
+    "message": "La resolución algebraica todavía no cierra el problema si no se verifica en el enunciado original. Después de obtener el valor de la incógnita, reemplázalo en la situación completa: ecuación, unidades, restricciones y dato contextual. Si el problema habla de edades futuras, verifica las edades futuras; si habla de perímetro, verifica el perímetro completo. Dar solo el planteo o solo x = valor omite una parte esencial del control.",
+    "recoveryTarget": "example-traduccion-lenguaje-verbal-1"
+  },
+  {
+    "errorTag": "u3_interpretacion_contextual_incorrecta",
+    "type": "conceptual",
+    "message": "La respuesta debe decir qué representa el valor en el contexto. No alcanza con escribir x = 5 si la pregunta pide dimensiones, edades o cantidades concretas. Revisa qué significaba la incógnita, calcula las cantidades derivadas y responde con unidad o nombre: por ejemplo, \"los lados miden 5 cm y 10 cm\" o \"Pedro tiene 10 años y Juan 20\". Si respondes una magnitud distinta de la pedida, la ecuación puede estar bien pero la interpretación está incompleta o equivocada.",
+    "recoveryTarget": "example-traduccion-lenguaje-verbal-2"
+  },
+  {
     "errorTag": "u3_aislamiento_incorrecto",
     "type": "procedural",
     "message": "Revisá el orden de las operaciones. Para resolver una ecuación lineal como $ax + b = c$: (1) primero movés el término independiente ($b$) al otro lado CAMBIANDO EL SIGNO, (2) después dividís por el coeficiente ($a$). El error más común es olvidar uno de los dos pasos — ya sea el cambio de signo al pasar el término, o la división final por el coeficiente. Verificá siempre reemplazando el valor obtenido en la ecuación original.",
