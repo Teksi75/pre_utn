@@ -24,7 +24,7 @@ import { loadCatalog, queryByUnit, queryBySkill } from "../catalog/index";
 import type { PedagogicalVisual } from "../visuals/types";
 import { assertIntervalSet } from "../visuals/__tests__/helpers";
 
-/** The 8 declared U3 skill IDs (from theory/unit-3.json and examples/unit-3.json). */
+/** The 9 declared U3 skill IDs (from theory/unit-3.json and examples/unit-3.json). */
 const U3_SKILL_IDS: readonly string[] = [
   "mat.u3.ecuaciones_lineales",
   "mat.u3.ecuaciones_cuadraticas",
@@ -34,13 +34,14 @@ const U3_SKILL_IDS: readonly string[] = [
   "mat.u3.sistemas",
   "mat.u3.exponenciales",
   "mat.u3.logaritmicas",
+  "mat.u3.traduccion_lenguaje_verbal",
 ];
 
 describe("Unit-3 content loader — RAW_REGISTRY wiring", () => {
-  test("U3-CAT-001: loadTheoryContent('unit-3') returns 8 theory nodes", () => {
+  test("U3-CAT-001: loadTheoryContent('unit-3') returns 9 theory nodes", () => {
     const theory = loadTheoryContent("unit-3");
     expect(Array.isArray(theory)).toBe(true);
-    expect(theory.length).toBe(8);
+    expect(theory.length).toBe(9);
   });
 
   test("U3-CAT-001: loadTheoryContent('unit-3') returns one node per U3 skill", () => {
@@ -51,10 +52,23 @@ describe("Unit-3 content loader — RAW_REGISTRY wiring", () => {
     }
   });
 
-  test("loadExampleContent('unit-3') returns 16 worked examples (≥2 per skill)", () => {
+  test("U3-MOD-PR1: the new translation skill has its own theory node", () => {
+    const theory = loadTheoryContent("unit-3");
+    const node = theory.find((t) => t.skillId === "mat.u3.traduccion_lenguaje_verbal");
+    expect(node).toBeDefined();
+    // Theory must teach the modeling chain, not just translation.
+    const hasPlanteo = node!.concepts.some((c) => /planteo|plantear|ecuaci/i.test(c.title));
+    const hasVerificacion = node!.concepts.some((c) => /verific|comprobar|sustituir/i.test(c.title));
+    const hasInterpretacion = node!.concepts.some((c) => /interpre|contexto|respuesta/i.test(c.title));
+    expect(hasPlanteo, "modeling theory must cover equation setup").toBe(true);
+    expect(hasVerificacion, "modeling theory must cover contextual verification").toBe(true);
+    expect(hasInterpretacion, "modeling theory must cover interpretation of the result").toBe(true);
+  });
+
+  test("loadExampleContent('unit-3') returns 18 worked examples (≥2 per skill)", () => {
     const examples = loadExampleContent("unit-3");
     expect(Array.isArray(examples)).toBe(true);
-    expect(examples.length).toBeGreaterThanOrEqual(16);
+    expect(examples.length).toBeGreaterThanOrEqual(18);
   });
 
   test("loadExampleContent('unit-3') returns ≥2 examples per U3 skill", () => {
@@ -65,28 +79,45 @@ describe("Unit-3 content loader — RAW_REGISTRY wiring", () => {
     }
   });
 
-  test("loadFeedbackContent('unit-3') returns 8 mappings (one per U3 tag)", () => {
+  test("loadFeedbackContent('unit-3') returns 11 mappings (including PR 1 modeling tags)", () => {
     const feedback = loadFeedbackContent("unit-3");
     expect(Array.isArray(feedback)).toBe(true);
-    expect(feedback.length).toBe(8);
+    expect(feedback.length).toBe(11);
   });
 
-  test("loadFeedbackContent('unit-3') covers all 8 declared u3_* tags", () => {
+  test("loadFeedbackContent('unit-3') covers declared u3_* tags plus PR 1 modeling feedback", () => {
     const feedback = loadFeedbackContent("unit-3");
     const tags = feedback.map((f) => f.errorTag).sort();
-    // 8 tags mapped per PR 1 spec U3-TAG-001; the legacy `u3_direccion_desigualdad`
-    // exists in the error-taxonomy but has no feedback mapping (the legacy
-    // inequality-direction case is covered by `u3_signo_desigualdad`).
+    // PR 1 of fortalecer-u3-lenguaje-modelizacion-transferencia adds
+    // modeling feedback beyond setup/translation: omitted verification and
+    // contextual interpretation mismatch. The
+    // legacy `u3_direccion_desigualdad` exists in the error-taxonomy but has
+    // no feedback mapping (the legacy inequality-direction case is covered
+    // by `u3_signo_desigualdad`).
     expect(tags).toEqual([
       "u3_aislamiento_incorrecto",
       "u3_dos_valores_absoluto",
       "u3_factorizacion_cuadratica",
       "u3_igualdad_exponenciales",
+      "u3_interpretacion_contextual_incorrecta",
       "u3_pendiente_o_ordenada",
       "u3_propiedad_logaritmo",
       "u3_signo_desigualdad",
       "u3_sustitucion_o_eliminacion",
+      "u3_traduccion_incorrecta",
+      "u3_verificacion_omitida",
     ]);
+  });
+
+  test("U3-MOD-PR1: modeling feedback distinguishes setup, verification, and interpretation errors", () => {
+    const feedback = loadFeedbackContent("unit-3");
+    const byTag = new Map(feedback.map((f) => [f.errorTag, f.message.toLowerCase()]));
+
+    expect(byTag.get("u3_traduccion_incorrecta"), "translation feedback missing").toContain("traducción");
+    expect(byTag.get("u3_verificacion_omitida"), "verification feedback missing").toContain("verifica");
+    expect(byTag.get("u3_interpretacion_contextual_incorrecta"), "interpretation feedback missing").toContain(
+      "contexto"
+    );
   });
 });
 
@@ -105,6 +136,35 @@ describe("Unit-3 exercise source — UNIT_EXERCISE_FILES wiring", () => {
         `expected ≥3 exercises for ${skillId}, got ${exercises.length}`
       ).toBeGreaterThanOrEqual(3);
     }
+  });
+
+  test("U3-MOD-PR1: the new translation skill has at least 3 multiple-choice exercises", () => {
+    const exercises = loadExercisesForSkill("mat.u3.traduccion_lenguaje_verbal");
+    expect(exercises.length, "modeling leaf must have ≥3 exercises").toBeGreaterThanOrEqual(3);
+    // AGENTS.md forbids free symbolic input; translation MUST be MC.
+    for (const ex of exercises) {
+      expect(ex.type, `${ex.id} must be multiple-choice, not symbolic/free`).toBe("multiple-choice");
+      expect(ex.options, `${ex.id} must declare semantic distractors`).toBeDefined();
+      expect(ex.options!.length, `${ex.id} needs ≥3 distractors`).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  test("U3-MOD-PR1: modeling exercises require contextual verification or interpretation, not only setup", () => {
+    const exercises = loadExercisesForSkill("mat.u3.traduccion_lenguaje_verbal");
+    const fullChain = exercises.filter((ex) => {
+      const text = [ex.prompt, ex.expectedAnswer, ex.pedagogicalNote ?? "", ...(ex.commonErrorTags ?? [])].join(" ");
+      return /verific|interpreta|contextual/i.test(text);
+    });
+
+    expect(fullChain.length, "expected at least two exercises to require verification/interpretation").toBeGreaterThanOrEqual(2);
+    expect(
+      fullChain.some((ex) => ex.commonErrorTags?.includes("u3_verificacion_omitida")),
+      "expected an exercise to tag omitted verification"
+    ).toBe(true);
+    expect(
+      fullChain.some((ex) => ex.commonErrorTags?.includes("u3_interpretacion_contextual_incorrecta")),
+      "expected an exercise to tag contextual interpretation mismatch"
+    ).toBe(true);
   });
 
   test("U3-CAT-006: U3 exercises from unit-3.json use IDs ending in numbers ≥2", () => {

@@ -1,5 +1,80 @@
 [
   {
+    "id": "theory-traduccion-lenguaje-verbal",
+    "skillId": "mat.u3.traduccion_lenguaje_verbal",
+    "concepts": [
+      {
+        "id": "concept-tlv-variable",
+        "title": "1. Definir la incógnita: qué representa la letra",
+        "bodyParagraphs": [
+          "Idea principal: antes de escribir una expresión, hay que decidir qué letra representa CADA cantidad del enunciado. La elección correcta depende de lo que el problema PIDE, no de un orden alfabético ni de una convención fija.",
+          "Regla práctica: si la pregunta es \"cuánto mide cada lado de un rectángulo cuyo perímetro es 30 y el lado mayor es el doble del menor\", la cantidad pedida es el lado menor. Se llama $x$ al lado menor, y el lado mayor es $2x$. La elección de $x$ debe quedar registrada en una frase: \"$x$ = lado menor (en cm)\".",
+          "Error frecuente: elegir como incógnita la cantidad que el enunciado ENTREGA primero, en vez de la cantidad PEDIDA. Eso fuerza después a hacer cuentas extra o directamente imposibles."
+        ]
+      },
+      {
+        "id": "concept-tlv-traduccion",
+        "title": "2. Traducir relaciones del lenguaje verbal a lenguaje algebraico",
+        "bodyParagraphs": [
+          "Idea principal: cada conector del enunciado tiene un equivalente algebraico estable. \"El doble de\" se traduce como $2 \\cdot (\\text{cantidad})$. \"La mitad de\" se traduce como $\\frac{\\text{cantidad}}{2}$. \"$a$ es $b$ más que $c$\" se traduce como $a = c + b$. \"$a$ excede a $b$ en $c$\" se traduce como $a = b + c$ (con cuidado, es suma, no resta).",
+          "Conectores multiplicativos útiles: \"el cuádruple de\" $\\to \\times 4$, \"el triple de\" $\\to \\times 3$, \"un tercio de\" $\\to \\div 3$. Conectores aditivos: \"sumado a\", \"agregado a\", \"más que\" $\\to$ suma; \"restado de\", \"menos que\", \"disminuido en\" $\\to$ resta.",
+          "Forma más confiable de traducir: reescribir el enunciado reemplazando CADA cantidad por su nombre algebraico y CADA conector por su operación. Si la frase resultante es coherente, la traducción suele ser correcta."
+        ]
+      },
+      {
+        "id": "concept-tlv-planteo",
+        "title": "3. Planteo de la ecuación a partir del modelo",
+        "bodyParagraphs": [
+          "Idea principal: una vez definida la incógnita y traducidas las relaciones, la ecuación sale de IGUALAR lo que el enunciado declara como igual. \"El perímetro es 30\" se traduce como la suma de los lados igual a 30. \"La edad de Juan es el doble de la de Pedro\" se traduce como $j = 2p$.",
+          "Para problemas de reparto, perímetros, mezclas o edades, la estrategia es: (1) elegir la incógnita, (2) expresar las demás cantidades en función de ella, (3) escribir la igualdad que el enunciado declara.",
+          "Error frecuente: igualar magnitudes que NO son directamente comparables. Por ejemplo, sumar pesos con cantidades, o sumar edades de personas con años futuros. Antes de plantear, revisar que AMBOS lados de la ecuación midan lo mismo."
+        ]
+      },
+      {
+        "id": "concept-tlv-verificacion",
+        "title": "4. Verificación contextual: volver al enunciado",
+        "bodyParagraphs": [
+          "Idea principal: verificar NO es solo reemplazar $x$ en la ecuación. Es volver al enunciado original y comprobar que la respuesta RESPONDE LO QUE SE PREGUNTABA. Si el problema dice \"cuántas monedas tiene Ana\" y se obtuvo $x = 12$, hay que comprobar que las 12 monedas de Ana son consistentes con TODO el enunciado, no solo con la ecuación.",
+          "Tres chequeos después de resolver: (1) la solución satisface la ecuación algebraica; (2) las unidades o cantidades son razonables (no se obtiene \"$-3$ personas\" ni \"$250$ años\"); (3) la respuesta responde la pregunta ORIGINAL del enunciado.",
+          "Error frecuente: saltearse el chequeo de unidades y dar como válida una solución algebraica que rompe el contexto (negativa cuando solo se permiten positivas, mayor que el total cuando la incógnita es una parte, etc.)."
+        ]
+      },
+      {
+        "id": "concept-tlv-interpretacion",
+        "title": "5. Interpretar el resultado en el contexto del problema",
+        "bodyParagraphs": [
+          "Idea principal: en evaluación se pide INTERPRETAR la solución, no solo calcularla. Eso significa: \"Si $x = 12$ y $x$ representaba la cantidad de monedas de Ana, entonces Ana tiene 12 monedas, y la pregunta del enunciado queda respondida con esa cifra\". La interpretación conecta la matemática con el mundo del problema.",
+          "Patrones de respuesta esperada en interpretación: (a) declarar el valor con la unidad del contexto (\"$12$ monedas\", \"$3{,}5$ horas\"), (b) verificar que el signo tiene sentido en el contexto (si la cantidad no puede ser negativa, una $x$ negativa obliga a revisar el planteo), (c) cerrar la frase: \"por lo tanto, la cantidad pedida es 12\".",
+          "Error frecuente: detenerse en el valor algebraico sin reformularlo en términos del problema. La respuesta \"$x = 12$\" sin más no es interpretación; el alumno debe decir QUÉ representa ese 12 en el mundo del problema."
+        ]
+      }
+    ],
+    "notation": [
+      "$x$ — incógnita (con declaración explícita de qué representa)",
+      "$a + b$, $a - b$, $a \\cdot b$, $a / b$ — operaciones que traducen conectores del enunciado",
+      "Igualdad entre expresiones equivalentes del enunciado"
+    ],
+    "commonMistakes": [
+      "Elegir como incógnita la cantidad que el enunciado ENTREGA en vez de la cantidad que PIDE.",
+      "Invertir el conector: \"$a$ es el doble de $b$\" escrito como $b = 2a$ cuando debería ser $a = 2b$.",
+      "Verificar la ecuación pero olvidar chequear las unidades o la coherencia con el contexto.",
+      "Devolver la respuesta como \"$x = 12$\" sin reformularla en el lenguaje del problema."
+    ],
+    "practicePrompts": [
+      "El doble de un número menos 3 es igual a 15. Plantea la ecuación y resuelve.",
+      "La suma de tres números consecutivos es 36. Plantea la ecuación.",
+      "Un rectángulo tiene perímetro 30 cm y el lado mayor es el doble del menor. Plantea la ecuación y halla las dimensiones."
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 1: Ecuaciones lineales — modelización y planteo",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Presentar la cadena modelización: elegir la incógnita, traducir el enunciado, plantear la ecuación, resolver, verificar e interpretar el resultado en el contexto del problema"
+      }
+    ]
+  },
+  {
     "id": "theory-ecuaciones-lineales",
     "skillId": "mat.u3.ecuaciones_lineales",
     "concepts": [

@@ -3,10 +3,11 @@ import {
   PILOT_SKILLS,
   PILOT_SKILL_UNIT_MAP,
 } from "../catalog/pilot-skills";
+import { SKILL_DEPENDENCIES } from "../models/skill-catalog";
 
 describe("PILOT_SKILLS", () => {
-  test("contains 23 pilot skills (8 unit-1 + 7 unit-2 + 8 unit-3)", () => {
-    expect(PILOT_SKILLS).toHaveLength(23);
+  test("contains 24 pilot skills (8 unit-1 + 7 unit-2 + 9 unit-3)", () => {
+    expect(PILOT_SKILLS).toHaveLength(24);
   });
 
   test("contains the 8 unit-1 pilot skills", () => {
@@ -91,11 +92,12 @@ describe("PILOT_SKILLS — Unit 3 (PR 3 / implement-unit-3-mathematics)", () => 
     "mat.u3.sistemas",
     "mat.u3.exponenciales",
     "mat.u3.logaritmicas",
+    "mat.u3.traduccion_lenguaje_verbal",
   ] as const;
 
-  test("contains all 8 unit-3 pilot skills (U3-PILOT-001)", () => {
+  test("contains all 9 unit-3 pilot skills (U3-PILOT-001)", () => {
     const u3 = PILOT_SKILLS.filter((s) => s.unitKey === "unit-3");
-    expect(u3).toHaveLength(8);
+    expect(u3).toHaveLength(9);
     const u3Ids = u3.map((s) => s.skillId);
     for (const id of U3_SKILL_IDS) {
       expect(u3Ids).toContain(id);
@@ -120,15 +122,26 @@ describe("PILOT_SKILLS — Unit 3 (PR 3 / implement-unit-3-mathematics)", () => 
     expect(PILOT_SKILL_UNIT_MAP["mat.u3.recta"]).toBe("unit-3");
   });
 
+  test("U3-MOD-PR1: PILOT_SKILL_UNIT_MAP['mat.u3.traduccion_lenguaje_verbal'] === 'unit-3'", () => {
+    // PR 1 of the fortalecer-u3-lenguaje-modelizacion-transferencia change
+    // introduces the modeling leaf skill. It must be selectable from
+    // /practice with the same unitKey as the other U3 skills.
+    expect(PILOT_SKILL_UNIT_MAP["mat.u3.traduccion_lenguaje_verbal"]).toBe("unit-3");
+  });
+
   test("unit-3 skills appear after unit-2 skills in catalog order", () => {
     const lastU2Index = PILOT_SKILLS.findLastIndex((s) => s.unitKey === "unit-2");
     const firstU3Index = PILOT_SKILLS.findIndex((s) => s.unitKey === "unit-3");
     expect(firstU3Index).toBeGreaterThan(lastU2Index);
   });
 
-  test("ecuaciones_lineales is the first unit-3 skill (no prerequisites within U3)", () => {
+  test("U3-MOD-PR1: the new translation skill leads the U3 catalog (modeling first, then equations)", () => {
+    // The translation skill is a pedagogical entry point: the student
+    // models first and only then solves. Order in PILOT_SKILLS does
+    // NOT make it a prerequisite; SKILL_DEPENDENCIES is the source of
+    // truth for prereqs (and the translation skill has none).
     const u3 = PILOT_SKILLS.filter((s) => s.unitKey === "unit-3");
-    expect(u3[0].skillId).toBe("mat.u3.ecuaciones_lineales");
+    expect(u3[0].skillId).toBe("mat.u3.traduccion_lenguaje_verbal");
   });
 
   test("every U3 pilot skill has a non-empty Spanish label", () => {
@@ -137,5 +150,18 @@ describe("PILOT_SKILLS — Unit 3 (PR 3 / implement-unit-3-mathematics)", () => 
       expect(typeof skill.label).toBe("string");
       expect(skill.label.length).toBeGreaterThan(0);
     }
+  });
+
+  test("U3-MOD-PR1: the new translation skill is a leaf (no new global prereq was introduced)", () => {
+    // PR 1 must keep the new skill as a leaf so existing U3 skills are
+    // not blocked when a student opens the modeling practice. The check
+    // looks at SKILL_DEPENDENCIES via a catalog-level inspection.
+    // We only assert that no existing U3 skill was made to depend on
+    // the new one (a global prereq is the failure mode we want to avoid).
+    const newSkill = "mat.u3.traduccion_lenguaje_verbal";
+    const introduced = SKILL_DEPENDENCIES.filter(
+      (d) => Array.isArray(d.prerequisites) && d.prerequisites.includes(newSkill as never),
+    );
+    expect(introduced, "no existing skill should depend on the new modeling skill").toHaveLength(0);
   });
 });

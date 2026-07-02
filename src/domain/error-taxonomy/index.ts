@@ -745,6 +745,41 @@ const TAXONOMY: readonly ErrorTag[] = [
 
   // Unit 3: Ecuaciones y sistemas — error tags backed by the Unit 3 SDD sequence.
   // First-implementation scope: 8 tags, one per U3 skill (per spec U3-TAG-001).
+  // PR 1 of fortalecer-u3-lenguaje-modelizacion-transferencia adds
+  // `u3_traduccion_incorrecta` to cover the new translation leaf skill
+  // (`mat.u3.traduccion_lenguaje_verbal`). It is a U3 tag because the
+  // modeling chain lives in Unit 3.
+  {
+    id: "u3_traduccion_incorrecta",
+    unit: 3,
+    description:
+      "Error al traducir el enunciado a lenguaje algebraico: confunde la cantidad que representa la incógnita, invierte la relación descrita (suma por resta, producto por cociente), o asigna la expresión a la variable equivocada.",
+    examples: [
+      "Modelar \"el doble de un número menos 3 es 15\" como 2x - 3 = 15 (correcto) vs. 2x + 3 = 15 (signo invertido)",
+      "Modelar \"la suma de tres números consecutivos es 36\" como x + (x+1) + (x+2) = 36 (correcto) vs. x + x + x = 36 (olvida el consecutivo)",
+      "Elegir como incógnita la cantidad PEDIDA en vez de la cantidad BASE del enunciado, o viceversa",
+    ],
+  },
+  {
+    id: "u3_verificacion_omitida",
+    unit: 3,
+    description:
+      "Error al cerrar un problema modelizado: resuelve o plantea la ecuación pero omite verificar la solución en el enunciado original, sus unidades y sus restricciones contextuales.",
+    examples: [
+      "Dar solo x = 5 para un rectángulo sin comprobar que 2(5 + 10) = 30",
+      "Resolver un problema de edades futuras y verificar la suma actual en lugar de la suma dentro de 5 años",
+    ],
+  },
+  {
+    id: "u3_interpretacion_contextual_incorrecta",
+    unit: 3,
+    description:
+      "Error al interpretar la solución: entrega el valor algebraico sin decir qué representa en el contexto, o responde una magnitud distinta de la pedida por el enunciado.",
+    examples: [
+      "Responder x = 5 cuando la pregunta pide las dimensiones del rectángulo: 5 cm y 10 cm",
+      "Responder las edades futuras cuando el enunciado pregunta por las edades actuales",
+    ],
+  },
   {
     id: "u3_aislamiento_incorrecto",
     unit: 3,

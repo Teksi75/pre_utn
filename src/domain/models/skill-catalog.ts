@@ -34,6 +34,7 @@ export const UNIT_2_SKILLS: readonly SkillId[] = [
 // ── Unit 3: Ecuaciones y desigualdades ────────────────────────────────────
 
 export const UNIT_3_SKILLS: readonly SkillId[] = [
+  "mat.u3.traduccion_lenguaje_verbal",
   "mat.u3.ecuaciones_lineales",
   "mat.u3.ecuaciones_cuadraticas",
   "mat.u3.inecuaciones_lineales",

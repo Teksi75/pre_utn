@@ -1,5 +1,85 @@
 [
   {
+    "id": "ex.u3.traduccion_lenguaje_verbal.2",
+    "skillId": "mat.u3.traduccion_lenguaje_verbal",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "El doble de un número, menos 3, es igual a 15. ¿Cuál es la ecuación que representa el enunciado?",
+    "expectedAnswer": "2x - 3 = 15",
+    "options": [
+      "2x - 3 = 15",
+      "2x + 3 = 15",
+      "2(x - 3) = 15",
+      "2x = 15 - 3"
+    ],
+    "commonErrorTags": ["u3_traduccion_incorrecta"],
+    "pedagogicalNote": "El conector \"menos 3\" se traduce como restar 3 a la expresión, NO como restar 3 al argumento del doble ni como sumar 3. La opción \"2x = 15 - 3\" es un distractor de signo, no de planteo. La verificación: con x = 9, 2·9 - 3 = 15 ✓."
+  },
+  {
+    "id": "ex.u3.traduccion_lenguaje_verbal.3",
+    "skillId": "mat.u3.traduccion_lenguaje_verbal",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "La suma de tres números consecutivos es 36. ¿Cuál es la ecuación correcta?",
+    "expectedAnswer": "x + (x+1) + (x+2) = 36",
+    "options": [
+      "x + (x+1) + (x+2) = 36",
+      "3x = 36",
+      "x + x + x = 36",
+      "(x+1) + (x+2) + (x+3) = 36"
+    ],
+    "commonErrorTags": ["u3_traduccion_incorrecta"],
+    "pedagogicalNote": "Si los números son consecutivos y se llama x al menor, los tres son x, x+1, x+2. Distractor frecuente: 3x = 36 (pierde el consecutivo) o (x+1)+(x+2)+(x+3)=36 (numeró a partir del segundo). Verificación: x=11 → 11+12+13=36 ✓."
+  },
+  {
+    "id": "ex.u3.traduccion_lenguaje_verbal.4",
+    "skillId": "mat.u3.traduccion_lenguaje_verbal",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Un rectángulo tiene perímetro 30 cm y el lado mayor es el doble del menor. ¿Cuál opción resuelve, verifica e interpreta correctamente la situación?",
+    "expectedAnswer": "x = 5; los lados miden 5 cm y 10 cm; 2(5 + 10) = 30",
+    "options": [
+      "x = 5; los lados miden 5 cm y 10 cm; 2(5 + 10) = 30",
+      "2(x + 2x) = 30; falta resolver e interpretar las dimensiones",
+      "x = 10; los lados miden 10 cm y 20 cm; 2(10 + 20) = 60",
+      "x = 5; el perímetro mide 5 cm; no interpreta los lados pedidos"
+    ],
+    "commonErrorTags": ["u3_traduccion_incorrecta", "u3_verificacion_omitida", "u3_interpretacion_contextual_incorrecta"],
+    "pedagogicalNote": "Perímetro = 2·(largo + ancho). Si el menor es x, el mayor es 2x, y el perímetro es 2·(x + 2x) = 30. Resolver da x=5, por lo tanto los lados miden 5 cm y 10 cm. La verificación contextual es 2(5+10)=30; decir solo x=5 todavía no responde las dimensiones."
+  },
+  {
+    "id": "ex.u3.traduccion_lenguaje_verbal.5",
+    "skillId": "mat.u3.traduccion_lenguaje_verbal",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Si x representa la cantidad de monedas que tiene Ana, y la consigna dice \"Ana tiene el triple de monedas que Luis, y entre los dos tienen 24\", ¿cuál opción traduce correctamente el enunciado?",
+    "expectedAnswer": "x + x/3 = 24",
+    "options": [
+      "x + x/3 = 24",
+      "3x = 24",
+      "x + 3x = 24",
+      "x - x/3 = 24"
+    ],
+    "commonErrorTags": ["u3_traduccion_incorrecta"],
+    "pedagogicalNote": "Si x es la cantidad de Ana y Ana tiene el triple que Luis, entonces Luis tiene x/3. La suma es x + x/3 = 24. Distractor: 3x = 24 (interpreta x como la cantidad de Luis) o x + 3x = 24 (invierte la relación y asume que Luis tiene 3x). Verificación: x=18 → 18 + 6 = 24 ✓, y 18 = 3·6 ✓."
+  },
+  {
+    "id": "ex.u3.traduccion_lenguaje_verbal.6",
+    "skillId": "mat.u3.traduccion_lenguaje_verbal",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "La edad de Juan es el doble de la de Pedro, y dentro de 5 años la suma de sus edades será 40. ¿Cuál opción resuelve, verifica e interpreta correctamente la situación?",
+    "expectedAnswer": "Pedro tiene 10 años y Juan 20; dentro de 5 años: 15 + 25 = 40",
+    "options": [
+      "Pedro tiene 10 años y Juan 20; dentro de 5 años: 15 + 25 = 40",
+      "(x + 5) + (2x + 5) = 40; falta resolver e interpretar las edades actuales",
+      "Pedro tiene 10 años y Juan 20; verificación actual: 10 + 20 = 40",
+      "Pedro tiene 15 años y Juan 25; confunde edades futuras con edades actuales"
+    ],
+    "commonErrorTags": ["u3_traduccion_incorrecta", "u3_verificacion_omitida", "u3_interpretacion_contextual_incorrecta"],
+    "pedagogicalNote": "Hoy las edades son x (Pedro) y 2x (Juan). Dentro de 5 años serán x+5 y 2x+5. La suma futura es (x+5) + (2x+5) = 40, entonces 3x+10=40 y x=10. Pedro tiene 10 años y Juan 20; la verificación contextual es 15+25=40, no 10+20=40."
+  },
+  {
     "id": "ex.u3.ecuaciones_lineales.2",
     "skillId": "mat.u3.ecuaciones_lineales",
     "type": "numerical",
