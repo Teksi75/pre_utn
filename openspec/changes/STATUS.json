@@ -746,8 +746,27 @@
         }
       ],
       "summary": "Fix post-activation Supabase Auth sync complete: INITIAL_SESSION triggers link/import, remote profile FK precedes snapshot writes, Nav avoids false sync-complete claims, Home avoids skeleton when remote is empty but local progress exists, post-auth sync is deferred out of the auth callback, and authenticated grants are present."
+    },
+    "fortalecer-u3-lenguaje-modelizacion-transferencia": {
+      "status": "in-progress",
+      "branch": "sdd/fortalecer-u3-modelizacion-pr1",
+      "startedAt": "2026-07-01",
+      "delivery": "chained-prs-stacked-to-main (PR 1 of 2 planned)",
+      "pr1": {
+        "branch": "sdd/fortalecer-u3-modelizacion-pr1",
+        "status": "open",
+        "summary": "PR 1 — Modelización base U3: agrega la skill hoja mat.u3.traduccion_lenguaje_verbal (visible, sin prerequisito global) con 1 theory node (5 conceptos: variable, traducción, planteo, verificación, interpretación), 2 worked examples, 5 ejercicios MC con distractores semánticos, 3 feedback mappings y 3 etiquetas de error (u3_traduccion_incorrecta, u3_verificacion_omitida, u3_interpretacion_contextual_incorrecta). Cubre la cadena verbal → ecuación → resolución → verificación → interpretación sin modificar el flujo base de /practice ni los IDs existentes. PR 2 quedará para los desafíos U3 de transferencia."
+      },
+      "pr2": {
+        "branch": "pending",
+        "status": "deferred",
+        "summary": "PR 2 — Desafíos U3 de transferencia: queda fuera de este PR 1 (siguiente SDD change). El spec practice-coverage cubre la modelización base; el spec challenge-exercises cubre los desafíos integradores."
+      },
+      "summary": "Fortalecer U3 con modelización algebraica (lenguaje verbal → planteo → resolución → verificación → interpretación). PR 1 listo en working tree; impacto tracked aproximado actual: 501 inserciones / 33 deleciones. Los docs SDD adicionales pueden aparecer como untracked y se cuentan aparte. PR 2 se difiere para el siguiente change."
     }
   },
-  "activeBranches": [],
-  "lastAudit": "2026-06-27T13:00:00-03:00"
+  "activeBranches": [
+    "sdd/fortalecer-u3-modelizacion-pr1"
+  ],
+  "lastAudit": "2026-07-01T21:30:00-03:00"
 }
