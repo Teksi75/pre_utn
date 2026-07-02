@@ -260,6 +260,45 @@ describe("validateChallengeEntry", () => {
     const entry = { ...VALID_BASE, category: "wrong" as any };
     expect(() => validateChallengeEntry(entry)).toThrow(/category.*desafio/);
   });
+
+  // ---------------------------------------------------------------------------
+  // PR 2 loader hardening: expectedAnswer ∈ options, expectedAnswer non-empty string,
+  // and options[i].value is a string (the previous loader mapped invalid object
+  // options to `undefined` silently and never validated expectedAnswer).
+  // ---------------------------------------------------------------------------
+
+  test("multiple-choice entry: rejects expectedAnswer not in options, accepts when present", () => {
+    const notInOptions = {
+      ...VALID_BASE,
+      expectedAnswer: "Resumen que no aparece textual en options",
+      options: ["Planteo x + 2y = 45.", "Planteo x + 2y = 45; resuelvo x = 16, y = 13."],
+    };
+    expect(() => validateChallengeEntry(notInOptions)).toThrow(/options/);
+    // VALID_BASE.expectedAnswer === "5" and options includes "5" → accept path.
+    expect(() => validateChallengeEntry(VALID_BASE)).not.toThrow();
+  });
+
+  test.each([
+    ["number", 42],
+    ["null", null],
+    ["undefined", undefined],
+    ["empty string", ""],
+  ])("multiple-choice entry rejects non-empty-string expectedAnswer (%s)", (_label, badValue) => {
+    const entry = { ...VALID_BASE, expectedAnswer: badValue as any };
+    expect(() => validateChallengeEntry(entry)).toThrow(/expectedAnswer.*string/);
+  });
+
+  test("multiple-choice entry rejects object option whose value is missing or non-string", () => {
+    const badOpts = [
+      [{ value: 42 as any }, "other"],
+      [{ label: "no value" } as any, "other"],
+    ] as any[];
+    for (const options of badOpts) {
+      expect(() => validateChallengeEntry({ ...VALID_BASE, options })).toThrow(
+        /options\[0\]\.value.*string/,
+      );
+    }
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -343,8 +382,83 @@ describe("loadChallengesForUnit", () => {
     }
   });
 
-  test("returns empty array for unit with no challenges", () => {
+  test("returns unit 3 modeling-transfer challenges (PR 2)", () => {
     const challenges = loadChallengesForUnit(3);
-    expect(Array.isArray(challenges)).toBe(true);
+    expect(challenges.length).toBe(2);
+    for (const c of challenges) {
+      expect(c.skillId).toMatch(/^mat\.u3\./);
+      expect(c.challengeSection).toBe(true);
+      expect(c.category).toBe("desafio");
+      expect(c.tags).toContain("desafio");
+      expect(c.tags).toContain("integrador");
+      expect(c.difficulty).toBeGreaterThanOrEqual(4);
+      expect(c.canonicalTrace.length).toBeGreaterThan(0);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// loadChallengesForSkill — U3 modeling-transfer target skill (PR 2)
+// ---------------------------------------------------------------------------
+
+describe("loadChallengesForSkill — mat.u3.traduccion_lenguaje_verbal", () => {
+  test("returns the 2 PR 2 modeling-transfer challenges for the U3 translation skill", () => {
+    const challenges = loadChallengesForSkill("mat.u3.traduccion_lenguaje_verbal");
+    expect(challenges.length).toBe(2);
+    for (const c of challenges) {
+      expect(c.skillId).toBe("mat.u3.traduccion_lenguaje_verbal");
+      expect(c.id).toMatch(/^ex\.u3\.traduccion_lenguaje_verbal\.desafio-\d{2}$/);
+      expect(c.type).toBe("multiple-choice");
+      expect(c.options).toBeDefined();
+      expect(c.options!.length).toBe(4);
+    }
+  });
+
+  test("every multiple-choice challenge keeps expectedAnswer as exactly one of its options", () => {
+    // Guards against the PR 2 fresh-review finding: the evaluator uses exact
+    // matching, so a visible correct option that doesn't match expectedAnswer
+    // would be graded wrong even when the student picks it.
+    const challenges = loadChallengesForSkill("mat.u3.traduccion_lenguaje_verbal");
+    expect(challenges.length).toBe(2);
+    for (const c of challenges) {
+      const optionValues = (c.options ?? []).map((o) =>
+        typeof o === "string" ? o : o.value
+      );
+      expect(optionValues).toContain(c.expectedAnswer);
+    }
+  });
+
+  test("desafio-01 requires translating two distinct conditions (multi-relation setup)", () => {
+    const desafio = loadChallengesForSkill("mat.u3.traduccion_lenguaje_verbal")
+      .find((c) => c.id === "ex.u3.traduccion_lenguaje_verbal.desafio-01");
+    expect(desafio).toBeDefined();
+    const prompt = desafio!.prompt;
+    // Prompt must name BOTH relations and commit to a direction so the verification step is non-redundant.
+    expect(prompt).toMatch(/metro de cable|precio del cable|cable/i);
+    expect(prompt).toMatch(/doble.*taco|taco.*doble|2\s*\*?\s*taco/i);
+    expect(prompt).toMatch(/diferencia|excede|exced|supera|mayor que|menor que|le saca|le faltan/i);
+    const correct = desafio!.options!.find(
+      (o) => (typeof o === "string" ? o : o.value) === desafio!.expectedAnswer,
+    )!;
+    const correctText = typeof correct === "string" ? correct : correct.value;
+    expect(correctText).toMatch(/=/);
+    expect(correctText).toMatch(/verifico/i);
+    expect(correctText).toMatch(/\$|\d/);
+  });
+
+  test("desafio-02 requires verification and geometric interpretation (exam-transfer)", () => {
+    const desafio = loadChallengesForSkill("mat.u3.traduccion_lenguaje_verbal")
+      .find((c) => c.id === "ex.u3.traduccion_lenguaje_verbal.desafio-02");
+    expect(desafio).toBeDefined();
+    const prompt = desafio!.prompt;
+    expect(prompt).toMatch(/per[ií]metro/i);
+    expect(prompt).toMatch(/triple|doble|raz[oó]n|proporci[oó]n/i);
+    const correct = desafio!.options!.find(
+      (o) => (typeof o === "string" ? o : o.value) === desafio!.expectedAnswer,
+    )!;
+    const correctText = typeof correct === "string" ? correct : correct.value;
+    expect(correctText).toMatch(/verifico/i);
+    expect(correctText).toMatch(/4 cm/);
+    expect(correctText).toMatch(/12 cm/);
   });
 });

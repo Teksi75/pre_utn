@@ -1,0 +1,83 @@
+[
+  {
+    "id": "ex.u3.traduccion_lenguaje_verbal.desafio-01",
+    "skillId": "mat.u3.traduccion_lenguaje_verbal",
+    "type": "multiple-choice",
+    "difficulty": 5,
+    "prompt": "En una ferretería, el precio de un metro de cable más el doble del precio de un taco es $45, y el precio del taco excede al del cable en $3. ¿Cuál opción traduce el enunciado, resuelve, verifica e interpreta correctamente?",
+    "expectedAnswer": "Planteo x + 2y = 45 e y - x = 3 (siendo x el cable e y el taco); resuelvo x = 13, y = 16; verifico 13 + 32 = 45 ✓ y 16 - 13 = 3 ✓; el cable cuesta $13/m y el taco $16.",
+    "options": [
+      "Planteo x + 2y = 45 e y - x = 3 (siendo x el cable e y el taco); resuelvo x = 13, y = 16; verifico 13 + 32 = 45 ✓ y 16 - 13 = 3 ✓; el cable cuesta $13/m y el taco $16.",
+      "Planteo x + 2y = 45 e y - x = 3; resuelvo x = 16, y = 13 (intercambié los roles); verifico 16 + 26 = 42 ✗.",
+      "Planteo x + 2y = 45 e y - x = 3; resuelvo x = 13, y = 16; verifico 13 + 16 = 29 ✗ (olvidé multiplicar el taco por 2).",
+      "Planteo x + 2y = 45 e x - y = 3 (intercambié la dirección de la diferencia); resuelvo x = 17, y = 14; verifico 17 + 28 = 45 ✓ y 17 - 14 = 3 ✓."
+    ],
+    "commonErrorTags": [
+      "u3_traduccion_incorrecta",
+      "u3_verificacion_omitida",
+      "u3_interpretacion_contextual_incorrecta"
+    ],
+    "pedagogicalNote": "Planteo correcto: x = cable, y = taco; x + 2y = 45 (cable + doble del taco) e y - x = 3 (el taco excede al cable en $3, por lo tanto taco - cable = 3). Sustitución: y = x + 3 → x + 2(x+3) = 45 → 3x + 6 = 45 → 3x = 39 → x = 13; y = 16. Verificación algebraica: 13 + 2·16 = 45 ✓, 16 - 13 = 3 ✓. Verificación contextual: el cable ($13) es más barato que el taco ($16), coherente con 'el taco excede al cable en $3'. Interpretación: declarar ambos precios con su unidad. Distractor 1: intercambia cable/taco al resolver; la verificación falla porque 16 + 2·13 = 42 ≠ 45. Distractor 2: olvida multiplicar el taco por 2 en la verificación; el control detecta el error operativo. Distractor 3: traduce 'excede' con la dirección invertida (x - y = 3 en vez de y - x = 3); aritméticamente cierra las dos igualdades, pero contradice el enunciado original (el cable excedería al taco en $3, no al revés): la verificación matemática sobre la ecuación plantada no reemplaza volver al enunciado original.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-traduccion-lenguaje-verbal"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 1: Ecuaciones lineales — modelización con dos incógnitas y dos relaciones",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Requiere encadenar la cadena completa: elegir la incógnita para cada cantidad, traducir dos relaciones del enunciado como un sistema de dos ecuaciones lineales con dos incógnitas, resolver por sustitución, verificar algebraicamente y reinterpretar las soluciones en el contexto del problema. Integra planteo de sistema con verificación contextual."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 1 RESPUESTAS.pdf",
+        "section": "Modelización con dos relaciones — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: cada distractor es un casi-acierto que representa un error específico de traducción (intercambiar roles, olvidar un factor, invertir el signo de la diferencia), con distractores que verifican su propia consistencia interna para atrapar al alumno que valida solo sobre la ecuación plantada y no sobre el enunciado original."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.traduccion_lenguaje_verbal.desafio-02",
+    "skillId": "mat.u3.traduccion_lenguaje_verbal",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Un rectángulo tiene perímetro 32 cm y el lado mayor es el triple del menor. ¿Cuál opción resuelve, verifica e interpreta correctamente el problema?",
+    "expectedAnswer": "Planteo 2(x + 3x) = 32; resuelvo x = 4; lados 4 cm y 12 cm; verifico 2(4 + 12) = 32 ✓ y 12 = 3·4 ✓; el rectángulo mide 4 cm por 12 cm.",
+    "options": [
+      "Planteo 2(x + 3x) = 32; resuelvo x = 4; lados 4 cm y 12 cm; verifico 2(4 + 12) = 32 ✓ y 12 = 3·4 ✓; el rectángulo mide 4 cm por 12 cm.",
+      "Planteo 2(x + 3x) = 32; resuelvo x = 4; lados 4 cm y 12 cm; verifico 4 + 12 = 16 ✗ (olvidé multiplicar la suma por 2).",
+      "Planteo 2(x + 3x) = 32; resuelvo x = 4; verifico 4·3 = 12 (no interpreté que el resultado son las dimensiones); 'el rectángulo tiene 4 cm'.",
+      "Planteo 2(x + 3x) = 32; resuelvo x = 8 (error: 32/4); lados 8 cm y 24 cm; verifico 2(8 + 24) = 64 ✗."
+    ],
+    "commonErrorTags": [
+      "u3_traduccion_incorrecta",
+      "u3_verificacion_omitida",
+      "u3_interpretacion_contextual_incorrecta",
+      "u3_aislamiento_incorrecto"
+    ],
+    "pedagogicalNote": "Planteo: perímetro = 2·(largo + ancho). Si el lado menor es x, el mayor es 3x; entonces 2(x + 3x) = 32 → 2·4x = 32 → 8x = 32 → x = 4. Lados: 4 cm (menor) y 12 cm (mayor). Verificación contextual 1: 2(4 + 12) = 32 ✓ (perímetro cierra). Verificación contextual 2: 12 = 3·4 ✓ (la relación del enunciado se cumple). Interpretación: ambos lados con su unidad. Distractor 1: calculó x correctamente pero olvidó multiplicar la suma por 2 al verificar; la verificación detecta el error. Distractor 2: llega al valor correcto de x pero no traduce ese número en dimensiones concretas del rectángulo: la respuesta 'el rectángulo tiene 4 cm' no nombra el lado mayor ni nombra el rectángulo, lo que el evaluador marca como interpretación incompleta. Distractor 3: error aritmético al despejar (32/4 = 8 en vez de 32/8 = 4); la verificación detecta el error porque 2(8+24)=64 ≠ 32. Los tres distractores son trampas que la verificación contextual DESCARTA, mostrando que verificar no es opcional.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-traduccion-lenguaje-verbal"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD3_matemática.pdf",
+        "section": "Capítulo 1: Ecuaciones lineales — modelización con perímetro y razón entre lados",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Pide encadenar la cadena completa de modelización: elegir la incógnita (lado menor), traducir dos condiciones del enunciado (perímetro y razón entre lados) como una sola ecuación lineal, resolver, y luego verificar AMBAS condiciones — no solo la ecuación — antes de interpretar las dimensiones. Integra perímetro con razón y verificación doble."
+      },
+      {
+        "path": "material_canonico/Matemática/Examen_Matemática_TEMA 2 RESPUESTAS.pdf",
+        "section": "Modelización geométrica — Calibración de dificultad y estilo de distractores",
+        "sourceUse": "calibrated-from-exam",
+        "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores son casi-aciertos que pasan la prueba algebraica interna pero rompen la verificación contextual o la interpretación — verificar la ecuación no es suficiente, hay que volver al enunciado. Patrón típico de examen, no se copia ningún item."
+      }
+    ]
+  }
+]

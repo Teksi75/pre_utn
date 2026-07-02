@@ -749,24 +749,26 @@
     },
     "fortalecer-u3-lenguaje-modelizacion-transferencia": {
       "status": "in-progress",
-      "branch": "sdd/fortalecer-u3-modelizacion-pr1",
+      "branch": "sdd/fortalecer-u3-challenges-pr2",
       "startedAt": "2026-07-01",
-      "delivery": "chained-prs-stacked-to-main (PR 1 of 2 planned)",
+      "delivery": "chained-prs-stacked-to-main (PR 2 of 2 planned)",
       "pr1": {
         "branch": "sdd/fortalecer-u3-modelizacion-pr1",
-        "status": "open",
-        "summary": "PR 1 — Modelización base U3: agrega la skill hoja mat.u3.traduccion_lenguaje_verbal (visible, sin prerequisito global) con 1 theory node (5 conceptos: variable, traducción, planteo, verificación, interpretación), 2 worked examples, 5 ejercicios MC con distractores semánticos, 3 feedback mappings y 3 etiquetas de error (u3_traduccion_incorrecta, u3_verificacion_omitida, u3_interpretacion_contextual_incorrecta). Cubre la cadena verbal → ecuación → resolución → verificación → interpretación sin modificar el flujo base de /practice ni los IDs existentes. PR 2 quedará para los desafíos U3 de transferencia."
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "27f5ca0",
+        "summary": "PR 1 — Modelización base U3: agrega la skill hoja mat.u3.traduccion_lenguaje_verbal (visible, sin prerequisito global) con 1 theory node (5 conceptos: variable, traducción, planteo, verificación, interpretación), 2 worked examples, 5 ejercicios MC con distractores semánticos, 3 feedback mappings y 3 etiquetas de error (u3_traduccion_incorrecta, u3_verificacion_omitida, u3_interpretacion_contextual_incorrecta). Cubre la cadena verbal → ecuación → resolución → verificación → interpretación sin modificar el flujo base de /practice ni los IDs existentes. PR 2 quedó para los desafíos U3 de transferencia."
       },
       "pr2": {
-        "branch": "pending",
-        "status": "deferred",
-        "summary": "PR 2 — Desafíos U3 de transferencia: queda fuera de este PR 1 (siguiente SDD change). El spec practice-coverage cubre la modelización base; el spec challenge-exercises cubre los desafíos integradores."
+        "branch": "sdd/fortalecer-u3-challenges-pr2",
+        "status": "open",
+        "summary": "PR 2 — Desafíos U3 de transferencia: 2 desafios integradores (difficulty 4-5, category desafio, tags desafio+integrador, multiple-choice con 4 opciones en texto plano) para mat.u3.traduccion_lenguaje_verbal: (1) sistema con dos relaciones (cable+taco: x+2y=45, y-x=3) que exige planteo, sustitución, verificación algebraica E interpretación contextual; (2) perímetro de rectángulo con razón entre lados (perímetro 32, lado mayor = 3 × menor) que exige verificación doble (perímetro + razón) e interpretación de dimensiones. Cubre la cadena transferencial lectura → variable → traducción → planteo → resolución → verificación → interpretación; registra el módulo del loader y endurece la validación (expectedAnswer no-vacío y miembro de options; options[i].value string)."
       },
-      "summary": "Fortalecer U3 con modelización algebraica (lenguaje verbal → planteo → resolución → verificación → interpretación). PR 1 listo en working tree; impacto tracked aproximado actual: 501 inserciones / 33 deleciones. Los docs SDD adicionales pueden aparecer como untracked y se cuentan aparte. PR 2 se difiere para el siguiente change."
+      "summary": "Fortalecer U3 con modelización algebraica (lenguaje verbal → planteo → resolución → verificación → interpretación). PR 1 mergeado a main (27f5ca0); PR 2 listo en working tree con 2 desafios integradores, el registro del loader U3, validación endurecida del loader y 8 tests nuevos en loader.test.ts (paramétricos + shape + comportamiento del contenido). Impacto tracked PR 2: < 400 líneas cambiadas (inserciones + deleciones)."
     }
   },
   "activeBranches": [
-    "sdd/fortalecer-u3-modelizacion-pr1"
+    "sdd/fortalecer-u3-challenges-pr2"
   ],
-  "lastAudit": "2026-07-01T21:30:00-03:00"
+  "lastAudit": "2026-07-02T14:30:00-03:00"
 }
