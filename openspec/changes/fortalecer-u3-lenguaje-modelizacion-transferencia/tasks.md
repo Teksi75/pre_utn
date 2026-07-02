@@ -26,7 +26,7 @@ Chain strategy: pending
 ## Phase 1: Spec and Catalog Foundation
 
 - [x] 1.1 Add delta spec for `practice-coverage`: U3 must cover verbal translation, setup, verification, and contextual interpretation.
-- [ ] 1.2 Add delta spec for `challenge-exercises` only if U3 challenges remain in scope for this slice. (Deferred to PR 2.)
+- [x] 1.2 Add delta spec for `challenge-exercises`: U3 must receive at least 2 modeling-and-transfer challenges covering algebraic setup, multi-relation reasoning, verification, and contextual interpretation. (PR 2: `specs/challenge-exercises/spec.md` adds MODIFIED Pilot Skill Challenge Coverage (U3 addendum) + ADDED PR 2 integrative challenge transfer + development validation, driving the 2 desafios for `mat.u3.traduccion_lenguaje_verbal`.)
 - [x] 1.3 Decide whether `mat.u3.traduccion_lenguaje_verbal` is a visible skill or content inside `mat.u3.ecuaciones_lineales`; document the choice. (PR 1 decision: visible leaf skill, no global prerequisite; documented in design.md and STATUS.json.)
 - [x] 1.4 If visible, add the skill to `src/domain/models/skill-catalog.ts` and `src/domain/catalog/pilot-skills.ts` without making it a global prerequisite.
 
@@ -39,15 +39,15 @@ Chain strategy: pending
 
 ## Phase 3: Challenge Slice
 
-- [ ] 3.1 Create `content/matematica/challenges/unit-3.json` with at least 2 challenges if accepted: one multi-relation setup and one exam-transfer verification task. (DEFERRED to PR 2 / separate SDD change.)
-- [ ] 3.2 Register Unit 3 in `src/lib/challenges/loader.ts` following the existing U1/U2 pattern. (DEFERRED to PR 2 / separate SDD change.)
-- [ ] 3.3 Ensure each challenge has `difficulty` 4-5, `category: "desafio"`, required tags, and non-empty `canonicalTrace`. (DEFERRED to PR 2 / separate SDD change.)
+- [x] 3.1 Create `content/matematica/challenges/unit-3.json` with at least 2 challenges if accepted: one multi-relation setup and one exam-transfer verification task. (PR 2: 2 desafios for `mat.u3.traduccion_lenguaje_verbal` — desafio-01 multi-relation cable+taco 2x2, desafio-02 rectángulo perímetro+razón con verificación doble. Fresh-review fixes: desafio-01 prompt now uses directional "el taco excede al cable en $3" so only one algebraic translation is defensible; both desafios' `expectedAnswer` equals option[0] so the evaluator's exact matcher grades the visible correct option as correct.)
+- [x] 3.2 Register Unit 3 in `src/lib/challenges/loader.ts` following the existing U1/U2 pattern. (PR 2: `unit3ChallengesRaw` imported and appended to `UNIT_REGISTRY` at index 2; `unitFromSkillId` regex already supported `mat.u3.*` from PR 1.)
+- [x] 3.3 Ensure each challenge has `difficulty` 4-5, `category: "desafio"`, required tags, and non-empty `canonicalTrace`. (PR 2: desafio-01 difficulty=5, desafio-02 difficulty=4; both `challengeSection:true`, `category:"desafio"`, `tags:["desafio","integrador"]`, `canonicalTrace` with 2 entries. Fresh-review hardening: the loader now validates `expectedAnswer ∈ options` and `multiple-choice ⇒ options.length ≥ 2` at load time.)
 
 ## Phase 4: Tests and Verification
 
 - [x] 4.1 Update `src/domain/__tests__/content-loaders-u3.test.ts` for new/modified U3 content counts and required feedback mappings. (Bumped to 9 theory nodes, 18 examples, 11 feedback mappings; added U3-MOD-PR1 assertions that verify modeling theory covers planteo + verificación + interpretación, feedback distinguishes translation/omitted verification/context mismatch, and exercises require contextual verification/interpretation.)
-- [ ] 4.2 Add/update challenge loader tests for `loadChallengesForUnit(3)` and `loadChallengesForSkill()` if Phase 3 is included. (DEFERRED — Phase 3 not in PR 1.)
-- [x] 4.3 Run `pnpm run test:run`, `pnpm run typecheck`, and `pnpm run build`. (Review fix verification: 3044/3044 tests pass, typecheck clean, build green.)
+- [x] 4.2 Add/update challenge loader tests for `loadChallengesForUnit(3)` and `loadChallengesForSkill()` if Phase 3 is included. (PR 2: new tests in `src/lib/challenges/__tests__/loader.test.ts` cover loadChallengesForUnit(3) shape; loadChallengesForSkill('mat.u3.traduccion_lenguaje_verbal') returns 2 desafios with id pattern + multiple-choice + 4 options; every multiple-choice challenge keeps `expectedAnswer` as exactly one of its options (defense-in-depth); desafio-01 requires translating two distinct conditions (multi-relation setup) with a committed direction; desafio-02 requires verification + geometric interpretation (exam-transfer); `validateChallengeEntry` rejects entries whose `expectedAnswer` is not in `options`, whose `expectedAnswer` is not a non-empty string, or whose object option has a missing/non-string `value`.)
+- [x] 4.3 Run `pnpm run test:run`, `pnpm run typecheck`, and `pnpm run build`. (PR 2 + fresh-review-fix verification: full test suite + typecheck + build green.)
 - [x] 4.4 Manually smoke `/practice` skill selection, exercise flow, feedback, completion, and challenge handoff. (Statically verified: the new skill is wired into PILOT_SKILLS, the unit-3 content loaders return the new content, the section-card-content test renders 9 U3 cards including the new one. Full browser smoke deferred to verify phase on a deployed environment; the change is non-intrusive to existing navigation.)
 
 ## Phase 5: Cleanup and Scope Control

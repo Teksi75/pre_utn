@@ -17,6 +17,7 @@ import type { ChallengeCanonicalTrace, ChallengeExercise, ChallengeSourceUse } f
 
 import unit1ChallengesRaw from "../../../content/matematica/challenges/unit-1.json";
 import unit2ChallengesRaw from "../../../content/matematica/challenges/unit-2.json";
+import unit3ChallengesRaw from "../../../content/matematica/challenges/unit-3.json";
 
 // ---------------------------------------------------------------------------
 // Raw registry
@@ -27,6 +28,7 @@ type RawChallengeEntry = Record<string, unknown>;
 const UNIT_REGISTRY: ReadonlyArray<readonly RawChallengeEntry[]> = [
   unit1ChallengesRaw as readonly RawChallengeEntry[],
   unit2ChallengesRaw as readonly RawChallengeEntry[],
+  unit3ChallengesRaw as readonly RawChallengeEntry[],
 ];
 
 // ---------------------------------------------------------------------------
@@ -119,6 +121,53 @@ export function validateChallengeEntry(raw: unknown): ChallengeExercise {
   const difficulty = entry["difficulty"];
   if (typeof difficulty !== "number" || (difficulty !== 4 && difficulty !== 5)) {
     throw new Error(`difficulty must be 4 or 5; got: ${JSON.stringify(difficulty)}`);
+  }
+
+  // --- expectedAnswer ∈ options (defense-in-depth for multiple-choice) ---
+  // The evaluator uses exact matching against options, so a visible correct
+  // option whose text differs from expectedAnswer would be graded wrong even
+  // when the student picks it. Enforce the invariant at load time.
+  if (entry["type"] === "multiple-choice") {
+    const rawOptions = entry["options"];
+    if (!Array.isArray(rawOptions) || rawOptions.length < 2) {
+      throw new Error(
+        `multiple-choice challenge requires at least 2 options; got: ${JSON.stringify(rawOptions)}`,
+      );
+    }
+    // Each option must be a string OR { value: string, ... }; the previous
+    // version mapped invalid objects to `undefined` silently.
+    const optionValues: string[] = [];
+    for (let i = 0; i < rawOptions.length; i++) {
+      const o = rawOptions[i];
+      if (typeof o === "string") {
+        optionValues.push(o);
+        continue;
+      }
+      if (typeof o !== "object" || o === null) {
+        throw new Error(
+          `options[${i}] must be a string or { value: string, ... }; got: ${JSON.stringify(o)}`,
+        );
+      }
+      const value = (o as Record<string, unknown>)["value"];
+      if (typeof value !== "string") {
+        throw new Error(
+          `options[${i}].value must be a string; got: ${JSON.stringify(value)}`,
+        );
+      }
+      optionValues.push(value);
+    }
+    // Validate expectedAnswer shape BEFORE membership; otherwise null/number/empty answers slip through silently.
+    const expectedAnswer = entry["expectedAnswer"];
+    if (typeof expectedAnswer !== "string" || expectedAnswer === "") {
+      throw new Error(
+        `expectedAnswer must be a non-empty string for multiple-choice challenges; got: ${JSON.stringify(expectedAnswer)}`,
+      );
+    }
+    if (!optionValues.includes(expectedAnswer)) {
+      throw new Error(
+        `expectedAnswer must be exactly one of the options for multiple-choice challenges; got: ${JSON.stringify(expectedAnswer)}`,
+      );
+    }
   }
 
   // --- tags ---
