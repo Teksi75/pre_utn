@@ -47,6 +47,9 @@ yarn.lock
 # Vercel
 .vercel
 
+# Material canónico local con posible copyright
+/material_canonico/
+
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
