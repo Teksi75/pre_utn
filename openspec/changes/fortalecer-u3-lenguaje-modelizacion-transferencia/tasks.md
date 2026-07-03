@@ -54,4 +54,4 @@ Chain strategy: pending
 
 - [x] 5.1 Confirm no files under `material_canonico/**` are included in this change. (No `material_canonico/**` paths appear in `git status`.)
 - [x] 5.2 Confirm titles/copy preserve multi-institution framing and do not personify the app as a tutor. (Copy is neutral, descriptive, focused on what the student is doing. Review fix: new U3 pedagogical content and feedback use neutral professional Spanish imperatives instead of voseo.)
-- [x] 5.3 Record any deferred issues: rectas paralelas/perpendiculares, sistemas con parámetro, mate-explorer audit, and U3 challenges. (All remain out of scope per proposal.md/design.md; PR 2 for U3 challenges is deferred and no challenge artifact was added in PR 1.)
+- [x] 5.3 Record any deferred issues: rectas paralelas/perpendiculares, sistemas con parámetro, and mate-explorer audit remain out of scope per proposal.md/design.md. U3 transfer challenges are no longer deferred: PR 2 added and merged the accepted challenge slice (`a173ce0`).
