@@ -18,3 +18,4 @@ Convenciones:
 Auditorías disponibles:
 
 - [`unidad-1/`](./unidad-1/) — primera pasada formal de la unidad piloto de Matemática.
+- [`unidad-3/`](./unidad-3/) — auditoría read-only de Unidad 3 (Matemática) generada en modo exploratorio desde el cambio SDD `auditar-unidad-3-pedagogia`.
