@@ -772,17 +772,21 @@
       "summary": "Fortalecer U3 con modelización algebraica (lenguaje verbal → planteo → resolución → verificación → interpretación) completado en dos PRs stacked-to-main. PR 1 mergeado a main (27f5ca0) agregó la skill base, teoría, ejemplos, ejercicios y feedback; PR 2 mergeado a main (a173ce0) agregó 2 desafios integradores, registro del loader U3, validación endurecida del loader y tests de comportamiento."
     },
     "align-u2-practice-official-exercises": {
-      "status": "in-progress",
-      "branch": "align-u2-practice-official-exercises",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-07-06",
+      "completedAt": "2026-07-06",
+      "mergedTo": "main",
+      "mergeCommit": "5de0fb6c9a7af280d5b93f8bc6630ea58c4293b9",
+      "pr": 81,
       "verifiedAt": "2026-07-06",
       "archivedAt": "2026-07-06",
       "delivery": "auto-chain; stacked-to-main; consolidated branch for PR review",
       "archive": "openspec/changes/archive/2026-07-06-align-u2-practice-official-exercises/",
       "verify": "PASS WITH WARNINGS — pnpm run test:run (3134/3134), pnpm run typecheck, pnpm run build",
-      "summary": "Aligns Unit 2 practice with official UTN 2025 02_ej_utn.pdf: 31 → 63 exercises, 32 official-alignment exercises across existing 7 U2 skills, audit docs, feedback mappings for new U2 error tags, catalog/type/skill guard tests, and archived SDD artifacts. Pending merge to main."
+      "summary": "Aligns Unit 2 practice with official UTN 2025 02_ej_utn.pdf: 31 → 63 exercises, 32 official-alignment exercises across existing 7 U2 skills, audit docs, feedback mappings for new U2 error tags, catalog/type/skill guard tests, and archived SDD artifacts. Merged via PR #81."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-07-03T00:00:00-03:00"
+  "lastAudit": "2026-07-06T15:50:00-03:00"
 }
