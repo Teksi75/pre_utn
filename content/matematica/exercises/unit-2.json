@@ -153,6 +153,224 @@
     ]
   },
   {
+    "id": "ex.u2.polinomios_basico.6",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "polinomios_basico",
+    "prompt": "¿Cuál de las siguientes expresiones SÍ es un polinomio en x?",
+    "expectedAnswer": "-5",
+    "options": [
+      {
+        "value": "\\dfrac{3}{x-1} + 2x",
+        "label": "$\\dfrac{3}{x-1} + 2x$"
+      },
+      {
+        "value": "x^{1/3} + 4x^2 - 5",
+        "label": "$x^{1/3} + 4x^2 - 5$"
+      },
+      {
+        "value": "-5",
+        "label": "$-5$"
+      },
+      {
+        "value": "2^x - 3x",
+        "label": "$2^x - 3x$"
+      }
+    ],
+    "commonErrorTags": [
+      "u2_grado_incorrecto"
+    ],
+    "pedagogicalNote": "Un polinomio en x requiere que todos los exponentes de x sean enteros no negativos y que NO haya x en denominador. La constante -5 es un polinomio de grado 0 (toda constante es un polinomio). Distractor A: denominador con x → expresión racional, no polinomio. Distractor B: exponente 1/3 no es entero → no es polinomio. Distractor D: 2^x tiene la x en el exponente → función exponencial, no polinomio. Errores típicos: olvidar que las constantes son polinomios de grado 0, o creer que cualquier coeficiente irracional (como π) 'no cuenta' como coeficiente válido.",
+    "relatedTheoryIds": [
+      "theory-polinomios-basico"
+    ],
+    "relatedExampleIds": [
+      "example-polinomios-basico-1"
+    ],
+    "tags": [
+      "02_ej_utn_1"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 1: Definición de polinomio",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
+      },
+      {
+        "path": "00-Ejercicios UTN/02_ej_utn.pdf",
+        "section": "Ítem 1 a-f: Identificación de polinomios (denominadores, exponentes fraccionarios, constantes)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 1"
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.polinomios_basico.7",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "polinomios_basico",
+    "prompt": "Para $P(x) = 3x^3 - x^2 + 4x - 2$ (polinomio de grado 3), ¿cuáles son los valores de $P(1)$ y $P(-1)$?",
+    "expectedAnswer": "(4, -10)",
+    "options": [
+      {
+        "value": "(4, -10)",
+        "label": "$(4,\\ -10)$"
+      },
+      {
+        "value": "(4, 10)",
+        "label": "$(4,\\ 10)$"
+      },
+      {
+        "value": "(-4, -10)",
+        "label": "$(-4,\\ -10)$"
+      },
+      {
+        "value": "(4, -2)",
+        "label": "$(4,\\ -2)$"
+      }
+    ],
+    "commonErrorTags": [
+      "u2_signo_operacion",
+      "u2_grado_incorrecto"
+    ],
+    "pedagogicalNote": "El grado de un polinomio es el mayor exponente con coeficiente no nulo: 3 (no se cuenta la cantidad de términos). P(1) = 3(1) − 1(1) + 4(1) − 2 = 3 − 1 + 4 − 2 = 4. P(−1) = 3(−1) − 1(1) + 4(−1) − 2 = −3 − 1 − 4 − 2 = −10. Respuesta correcta: (4, −10). Distractor A: P(−1) calculado como +10 (signo perdido al sustituir x = −1 en −x²). Distractor B: P(1) calculado como −4 (signo perdido). Distractor C: P(−1) calculado como −2 (calculó P(0) = −2 por confusión). El formato de respuesta es una tupla de dos valores porque la consigna pide múltiples números a la vez (no se puede usar 'numerical' con tuplas según la disciplina del spec).",
+    "relatedTheoryIds": [
+      "theory-polinomios-basico"
+    ],
+    "relatedExampleIds": [
+      "example-polinomios-basico-1"
+    ],
+    "tags": [
+      "02_ej_utn_2"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulos 2-3: Grado y valor numérico de un polinomio",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
+      },
+      {
+        "path": "00-Ejercicios UTN/02_ej_utn.pdf",
+        "section": "Ítem 2 a-b: Grado y valor numérico para varios números (Q(1), Q(-1), R(2), R(0), R(-1))",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 2"
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.polinomios_basico.8",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "polinomios_basico",
+    "prompt": "Dados $P(x) = x^2 - 2x + 5$ y $Q(x) = 2x + 1$, calculá $2\\cdot P(-2) - Q(3)$.",
+    "expectedAnswer": "19",
+    "options": [
+      {
+        "value": "19",
+        "label": "$19$"
+      },
+      {
+        "value": "26",
+        "label": "$26$"
+      },
+      {
+        "value": "33",
+        "label": "$33$"
+      },
+      {
+        "value": "7",
+        "label": "$7$"
+      }
+    ],
+    "commonErrorTags": [
+      "u2_signo_operacion"
+    ],
+    "pedagogicalNote": "Paso 1: calcular cada evaluación por separado. P(−2) = (−2)² − 2(−2) + 5 = 4 + 4 + 5 = 13. Q(3) = 2(3) + 1 = 7. Paso 2: combinar según la expresión 2·P(−2) − Q(3) = 2·13 − 7 = 26 − 7 = 19. Respuesta correcta: 19. Distractor A: 26 = 2·P(−2), olvidó restar Q(3). Distractor B: 33 = 2·P(−2) + Q(3), signo equivocado en la resta. Distractor C: 7 = Q(3) solamente, confundió la operación y devolvió uno solo de los valores. Errores típicos: distribuir mal el signo negativo al combinar o saltear la evaluación de uno de los polinomios.",
+    "relatedTheoryIds": [
+      "theory-polinomios-basico"
+    ],
+    "relatedExampleIds": [
+      "example-polinomios-basico-1"
+    ],
+    "tags": [
+      "02_ej_utn_3"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 3: Valor numérico de un polinomio",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
+      },
+      {
+        "path": "00-Ejercicios UTN/02_ej_utn.pdf",
+        "section": "Ítem 3 a-b: Evaluación combinada de dos polinomios (P(-1)+Q(0), 2·P(-2)-Q(3))",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 3"
+      }
+    ]
+  },
+  {
+    "id": "ex.u2.polinomios_basico.9",
+    "skillId": "mat.u2.polinomios_basico",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "polinomios_basico",
+    "prompt": "Indicá cuál de los siguientes polinomios está escrito en forma estándar completa (términos ordenados de mayor a menor grado, con todos los grados representados, incluso si el coeficiente es 0).",
+    "expectedAnswer": "4x^3 + 0x^2 - 2x + 1",
+    "options": [
+      {
+        "value": "4x^3 + 0x^2 - 2x + 1",
+        "label": "$4x^3 + 0x^2 - 2x + 1$"
+      },
+      {
+        "value": "4x^3 - 2x + 1",
+        "label": "$4x^3 - 2x + 1$"
+      },
+      {
+        "value": "1 - 2x + 4x^3",
+        "label": "$1 - 2x + 4x^3$"
+      },
+      {
+        "value": "4x^4 - 2x + 1",
+        "label": "$4x^4 - 2x + 1$"
+      }
+    ],
+    "commonErrorTags": [
+      "u2_termino_faltante"
+    ],
+    "pedagogicalNote": "La forma estándar completa exige: (a) ordenar los términos de mayor a menor grado; (b) incluir TODOS los grados desde el grado total hasta grado 0, usando 0 cuando el coeficiente es nulo. La opción correcta es $4x^3 + 0x^2 - 2x + 1$ — el $0x^2$ indica explícitamente que el término de grado 2 no está presente pero la forma está completa. Distractor A: $4x^3 - 2x + 1$ está ordenado pero NO completa (omite $0x^2$). Distractor B: $1 - 2x + 4x^3$ está en orden ascendente, no estándar. Distractor C: $4x^4 - 2x + 1$ es un polinomio de grado 4, no es la misma expresión. La unicidad (ítem 4 de la guía): el valor numérico $P(a)$ para un $a$ particular es un único escalar, pero el polinomio $P$ puede tomar infinitos valores $P(x)$ al variar $x$.",
+    "relatedTheoryIds": [
+      "theory-polinomios-basico"
+    ],
+    "relatedExampleIds": [
+      "example-polinomios-basico-1"
+    ],
+    "tags": [
+      "02_ej_utn_4",
+      "02_ej_utn_5"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matemática/UNIDAD2_matemática.pdf",
+        "section": "Capítulo 5: Orden y completitud de un polinomio",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
+      },
+      {
+        "path": "00-Ejercicios UTN/02_ej_utn.pdf",
+        "section": "Ítem 4 (unicidad del valor numérico) y Ítem 5 a-e (orden y completitud)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide items 4 and 5"
+      }
+    ]
+  },
+  {
     "id": "ex.u2.operaciones_polinomios.2",
     "skillId": "mat.u2.operaciones_polinomios",
     "type": "multiple-choice",
@@ -231,6 +449,150 @@
       "u2_signo_operacion"
     ],
     "pedagogicalNote": "(x−2)(x+3) = x² + 3x − 2x − 6 = x² + x − 6. Distractores: x²−x−6 (error de signo en −2x+3x), x²−6 (olvida el término lineal), x²+5x−6 (suma 3+2=5 en vez de −2+3=1)."
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.6",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "operaciones_polinomios",
+    "prompt": "Dividí $P(x) = x^4 - 1$ por $Q(x) = x^2 - 1$ usando el algoritmo de división larga. ¿Cuál es el cociente?",
+    "expectedAnswer": "x^2 + 1",
+    "options": [
+      {"value": "x^2 + 1", "label": "$x^2 + 1$"},
+      {"value": "x^2 - 1", "label": "$x^2 - 1$"},
+      {"value": "x^2 + x + 1", "label": "$x^2 + x + 1$"},
+      {"value": "x^2 + 2", "label": "$x^2 + 2$"}
+    ],
+    "commonErrorTags": ["u2_termino_faltante", "u2_signo_operacion"],
+    "pedagogicalNote": "La división larga de polinomios sigue el algoritmo: se divide el término de mayor grado del dividendo por el del divisor, se multiplica el divisor por ese cociente y se resta. Se repite hasta que el resto tenga grado menor que el divisor. Para $P(x) = x^4 - 1$ y $Q(x) = x^2 - 1$: $x^4 \\div x^2 = x^2$; $x^2(x^2 - 1) = x^4 - x^2$; restar da $0 + x^2 - 1$. Luego $x^2 \\div x^2 = 1$; $1\\cdot(x^2 - 1) = x^2 - 1$; restar da $0$. Cociente $x^2 + 1$, resto $0$. Distractor A: $x^2 - 1$ confunde el cociente con el divisor. Distractor B: $x^2 + x + 1$ aplica una factorización genérica que no aplica aquí. Distractor C: $x^2 + 2$ surge de sumar los términos constantes en lugar de cancelar. Errores típicos: omitir el coeficiente 0 de un grado faltante (u2_termino_faltante) o copiar mal el signo al restar el producto parcial (u2_signo_operacion).",
+    "relatedTheoryIds": ["theory-operaciones-polinomios"],
+    "relatedExampleIds": ["example-operaciones-polinomios-1"],
+    "tags": ["02_ej_utn_7"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 9: Operaciones con polinomios — división larga", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 7 a-e: División larga de polinomios (divisores cuadráticos)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 7"}
+    ]
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.7",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "operaciones_polinomios",
+    "prompt": "Dividí $P(x) = x^3 + x^2 + x + 5$ por $Q(x) = x^2 + 1$. ¿Cuál es el cociente?",
+    "expectedAnswer": "x + 1",
+    "options": [
+      {"value": "x + 1", "label": "$x + 1$"},
+      {"value": "x - 1", "label": "$x - 1$"},
+      {"value": "x + 2", "label": "$x + 2$"},
+      {"value": "x^2 + x + 1", "label": "$x^2 + x + 1$"}
+    ],
+    "commonErrorTags": ["u2_termino_faltante", "u2_signo_operacion"],
+    "pedagogicalNote": "División larga entre $P(x) = x^3 + x^2 + x + 5$ y $Q(x) = x^2 + 1$. Paso 1: $x^3 \\div x^2 = x$; $x(x^2 + 1) = x^3 + x$; restar da $0 + x^2 + 0 + 5 = x^2 + 5$ (no se cancelan los $x$ internos, sólo los $x^3$). Paso 2: $x^2 \\div x^2 = 1$; $1\\cdot(x^2 + 1) = x^2 + 1$; restar da $0 + 0 + 4 = 4$. Cociente $x + 1$, resto $4$. Distractor A: $x - 1$ invierte el signo del segundo paso. Distractor B: $x + 2$ surge de sumar el resto al cociente en lugar de continuar la división. Distractor C: $x^2 + x + 1$ no divide en absoluto: lee la primera fila del cociente parcial como cociente final. Errores típicos: saltear el grado faltante durante la resta (u2_termino_faltante) o copiar mal los signos al multiplicar/restar (u2_signo_operacion).",
+    "relatedTheoryIds": ["theory-operaciones-polinomios"],
+    "relatedExampleIds": ["example-operaciones-polinomios-1"],
+    "tags": ["02_ej_utn_7"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 9: División larga de polinomios con resto no nulo", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 7 a-e: División larga de polinomios (caso con resto)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 7"}
+    ]
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.8",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "operaciones_polinomios",
+    "prompt": "Dividí $P(x) = x^4 + 2x^2 - 8$ por $Q(x) = x^2 - 2$. ¿Cuál es el cociente?",
+    "expectedAnswer": "x^2 + 4",
+    "options": [
+      {"value": "x^2 + 4", "label": "$x^2 + 4$"},
+      {"value": "x^2 - 4", "label": "$x^2 - 4$"},
+      {"value": "x^2 + 2x + 4", "label": "$x^2 + 2x + 4$"},
+      {"value": "x^2 + 4x + 4", "label": "$x^2 + 4x + 4$"}
+    ],
+    "commonErrorTags": ["u2_termino_faltante", "u2_signo_operacion"],
+    "pedagogicalNote": "División larga entre $P(x) = x^4 + 2x^2 - 8$ y $Q(x) = x^2 - 2$. Paso 1: $x^4 \\div x^2 = x^2$; $x^2(x^2 - 2) = x^4 - 2x^2$; restar da $0 + 0 + 4x^2 - 8$. Paso 2: $4x^2 \\div x^2 = 4$; $4(x^2 - 2) = 4x^2 - 8$; restar da $0$. Cociente $x^2 + 4$, resto $0$. Distractor A: $x^2 - 4$ invierte el signo del segundo término del cociente al restar. Distractor B: $x^2 + 2x + 4$ confunde el divisor $(x^2 - 2)$ con $(x + 1)^2 = x^2 + 2x + 1$ y aplica un cociente pensado para esa forma. Distractor C: $x^2 + 4x + 4 = (x + 2)^2$: confusión típica con cuadrado de binomio, distinta familia de respuesta. Errores típicos: saltear la resta del producto parcial cuando hay grados faltantes (u2_termino_faltante) o equivocarse en el signo del término multiplicado (u2_signo_operacion).",
+    "relatedTheoryIds": ["theory-operaciones-polinomios"],
+    "relatedExampleIds": ["example-operaciones-polinomios-1"],
+    "tags": ["02_ej_utn_7"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 9: División exacta entre polinomios (dividendo de grado 4, divisor de grado 2)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 7 a-e: División larga de polinomios (caso exacto)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 7"}
+    ]
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.9",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "operaciones_polinomios",
+    "prompt": "Expandí $(2x + 3)^2$. ¿Cuál es el polinomio resultado?",
+    "expectedAnswer": "4x^2 + 12x + 9",
+    "options": [
+      {"value": "4x^2 + 12x + 9", "label": "$4x^2 + 12x + 9$"},
+      {"value": "4x^2 + 6x + 9", "label": "$4x^2 + 6x + 9$"},
+      {"value": "4x^2 + 12x - 9", "label": "$4x^2 + 12x - 9$"},
+      {"value": "2x^2 + 6x + 9", "label": "$2x^2 + 6x + 9$"}
+    ],
+    "commonErrorTags": ["u2_signo_operacion"],
+    "pedagogicalNote": "Cuadrado de binomio: $(a + b)^2 = a^2 + 2ab + b^2$. Con $a = 2x$ y $b = 3$: $a^2 = (2x)^2 = 4x^2$; $2ab = 2 \\cdot (2x) \\cdot 3 = 12x$; $b^2 = 3^2 = 9$. Resultado $4x^2 + 12x + 9$. Distractor A: $4x^2 + 6x + 9$ olvida multiplicar el cross term por $2$ (escribe sólo $a\\cdot b = 6x$). Distractor B: $4x^2 + 12x - 9$ cambia el signo del término independiente, error típico al confundir cuadrado con diferencia. Distractor C: $2x^2 + 6x + 9$ olvida elevar al cuadrado el coeficiente del primer término $(2x)^2 = 4x^2$. Errores frecuentes: olvidar que el producto $2ab$ dobla el cross term, o no elevar al cuadrado el coeficiente completo.",
+    "relatedTheoryIds": ["theory-operaciones-polinomios"],
+    "relatedExampleIds": ["example-operaciones-polinomios-2"],
+    "tags": ["02_ej_utn_9"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 9: Productos notables — cuadrado de binomio $(a+b)^2 = a^2 + 2ab + b^2$", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 9 a-h: Productos notables y potencias (cuadrado de binomio)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 9"}
+    ]
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.10",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "operaciones_polinomios",
+    "prompt": "Expandí $(x + 1)^3$. ¿Cuál es el polinomio resultado?",
+    "expectedAnswer": "x^3 + 3x^2 + 3x + 1",
+    "options": [
+      {"value": "x^3 + 3x^2 + 3x + 1", "label": "$x^3 + 3x^2 + 3x + 1$"},
+      {"value": "x^3 + 3x^2 + 3x - 1", "label": "$x^3 + 3x^2 + 3x - 1$"},
+      {"value": "x^3 + 3x + 1", "label": "$x^3 + 3x + 1$"},
+      {"value": "x^3 - 3x^2 + 3x + 1", "label": "$x^3 - 3x^2 + 3x + 1$"}
+    ],
+    "commonErrorTags": ["u2_signo_operacion"],
+    "pedagogicalNote": "Cubo de binomio: $(a + b)^3 = a^3 + 3a^2 b + 3ab^2 + b^3$. Con $a = x$, $b = 1$: $a^3 = x^3$; $3a^2 b = 3x^2 \\cdot 1 = 3x^2$; $3ab^2 = 3x \\cdot 1 = 3x$; $b^3 = 1$. Resultado $x^3 + 3x^2 + 3x + 1$. Distractor A: $x^3 + 3x^2 + 3x - 1$ invierte el signo del término independiente. Distractor B: $x^3 + 3x + 1$ omite el término $3x^2$ (confunde cubo con una mezcla de cuadrado y lineal). Distractor C: $x^3 - 3x^2 + 3x + 1$ invierte el signo del $3x^2$: confusión típica entre $(a+b)^3$ y $(a-b)^3$, que tiene los términos del medio con signo opuesto. Memorizar los coeficientes $(1, 3, 3, 1)$ del triángulo de Pascal ayuda a evitar este error.",
+    "relatedTheoryIds": ["theory-operaciones-polinomios"],
+    "relatedExampleIds": ["example-operaciones-polinomios-2"],
+    "tags": ["02_ej_utn_9"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 9: Cubo de binomio $(a+b)^3 = a^3 + 3a^2b + 3ab^2 + b^3$", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 9 a-h: Productos notables y potencias (cubo de binomio)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 9"}
+    ]
+  },
+  {
+    "id": "ex.u2.operaciones_polinomios.11",
+    "skillId": "mat.u2.operaciones_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "operaciones_polinomios",
+    "prompt": "Expandí y simplificá $(x + 2)^3 - (x + 1)^3$. ¿Cuál es el polinomio resultado?",
+    "expectedAnswer": "3x^2 + 9x + 7",
+    "options": [
+      {"value": "3x^2 + 9x + 7", "label": "$3x^2 + 9x + 7$"},
+      {"value": "3x^2 + 9x - 7", "label": "$3x^2 + 9x - 7$"},
+      {"value": "x^2 + 9x + 7", "label": "$x^2 + 9x + 7$"},
+      {"value": "3x^2 + 5x + 7", "label": "$3x^2 + 5x + 7$"}
+    ],
+    "commonErrorTags": ["u2_signo_operacion"],
+    "pedagogicalNote": "Paso 1 — expandir cada cubo. $(x + 2)^3 = x^3 + 6x^2 + 12x + 8$; $(x + 1)^3 = x^3 + 3x^2 + 3x + 1$. Paso 2 — restar término a término. Los $x^3$ se cancelan: $(6 - 3)x^2 = 3x^2$; $(12 - 3)x = 9x$; $(8 - 1) = 7$. Resultado $3x^2 + 9x + 7$. Distractor A: $3x^2 + 9x - 7$ invierte el signo de la constante: error común al distribuir la resta, sólo cambia $(x+2)^3$ en vez de restar. Distractor B: $x^2 + 9x + 7$ cree que el coeficiente de $x^2$ es $1$ (olvida que $6 - 3 = 3$, no $1$). Distractor C: $3x^2 + 5x + 7$ calcula $(12 - 7) = 5$ para el coeficiente lineal: confundir los términos intermedios al restar. La clave es restar cada coeficiente por separado y no saltear ninguno.",
+    "relatedTheoryIds": ["theory-operaciones-polinomios"],
+    "relatedExampleIds": ["example-operaciones-polinomios-2"],
+    "tags": ["02_ej_utn_9"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 9: Diferencia de cubos de binomios (combinación de cubos)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 9 a-h: Productos notables y potencias (diferencia de cubos)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 9"}
+    ]
   },
   {
     "id": "ex.u2.ruffini_resto.2",
@@ -716,6 +1078,522 @@
         "sourceUse": "reference",
         "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"
       }
+    ]
+  },
+  {
+    "id": "ex.u2.factorizacion.5",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "factorizacion",
+    "prompt": "Extraé el máximo factor común de $6x^3 + 9x^2 - 12x$. ¿Cuál es la factorización correcta?",
+    "expectedAnswer": "3x(2x^2 + 3x - 4)",
+    "options": [
+      {"value": "3x(2x^2 + 3x - 4)", "label": "$3x(2x^2 + 3x - 4)$"},
+      {"value": "3x(2x^2 + 3x) - 12x", "label": "$3x(2x^2 + 3x) - 12x$"},
+      {"value": "3x(2x^2 + 3x + 4)", "label": "$3x(2x^2 + 3x + 4)$"},
+      {"value": "x(6x^2 + 9x - 12)", "label": "$x(6x^2 + 9x - 12)$"}
+    ],
+    "commonErrorTags": ["u2_factorizacion_incompleta", "u2_signo_factorizacion"],
+    "pedagogicalNote": "Factor común extendido: el MCD entre los coeficientes (6, 9, −12) es 3 y entre las partes literales es x (todos tienen x). Por lo tanto el factor común es 3x. Dividiendo: 6x³ ÷ 3x = 2x², 9x² ÷ 3x = 3x, −12x ÷ 3x = −4. Resultado: 3x(2x² + 3x − 4). Distractor A: 3x(2x² + 3x) − 12x sacó factor sólo de los dos primeros términos (factorización incompleta). Distractor B: 3x(2x² + 3x + 4) olvidó el signo al dividir −12x ÷ 3x y escribió +4 en vez de −4; el paréntesis queda con todos los términos correctos salvo el signo del último (u2_signo_factorizacion). Distractor C: x(6x² + 9x − 12) sólo extrajo x, dejando 6, 9, −12 sin reducir; no es el MÁXIMO factor común. Errores típicos: dividir sólo algunos términos (u2_factorizacion_incompleta), equivocarse en el signo del cociente (u2_signo_factorizacion), o confundir el coeficiente común con uno no maximal.",
+    "relatedTheoryIds": ["theory-factorizacion"],
+    "relatedExampleIds": ["example-factorizacion-1"],
+    "tags": ["02_ej_utn_10_factor_comun"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 10: Caso 1 — Factor común (incluye factor común extendido)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 10 a-f: Factor común (con fracciones y coeficientes grandes)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 10 (factor común)"}
+    ]
+  },
+  {
+    "id": "ex.u2.factorizacion.6",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "factorizacion",
+    "prompt": "Factorizá por grupos: $ax + bx + ay + by$. ¿Cuál es la factorización correcta?",
+    "expectedAnswer": "(x + y)(a + b)",
+    "options": [
+      {"value": "(x + y)(a + b)", "label": "$(x + y)(a + b)$"},
+      {"value": "x(a + b) + y(a + b)", "label": "$x(a + b) + y(a + b)$"},
+      {"value": "(a + b)(x - y)", "label": "$(a + b)(x - y)$"},
+      {"value": "(a + x)(b + y)", "label": "$(a + x)(b + y)$"}
+    ],
+    "commonErrorTags": ["u2_factorizacion_incompleta", "u2_signo_factorizacion"],
+    "pedagogicalNote": "Factor común por grupos: agrupar los términos que comparten factor común. Paso 1: (ax + bx) + (ay + by) = x(a + b) + y(a + b). Paso 2: observar que (a + b) aparece como factor común de los dos grupos. Paso 3: factorizar (a + b): (x + y)(a + b). Distractor A: x(a + b) + y(a + b) sólo identificó el factor común a los grupos pero no sacó factor común una segunda vez (factorización incompleta en el último paso). Distractor B: (a + b)(x − y) saca factor común pero con un signo errado: el segundo grupo es +y(a + b), no −y(a + b). Distractor C: (a + x)(b + y) reagrupa los términos sin factor común real (mezcla a con x en el mismo factor — no hay factor común). Errores típicos: quedarse en el primer agrupamiento sin completar la segunda factorización, o cambiar el signo al copiar el segundo grupo.",
+    "relatedTheoryIds": ["theory-factorizacion"],
+    "relatedExampleIds": ["example-factorizacion-2"],
+    "tags": ["02_ej_utn_10_grupos"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 10: Caso 2 — Factor común por grupos", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 10 a-d: Factor común por grupos de a + b + c + d", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 10 (factor común por grupos)"}
+    ]
+  },
+  {
+    "id": "ex.u2.factorizacion.7",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "category": "factorizacion",
+    "prompt": "Factorizá $x^2 + 10x + 25$. ¿Cuál es la factorización correcta?",
+    "expectedAnswer": "(x + 5)^2",
+    "options": [
+      {"value": "(x + 5)^2", "label": "$(x + 5)^2$"},
+      {"value": "(x + 5)(x - 5)", "label": "$(x + 5)(x - 5)$"},
+      {"value": "(x + 25)(x + 1)", "label": "$(x + 25)(x + 1)$"},
+      {"value": "(x - 5)^2", "label": "$(x - 5)^2$"}
+    ],
+    "commonErrorTags": ["u2_caso_incorrecto", "u2_signo_factorizacion"],
+    "pedagogicalNote": "Trinomio cuadrado perfecto (TCP): a² + 2ab + b² = (a + b)². Verificar que el trinomio tiene la forma: término cuadrático (x²), término doble (2·x·5 = 10x), término independiente (25 = 5²). a = x, b = 5. Resultado: (x + 5)². Distractor A: (x + 5)(x − 5) aplica diferencia de cuadrados en vez de TCP (caso incorrecto: x² + 25 no es diferencia). Distractor B: (x + 25)(x + 1) confunde los números: 25 y 1 no son raíces cuadradas (√25 = 5, no 25). Distractor C: (x − 5)² pierde el signo del término doble (10x es positivo, así que los dos binomios llevan el mismo signo +). Errores típicos: aplicar el caso incorrecto (u2_caso_incorrecto) o equivocarse en el signo del binomio (u2_signo_factorizacion).",
+    "relatedTheoryIds": ["theory-factorizacion"],
+    "relatedExampleIds": ["example-factorizacion-3"],
+    "tags": ["02_ej_utn_10_tcp"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 10: Caso 3 — Trinomio cuadrado perfecto (TCP)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 10 a-f: Trinomio cuadrado perfecto (caso puro)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 10 (TCP puro)"}
+    ]
+  },
+  {
+    "id": "ex.u2.factorizacion.8",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "factorizacion",
+    "prompt": "Factorizá $4x^2 + a^6 + 4xa^3$. ¿Cuál es la factorización correcta?",
+    "expectedAnswer": "(2x + a^3)^2",
+    "options": [
+      {"value": "(2x + a^3)^2", "label": "$(2x + a^3)^2$"},
+      {"value": "(2x - a^3)^2", "label": "$(2x - a^3)^2$"},
+      {"value": "(x + a^3)^2", "label": "$(x + a^3)^2$"},
+      {"value": "(2x + a^3)(2x - a^3)", "label": "$(2x + a^3)(2x - a^3)$"}
+    ],
+    "commonErrorTags": ["u2_signo_factorizacion", "u2_factorizacion_incompleta"],
+    "pedagogicalNote": "TCP con reordenamiento: primero hay que REORDENAR los términos para ver la forma a² + 2ab + b². El polinomio dado está en orden $4x^2 + a^6 + 4xa^3$ pero la forma TCP requiere a² primero, luego 2ab, luego b²: $4x^2 + 4xa^3 + a^6$. Verificar: a = 2x (porque (2x)² = 4x²), b = a³ (porque (a³)² = a⁶), y el término doble 2·(2x)·(a³) = 4xa³ ✓. Resultado: (2x + a³)². Distractor A: (2x − a³)² pierde el signo del término doble (4xa³ es positivo). Distractor B: (x + a³)² no eleva al cuadrado el coeficiente 2: (x)² = x², no 4x². Distractor C: (2x + a³)(2x − a³) confunde TCP con diferencia de cuadrados (no aplica porque el signo del medio es +). Errores típicos: no reordenar antes de aplicar el caso (u2_factorizacion_incompleta), olvidar el coeficiente de a (u2_signo_factorizacion).",
+    "relatedTheoryIds": ["theory-factorizacion"],
+    "relatedExampleIds": ["example-factorizacion-3"],
+    "tags": ["02_ej_utn_10_tcp"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 10: Caso 3 — Trinomio cuadrado perfecto con reordenamiento", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 10 a-f: Trinomio cuadrado perfecto (caso con reordenamiento)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 10 (TCP con reordenamiento)"}
+    ]
+  },
+  {
+    "id": "ex.u2.factorizacion.9",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "factorizacion",
+    "prompt": "Factorizá $x^3 + 6x^2 + 12x + 8$. ¿Cuál es la factorización correcta?",
+    "expectedAnswer": "(x + 2)^3",
+    "options": [
+      {"value": "(x + 2)^3", "label": "$(x + 2)^3$"},
+      {"value": "(x + 2)^2", "label": "$(x + 2)^2$"},
+      {"value": "(x + 1)^3", "label": "$(x + 1)^3$"},
+      {"value": "(x - 2)^3", "label": "$(x - 2)^3$"}
+    ],
+    "commonErrorTags": ["u2_caso_incorrecto", "u2_signo_factorizacion"],
+    "pedagogicalNote": "Cuatrinomio cubo perfecto: a³ ± 3a²b + 3ab² ± b³ = (a ± b)³. Verificar: a³ = x³ → a = x; b³ = 8 → b = 2; término 3a²b = 3·x²·2 = 6x² ✓; término 3ab² = 3·x·4 = 12x ✓. Como todos los términos son positivos, (a + b)³ = (x + 2)³. Distractor A: (x + 2)² confunde cubo con cuadrado: expandido da x² + 4x + 4, no x³ + 6x² + 12x + 8 (caso incorrecto). Distractor B: (x + 1)³ tiene la raíz mal calculada: 1³ = 1, no 8. Distractor C: (x − 2)³ pierde el signo del término doble (todos los términos del polinomio son positivos). Errores típicos: confundir cubo con cuadrado (u2_caso_incorrecto), error de signo al copiar el binomio (u2_signo_factorizacion).",
+    "relatedTheoryIds": ["theory-factorizacion"],
+    "relatedExampleIds": ["example-factorizacion-4"],
+    "tags": ["02_ej_utn_10_cubo"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 10: Caso 4 — Cuatrinomio cubo perfecto", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 10 a-f: Cuatrinomio cubo perfecto (suma)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 10 (cubo perfecto)"}
+    ]
+  },
+  {
+    "id": "ex.u2.factorizacion.10",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "factorizacion",
+    "prompt": "Factorizá $8x^3 - 12x^2 + 6x - 1$. ¿Cuál es la factorización correcta?",
+    "expectedAnswer": "(2x - 1)^3",
+    "options": [
+      {"value": "(2x - 1)^3", "label": "$(2x - 1)^3$"},
+      {"value": "(2x + 1)^3", "label": "$(2x + 1)^3$"},
+      {"value": "(2x - 1)^2", "label": "$(2x - 1)^2$"},
+      {"value": "(x - 1)^3", "label": "$(x - 1)^3$"}
+    ],
+    "commonErrorTags": ["u2_signo_factorizacion", "u2_factorizacion_incompleta"],
+    "pedagogicalNote": "Cuatrinomio cubo perfecto (con coeficiente): a³ − 3a²b + 3ab² − b³ = (a − b)³. Verificar: a³ = 8x³ → a = 2x; b³ = 1 → b = 1; término −3a²b = −3·(2x)²·1 = −12x² ✓; término 3ab² = 3·(2x)·1 = 6x ✓. Como hay un único signo menos entre los términos, todos los signos intermedios siguen la alternancia del desarrollo de (a − b)³. Resultado: (2x − 1)³. Distractor A: (2x + 1)³ pierde el signo (todos los términos del polinomio son negativos o positivos siguiendo el patrón del cubo de (a − b)³). Distractor B: (2x − 1)² confunde cubo con cuadrado: expandido da 4x² − 4x + 1. Distractor C: (x − 1)³ olvidó elevar al cubo el coeficiente 2: (x)³ = x³, no 8x³. Errores típicos: olvidar el coeficiente en la raíz cúbica (u2_factorizacion_incompleta) o copiar el signo errado.",
+    "relatedTheoryIds": ["theory-factorizacion"],
+    "relatedExampleIds": ["example-factorizacion-4"],
+    "tags": ["02_ej_utn_10_cubo"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 10: Caso 4 — Cuatrinomio cubo perfecto (con coeficiente)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 10 a-f: Cuatrinomio cubo perfecto (resta con coeficiente)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 10 (cubo perfecto con coeficiente)"}
+    ]
+  },
+  {
+    "id": "ex.u2.factorizacion.11",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "factorizacion",
+    "prompt": "Factorizá $4a^8 - x^{10}$. ¿Cuál es la factorización correcta?",
+    "expectedAnswer": "(2a^4 - x^5)(2a^4 + x^5)",
+    "options": [
+      {"value": "(2a^4 - x^5)(2a^4 + x^5)", "label": "$(2a^4 - x^5)(2a^4 + x^5)$"},
+      {"value": "(2a^4 - x^5)^2", "label": "$(2a^4 - x^5)^2$"},
+      {"value": "(2a - x^2)(2a + x^2)", "label": "$(2a - x^2)(2a + x^2)$"},
+      {"value": "(4a^4 - x^5)(4a^4 + x^5)", "label": "$(4a^4 - x^5)(4a^4 + x^5)$"}
+    ],
+    "commonErrorTags": ["u2_signo_factorizacion", "u2_factorizacion_incompleta"],
+    "pedagogicalNote": "Diferencia de cuadrados extendida (con coeficientes y exponentes altos): a² − b² = (a − b)(a + b). Primero identificar a² y b²: a² = 4a⁸ → a = 2a⁴ (porque (2a⁴)² = 4a⁸); b² = x¹⁰ → b = x⁵ (porque (x⁵)² = x¹⁰). Aplicar la fórmula: (2a⁴ − x⁵)(2a⁴ + x⁵). Distractor A: (2a⁴ − x⁵)² NO es una factorización de diferencia — un cuadrado de un binomio tiene tres términos, no dos. Distractor B: (2a − x²)(2a + x²) NO saca la raíz cuadrada correcta de los exponentes: (2a)² = 4a² (no 4a⁸) y (x²)² = x⁴ (no x¹⁰). Distractor C: (4a⁴ − x⁵)(4a⁴ + x⁵) calcula mal √(4a⁸) = 4a⁴ (en realidad es 2a⁴). Errores típicos: confundir diferencia con cuadrado perfecto (u2_factorizacion_incompleta) o aplicar mal la raíz cuadrada de un coeficiente (u2_signo_factorizacion).",
+    "relatedTheoryIds": ["theory-factorizacion"],
+    "relatedExampleIds": ["example-factorizacion-1"],
+    "tags": ["02_ej_utn_10_dif_cuadrados"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 10: Caso 5 — Diferencia de cuadrados (con coeficientes y exponentes)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 10 a-d: Diferencia de cuadrados extendida (con coeficiente y exponentes altos)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 10 (diferencia de cuadrados extendida)"}
+    ]
+  },
+  {
+    "id": "ex.u2.factorizacion.12",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "factorizacion",
+    "prompt": "Factorizá $a^5 + 32$. ¿Cuál es la factorización correcta?",
+    "expectedAnswer": "(a + 2)(a^4 - 2a^3 + 4a^2 - 8a + 16)",
+    "options": [
+      {"value": "(a + 2)(a^4 - 2a^3 + 4a^2 - 8a + 16)", "label": "$(a + 2)(a^4 - 2a^3 + 4a^2 - 8a + 16)$"},
+      {"value": "(a + 2)(a^4 + 2a^3 + 4a^2 + 8a + 16)", "label": "$(a + 2)(a^4 + 2a^3 + 4a^2 + 8a + 16)$"},
+      {"value": "(a + 2)^5", "label": "$(a + 2)^5$"},
+      {"value": "(a - 2)(a^4 + 2a^3 + 4a^2 + 8a + 16)", "label": "$(a - 2)(a^4 + 2a^3 + 4a^2 + 8a + 16)$"}
+    ],
+    "commonErrorTags": ["u2_signo_factorizacion", "u2_factorizacion_incompleta"],
+    "pedagogicalNote": "Suma de potencias con n IMPAR: a⁵ + b⁵ = (a + b)(a⁴ − a³b + a²b² − ab³ + b⁴). Para a⁵ + 32 = a⁵ + 2⁵ (32 = 2⁵), los signos del segundo factor son alternados y terminan en +. Resultado: (a + 2)(a⁴ − 2a³ + 4a² − 8a + 16). Distractor A: (a + 2)(a⁴ + 2a³ + 4a² + 8a + 16) pone todos los signos positivos en los términos intermedios; para una SUMA de potencias con exponente impar, los signos deben ALTERNAR. Distractor B: (a + 2)⁵ NO es suma de potencias (sería multiplicación repetida, no factorización). Distractor C: (a − 2)(a⁴ + 2a³ + 4a² + 8a + 16) usa (a − b) en vez de (a + b) en el primer factor y mezcla las dos reglas. Errores típicos: olvidar la alternancia de signos (u2_signo_factorizacion) o aplicar mal la regla de paridad del exponente.",
+    "relatedTheoryIds": ["theory-factorizacion"],
+    "relatedExampleIds": ["example-factorizacion-5"],
+    "tags": ["02_ej_utn_10_potencias"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 10: Caso 6 — Suma o diferencia de potencias de exponente impar", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 10 a-d: Suma de potencias (a^n + b^n con n impar)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 10 (suma de potencias)"}
+    ]
+  },
+  {
+    "id": "ex.u2.factorizacion.13",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "factorizacion",
+    "prompt": "Factorizá completamente $x^4 + ax^3 - x - a$. ¿Cuál es la factorización correcta?",
+    "expectedAnswer": "(x + a)(x - 1)(x^2 + x + 1)",
+    "options": [
+      {"value": "(x + a)(x - 1)(x^2 + x + 1)", "label": "$(x + a)(x - 1)(x^2 + x + 1)$"},
+      {"value": "(x - a)(x^3 - 1)", "label": "$(x - a)(x^3 - 1)$"},
+      {"value": "(x + a)(x^3 + 1)", "label": "$(x + a)(x^3 + 1)$"},
+      {"value": "(x^3 + a)(x - 1)", "label": "$(x^3 + a)(x - 1)$"}
+    ],
+    "commonErrorTags": ["u2_factorizacion_incompleta", "u2_caso_incorrecto"],
+    "pedagogicalNote": "Caso combinado: requiere identificar el caso apropiado en cada paso. Paso 1 — factor común por grupos: (x⁴ − x) + (ax³ − a) = x(x³ − 1) + a(x³ − 1) = (x + a)(x³ − 1). Paso 2 — diferencia de cubos: x³ − 1 = (x − 1)(x² + x + 1). Resultado: (x + a)(x − 1)(x² + x + 1). Distractor A: (x − a)(x³ − 1) sacó factor común con signo equivocado (el segundo grupo es +a(x³ − 1), no −a(x³ − 1)). Distractor B: (x + a)(x³ + 1) usa suma de cubos en vez de diferencia de cubos (x³ − 1 es diferencia, no suma). Distractor C: (x³ + a)(x − 1) agrupa los términos al revés: x⁴ + ax³ = x³(x + a), pero queda x³ + a(x − 1) sin reconocer el factor común x³ − 1. Errores típicos: no continuar hasta la factorización completa (u2_factorizacion_incompleta) o aplicar el caso equivocado al cubo (u2_caso_incorrecto).",
+    "relatedTheoryIds": ["theory-factorizacion"],
+    "relatedExampleIds": ["example-factorizacion-6"],
+    "tags": ["02_ej_utn_10_combinados"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 10: Casos combinados — grupos + diferencia de cubos", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 10 a-ñ: Casos combinados (factor común por grupos + diferencia de cubos)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 10 (casos combinados)"}
+    ]
+  },
+  {
+    "id": "ex.u2.factorizacion.14",
+    "skillId": "mat.u2.factorizacion",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "factorizacion",
+    "prompt": "Factorizá $x^3 - 8$. ¿Cuál es la factorización correcta?",
+    "expectedAnswer": "(x - 2)(x^2 + 2x + 4)",
+    "options": [
+      {"value": "(x - 2)(x^2 + 2x + 4)", "label": "$(x - 2)(x^2 + 2x + 4)$"},
+      {"value": "(x - 2)^3", "label": "$(x - 2)^3$"},
+      {"value": "(x + 2)(x^2 - 2x + 4)", "label": "$(x + 2)(x^2 - 2x + 4)$"},
+      {"value": "(x - 8)(x^2 + 2x + 1)", "label": "$(x - 8)(x^2 + 2x + 1)$"}
+    ],
+    "commonErrorTags": ["u2_caso_incorrecto", "u2_signo_factorizacion"],
+    "pedagogicalNote": "Diferencia de potencias con n = 3: a³ − b³ = (a − b)(a² + ab + b²). Con a = x y b = 2 (porque 2³ = 8): (x − 2)(x² + x·2 + 2²) = (x − 2)(x² + 2x + 4). Distractor A: (x − 2)³ confunde diferencia de cubos con cubo perfecto (caso incorrecto — un cubo perfecto tiene cuatro términos, no dos). Distractor B: (x + 2)(x² − 2x + 4) usa suma de cubos (a + b)(a² − ab + b²) en vez de diferencia; invierte el signo del primer factor. Distractor C: (x − 8)(x² + 2x + 1) calcula mal la raíz cúbica: 8 NO es b³ (es b mismo), entonces 8³ sería 512. La raíz cúbica correcta de 8 es 2. Errores típicos: confundir el caso (u2_caso_incorrecto), perder el signo (u2_signo_factorizacion), o aplicar mal la raíz (u2_factorizacion_incompleta).",
+    "relatedTheoryIds": ["theory-factorizacion"],
+    "relatedExampleIds": ["example-factorizacion-5"],
+    "tags": ["02_ej_utn_10_potencias"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 10: Caso 6 — Diferencia de potencias (n = 3)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 10 a-d: Diferencia de potencias (a^n - b^n con n = 3)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 10 (diferencia de potencias n=3)"}
+    ]
+  },
+  {
+    "id": "ex.u2.ruffini_resto.6",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "ruffini_resto",
+    "prompt": "Aplicando Ruffini a $P(x) = 2x^3 - 7x^2 + 4x - 5$ dividido por $(x - 3)$, ¿cuáles son los coeficientes del cociente (de mayor a menor grado)?",
+    "expectedAnswer": "2, -1, 1",
+    "options": [
+      {"value": "2, -1, 1", "label": "$2, -1, 1$"},
+      {"value": "2, -3, 1", "label": "$2, -3, 1$"},
+      {"value": "2, 1, 1", "label": "$2, 1, 1$"},
+      {"value": "2, -1, -1", "label": "$2, -1, -1$"}
+    ],
+    "commonErrorTags": ["u2_ruffini_signo_a", "u2_signo_operacion"],
+    "pedagogicalNote": "Cociente por Ruffini: coeficientes [2, −7, 4, −5] con a=3 → bajar 2, 3·2+(−7)=−1, 3·(−1)+4=1, 3·1+(−5)=−2 (resto). Cociente: [2, −1, 1] → 2x²−x+1. Distractor A: [2,−3,1] usó a=−3 en vez de a=3 (confundió el signo del divisor x−3; u2_ruffini_signo_a). Distractor B: [2,1,1] perdió el signo del −7 al sumar 6 (operación: 3·2+(−7)=−1, no +1; u2_signo_operacion). Distractor C: [2,−1,−1] perdió el signo en el último paso (3·1+4=7, no 1, y luego el resto); u2_signo_operacion. Errores típicos: signo del divisor (u2_ruffini_signo_a), suma con signo (u2_signo_operacion).",
+    "relatedTheoryIds": ["theory-ruffini-resto"],
+    "relatedExampleIds": ["example-ruffini-resto-3"],
+    "tags": ["02_ej_utn_8a"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 8: Teorema del resto y regla de Ruffini (cociente completo)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 8 a-e: Ruffini cociente (devolver cociente completo)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 8 (Ruffini cociente)"}
+    ]
+  },
+  {
+    "id": "ex.u2.ruffini_resto.7",
+    "skillId": "mat.u2.ruffini_resto",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "ruffini_resto",
+    "prompt": "Aplicando Ruffini a $P(x) = x^4 + 3x^3 - 2x^2 - 7x - 4$ dividido por $(x + 1)$, ¿cuáles son los coeficientes del cociente (de mayor a menor grado)?",
+    "expectedAnswer": "1, 2, -4, -3",
+    "options": [
+      {"value": "1, 2, -4, -3", "label": "$1, 2, -4, -3$"},
+      {"value": "1, 2, -4, 3", "label": "$1, 2, -4, 3$"},
+      {"value": "1, -2, -4, -3", "label": "$1, -2, -4, -3$"},
+      {"value": "1, 2, 4, -3", "label": "$1, 2, 4, -3$"}
+    ],
+    "commonErrorTags": ["u2_ruffini_signo_a", "u2_signo_operacion"],
+    "pedagogicalNote": "Cociente por Ruffini con divisor (x+1): coeficientes [1, 3, −2, −7, −4] con a=−1. Bajar 1, (−1)·1+3=2, (−1)·2+(−2)=−4, (−1)·(−4)+(−7)=−3, (−1)·(−3)+(−4)=−1 (resto). Cociente: [1, 2, −4, −3] → x³+2x²−4x−3. Distractor A: [1,2,−4,3] perdió el signo en el último paso ((−1)·(−4)+(−7)=−3, no +3). Distractor B: [1,−2,−4,−3] usó a=1 (signo del divisor; (x+1) implica a=−1, no a=+1; u2_ruffini_signo_a). Distractor C: [1,2,4,−3] perdió el signo al sumar (−1)·2+(−2)=−4 (u2_signo_operacion). Errores típicos: signo del divisor (u2_ruffini_signo_a), suma con signo en cada paso (u2_signo_operacion).",
+    "relatedTheoryIds": ["theory-ruffini-resto"],
+    "relatedExampleIds": ["example-ruffini-resto-3"],
+    "tags": ["02_ej_utn_8d"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 8: Teorema del resto y regla de Ruffini (cociente con divisor (x+a))", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 8 a-e: Ruffini cociente con divisor (x + a), a > 0", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 8 (Ruffini cociente con (x+a))"}
+    ]
+  },
+  {
+    "id": "ex.u2.mcm_mcd_polinomios.5",
+    "skillId": "mat.u2.mcm_mcd_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "mcm_mcd_polinomios",
+    "prompt": "Dados los polinomios factorizados $M(x) = (x+2)^3$, $R(x) = (x+2)^2$, $S(x) = (x+2)(x-2)$, ¿cuál es el MCD $[M, R, S]$?",
+    "expectedAnswer": "(x+2)",
+    "options": [
+      {"value": "(x+2)", "label": "$(x+2)$"},
+      {"value": "(x+2)^2", "label": "$(x+2)^2$"},
+      {"value": "(x+2)^3", "label": "$(x+2)^3$"},
+      {"value": "(x+2)(x-2)", "label": "$(x+2)(x-2)$"}
+    ],
+    "commonErrorTags": ["u2_confunde_mcm_mcd", "u2_termino_faltante"],
+    "pedagogicalNote": "MCD de 3 polinomios: tomar el factor común con su MENOR exponente. Los tres polinomios comparten el factor (x+2): M lo tiene al cubo, R al cuadrado, S a la primera potencia. El menor exponente es 1, así que MCD = (x+2). Distractor A: (x+2)² tomó el exponente de R (segundo polinomio) en vez del mínimo entre los tres (u2_confunde_mcm_mcd: confundir menor con mayor exponente — esto sería el MCM). Distractor B: (x+2)³ tomó el exponente de M, lo cual sería el MCM, no el MCD. Distractor C: (x+2)(x-2) sólo copió los factores de S sin chequear que (x-2) no está en M ni en R (factor no común → u2_termino_faltante en el sentido de no incluir solo factores presentes en TODOS). Capítulo 14.",
+    "relatedTheoryIds": ["theory-mcm-mcd-polinomios"],
+    "relatedExampleIds": ["example-mcm-mcd-polinomios-2"],
+    "tags": ["02_ej_utn_11b"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 14: MCM y MCD de polinomios (caso 3 polinomios)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 11 b: MCM y MCD de tres polinomios con factor común de distintos exponentes", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 11 (MCM/MCD de 3 polinomios)"}
+    ]
+  },
+  {
+    "id": "ex.u2.mcm_mcd_polinomios.6",
+    "skillId": "mat.u2.mcm_mcd_polinomios",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "mcm_mcd_polinomios",
+    "prompt": "Dados los polinomios con parámetro $T(x) = 9x^2 + 6ax + a^2$, $C(x) = 12x + 4a$, $H(x) = 9x^2 - a^2$, ¿cuál es el MCM $[T, C, H]$?",
+    "expectedAnswer": "4(3x+a)^2(3x-a)",
+    "options": [
+      {"value": "4(3x+a)^2(3x-a)", "label": "$4(3x+a)^2(3x-a)$"},
+      {"value": "(3x+a)^2(3x-a)", "label": "$(3x+a)^2(3x-a)$"},
+      {"value": "4(3x+a)^2", "label": "$4(3x+a)^2$"},
+      {"value": "4(3x+a)(3x-a)", "label": "$4(3x+a)(3x-a)$"}
+    ],
+    "commonErrorTags": ["u2_confunde_mcm_mcd", "u2_termino_faltante"],
+    "pedagogicalNote": "MCM con parámetro: primero factorizar cada polinomio. T = (3x+a)² (trinomio cuadrado perfecto). C = 4(3x+a) (factor común numérico y algebraico). H = (3x+a)(3x−a) (diferencia de cuadrados). Factores: (3x+a) aparece en T al cuadrado, en C a la primera, en H a la primera → MAYOR exponente = 2. (3x−a) sólo en H → incluirlo con exponente 1. Coeficiente numérico: 4 sólo en C → incluirlo. MCM = 4(3x+a)²(3x−a). Distractor A: (3x+a)²(3x−a) olvidó el coeficiente 4 (u2_termino_faltante: el coeficiente numérico común también cuenta). Distractor B: 4(3x+a)² olvidó el factor (3x−a) que está en H pero no en T ni en C (factor no común, debe incluirse en el MCM; u2_termino_faltante). Distractor C: 4(3x+a)(3x−a) usó el MENOR exponente del factor común (1 en C y H) en vez del MAYOR (2 en T) — eso sería MCD, no MCM (u2_confunde_mcm_mcd). Capítulo 14.",
+    "relatedTheoryIds": ["theory-mcm-mcd-polinomios"],
+    "relatedExampleIds": ["example-mcm-mcd-polinomios-3"],
+    "tags": ["02_ej_utn_11c"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 14: MCM y MCD de polinomios con parámetro", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 11 c: MCM y MCD de polinomios con parámetro a, b", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 11 (MCM/MCD con parámetro)"}
+    ]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.5",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "expresiones_racionales",
+    "prompt": "Calculá la suma $\\frac{2}{x+1} + \\frac{3}{x-1}$. ¿Cuál es el resultado simplificado?",
+    "expectedAnswer": "(5x+1)/(x^2-1)",
+    "options": [
+      {"value": "(5x+1)/(x^2-1)", "label": "$\\frac{5x+1}{x^2-1}$"},
+      {"value": "(5x+1)/(x-1)", "label": "$\\frac{5x+1}{x-1}$"},
+      {"value": "(-x+5)/(x^2-1)", "label": "$\\frac{-x+5}{x^2-1}$"},
+      {"value": "(5x+5)/(x^2-1)", "label": "$\\frac{5x+5}{x^2-1}$"}
+    ],
+    "commonErrorTags": ["u2_signo_operacion", "u2_termino_faltante"],
+    "pedagogicalNote": "Para sumar fracciones algebraicas con denominadores distintos, primero se calcula el MCM: (x+1)(x−1) = x²−1. Luego se reescribe cada fracción con ese denominador: 2(x−1)/((x+1)(x−1)) + 3(x+1)/((x+1)(x−1)). Sumando los numeradores: 2(x−1)+3(x+1) = 2x−2+3x+3 = 5x+1. Resultado: (5x+1)/(x²−1). Distractor A: (5x+1)/(x−1) olvidó amplificar el primer término con (x+1) — u2_termino_faltante (factor LCD aplicado sólo a una fracción). Distractor B: (−x+5)/(x²−1) perdió el signo del 3x al sumar: 2x−2−3x+3 = −x+1 (no coincide exactamente pero pierde signos en el proceso; u2_signo_operacion). Distractor C: (5x+5)/(x²−1) tiene error aritmético en el término constante: 2(−1)+3(1) = −2+3 = 1, no 5 (u2_signo_operacion). Capítulo 13.",
+    "relatedTheoryIds": ["theory-ecuaciones-fraccionarias"],
+    "relatedExampleIds": ["example-ecuaciones-fraccionarias-1"],
+    "tags": ["02_ej_utn_12a"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 13: Expresiones algebraicas racionales — suma", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 12 a: Suma de fracciones algebraicas con denominadores lineales distintos", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 12 (suma de fracciones algebraicas)"}
+    ]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.6",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "expresiones_racionales",
+    "prompt": "Calculá $\\frac{x}{x^2-4} + \\frac{1}{x-2}$. Recordá que $x^2-4 = (x+2)(x-2)$.",
+    "expectedAnswer": "(2x+2)/(x^2-4)",
+    "options": [
+      {"value": "(2x+2)/(x^2-4)", "label": "$\\frac{2x+2}{x^2-4}$"},
+      {"value": "(x+2)/(x^2-4)", "label": "$\\frac{x+2}{x^2-4}$"},
+      {"value": "(x+1)/(x^2-4)", "label": "$\\frac{x+1}{x^2-4}$"},
+      {"value": "(2x+2)/(x-2)", "label": "$\\frac{2x+2}{x-2}$"}
+    ],
+    "commonErrorTags": ["u2_termino_faltante", "u2_factorizacion_incompleta"],
+    "pedagogicalNote": "El denominador x²−4 ya está factorizado como (x+2)(x−2), así que el MCM es ese producto. Reescribimos: x/((x+2)(x−2)) + 1·(x+2)/((x+2)(x−2)) = (x + x + 2)/((x+2)(x−2)) = (2x+2)/((x+2)(x−2)). Distractor A: (x+2)/(x²−4) no sumó los numeradores (u2_termino_semejante — quedó sólo con el numerador del segundo término). Distractor B: (x+1)/(x²−4) perdió el factor 2 al sumar 2x+2 = 2(x+1), quedó como x+1 (u2_factorizacion_incompleta). Distractor C: (2x+2)/(x−2) olvidó amplificar el segundo término con (x+2), dejando el denominador incompleto (u2_termino_faltante en denominador). Capítulo 14.",
+    "relatedTheoryIds": ["theory-ecuaciones-fraccionarias"],
+    "relatedExampleIds": ["example-ecuaciones-fraccionarias-1"],
+    "tags": ["02_ej_utn_12c"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 13: Expresiones algebraicas racionales — suma con factor común parcial", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 12 c: Suma de fracciones algebraicas con un denominador factorizado parcialmente", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 12 (suma con factor común parcial)"}
+    ]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.7",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "category": "expresiones_racionales",
+    "prompt": "Simplificá $\\frac{x^2-9}{2x^2+12x+18}$ factorizando numerador y denominador.",
+    "expectedAnswer": "(x-3)/(2(x+3))",
+    "options": [
+      {"value": "(x-3)/(2(x+3))", "label": "$\\frac{x-3}{2(x+3)}$"},
+      {"value": "(x-3)(x+3)/(2(x+3)^2)", "label": "$\\frac{(x-3)(x+3)}{2(x+3)^2}$"},
+      {"value": "(x-3)/(2x+18)", "label": "$\\frac{x-3}{2x+18}$"},
+      {"value": "(x+3)/(2(x-3))", "label": "$\\frac{x+3}{2(x-3)}$"}
+    ],
+    "commonErrorTags": ["u2_factorizacion_incompleta", "u2_signo_operacion"],
+    "pedagogicalNote": "Factorizar cada parte: numerador x²−9 = (x−3)(x+3) (diferencia de cuadrados). Denominador 2x²+12x+18 = 2(x²+6x+9) = 2(x+3)². La fracción es (x−3)(x+3) / [2(x+3)²]. Cancelamos el factor común (x+3): queda (x−3)/[2(x+3)], válido cuando x ≠ −3. Distractor A: (x−3)(x+3)/[2(x+3)²] no canceló el factor común (u2_factorizacion_incompleta). Distractor B: (x−3)/(2x+18) no factorizó denominador como 2(x+3)² (u2_factorizacion_incompleta — quedó con factorización parcial). Distractor C: (x+3)/[2(x−3)] invirtió numerador y denominador al cancelar (u2_signo_operacion). Capítulo 13.",
+    "relatedTheoryIds": ["theory-ecuaciones-fraccionarias"],
+    "relatedExampleIds": ["example-ecuaciones-fraccionarias-2"],
+    "tags": ["02_ej_utn_13a"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 13: Expresiones algebraicas racionales — simplificación por factorización", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 13 a: Simplificación de cociente factorizando numerador y denominador", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 13 (factor and simplify)"}
+    ]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.8",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "expresiones_racionales",
+    "prompt": "Resolvé la fracción continua $\\frac{1 + \\frac{1}{x}}{1 - \\frac{1}{x}}$.",
+    "expectedAnswer": "(x+1)/(x-1)",
+    "options": [
+      {"value": "(x+1)/(x-1)", "label": "$\\frac{x+1}{x-1}$"},
+      {"value": "(x-1)/(x+1)", "label": "$\\frac{x-1}{x+1}$"},
+      {"value": "1/(x-1)", "label": "$\\frac{1}{x-1}$"},
+      {"value": "(x+1)/x", "label": "$\\frac{x+1}{x}$"}
+    ],
+    "commonErrorTags": ["u2_signo_operacion", "u2_termino_semejante"],
+    "pedagogicalNote": "Resolver cada parte por separado: numerador 1 + 1/x = (x+1)/x. Denominador 1 − 1/x = (x−1)/x. Luego dividir: (x+1)/x ÷ (x−1)/x = (x+1)/x · x/(x−1) = (x+1)/(x−1), válido cuando x ≠ 0 y x ≠ 1. Distractor A: (x−1)/(x+1) invirtió numerador y denominador al dividir (u2_signo_operacion — debería multiplicar por el recíproco, no por el cociente invertido). Distractor B: 1/(x−1) perdió la suma del numerador (u2_termino_semejante — quedó con 1/x en vez de (x+1)/x). Distractor C: (x+1)/x sólo resolvió el numerador y olvidó resolver el denominador como fracción propia (u2_termino_faltante). Capítulo 14.",
+    "relatedTheoryIds": ["theory-ecuaciones-fraccionarias"],
+    "relatedExampleIds": ["example-ecuaciones-fraccionarias-2"],
+    "tags": ["02_ej_utn_14a"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 14: Cociente de fracciones complejas (fracción continua)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 14 a: Cociente de fracciones complejas (resolver numerador y denominador, luego dividir)", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 14 (cociente de fracciones complejas)"}
+    ]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.9",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "numerical",
+    "difficulty": 2,
+    "category": "ecuaciones_fraccionarias",
+    "prompt": "Resolvé $\\frac{2}{y} + \\frac{4}{y} = 3$ para $y$. Ingresá el valor numérico de $y$.",
+    "expectedAnswer": "2",
+    "commonErrorTags": ["u2_denominador_cero"],
+    "pedagogicalNote": "Como las dos fracciones tienen el mismo denominador y, sumamos los numeradores: (2+4)/y = 6/y. Entonces 6/y = 3 → 6 = 3y → y = 2. Verificación: y = 2 no anula el denominador (2 ≠ 0), la solución es válida y única. Errores típicos: olvidar verificar el dominio después de resolver (u2_denominador_cero) o sumar denominadores en vez de numeradores. Capítulo 15.",
+    "relatedTheoryIds": ["theory-ecuaciones-fraccionarias"],
+    "relatedExampleIds": ["example-ecuaciones-fraccionarias-1"],
+    "tags": ["02_ej_utn_15a"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 15: Ecuaciones fraccionarias (caso mismo denominador)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 15 a: Ecuación fraccionaria con fracciones de misma estructura", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 15 (caso mismo denominador, solución escalar única)"}
+    ]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.10",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "numerical",
+    "difficulty": 3,
+    "category": "ecuaciones_fraccionarias",
+    "prompt": "Resolvé $\\frac{4}{y} - 5 = \\frac{5}{2y}$ para $y$. Ingresá el valor numérico de $y$ (en forma decimal si la solución es racional).",
+    "expectedAnswer": "0.3",
+    "commonErrorTags": ["u2_denominador_cero", "u2_signo_operacion"],
+    "pedagogicalNote": "MCM = 2y. Multiplicando ambos lados por 2y: 8 − 10y = 5 → −10y = −3 → y = 3/10 = 0.3. Verificación: y = 0.3 ≠ 0, ambos denominadores (y = 0.3 y 2y = 0.6) son válidos. La solución es y = 0.3 (equivalente a 3/10). Errores típicos: olvidar verificar el dominio (u2_denominador_cero) o equivocarse al pasar el −5 al otro lado cambiando su signo (u2_signo_operacion). Capítulo 15.",
+    "relatedTheoryIds": ["theory-ecuaciones-fraccionarias"],
+    "relatedExampleIds": ["example-ecuaciones-fraccionarias-2"],
+    "tags": ["02_ej_utn_15b"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 15: Ecuaciones fraccionarias (caso denominadores 2y)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 15 b: Ecuación fraccionaria con término entero y denominador 2y", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 15 (caso mixto con denominador doble)"}
+    ]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.11",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "ecuaciones_fraccionarias",
+    "prompt": "Resolvé $6x - 5 = \\frac{1}{x}$ para $x$. Indicá las soluciones válidas separadas por coma.",
+    "expectedAnswer": "1, -1/6",
+    "options": [
+      {"value": "1, -1/6", "label": "$x = 1$ y $x = -\\frac{1}{6}$"},
+      {"value": "1", "label": "$x = 1$"},
+      {"value": "-1/6", "label": "$x = -\\frac{1}{6}$"},
+      {"value": "0", "label": "$x = 0$"}
+    ],
+    "commonErrorTags": ["u2_denominador_cero", "u2_termino_faltante"],
+    "pedagogicalNote": "Dominio: x ≠ 0. Multiplicando por x: 6x² − 5x = 1 → 6x² − 5x − 1 = 0. Resolviendo por fórmula general: x = (5 ± √(25+24))/12 = (5 ± 7)/12. Entonces x = 12/12 = 1, o x = −2/12 = −1/6. Ambas soluciones son válidas (x ≠ 0). Distractor A: x = 1 olvidó la raíz negativa (u2_termino_faltante). Distractor B: x = −1/6 olvidó la raíz positiva (u2_termino_faltante). Distractor C: x = 0 propuesto por error al cancelar 1/x — u2_denominador_cero (x = 0 anula el denominador, no es válido). Capítulo 15.",
+    "relatedTheoryIds": ["theory-ecuaciones-fraccionarias"],
+    "relatedExampleIds": ["example-ecuaciones-fraccionarias-2"],
+    "tags": ["02_ej_utn_15c"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 15: Ecuaciones fraccionarias (caso con doble raíz válida)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 15 c: Ecuación fraccionaria con cociente simple (1/x) — caso de doble raíz", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 15 (doble escalar, ambas raíces válidas)"}
+    ]
+  },
+  {
+    "id": "ex.u2.ecuaciones_fraccionarias.12",
+    "skillId": "mat.u2.ecuaciones_fraccionarias",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "category": "ecuaciones_fraccionarias",
+    "prompt": "Resolvé $\\frac{1}{x-2} + \\frac{1}{x+2} = \\frac{4}{x^2-4}$ para $x$. ¿Cuál es el resultado?",
+    "expectedAnswer": "No tiene solución (x = 2 anula los denominadores)",
+    "options": [
+      {"value": "No tiene solución (x = 2 anula los denominadores)", "label": "No tiene solución ($x = 2$ anula los denominadores)"},
+      {"value": "x = 2", "label": "$x = 2$"},
+      {"value": "x = -2", "label": "$x = -2$"},
+      {"value": "x = 0", "label": "$x = 0$"}
+    ],
+    "commonErrorTags": ["u2_denominador_cero"],
+    "pedagogicalNote": "Dominio: x ≠ ±2. Multiplicando por x²−4 = (x+2)(x−2): (x+2) + (x−2) = 4 → 2x = 4 → x = 2. Pero x = 2 anula los denominadores (x−2 = 0 y x²−4 = 0). La solución algebraica pertenece al dominio excluido → no tiene solución. Distractor A: x = 2 propuso la solución algebraica sin verificar el dominio (u2_denominador_cero — error característico de no comprobar denominador-cero). Distractor B: x = −2 también está excluido del dominio (u2_denominador_cero). Distractor C: x = 0 no satisface ni la ecuación algebraica ni el dominio (descartado por ambos motivos). Capítulo 15.",
+    "relatedTheoryIds": ["theory-ecuaciones-fraccionarias"],
+    "relatedExampleIds": ["example-ecuaciones-fraccionarias-1"],
+    "tags": ["02_ej_utn_15g"],
+    "canonicalTrace": [
+      {"path": "material_canonico/Matemática/UNIDAD2_matemática.pdf", "section": "Capítulo 15: Ecuaciones fraccionarias (caso exclusión de dominio)", "sourceUse": "reference", "pedagogicalIntent": "Exercise references this canonical source for pedagogical context"},
+      {"path": "00-Ejercicios UTN/02_ej_utn.pdf", "section": "Ítem 15 g: Ecuación fraccionaria con denominadores distintos y verificación de dominio", "sourceUse": "reference", "pedagogicalIntent": "New exercise added to align coverage with official UTN 2025 guide item 15 (denominadores distintos con distractor de exclusión)"}
     ]
   }
 ]

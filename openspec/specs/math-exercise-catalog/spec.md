@@ -345,6 +345,84 @@ No new exercise MUST use free text for polynomial or equation answers. Answers M
 - WHEN its type is inspected
 - THEN the type is NOT `free-response`
 
+### Requirement: Unit 2 Aplicaciones Family Categories
+
+The skill `mat.u2.ecuaciones_fraccionarias` covers two pedagogical families distinguished by the `category` field on each exercise. The split is observed via the `category` enum (not via separate skills): no new U2 skill is created to host the families. Exercises within `mat.u2.ecuaciones_fraccionarias` MUST declare one of two categories:
+
+| Category | Skill coverage | Chapters (UNIDAD2_matemática.pdf) | Type discipline |
+|----------|----------------|-----------------------------------|-----------------|
+| `expresiones_racionales` | rational expressions (sum, factor+simplify, quotient of compound fractions) | 13, 14 | MC only (symbolic structured answers) |
+| `ecuaciones_fraccionarias` | fractional equations (mismo denominador, denominador doble, double-root, domain-exclusion) | 15 | MC (domain-rich + double-scalar) OR numerical (unique-scalar, no domain ambiguity) |
+
+#### Scenario: U2APP-CAT-005 — Family declared via `category`, not via skill split
+
+- GIVEN the catalog contains `mat.u2.ecuaciones_fraccionarias` exercises
+- WHEN each exercise is inspected
+- THEN it carries `category ∈ {"expresiones_racionales", "ecuaciones_fraccionarias"}`
+- AND `ALL_SKILLS` does NOT contain `mat.u2.expresiones_racionales` (no skill split)
+
+#### Scenario: U2APP-CAT-006 — Type discipline by family
+
+- GIVEN a rational-expression exercise (category `expresiones_racionales`)
+- WHEN its type is inspected
+- THEN the type is `multiple-choice` (rational answers cannot be `numerical` — would imply a single scalar for a symbolic expression)
+
+- GIVEN a fractional-equation exercise (category `ecuaciones_fraccionarias`) of type `numerical`
+- WHEN its expected answer is inspected
+- THEN it is a single finite scalar with no domain ambiguity
+
+- GIVEN a fractional-equation exercise (category `ecuaciones_fraccionarias`) of type `multiple-choice`
+- WHEN its options are inspected
+- THEN at least one option is a domain-exclusion value (zeroes a denominator)
+
+#### Scenario: U2APP-CAT-007 — Chapter reference split
+
+- GIVEN a rational-expression exercise (category `expresiones_racionales`)
+- WHEN its `pedagogicalNote` is inspected
+- THEN it references chapter 13 or 14 of `UNIDAD2_matemática.pdf`
+
+- GIVEN a fractional-equation exercise (category `ecuaciones_fraccionarias`)
+- WHEN its `pedagogicalNote` is inspected
+- THEN it references chapter 15 of `UNIDAD2_matemática.pdf`
+
+---
+
+### Requirement: Unit 2 Official-PDF Canonical Trace
+
+Each new U2 exercise added by `align-u2-practice-official-exercises` (PR 3-7) MUST carry at least one `canonicalTrace` entry whose `path` includes `02_ej_utn.pdf` (the official UTN 2025 guide). The `sourceUse` field MUST be one of: `reference`, `adapted`, `reinforcement`, `alignment`. The trace is the audit-grade proof that the exercise was aligned to the official material and not generated independently.
+
+#### Scenario: U2-CAT-OFFICIAL-001 — All aligned exercises reference 02_ej_utn.pdf
+
+- GIVEN any of the 32 new U2 exercises (PR 3-7)
+- WHEN its `canonicalTrace` is inspected
+- THEN at least one entry has `path` matching `02_ej_utn.pdf`
+- AND that entry's `sourceUse` is one of: `reference`, `adapted`, `reinforcement`, `alignment`
+
+#### Scenario: U2-CAT-OFFICIAL-002 — PR-by-PR coverage
+
+- GIVEN the 32 aligned exercises are grouped by PR (PR 3: 4, PR 4: 6, PR 5: 10, PR 6: 4, PR 7: 8)
+- WHEN each group's `canonicalTrace` is inspected
+- THEN every exercise in every group carries an official-PDF trace
+
+### Requirement: Unit 2 Skill Catalog Stability
+
+The U2 skill catalog MUST remain at exactly 7 skills after `align-u2-practice-official-exercises` lands. The 7 declared skills are: `polinomios_basico`, `operaciones_polinomios`, `ruffini_resto`, `factorizacion`, `gauss`, `mcm_mcd_polinomios`, `ecuaciones_fraccionarias`. Any family split (e.g. rational expressions vs fractional equations) MUST be expressed via the `category` field on individual exercises — never via a new skill.
+
+#### Scenario: U2-CAT-STABLE-001 — Skill count frozen at 7
+
+- GIVEN the loaded skill catalog
+- WHEN `UNIT_2_SKILLS` is enumerated
+- THEN it has exactly 7 entries
+- AND those 7 entries match the canonical set above (order-stable)
+
+#### Scenario: U2-CAT-STABLE-002 — No `mat.u2.expresiones_racionales` (or similar)
+
+- GIVEN the loaded skill catalog
+- WHEN `ALL_SKILLS` is enumerated
+- THEN no skill ID starts with `mat.u2.expresiones_racionales`
+- AND no skill ID starts with `mat.u2.rational_expressions`
+- AND no skill ID starts with `mat.u2.fractional_equations`
+
 ---
 
 ## Added by consolidate-math-mvp-before-unit-3

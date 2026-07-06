@@ -5,6 +5,8 @@
  */
 import { describe, test, expect } from "vitest";
 import { tagError } from "../evaluator/error-tagging";
+import { loadExercisesForSkill } from "../catalog/content-loaders";
+import { getExerciseOptionValue } from "../models/exercise";
 import type { Exercise } from "../models/exercise";
 
 function makeExercise(overrides: Partial<Exercise> = {}): Exercise {
@@ -92,6 +94,40 @@ describe("u2_signo_factorizacion MC detection", () => {
 
     const result = tagError(exercise, "(x-2)(x-2)");
     expect(result).toBeUndefined();
+  });
+
+  // Regression: gate review for align-u2-practice-official-exercises PR5
+  // flagged that ex.u2.factorizacion.5 distractor `6x(x^2 + 1.5x - 2)` was
+  // algebraically equivalent to the correct answer, so a student who picked
+  // it would have been wrongly marked wrong even though they produced a
+  // valid factorization. The replacement distractor `3x(2x^2 + 3x + 4)`
+  // represents a genuine sign error (forgot the negative when dividing
+  // -12x by 3x) and must trigger `u2_signo_factorizacion` when picked.
+  test("ex.u2.factorizacion.5 replacement distractor triggers u2_signo_factorizacion (gate-review regression)", () => {
+    const exercises = loadExercisesForSkill("mat.u2.factorizacion");
+    const ex = exercises.find((e) => e.id === "ex.u2.factorizacion.5");
+    expect(ex, "ex.u2.factorizacion.5 must exist").toBeDefined();
+
+    // The exercise must declare the u2_signo_factorizacion tag for the
+    // detector to fire on it.
+    expect(ex!.commonErrorTags, "ex.u2.factorizacion.5 must declare u2_signo_factorizacion").toContain(
+      "u2_signo_factorizacion"
+    );
+
+    // The new distractor value must be present as an option.
+    const distractorBValue = "3x(2x^2 + 3x + 4)";
+    const distractorB = ex!.options!.find((o) => getExerciseOptionValue(o) === distractorBValue);
+    expect(distractorB, `Distractor ${distractorBValue} must be one of the options`).toBeDefined();
+
+    // Picking the new distractor must trigger u2_signo_factorizacion.
+    const tag = tagError(ex!, distractorBValue);
+    expect(
+      tag,
+      `Picking distractor B (${distractorBValue}) must tag u2_signo_factorizacion`
+    ).toBe("u2_signo_factorizacion");
+
+    // Sanity: picking the correct answer must NOT tag anything.
+    expect(tagError(ex!, ex!.expectedAnswer)).toBeUndefined();
   });
 });
 

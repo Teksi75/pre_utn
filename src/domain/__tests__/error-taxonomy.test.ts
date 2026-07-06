@@ -104,6 +104,14 @@ describe("Error Taxonomy", () => {
         "u2_factorizacion_incompleta",
         "u2_signo_factorizacion",
         "u2_caso_incorrecto",
+        "u2_division_larga",
+        "u2_tcp",
+        "u2_cubo_perfecto",
+        "u2_diferencia_cuadrados",
+        "u2_factor_comun",
+        "u2_trinomio_cuadrado",
+        "u2_resta_potencias",
+        "u2_simplifica_racional",
       ]);
       // Unit 3 must contain at least the 8 SDD spec tags.
       // Legacy tags (e.g. u3_direccion_desigualdad) may coexist.
@@ -233,7 +241,7 @@ describe("Error Taxonomy", () => {
       }
     });
 
-    test("each new U2 polynomial error tag is lookupable", () => {
+test("each new U2 polynomial error tag is lookupable", () => {
       const newTags = [
         "u2_signo_operacion",
         "u2_termino_semejante",
@@ -243,10 +251,18 @@ describe("Error Taxonomy", () => {
         "u2_factorizacion_incompleta",
         "u2_signo_factorizacion",
         "u2_caso_incorrecto",
+        "u2_division_larga",
+        "u2_tcp",
+        "u2_cubo_perfecto",
+        "u2_diferencia_cuadrados",
+        "u2_factor_comun",
+        "u2_trinomio_cuadrado",
+        "u2_resta_potencias",
+        "u2_simplifica_racional",
       ];
       for (const tagId of newTags) {
         const found = lookupTag(tagId);
-        expect(found, `Tag ${tagId} should be defined in the taxonomy`).toBeDefined();
+        expect(found).toBeDefined();
         expect(found!.id).toBe(tagId);
         expect(found!.unit).toBe(2);
         expect(found!.description).toBeTruthy();
