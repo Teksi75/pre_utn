@@ -42,7 +42,28 @@ json_read() {
   local query="$1"
 
   if command -v jq >/dev/null 2>&1; then
-    jq -r "$query" "$STATUS_FILE"
+    case "$query" in
+      registeredBranches)
+        jq -r '.changes[] | select(.branch != null) | .branch' "$STATUS_FILE"
+        ;;
+      activeBranches)
+        jq -r '.activeBranches[]?' "$STATUS_FILE"
+        ;;
+      changeCount)
+        jq -r '.changes | length' "$STATUS_FILE"
+        ;;
+      statusCount:*)
+        local expected="${query#statusCount:}"
+        jq -r --arg expected "$expected" '[.changes[] | select(.status == $expected)] | length' "$STATUS_FILE"
+        ;;
+      lastAudit)
+        jq -r '.lastAudit // ""' "$STATUS_FILE"
+        ;;
+      *)
+        echo "ERROR: unsupported STATUS.json query: $query" >&2
+        return 1
+        ;;
+    esac
     return
   fi
 

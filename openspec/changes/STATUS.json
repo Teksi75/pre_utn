@@ -770,6 +770,17 @@
         "summary": "PR 2 — Desafíos U3 de transferencia: 2 desafios integradores (difficulty 4-5, category desafio, tags desafio+integrador, multiple-choice con 4 opciones en texto plano) para mat.u3.traduccion_lenguaje_verbal: (1) sistema con dos relaciones (cable+taco: x+2y=45, y-x=3) que exige planteo, sustitución, verificación algebraica E interpretación contextual; (2) perímetro de rectángulo con razón entre lados (perímetro 32, lado mayor = 3 × menor) que exige verificación doble (perímetro + razón) e interpretación de dimensiones. Cubre la cadena transferencial lectura → variable → traducción → planteo → resolución → verificación → interpretación; registra el módulo del loader y endurece la validación (expectedAnswer no-vacío y miembro de options; options[i].value string)."
       },
       "summary": "Fortalecer U3 con modelización algebraica (lenguaje verbal → planteo → resolución → verificación → interpretación) completado en dos PRs stacked-to-main. PR 1 mergeado a main (27f5ca0) agregó la skill base, teoría, ejemplos, ejercicios y feedback; PR 2 mergeado a main (a173ce0) agregó 2 desafios integradores, registro del loader U3, validación endurecida del loader y tests de comportamiento."
+    },
+    "align-u2-practice-official-exercises": {
+      "status": "in-progress",
+      "branch": "align-u2-practice-official-exercises",
+      "startedAt": "2026-07-06",
+      "verifiedAt": "2026-07-06",
+      "archivedAt": "2026-07-06",
+      "delivery": "auto-chain; stacked-to-main; consolidated branch for PR review",
+      "archive": "openspec/changes/archive/2026-07-06-align-u2-practice-official-exercises/",
+      "verify": "PASS WITH WARNINGS — pnpm run test:run (3134/3134), pnpm run typecheck, pnpm run build",
+      "summary": "Aligns Unit 2 practice with official UTN 2025 02_ej_utn.pdf: 31 → 63 exercises, 32 official-alignment exercises across existing 7 U2 skills, audit docs, feedback mappings for new U2 error tags, catalog/type/skill guard tests, and archived SDD artifacts. Pending merge to main."
     }
   },
   "activeBranches": [],

@@ -428,3 +428,67 @@ describe("Unit-2 theory normalization", () => {
     expect(ruffiniWarning).toBeDefined();
   });
 });
+
+/**
+ * PR 8 task 8.1 — Catalog-wide 02_ej_utn.pdf canonical-trace contract for
+ * the 32 new U2 exercises added by align-u2-practice-official-exercises
+ * (PR 3-7). Each new exercise MUST carry a canonicalTrace entry whose
+ * path includes "02_ej_utn.pdf" with a valid sourceUse. Per-PR coverage
+ * lives in exercises-u2-shape.test.ts; this is the source-agnostic audit.
+ */
+describe("U2 aligned exercises reference 02_ej_utn.pdf in canonicalTrace", () => {
+  type TraceEntry = { readonly path: string; readonly sourceUse: string };
+  type TaggedExercise = { readonly id: string; readonly canonicalTrace?: readonly TraceEntry[] };
+
+  // All PR 3-7 stable IDs, grouped per skill for diagnostic messages.
+  const PR3_IDS = ["ex.u2.polinomios_basico.6", "ex.u2.polinomios_basico.7", "ex.u2.polinomios_basico.8", "ex.u2.polinomios_basico.9"];
+  const PR4_IDS = ["ex.u2.operaciones_polinomios.6", "ex.u2.operaciones_polinomios.7", "ex.u2.operaciones_polinomios.8", "ex.u2.operaciones_polinomios.9", "ex.u2.operaciones_polinomios.10", "ex.u2.operaciones_polinomios.11"];
+  const PR5_IDS = Array.from({ length: 10 }, (_, i) => `ex.u2.factorizacion.${i + 5}`);
+  const PR6_IDS = ["ex.u2.ruffini_resto.6", "ex.u2.ruffini_resto.7", "ex.u2.mcm_mcd_polinomios.5", "ex.u2.mcm_mcd_polinomios.6"];
+  const PR7_IDS = ["ex.u2.ecuaciones_fraccionarias.5", "ex.u2.ecuaciones_fraccionarias.6", "ex.u2.ecuaciones_fraccionarias.7", "ex.u2.ecuaciones_fraccionarias.8", "ex.u2.ecuaciones_fraccionarias.9", "ex.u2.ecuaciones_fraccionarias.10", "ex.u2.ecuaciones_fraccionarias.11", "ex.u2.ecuaciones_fraccionarias.12"];
+  const ALL_ALIGNED = [...PR3_IDS, ...PR4_IDS, ...PR5_IDS, ...PR6_IDS, ...PR7_IDS];
+
+  function findById(id: string): TaggedExercise | undefined {
+    return (allExercises as unknown as readonly TaggedExercise[]).find((ex) => ex.id === id);
+  }
+
+  test("every PR 3-7 aligned exercise exists in the loaded catalog", () => {
+    for (const id of ALL_ALIGNED) {
+      expect(findById(id), `${id} must be present in the loaded catalog`).toBeDefined();
+    }
+    expect(ALL_ALIGNED.length).toBe(32);
+  });
+
+  test("every aligned exercise carries at least one canonicalTrace entry referencing 02_ej_utn.pdf", () => {
+    for (const id of ALL_ALIGNED) {
+      const ex = findById(id);
+      const trace = ex!.canonicalTrace ?? [];
+      const official = trace.find((t) => t.path.includes("02_ej_utn.pdf"));
+      expect(official, `${id} must reference 02_ej_utn.pdf in canonicalTrace`).toBeDefined();
+    }
+  });
+
+  test("every aligned exercise's 02_ej_utn.pdf trace carries a valid sourceUse", () => {
+    const valid = new Set(["reference", "adapted", "reinforcement", "alignment"]);
+    for (const id of ALL_ALIGNED) {
+      const ex = findById(id);
+      const trace = ex!.canonicalTrace ?? [];
+      const official = trace.find((t) => t.path.includes("02_ej_utn.pdf"));
+      expect(valid.has(official!.sourceUse), `${id} sourceUse ${official!.sourceUse} must be in {reference, adapted, reinforcement, alignment}`).toBe(true);
+    }
+  });
+
+  test("PR 3-7 alignment covers 32 exercises across 6 U2 skills", () => {
+    // PR 3 (polinomios_basico): 4
+    // PR 4 (operaciones_polinomios): 6
+    // PR 5 (factorizacion): 10
+    // PR 6 (ruffini_resto + mcm_mcd_polinomios): 2 + 2
+    // PR 7 (ecuaciones_fraccionarias): 8
+    // Total: 32 — no skill outside these 6 (gauss excluded: not aligned via 02_ej_utn.pdf)
+    expect(PR3_IDS.length).toBe(4);
+    expect(PR4_IDS.length).toBe(6);
+    expect(PR5_IDS.length).toBe(10);
+    expect(PR6_IDS.length).toBe(4);
+    expect(PR7_IDS.length).toBe(8);
+  });
+});

@@ -743,6 +743,92 @@ const TAXONOMY: readonly ErrorTag[] = [
     ],
   },
 
+  // Unit 2: Polynomial errors (extended, PR 2 of align-u2-practice-official-exercises)
+  // Eight new tags covering the case-by-case gap exposed by 02_ej_utn.pdf.
+  // Each tag is referenced (or will be referenced) by the corresponding
+  // exercise in the matching PR (PR 3..7) and exercises the canonical
+  // misconception for that specific case.
+  {
+    id: "u2_division_larga",
+    unit: 2,
+    description:
+      "Error en la división larga de polinomios: ordena mal los coeficientes, baja mal los términos intermedios, se equivoca al multiplicar o al restar el producto escalonado, o pierde grado al copiar términos. La división larga debe mantener todos los grados del dividendo (con coeficiente 0 si el término falta explícito) hasta llegar al término constante.",
+    examples: [
+      "Dividir x³ − 1 por (x − 1) sin anotar los coeficientes 0 de x² y x: [1, 0, 0, −1] tratado como [1, −1]",
+      "Al dividir 2x³ + 3x² − x + 5 por (x + 1), olvidar cambiar el signo al restar el producto parcial (−2x³ − 2x²) y obtener un resto incorrecto",
+    ],
+  },
+  {
+    id: "u2_tcp",
+    unit: 2,
+    description:
+      "Error al aplicar trinomio cuadrado perfecto cuando el trinomio SÍ es TCP: identifica mal la raíz del término cuadrático, pierde el signo del término doble (2ab) o factoriza con un solo signo en uno de los binomios. La forma correcta es a² ± 2ab + b² = (a ± b)², y el término doble lleva el signo del trinomio.",
+    examples: [
+      "Factorizar x² + 6x + 9 como (x + 3)(x + 3) es correcto, pero escribir (x − 3)² pierde el signo del término doble +6x",
+      "Para 4x² − 12xy + 9y², olvidar que √(4x²) = 2x y escribir (2x − 3y)² como (x − 3y)², perdiendo el coeficiente 2 del primer término",
+    ],
+  },
+  {
+    id: "u2_cubo_perfecto",
+    unit: 2,
+    description:
+      "Error al aplicar el cuatrinomio cubo perfecto cuando el cuatrinomio SÍ es cubo perfecto: confunde cubo con cuadrado, calcula mal la raíz cúbica de uno de los términos, pierde el signo del término triple (±3a²b o ±3ab²), o factoriza sólo dos de los tres binomios. La forma correcta es a³ ± 3a²b + 3ab² ± b³ = (a ± b)³.",
+    examples: [
+      "Para x³ + 6x² + 12x + 8, escribir (x + 2)² cuando en realidad es (x + 2)³ (confunde cuadrado con cubo)",
+      "Para 8x³ − 12x² + 6x − 1, perder el signo del segundo término y factorizar como (2x − 1)³ sin verificar los signos del término triple",
+    ],
+  },
+  {
+    id: "u2_diferencia_cuadrados",
+    unit: 2,
+    description:
+      "Error al factorizar diferencia de cuadrados: pierde el cambio de signo en el segundo binomio, suma raíces en vez de restarlas, o aplica la diferencia de cuadrados a una suma (donde no es aplicable en ℝ). La forma correcta es a² − b² = (a − b)(a + b) y los dos binomios difieren SOLO en el signo del segundo término.",
+    examples: [
+      "Factorizar x² − 9 como (x − 3)(x − 3) en vez de (x − 3)(x + 3) (signo perdido en el segundo factor)",
+      "Intentar factorizar x² + 4 como diferencia de cuadrados escribiendo (x + 2)(x − 2) pero como suma no factoriza en ℝ",
+    ],
+  },
+  {
+    id: "u2_factor_comun",
+    unit: 2,
+    description:
+      "Error al extraer factor común (incluido el factor común extendido o por grupos): divide sólo algunos términos por el factor candidato, deja afuera términos que también son divisibles, o no continúa extrayendo factor común dentro del paréntesis resultante. Todo término debe ser divisible por el factor extraído; si no lo es, el factor no era el correcto.",
+    examples: [
+      "De 6x² + 4x − 2 extraer 2 sólo de los dos primeros términos y escribir 2(3x² + 2x) − 2 sin factorizar el −2 también",
+      "De 2x³ + 4x² − 6x extraer 2x y olvidar verificar que el término independiente (−0) también es divisible, dejando un término suelto fuera del paréntesis",
+    ],
+  },
+  {
+    id: "u2_trinomio_cuadrado",
+    unit: 2,
+    description:
+      "Error al intentar aplicar el caso trinomio cuadrado perfecto sobre un trinomio que NO es TCP: fuerza raíces cuadradas aunque el discriminante no sea un cuadrado perfecto, inventa el término doble que 'debería estar', o afirma haber factorizado cuando la verificación 2ab no coincide. Antes de factorizar como TCP hay que confirmar que el término doble es exactamente 2·√(a²)·√(b²) con el signo correcto.",
+    examples: [
+      "Intentar factorizar x² + 5x + 6 como TCP, escribir (x + 3)² y 'verificar' que 2·x·3 = 6x en vez de 5x — no es TCP; es (x + 2)(x + 3)",
+      "Para x² + 4x + 3, escribir (x + 2)² = x² + 4x + 4 y luego 'corregir' el 4 a 3 para que cierre, en vez de reconocer que no es TCP",
+    ],
+  },
+  {
+    id: "u2_resta_potencias",
+    unit: 2,
+    description:
+      "Error al factorizar suma o diferencia de potencias aⁿ ± bⁿ: aplica mal el caso (suma de potencias iguales no factoriza en ℝ para n impar... sí; para n par, no), pierde el signo de los términos intermedios, o aplica la fórmula con el exponente equivocado. Distinguir n par / n impar y el signo ± antes de elegir el patrón.",
+    examples: [
+      "Factorizar a³ + b³ como (a + b)(a² − ab + b²) es correcto; factorizar a³ − b³ como (a − b)(a² + ab + b²) también, pero escribir ambos con el mismo signo intermedio es el error típico",
+      "Intentar factorizar a⁴ + b⁴ como (a² + b²)² en ℝ: no es diferencia de cuadrados ni suma de cubos; a⁴ + b⁴ no factoriza en ℝ con coeficientes enteros",
+    ],
+  },
+  {
+    id: "u2_simplifica_racional",
+    unit: 2,
+    description:
+      "Error al simplificar una expresión racional (suma, resta, producto o cociente de fracciones algebraicas): aplica mal el MCM (no usa todos los denominadores o usa el MCD por error), distribuye el numerador sobre el MCM sin factorizar primero, cancela sumas en vez de factores, o pierde el signo al multiplicar por −1. Antes de operar, factorizar numerador y denominador de cada fracción y verificar las restricciones de dominio.",
+    examples: [
+      "Simplificar (x² − 1)/(x − 1) como x + 1 es correcto, pero escribir (x² + 2x + 1)/(x + 1) como x + 1 también es correcto solo si se factoriza primero el numerador: (x + 1)²/(x + 1) = x + 1",
+      "Sumar 1/(x − 1) + 1/(x + 1) usando denominador (x − 1) o (x + 1) en vez del MCM (x − 1)(x + 1)",
+    ],
+  },
+
   // Unit 3: Ecuaciones y sistemas — error tags backed by the Unit 3 SDD sequence.
   // First-implementation scope: 8 tags, one per U3 skill (per spec U3-TAG-001).
   // PR 1 of fortalecer-u3-lenguaje-modelizacion-transferencia adds

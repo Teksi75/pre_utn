@@ -203,3 +203,96 @@ describe("Catalog answer-contract audit", () => {
     expect(knownFailures).toEqual([]);
   });
 });
+
+/**
+ * PR 8 task 8.2 — Structured-answer audit for rational-expression and
+ * fractional-equation cases. Extends the pre-existing type-vs-shape
+ * audit (numerical scalar, MC >=3 options, expected in options) with
+ * per-family invariants: rational-expression exercises MUST carry
+ * `category: "expresiones_racionales"` AND have a symbolic answer
+ * (`/` + variable token); fractional-equation MC exercises MUST carry
+ * `category: "ecuaciones_fraccionarias"` AND have a domain-exclusion
+ * distractor (option that zeroes a denominator). Numerical fractional-
+ * equation exercises are already enforced by the generic numerical-
+ * scalar audit.
+ */
+describe("PR 8 — structured-answer audit for PR 7 families", () => {
+  const RATIONAL_EXPR_IDS = [
+    "ex.u2.ecuaciones_fraccionarias.5",
+    "ex.u2.ecuaciones_fraccionarias.6",
+    "ex.u2.ecuaciones_fraccionarias.7",
+    "ex.u2.ecuaciones_fraccionarias.8",
+  ] as const;
+
+  const FRACTIONAL_EQ_MC_IDS = [
+    "ex.u2.ecuaciones_fraccionarias.11",
+    "ex.u2.ecuaciones_fraccionarias.12",
+  ] as const;
+
+  function byId(id: string): Exercise | undefined {
+    return exercises.find((ex) => ex.id === id);
+  }
+
+  test("rational-expression slots carry category `expresiones_racionales`", () => {
+    for (const id of RATIONAL_EXPR_IDS) {
+      const ex = byId(id);
+      expect(ex, `${id} must be in the catalog`).toBeDefined();
+      const category = (ex as unknown as { category?: string }).category;
+      expect(category, `${id} must declare category="expresiones_racionales"`).toBe("expresiones_racionales");
+    }
+  });
+
+  test("rational-expression slots have a rational expectedAnswer (contains `/` and a variable token)", () => {
+    // Rational-expression answers are stored as plain-text fraction
+    // notation (e.g. "(5x+1)/(x^2-1)") so they can be compared as
+    // strings against the MC option values. The pattern catches drift
+    // to a polynomial-only form (no `/`) or a literal-only form
+    // (no variable token).
+    for (const id of RATIONAL_EXPR_IDS) {
+      const ex = byId(id)!;
+      expect(ex.expectedAnswer, `${id} expectedAnswer`).toContain("/");
+      expect(ex.expectedAnswer, `${id} expectedAnswer must contain a variable`).toMatch(/[a-zA-Z]/);
+    }
+  });
+
+  test("rational-expression slots are MC (numerical type forbidden for symbolic answers)", () => {
+    for (const id of RATIONAL_EXPR_IDS) {
+      expect(byId(id)!.type, `${id} must be multiple-choice, not numerical`).toBe("multiple-choice");
+    }
+  });
+
+  test("fractional-equation MC slots carry category `ecuaciones_fraccionarias`", () => {
+    for (const id of FRACTIONAL_EQ_MC_IDS) {
+      const ex = byId(id);
+      expect(ex, `${id} must be in the catalog`).toBeDefined();
+      const category = (ex as unknown as { category?: string }).category;
+      expect(category, `${id} must declare category="ecuaciones_fraccionarias"`).toBe("ecuaciones_fraccionarias");
+    }
+  });
+
+  test("fractional-equation MC slots include at least one domain-exclusion distractor (0, 2, or -2)", () => {
+    // Per spec `Fractional Equation Exercise Support`: every MC
+    // fractional-equation exercise MUST include at least one option
+    // that zeroes a denominator. The pre-existing audit guarantees
+    // uniqueness and >=3 options; this block reifies the domain-
+    // exclusion invariant. MC option values may be stored as bare
+    // numbers ("0", "2") or as full `x = N` notation depending on the
+    // slot — accept both formats.
+    const exclusionPatterns = [/^x\s*=\s*-?2$/, /^x\s*=\s*0$/, /^-2$/, /^0$/, /^2$/];
+    for (const id of FRACTIONAL_EQ_MC_IDS) {
+      const ex = byId(id)!;
+      const values = ex.options!.map(getExerciseOptionValue);
+      const hasExclusion = values.some((v) => exclusionPatterns.some((re) => re.test(v)));
+      expect(hasExclusion, `${id} must include at least one option equal to 0, 2, or -2 (or x=0, x=2, x=-2) as domain-exclusion distractor; got values=${JSON.stringify(values)}`).toBe(true);
+    }
+  });
+
+  test("fractional-equation MC slots declare u2_denominador_cero (feedback pipeline contract)", () => {
+    // The domain-exclusion distractor only makes pedagogical sense if
+    // commonErrorTags include the matching error tag, so the feedback
+    // pipeline can surface it to the student.
+    for (const id of FRACTIONAL_EQ_MC_IDS) {
+      expect(byId(id)!.commonErrorTags, `${id} must declare u2_denominador_cero`).toContain("u2_denominador_cero");
+    }
+  });
+});

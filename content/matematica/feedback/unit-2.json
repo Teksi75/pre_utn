@@ -64,5 +64,53 @@
     "type": "conceptual",
     "message": "Confundiste MCM (Mínimo Común Múltiplo) con MCD (Máximo Común Divisor), o viceversa. Recordá la diferencia: MCM = producto de TODOS los factores (comunes y no comunes) con el MAYOR exponente. MCD = producto de los factores COMUNES con el MENOR exponente. Para MCM tomás todo y con el exponente más grande; para MCD tomás solo lo compartido y con el exponente más chico. Por ejemplo, si P=(x−1)²(x+2) y Q=(x−1)(x+2)³: MCM=(x−1)²(x+2)³, MCD=(x−1)(x+2). Volvé a leer la definición y practicá con el ejemplo paso a paso.",
     "recoveryTarget": "example-mcm-mcd-polinomios-1"
+  },
+  {
+    "errorTag": "u2_division_larga",
+    "type": "procedural",
+    "message": "Tu división larga de polinomios tiene un error de procedimiento. Antes de cada paso, ordená el dividendo de mayor a menor grado y completá con coeficiente 0 todos los grados que falten explícitamente. Al restar el producto parcial, distribuí bien el signo negativo a TODOS los términos, no sólo al primero. Bajá un término por iteración y verificá que el grado del resto sea siempre menor que el grado del divisor; cuando ya lo es, terminaste. Si el resultado te da un resto con grado mayor o igual al divisor, repetí el ciclo. Practicá paso a paso siguiendo el orden de la división larga.",
+    "recoveryTarget": "example-ruffini-resto-2"
+  },
+  {
+    "errorTag": "u2_tcp",
+    "type": "corrective",
+    "message": "Tu factorización por trinomio cuadrado perfecto tiene un error aunque el trinomio SÍ es TCP. El procedimiento es: (1) verificar que el primer y tercer término son cuadrados perfectos y obtener sus bases a y b; (2) verificar que el término medio es exactamente 2ab con el signo correcto; (3) escribir (a ± b)² usando el signo del término medio. El error típico es perder el signo de a o de b (por ejemplo, escribir (x − 3)² para x² + 6x + 9) u olvidar que la raíz cuadrada de un coeficiente puede no ser 1 (por ejemplo, √(4x²) = 2x, no x). Volvé a verificar los tres pasos antes de escribir la factorización final.",
+    "recoveryTarget": "example-factorizacion-2"
+  },
+  {
+    "errorTag": "u2_cubo_perfecto",
+    "type": "corrective",
+    "message": "Tu factorización por cuatrinomio cubo perfecto tiene un error aunque el cuatrinomio SÍ es cubo perfecto. El procedimiento es: (1) sacar la raíz cúbica del primer y último término para obtener las bases a y b; (2) verificar que los términos interiores son exactamente 3a²b y 3ab² con el signo correcto (alternancia +, −, +, − para (a − b)³ o +, +, +, + para (a + b)³); (3) escribir (a ± b)³. El error típico es confundir cubo con cuadrado (escribir (x + 2)² en vez de (x + 2)³) o equivocarse al sacar la raíz cúbica del coeficiente (por ejemplo, ∛(8x³) = 2x, no 2 ni x). Volvé a verificar los tres pasos antes de escribir la factorización final.",
+    "recoveryTarget": "example-factorizacion-8"
+  },
+  {
+    "errorTag": "u2_diferencia_cuadrados",
+    "type": "corrective",
+    "message": "Tu factorización por diferencia de cuadrados tiene un error. La fórmula es a² − b² = (a − b)(a + b): los dos factores son conjugados, es decir, comparten las mismas bases pero cambian SOLO el signo del segundo término. Error típico: escribir (a − b)² (que es un trinomio cuadrado perfecto, NO una diferencia) o aplicar la fórmula a una SUMA (a² + b²), que no se factoriza en ℝ. También es común perder el cambio de signo al sacar la raíz cuadrada de un coeficiente (por ejemplo, escribir (x − 9)² cuando lo correcto es (x − 3)(x + 3)). Verificá que tu factorización expandida recupera exactamente el polinomio original.",
+    "recoveryTarget": "example-factorizacion-1"
+  },
+  {
+    "errorTag": "u2_factor_comun",
+    "type": "procedural",
+    "message": "Tu extracción de factor común es incompleta. Antes de factorizar, identificá el MCD numérico (entre los coeficientes) Y el MCD literal (la menor potencia de cada variable común). Después, dividí TODOS los términos por ese factor común: si un término no es divisible, el factor elegido no era el correcto. Una vez extraído el factor común, revisá si lo que quedó dentro del paréntesis se puede seguir factorizando por otro caso antes de declarar la factorización completa. Por ejemplo, en 6x³ + 9x² − 12x el factor común es 3x y TODOS los términos son divisibles por 3x; si te queda algún término suelto fuera del paréntesis, revisá la división término a término.",
+    "recoveryTarget": "example-factorizacion-6"
+  },
+  {
+    "errorTag": "u2_trinomio_cuadrado",
+    "type": "conceptual",
+    "message": "Intentaste aplicar el caso trinomio cuadrado perfecto (TCP) a un trinomio que NO es TCP. Antes de factorizar como TCP, verificá las tres condiciones: (1) el primer y tercer término son cuadrados perfectos; (2) el término del medio es exactamente 2ab con el signo correcto; (3) el signo del término medio determina (a + b)² o (a − b)². Si la condición 2 no se cumple, NO es TCP — probablemente sea un trinomio de segundo grado general (caso 7) y se factorice por raíces con la fórmula general o por Gauss. Por ejemplo, x² + 5x + 6 NO es TCP (2·x·√6 ≠ 5x); se factoriza como (x + 2)(x + 3) por el caso 7. No fuerces la factorización como TCP cuando la condición del doble producto falle.",
+    "recoveryTarget": "example-factorizacion-2"
+  },
+  {
+    "errorTag": "u2_resta_potencias",
+    "type": "corrective",
+    "message": "Tu factorización por suma o diferencia de potencias aⁿ ± bⁿ tiene un error. Primero identificá la paridad de n y el signo (±): (a) para DIFERENCIA aⁿ − bⁿ con n par, hay factor común (a + b); con n impar, los signos del segundo factor son alternados y terminan en +; (b) para SUMA aⁿ + bⁿ, sólo aplica con n impar y los signos del segundo factor también son alternados pero terminan en −. Error típico: usar la misma fórmula para suma y para diferencia, o aplicar suma de potencias cuando n es par (que no factoriza en ℝ con coeficientes enteros). También es común perder la alternancia de signos en los términos intermedios. Verificá tu factorización expandiendo: tiene que recuperar el polinomio original.",
+    "recoveryTarget": "example-factorizacion-5"
+  },
+  {
+    "errorTag": "u2_simplifica_racional",
+    "type": "corrective",
+    "message": "Tu simplificación de expresión racional tiene un error. Antes de operar, factorizá numerador y denominador de cada fracción, y verificá las restricciones de dominio (los valores que anulan algún denominador). Para sumar o restar fracciones algebraicas, calculá el MCM de los denominadores, reescribí cada fracción con ese denominador común, y recién después sumá los numeradores. Error típico: usar el denominador de una sola fracción en vez del MCM, o cancelar sumas en vez de factores (por ejemplo, cancelar (x + 1) en (x + 1) + 2 cuando lo que se puede cancelar son factores multiplicativos, no sumandos). También es común perder el signo al multiplicar numerador y denominador por −1. Después de simplificar, controlá que el resultado sea equivalente al original en todo el dominio declarado.",
+    "recoveryTarget": "example-ecuaciones-fraccionarias-1"
   }
 ]
