@@ -656,11 +656,11 @@
         "reason": "PR1 ~2403 lines + PR2 ~2100 lines, both above 400-line budget, ~60-70% tests. Cohesive auth surface — splitting would force mid-stack retargets. Precedent: supabase-adapter-v0-fallback PR2."
       },
       "production_activation": {
-        "status": "decoupled_pending_user_action",
-        "note": "Vercel env vars NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY NOT loaded in production yet. Code is merged but auth is dormant in prod (selector falls back to localStorage). Activation requires: load Vercel envs, enable Supabase Auth Email provider, set Site URL + /auth/callback Redirect URL, redeploy, manual smoke with new-student + linking-student flows."
+        "status": "activated",
+        "activatedAt": "2026-07-04",
+        "note": "Vercel Production env vars NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY are loaded, production redeploy is READY, built assets contain Supabase public config, /cuenta/ingresar renders auth enabled, /api/persistence/fallback accepts smoke payloads, and manual magic-link smoke was confirmed by Pablo. Supabase production activation is complete."
       },
       "follow_ups": [
-        "Supabase activation stage: load Vercel envs + enable Email Auth + redirect URL + redeploy + smoke",
         "Revoke public EXECUTE on public.rls_auto_enable() in Supabase (advisor warning, pre-existing from project creation)",
         "Rename middleware.ts → proxy.ts (Next.js 16 deprecation, non-blocking)",
         "Conflict-resolution UI for local-has + remote-has branch (future change; v0 documents remote-as-canonical, local preserved as backup)",
