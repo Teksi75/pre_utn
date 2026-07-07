@@ -628,6 +628,12 @@ describe("U3 verbal translation — cross-source prompt uniqueness", () => {
   const MIN_SHARED_TOKENS_FOR_CONTAINMENT = 4;
   const MIN_TOKENS_FOR_JACCARD = 4;
   const JACCARD_DUPLICATE_THRESHOLD = 0.7;
+  const NUMBER_TOKEN = String.raw`\d+(?:[.,]\d+)?`;
+  const EQUATION_TERM = String.raw`(?:[a-z]\w*|\d+[a-z]+|${NUMBER_TOKEN}|\([^)]*\))`;
+  const PLAIN_EQUATION_PATTERN = new RegExp(
+    String.raw`(?:${NUMBER_TOKEN}\s*)?${EQUATION_TERM}(?:\s*[+\-*/^²]\s*${EQUATION_TERM})*\s*(?:=|<=|>=|<|>|≤|≥)\s*-?${EQUATION_TERM}(?:\s*[+\-*/^²]\s*${EQUATION_TERM})*`,
+    "giu"
+  );
 
   function stripAccents(s: string): string {
     return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -717,16 +723,19 @@ describe("U3 verbal translation — cross-source prompt uniqueness", () => {
    * and "Resolver la ecuación $3x - 5 = 10$" (example) — both
    * embedding the SAME equation — were never flagged as duplicates.
    *
-   * The math fingerprint pulls every `$...$` delimited expression out of
-   * the prompt, drops LaTeX/spacing noise, lowercases, and joins the
-   * sorted set with a separator. Two prompts that share the same
-   * normalized equation(s) — regardless of action verb, regardless of
-   * whether one is action-leading and the other isn't — produce the
-   * same fingerprint and are flagged.
+   * The math fingerprint pulls delimited (`$...$` / `$$...$$`) and plain
+   * equation-like expressions out of the prompt, drops LaTeX/spacing
+   * noise, lowercases, and joins the sorted set with a separator. The
+   * duplicate predicate uses this signal only inside the action-leading
+   * branch. When kind metadata is present on both sides, the kinds must
+   * match; legacy/no-kind callers remain comparable. This catches genuine
+   * same-equation prompts without turning broad scenario text into a
+   * duplicate just because it mentions the same math.
    *
    * Edge cases:
-   *  - No `$...$` delimiters → returns "" (the prompt has no math to
-   *    fingerprint, so no comparison is made via this signal).
+   *  - No delimited or plain equation-like expression → returns "" (the
+   *    prompt has no math to fingerprint, so no comparison is made via
+   *    this signal).
    *  - Multiple expressions → all are included, so "x + y = 5, 2x - y = 1"
    *    and "x + y = 5 y 2x - y = 1" fingerprint identically.
    *  - Whitespace differences within an expression ("$3x - 5 = 10$" vs
@@ -736,13 +745,28 @@ describe("U3 verbal translation — cross-source prompt uniqueness", () => {
    * Pure function — no I/O, no side effects.
    */
   function mathFingerprint(text: string): string {
-    const dollarMatches = text.match(/\$[^$]*\$/g) ?? [];
-    if (dollarMatches.length === 0) return "";
+    const expressions: string[] = [];
+    let plainText = text;
 
-    const normalized = dollarMatches
+    plainText = plainText.replace(/\$\$([\s\S]*?)\$\$/g, (_match, expr: string) => {
+      expressions.push(expr);
+      return " ";
+    });
+
+    plainText = plainText.replace(/(?<!\d)\$([^$\n]+?)\$(?!\d)/g, (_match, expr: string) => {
+      expressions.push(expr);
+      return " ";
+    });
+
+    const plainEquationMatches = plainText.match(PLAIN_EQUATION_PATTERN) ?? [];
+    expressions.push(...plainEquationMatches);
+
+    if (expressions.length === 0) return "";
+
+    const normalized = [...new Set(expressions)]
       .map((m) => {
-        // Strip $ delimiters, lowercase, drop accents, collapse whitespace.
-        let expr = stripAccents(m.replace(/\$/g, "").toLowerCase());
+        // Strip delimiters/noise, lowercase, drop accents, collapse whitespace.
+        let expr = stripAccents(m.toLowerCase());
         expr = expr.replace(/\s+/g, "").trim();
         return expr;
       })
@@ -750,6 +774,11 @@ describe("U3 verbal translation — cross-source prompt uniqueness", () => {
 
     normalized.sort();
     return normalized.join("|");
+  }
+
+  function mathFingerprintKind(text: string): "delimited" | "plain" | "none" {
+    if (/\$\$[\s\S]*?\$\$/.test(text) || /(?<!\d)\$([^$\n]+?)\$(?!\d)/.test(text)) return "delimited";
+    return mathFingerprint(text) === "" ? "none" : "plain";
   }
 
   type Source = {
@@ -795,7 +824,8 @@ describe("U3 verbal translation — cross-source prompt uniqueness", () => {
    *   3. Similarity: Jaccard similarity ≥ 0.7 over non-numeric tokens, AND
    *      each side has at least 4 tokens (avoids flagging tiny fragments).
    *   4. Math fingerprint equality (action-leading only): both prompts
-   *      embed the same `$...$` math expression(s). This catches the case
+   *      embed the same math expression(s), with matching kinds when kind
+   *      metadata is present on both sides. This catches the case
    *      where one prompt is action-leading ("Resuelve $3x - 5 = 10$")
    *      and the other is not ("Resolver la ecuación $3x - 5 = 10$"),
    *      because the action-verb short-circuit in the legacy rules
@@ -811,42 +841,57 @@ describe("U3 verbal translation — cross-source prompt uniqueness", () => {
    * even when the math is distinct. The math fingerprint rescues the
    * genuine same-equation cases that equality alone misses.
    */
-  function isNearDuplicate(
-    a: { base: string; isActionLeading?: boolean; mathFingerprint?: string },
-    b: { base: string; isActionLeading?: boolean; mathFingerprint?: string }
-  ): boolean {
-    if (a.base === b.base) return true;
-    if (a.base.length === 0 || b.base.length === 0) return false;
+  type NearDuplicateInput = {
+    base: string;
+    isActionLeading?: boolean;
+    mathFingerprint?: string;
+    mathFingerprintKind?: "delimited" | "plain" | "none";
+  };
+
+  function matchedNearDuplicateRule(a: NearDuplicateInput, b: NearDuplicateInput): string | null {
+    if (a.base === b.base) return "base-equality";
+    if (a.base.length === 0 || b.base.length === 0) return null;
 
     if (a.isActionLeading || b.isActionLeading) {
-      // Math fingerprint rescue: same `$...$` equation(s) on both sides
-      // means same prompt regardless of the action verb wrapper. Empty
-      // fingerprint on either side skips the check (those prompts carry
-      // no math to compare).
-      if (a.mathFingerprint && b.mathFingerprint && a.mathFingerprint === b.mathFingerprint) {
-        return true;
+      // Math fingerprint rescue: same equation(s) on both sides means same
+      // prompt regardless of the action verb wrapper. Empty fingerprint on
+      // either side skips the check; kind metadata, when present on both
+      // sides, prevents plain-vs-delimited comparisons from over-matching.
+      const comparableMathKind =
+        a.mathFingerprintKind === undefined ||
+        b.mathFingerprintKind === undefined ||
+        a.mathFingerprintKind === b.mathFingerprintKind;
+      if (comparableMathKind && a.mathFingerprint && b.mathFingerprint && a.mathFingerprint === b.mathFingerprint) {
+        return "math-fingerprint-equality";
       }
-      return false;
+      return null;
     }
 
     const tokensA = new Set(a.base.split(" ").filter((t) => t.length > 0));
     const tokensB = new Set(b.base.split(" ").filter((t) => t.length > 0));
-    if (tokensA.size === 0 || tokensB.size === 0) return false;
+    if (tokensA.size === 0 || tokensB.size === 0) return null;
 
     const shared = [...tokensA].filter((t) => tokensB.has(t));
 
     // Containment: every token of one side appears in the other.
     const aSubsetOfB = shared.length === tokensA.size;
     const bSubsetOfA = shared.length === tokensB.size;
-    if ((aSubsetOfB || bSubsetOfA) && shared.length >= MIN_SHARED_TOKENS_FOR_CONTAINMENT) return true;
+    if ((aSubsetOfB || bSubsetOfA) && shared.length >= MIN_SHARED_TOKENS_FOR_CONTAINMENT) return "token-containment";
 
     // Jaccard similarity over non-numeric tokens (secondary defense).
     if (tokensA.size >= MIN_TOKENS_FOR_JACCARD && tokensB.size >= MIN_TOKENS_FOR_JACCARD) {
       const unionSize = new Set([...tokensA, ...tokensB]).size;
       const jaccard = shared.length / unionSize;
-      if (jaccard >= JACCARD_DUPLICATE_THRESHOLD) return true;
+      if (jaccard >= JACCARD_DUPLICATE_THRESHOLD) return "jaccard-similarity";
     }
-    return false;
+    return null;
+  }
+
+  function isNearDuplicate(
+    a: NearDuplicateInput,
+    b: NearDuplicateInput
+  ): boolean {
+    return matchedNearDuplicateRule(a, b) !== null;
   }
 
   test("1.2 baseStatement normalization is deterministic and strips tails", () => {
@@ -983,6 +1028,69 @@ test("1.2c baseStatement preserves disambiguating digits for action-leading prom
     ).toBe(false);
   });
 
+  test("1.2e mathFingerprint normalizes inline, plain, and display equations", () => {
+    const inline = mathFingerprint("Resuelve $2^x = 8$.");
+    const plain = mathFingerprint("Resuelve 2^x = 8.");
+    const display = mathFingerprint("Resuelve $$2^x = 8$$.");
+
+    expect(inline, "inline math must be fingerprinted").not.toBe("");
+    expect(plain, "plain equation-like math must be fingerprinted").toBe(inline);
+    expect(display, "display math must be fingerprinted").toBe(inline);
+
+    expect(
+      mathFingerprint("El cable cuesta $13 y el taco $16."),
+      "currency amounts must not be treated as dollar-delimited math"
+    ).toBe("");
+  });
+
+  test("1.2f action-leading prompts sharing the same plain equation are detected without broad false positives", () => {
+    const theoryPrompt = "Resuelve 2^x = 8.";
+    const examplePrompt = "Resolver la ecuación 2^x = 8";
+
+    const theoryMath = mathFingerprint(theoryPrompt);
+    const exampleMath = mathFingerprint(examplePrompt);
+    expect(theoryMath, "plain equation-like math must be fingerprinted").not.toBe("");
+    expect(theoryMath).toBe(exampleMath);
+    expect(mathFingerprintKind(theoryPrompt)).toBe("plain");
+    expect(mathFingerprintKind(examplePrompt)).toBe("plain");
+
+    expect(
+      isNearDuplicate(
+        {
+          base: baseStatement(theoryPrompt),
+          isActionLeading: promptKind(theoryPrompt) === "action-leading",
+          mathFingerprint: theoryMath,
+          mathFingerprintKind: mathFingerprintKind(theoryPrompt),
+        },
+        {
+          base: baseStatement(examplePrompt),
+          isActionLeading: promptKind(examplePrompt) === "action-leading",
+          mathFingerprint: exampleMath,
+          mathFingerprintKind: mathFingerprintKind(examplePrompt),
+        }
+      )
+    ).toBe(true);
+
+    expect(mathFingerprintKind("El cable cuesta $13 y el taco $16.")).toBe("none");
+    expect(
+      isNearDuplicate(
+        {
+          base: baseStatement("En álgebra miramos 2^x = 8 antes de cambiar de tema."),
+          isActionLeading: false,
+          mathFingerprint: mathFingerprint("En álgebra miramos 2^x = 8 antes de cambiar de tema."),
+          mathFingerprintKind: mathFingerprintKind("En álgebra miramos 2^x = 8 antes de cambiar de tema."),
+        },
+        {
+          base: baseStatement("En geometría aparece 2^x = 8 dentro de una comparación lateral."),
+          isActionLeading: false,
+          mathFingerprint: mathFingerprint("En geometría aparece 2^x = 8 dentro de una comparación lateral."),
+          mathFingerprintKind: mathFingerprintKind("En geometría aparece 2^x = 8 dentro de una comparación lateral."),
+        }
+      ),
+      "scenario-based broad text must not match via plain math fingerprint alone"
+    ).toBe(false);
+  });
+
   test("isNearDuplicate catches equality, containment, and Jaccard similarity", () => {
     // (1) Equality: identical normalized base statements.
     expect(isNearDuplicate({ base: "el doble de un numero" }, { base: "el doble de un numero" })).toBe(true);
@@ -1046,6 +1154,7 @@ test("1.2c baseStatement preserves disambiguating digits for action-leading prom
           base: baseStatement(s.text),
           isActionLeading: promptKind(s.text) === "action-leading",
           mathFingerprint: mathFingerprint(s.text),
+          mathFingerprintKind: mathFingerprintKind(s.text),
         }))
         .filter((s) => s.base.length > 0);
 
@@ -1055,10 +1164,11 @@ test("1.2c baseStatement preserves disambiguating digits for action-leading prom
           const b = sources[j];
           if (a.kind === b.kind) continue; // only cross-source pairs
           if (isNearDuplicate(a, b)) {
+            const matchedRule = matchedNearDuplicateRule(a, b) ?? "unknown";
             violations.push(
-              `skillId=${skillId} [${a.kind}] ${a.id} ↔ [${b.kind}] ${b.id}\n` +
-                `  A: "${a.text}"\n` +
-                `  B: "${b.text}"`
+              `skillId=${skillId} rule=${matchedRule} [${a.kind}] ${a.id} ↔ [${b.kind}] ${b.id}\n` +
+                `  A base="${a.base}" mathFingerprint="${a.mathFingerprint}" mathFingerprintKind="${a.mathFingerprintKind}" text="${a.text}"\n` +
+                `  B base="${b.base}" mathFingerprint="${b.mathFingerprint}" mathFingerprintKind="${b.mathFingerprintKind}" text="${b.text}"`
             );
           }
         }
@@ -1177,42 +1287,45 @@ test("1.2c baseStatement preserves disambiguating digits for action-leading prom
     expect(combined.has("u3_interpretacion_contextual_incorrecta")).toBe(true);
   });
 
-test("1.7 desafio-02 must NOT be a near-duplicate of any exercise or theory prompt", () => {
-    // desafio-02 stays in the challenge set; it must not be a near-duplicate
-    // (equality / containment / Jaccard) of any same-skill exercise prompt or
-    // theory practice prompt after the swap. Reusing isNearDuplicate()
-    // instead of `not.toBe(base)` catches containment/Jaccard overlaps that
-    // equality alone would miss.
-    const sources = collectSourcesForSkill(SKILL_ID);
+  test("1.7 same-skill challenges must NOT be near-duplicates of exercise or theory prompts", () => {
+    // Challenges stay in the challenge set; each same-skill challenge must not
+    // be a near-duplicate (equality / containment / Jaccard / math fingerprint)
+    // of any same-skill exercise prompt or theory practice prompt. Reusing the
+    // same detector prevents a future challenge from bypassing the collision
+    // gate just because the test was pinned to one desafio ID.
+    const sources = collectSourcesForSkill(SKILL_ID).filter((src) => src.kind !== "example");
     const desafios = loadChallengesForSkill(SKILL_ID);
-    const desafio02 = desafios.find((c) => c.id === "ex.u3.traduccion_lenguaje_verbal.desafio-02");
-    expect(desafio02, "desafio-02 must exist").toBeDefined();
-    const desafio02Base = baseStatement(desafio02!.prompt);
-    const desafio02Kind = promptKind(desafio02!.prompt);
-    expect(desafio02Base.length, "desafio-02 must have a non-empty base statement").toBeGreaterThan(0);
+    expect(desafios.length, "same-skill challenges must exist").toBeGreaterThan(0);
 
-    for (const src of sources) {
-      if (src.kind === "example") continue; // only exercise and theory pair with desafio
-      const srcBase = baseStatement(src.text);
-      const srcKind = promptKind(src.text);
-      const desafio02Math = mathFingerprint(desafio02!.prompt);
-      const srcMath = mathFingerprint(src.text);
-      expect(
-        isNearDuplicate(
-          {
-            base: desafio02Base,
-            isActionLeading: desafio02Kind === "action-leading",
-            mathFingerprint: desafio02Math,
-          },
-          {
-            base: srcBase,
-            isActionLeading: srcKind === "action-leading",
-            mathFingerprint: srcMath,
-          }
-        ),
-        `desafio-02 must not be a near-duplicate of [${src.kind}] ${src.id}: ${desafio02!.prompt}`
-      ).toBe(false);
+    const violations: string[] = [];
+    for (const desafio of desafios) {
+      const challenge = {
+        base: baseStatement(desafio.prompt),
+        isActionLeading: promptKind(desafio.prompt) === "action-leading",
+        mathFingerprint: mathFingerprint(desafio.prompt),
+        mathFingerprintKind: mathFingerprintKind(desafio.prompt),
+      };
+      expect(challenge.base.length, `${desafio.id} must have a non-empty base statement`).toBeGreaterThan(0);
+
+      for (const src of sources) {
+        const source = {
+          base: baseStatement(src.text),
+          isActionLeading: promptKind(src.text) === "action-leading",
+          mathFingerprint: mathFingerprint(src.text),
+          mathFingerprintKind: mathFingerprintKind(src.text),
+        };
+        const matchedRule = matchedNearDuplicateRule(challenge, source);
+        if (matchedRule !== null) {
+          violations.push(
+            `challenge=${desafio.id} source=${src.id} sourceKind=${src.kind} rule=${matchedRule}\n` +
+              `  challenge base="${challenge.base}" mathFingerprint="${challenge.mathFingerprint}" mathFingerprintKind="${challenge.mathFingerprintKind}" text="${desafio.prompt}"\n` +
+              `  source base="${source.base}" mathFingerprint="${source.mathFingerprint}" mathFingerprintKind="${source.mathFingerprintKind}" text="${src.text}"`
+          );
+        }
+      }
     }
+
+    expect(violations, `Challenge prompt collisions:\n${violations.join("\n\n")}`).toEqual([]);
   });
 
   test("1.8 U3 verbal-translation prompts collectively cover the full modeling chain", () => {
