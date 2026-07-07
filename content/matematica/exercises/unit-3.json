@@ -4,48 +4,48 @@
     "skillId": "mat.u3.traduccion_lenguaje_verbal",
     "type": "multiple-choice",
     "difficulty": 1,
-    "prompt": "El doble de un número, menos 3, es igual a 15. ¿Cuál es la ecuación que representa el enunciado?",
-    "expectedAnswer": "2x - 3 = 15",
+    "prompt": "Si a un número se le suman 12, se obtiene 31. ¿Cuál opción define la incógnita, traduce el enunciado, plantea la ecuación, resuelve, verifica e interpreta correctamente la situación?",
+    "expectedAnswer": "Defino x como el número pedido; traduzco \"se le suman 12\" como x + 12; planteo x + 12 = 31; resuelvo x = 19; verifico 19 + 12 = 31 ✓; el número pedido es 19.",
     "options": [
-      "2x - 3 = 15",
-      "2x + 3 = 15",
-      "2(x - 3) = 15",
-      "2x = 15 - 3"
+      "Defino x como el número pedido; traduzco \"se le suman 12\" como x + 12; planteo x + 12 = 31; resuelvo x = 19; verifico 19 + 12 = 31 ✓; el número pedido es 19.",
+      "Planteo 12x = 31 (conector \"se le suman\" mal traducido como multiplicación); falta definir la incógnita, resolver y verificar.",
+      "Planteo x = 12 + 31; resuelvo x = 43 (interpreta el enunciado al revés); verifico 43 + 12 = 55 ≠ 31.",
+      "Planteo x = 19; falta definir la incógnita, plantear la ecuación explícita y verificar el resultado."
     ],
     "commonErrorTags": ["u3_traduccion_incorrecta"],
-    "pedagogicalNote": "El conector \"menos 3\" se traduce como restar 3 a la expresión, NO como restar 3 al argumento del doble ni como sumar 3. La opción \"2x = 15 - 3\" es un distractor de signo, no de planteo. La verificación: con x = 9, 2·9 - 3 = 15 ✓."
+    "pedagogicalNote": "El conector \"se le suman 12\" se traduce como sumar 12 a la incógnita (x + 12), NO como multiplicar por 12 (12x) ni como suma independiente de x. Cadena completa: definir x como el número pedido, traducir 'se le suman 12' como x + 12, plantear x + 12 = 31, resolver x = 19, verificar 19 + 12 = 31 ✓, interpretar 'el número pedido es 19'. Distractor frecuente: 12x = 31 (confunde suma con multiplicación) o x = 12 + 31 (lee el enunciado al revés)."
   },
   {
     "id": "ex.u3.traduccion_lenguaje_verbal.3",
     "skillId": "mat.u3.traduccion_lenguaje_verbal",
     "type": "multiple-choice",
     "difficulty": 2,
-    "prompt": "La suma de tres números consecutivos es 36. ¿Cuál es la ecuación correcta?",
-    "expectedAnswer": "x + (x+1) + (x+2) = 36",
+    "prompt": "El perímetro de un cuadrado es 28 cm. ¿Cuál opción define la incógnita, traduce el enunciado, plantea la ecuación, resuelve, verifica e interpreta correctamente la situación?",
+    "expectedAnswer": "Defino x como el lado del cuadrado; traduzco \"perímetro = 4 lados iguales\" como 4x; planteo 4x = 28; resuelvo x = 7; verifico 4·7 = 28 ✓; el lado mide 7 cm.",
     "options": [
-      "x + (x+1) + (x+2) = 36",
-      "3x = 36",
-      "x + x + x = 36",
-      "(x+1) + (x+2) + (x+3) = 36"
+      "Defino x como el lado del cuadrado; traduzco \"perímetro = 4 lados iguales\" como 4x; planteo 4x = 28; resuelvo x = 7; verifico 4·7 = 28 ✓; el lado mide 7 cm.",
+      "Planteo x + 4 = 28 (suma en lugar de multiplicar por 4 lados); falta definir la incógnita, resolver y verificar.",
+      "Planteo x² = 28 (confunde perímetro con área); falta definir la incógnita, resolver y verificar.",
+      "Planteo 2x = 28 (confunde el cuadrado con una figura de dos lados); resuelvo x = 14; verifico 2·14 = 28 ✓; interpreto \"el lado mide 14 cm\" (inconsistente con un cuadrado de perímetro 28)."
     ],
     "commonErrorTags": ["u3_traduccion_incorrecta"],
-    "pedagogicalNote": "Si los números son consecutivos y se llama x al menor, los tres son x, x+1, x+2. Distractor frecuente: 3x = 36 (pierde el consecutivo) o (x+1)+(x+2)+(x+3)=36 (numeró a partir del segundo). Verificación: x=11 → 11+12+13=36 ✓."
+    "pedagogicalNote": "El perímetro de un cuadrado es 4 veces la longitud de su lado. Cadena completa: definir x como el lado del cuadrado, traducir 'perímetro = 4 lados iguales' como 4x, plantear 4x = 28, resolver x = 7, verificar 4·7 = 28 ✓, interpretar 'el lado mide 7 cm'. Distractor frecuente: 2x = 28 (confunde el cuadrado con una figura de dos lados), x² = 28 (confunde perímetro con área) o x + 4 = 28 (confunde suma con multiplicación)."
   },
   {
     "id": "ex.u3.traduccion_lenguaje_verbal.4",
     "skillId": "mat.u3.traduccion_lenguaje_verbal",
     "type": "multiple-choice",
     "difficulty": 2,
-    "prompt": "Un rectángulo tiene perímetro 30 cm y el lado mayor es el doble del menor. ¿Cuál opción resuelve, verifica e interpreta correctamente la situación?",
-    "expectedAnswer": "x = 5; los lados miden 5 cm y 10 cm; 2(5 + 10) = 30",
+    "prompt": "El doble de la edad de María menos 4 es igual a la edad de Pedro, que tiene 18 años. ¿Cuál opción define la incógnita, traduce el enunciado, plantea la ecuación, resuelve, verifica e interpreta correctamente la situación?",
+    "expectedAnswer": "Defino x como la edad de María; traduzco \"el doble menos 4\" como 2x - 4; planteo 2x - 4 = 18; resuelvo x = 11; verifico 2·11 - 4 = 18 ✓; María tiene 11 años y Pedro 18.",
     "options": [
-      "x = 5; los lados miden 5 cm y 10 cm; 2(5 + 10) = 30",
-      "2(x + 2x) = 30; falta resolver e interpretar las dimensiones",
-      "x = 10; los lados miden 10 cm y 20 cm; 2(10 + 20) = 60",
-      "x = 5; el perímetro mide 5 cm; no interpreta los lados pedidos"
+      "Defino x como la edad de María; traduzco \"el doble menos 4\" como 2x - 4; planteo 2x - 4 = 18; resuelvo x = 11; verifico 2·11 - 4 = 18 ✓; María tiene 11 años y Pedro 18.",
+      "Defino x como la edad de Pedro; traduzco \"el doble de María\" como 2/x; planteo 2/x - 4 = 18; resuelvo x = 2/22; verifico 2/(2/22) - 4 = 18 ✓ (inconsistente).",
+      "Defino x como la edad de María; traduzco \"el doble menos 4\" como 2x - 4; planteo 2x - 4 = 18; resuelvo x = 11; falta verificar e interpretar el resultado en el contexto.",
+      "Defino x como la edad de María; traduzco \"el doble más 4\" como 2x + 4; planteo 2x + 4 = 18; resuelvo x = 7; verifico 2·7 + 4 = 18 ✓; María tiene 7 años (interpretación incompleta: no nombra la edad de Pedro)."
     ],
     "commonErrorTags": ["u3_traduccion_incorrecta", "u3_verificacion_omitida", "u3_interpretacion_contextual_incorrecta"],
-    "pedagogicalNote": "Perímetro = 2·(largo + ancho). Si el menor es x, el mayor es 2x, y el perímetro es 2·(x + 2x) = 30. Resolver da x=5, por lo tanto los lados miden 5 cm y 10 cm. La verificación contextual es 2(5+10)=30; decir solo x=5 todavía no responde las dimensiones."
+    "pedagogicalNote": "Si x es la edad de María, el doble menos 4 es 2x - 4. Como Pedro tiene 18, la ecuación es 2x - 4 = 18 → 2x = 22 → x = 11. María tiene 11 años; la verificación contextual es 2·11 - 4 = 18 ✓. La cadena completa exige definir la incógnita, traducir el conector, plantear, resolver, verificar y luego interpretar la edad de María en el contexto del enunciado (sin omitir a Pedro). Distractor frecuente: traducir 'el doble menos 4' como 'el doble más 4' (2x + 4 = 18), o declarar solo 'María tiene 11 años' sin nombrar a Pedro."
   },
   {
     "id": "ex.u3.traduccion_lenguaje_verbal.5",
@@ -316,16 +316,16 @@
     "skillId": "mat.u3.recta",
     "type": "multiple-choice",
     "difficulty": 2,
-    "prompt": "La recta pasa por (1, 2) y (4, 8). ¿Cuál es su pendiente?",
-    "expectedAnswer": "2",
+    "prompt": "Una recta corta al eje y en 3 y tiene pendiente 2. Hallá su ecuación.",
+    "expectedAnswer": "y = 2x + 3",
     "options": [
-      "2",
-      "3",
-      "-2",
-      "1/2"
+      "y = 2x + 3",
+      "y = 3x + 2",
+      "y = 2x - 3",
+      "y = -2x + 3"
     ],
     "commonErrorTags": [],
-    "pedagogicalNote": "Pendiente = (8 - 2) / (4 - 1) = 6 / 3 = 2. Error frecuente: invertir el cálculo y dar 1/2 o confundir Δx con Δy."
+    "pedagogicalNote": "Forma pendiente-ordenada: y = mx + b. Con m = 2 (pendiente) y b = 3 (ordenada al origen, valor de y cuando x = 0), la ecuación es y = 2x + 3. Errores frecuentes: invertir pendiente y ordenada (y = 3x + 2), cambiar el signo de la ordenada (y = 2x - 3) o cambiar el signo de la pendiente (y = -2x + 3)."
   },
   {
     "id": "ex.u3.recta.3",
@@ -348,10 +348,10 @@
     "skillId": "mat.u3.recta",
     "type": "numerical",
     "difficulty": 1,
-    "prompt": "La recta pasa por (0, 0) y (5, 15). ¿Cuál es su pendiente?",
+    "prompt": "Una recta que pasa por el origen y por el punto (5, 15) tiene pendiente m. Determiná el valor de m.",
     "expectedAnswer": "3",
     "commonErrorTags": [],
-    "pedagogicalNote": "Como la recta pasa por el origen, pendiente = 15 / 5 = 3. Forma y = 3x."
+    "pedagogicalNote": "Como la recta pasa por el origen, pendiente m = 15 / 5 = 3. Forma y = 3x."
   },
   {
     "id": "ex.u3.recta.5",

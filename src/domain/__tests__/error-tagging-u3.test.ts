@@ -485,8 +485,8 @@ describe("U3 modeling feedback tags — runtime path", () => {
   test("tags both new modeling distractors and uses distinct feedback mappings", () => {
     const exercises = loadExercisesForSkill("mat.u3.traduccion_lenguaje_verbal");
     const cases = [
-      ["ex.u3.traduccion_lenguaje_verbal.2", "2(x - 3) = 15", "u3_traduccion_incorrecta", "TRADUCCIÓN"],
-      ["ex.u3.traduccion_lenguaje_verbal.4", "2(x + 2x) = 30; falta resolver e interpretar las dimensiones", "u3_verificacion_omitida", "verifica"],
+      ["ex.u3.traduccion_lenguaje_verbal.2", "12x = 31", "u3_traduccion_incorrecta", "TRADUCCIÓN"],
+      ["ex.u3.traduccion_lenguaje_verbal.4", "2x - 4 = 18; falta resolver e interpretar la edad de María", "u3_verificacion_omitida", "verifica"],
       ["ex.u3.traduccion_lenguaje_verbal.6", "Pedro tiene 15 años y Juan 25; confunde edades futuras con edades actuales", "u3_interpretacion_contextual_incorrecta", "representa"],
     ] as const;
     for (const [id, answer, tag, feedbackText] of cases) {

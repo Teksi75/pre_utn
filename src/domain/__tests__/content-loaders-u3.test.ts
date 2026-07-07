@@ -21,6 +21,7 @@ import {
   getUnitThreshold,
 } from "../catalog/content-loaders";
 import { loadCatalog, queryByUnit, queryBySkill } from "../catalog/index";
+import { loadChallengesForSkill } from "@/lib/challenges/loader";
 import type { PedagogicalVisual } from "../visuals/types";
 import { assertIntervalSet } from "../visuals/__tests__/helpers";
 
@@ -593,5 +594,722 @@ describe("u3-interval-set-visual — content integration", () => {
 
     expect(visuals.some((v) => v.kind === "distance-on-line")).toBe(true);
     expect(visuals.some((v) => v.kind === "interval-set")).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// U3 verbal translation — cross-source prompt uniqueness (issue #78)
+//
+// Spec coverage: avoid-u3-verbal-translation-duplication/spec.md
+// - For any `skillId`, no `exercise.prompt` is exact or near-identical to any
+//   `example.problem` or `theory.practicePrompts[i]` for the same skill.
+// - Worked examples may remain canonical references; practice/theory prompts
+//   MUST use distinct statements that still assess the same modeling chain.
+//
+// Design: avoid-u3-verbal-translation-duplication/design.md
+// - Deterministic `baseStatement(text)` clips each prompt at its first
+//   Spanish question/action tail marker, lowercases, strips accents, drops
+//   punctuation and numeric-only tokens. The result is a normalized phrase
+//   suitable for equality comparison across same-skill sources.
+// ---------------------------------------------------------------------------
+describe("U3 verbal translation — cross-source prompt uniqueness", () => {
+  const SKILL_ID = "mat.u3.traduccion_lenguaje_verbal";
+
+  // Lowercased because baseStatement lowercases before scanning.
+  const TAIL_MARKERS: readonly string[] = [
+    "¿", "?",
+    "plantea", "planteá",
+    "resuelve", "halla",
+    "cual", "cuales", // accent-stripped to match the normalized form
+  ];
+
+  // Magic thresholds for the near-duplicate predicate. Pulled out so the
+  // containment/Jaccard contract is visible and tunable in one place.
+  const MIN_SHARED_TOKENS_FOR_CONTAINMENT = 4;
+  const MIN_TOKENS_FOR_JACCARD = 4;
+  const JACCARD_DUPLICATE_THRESHOLD = 0.7;
+
+  function stripAccents(s: string): string {
+    return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+
+  /**
+   * Normalize a prompt to its base statement:
+   * 1. Lowercase + strip accents.
+   * 2. Find the FIRST tail marker occurrence (¿, ?, plantea, etc.).
+   *    - If it's at index 0, the prompt is action-leading
+   *      ("Resuelve $2^x = 8$"); clipping to "" would empty-base the
+   *      source. Fall back to the full normalized text.
+   *    - If it's past index 0, cut there. That's the boundary between
+   *      the situation (BASE) and the question/action tail.
+   * 3. Drop math delimiters ($/$$) and punctuation.
+   * 4. Tokenize as alphanumeric runs (decimals, letter-digit,
+   *    digit-letter, letter-only, digit-only) so math expressions like
+   *    "9x", "2x", "3.5h" stay together as single tokens. Without this,
+   *    a regex like `[^\p{L}\p{N}\s]` would split "9x" into "9" + "x"
+   *    and then drop the digit, reducing every exponenciales prompt to
+   *    "resuelve x" and false-positive as duplicates of each other.
+   * 5. For action-leading prompts, KEEP numeric tokens — the action
+   *    verb is the same across prompts ("Resuelve", "Plantea"), so the
+   *    disambiguation has to live in the math expressions.
+   * 6. For scenario-based prompts, drop pure-integer tokens so different
+   *    numeric values ("$5", "$12") don't break the comparison.
+   *
+   * Pure function — no I/O, no side effects.
+   */
+  function baseStatement(text: string): string {
+    let t = stripAccents(text.toLowerCase());
+
+    // Find the FIRST tail marker occurrence. Action-leading iff it
+    // sits at index 0 ("Resuelve $2^x = 8$" starts with "resuelve").
+    let firstMarkerIdx = -1;
+    for (const marker of TAIL_MARKERS) {
+      const idx = t.indexOf(marker);
+      if (idx !== -1 && (firstMarkerIdx === -1 || idx < firstMarkerIdx)) {
+        firstMarkerIdx = idx;
+      }
+    }
+    const isActionLeading = firstMarkerIdx === 0;
+    if (!isActionLeading && firstMarkerIdx !== -1) {
+      t = t.slice(0, firstMarkerIdx);
+    }
+
+    // Match decimals, letter-then-digits, digit-then-letters, letter
+    // runs, and pure digit runs. Each alternative becomes one token.
+    const rawTokens = t.match(/\d+\.\d+|\p{L}\d+|\d+\p{L}|\p{L}+|\d+/gu) ?? [];
+
+    const tokens = isActionLeading
+      ? rawTokens
+      : rawTokens.filter((tok) => !/^\d+$/.test(tok));
+
+    return tokens.join(" ");
+  }
+
+  /**
+   * Classifies a prompt as "action-leading" or "scenario-based".
+   * Mirrors the heuristic used by baseStatement: action-leading iff
+   * the FIRST tail marker occurrence is at index 0. The duplicate
+   * predicate uses this flag to apply equality-only comparison for
+   * action-leading prompts (containment/Jaccard would over-detect,
+   * since the action verb is shared).
+   */
+  function promptKind(text: string): "action-leading" | "scenario-based" {
+    const t = stripAccents(text.toLowerCase());
+    let firstMarkerIdx = -1;
+    for (const marker of TAIL_MARKERS) {
+      const idx = t.indexOf(marker);
+      if (idx !== -1 && (firstMarkerIdx === -1 || idx < firstMarkerIdx)) {
+        firstMarkerIdx = idx;
+      }
+    }
+    return firstMarkerIdx === 0 ? "action-leading" : "scenario-based";
+  }
+
+  /**
+   * Extracts a normalized math-expression fingerprint from a prompt.
+   *
+   * Purpose: catch action-leading cross-source duplicates that share
+   * the same equation but have different leading action verbs. The
+   * baseStatement predicate falls back to the full normalized text
+   * when the tail marker is at index 0 ("Resuelve $3x - 5 = 10$" → base
+   * "resuelve 3x 5 10"), and skips containment/Jaccard when either side
+   * is action-leading. As a result, "Resuelve $3x - 5 = 10$" (theory)
+   * and "Resolver la ecuación $3x - 5 = 10$" (example) — both
+   * embedding the SAME equation — were never flagged as duplicates.
+   *
+   * The math fingerprint pulls every `$...$` delimited expression out of
+   * the prompt, drops LaTeX/spacing noise, lowercases, and joins the
+   * sorted set with a separator. Two prompts that share the same
+   * normalized equation(s) — regardless of action verb, regardless of
+   * whether one is action-leading and the other isn't — produce the
+   * same fingerprint and are flagged.
+   *
+   * Edge cases:
+   *  - No `$...$` delimiters → returns "" (the prompt has no math to
+   *    fingerprint, so no comparison is made via this signal).
+   *  - Multiple expressions → all are included, so "x + y = 5, 2x - y = 1"
+   *    and "x + y = 5 y 2x - y = 1" fingerprint identically.
+   *  - Whitespace differences within an expression ("$3x - 5 = 10$" vs
+   *    "$ 3x-5=10 $") → normalized identically because spaces are
+   *    stripped.
+   *
+   * Pure function — no I/O, no side effects.
+   */
+  function mathFingerprint(text: string): string {
+    const dollarMatches = text.match(/\$[^$]*\$/g) ?? [];
+    if (dollarMatches.length === 0) return "";
+
+    const normalized = dollarMatches
+      .map((m) => {
+        // Strip $ delimiters, lowercase, drop accents, collapse whitespace.
+        let expr = stripAccents(m.replace(/\$/g, "").toLowerCase());
+        expr = expr.replace(/\s+/g, "").trim();
+        return expr;
+      })
+      .filter((expr) => expr.length > 0);
+
+    normalized.sort();
+    return normalized.join("|");
+  }
+
+  type Source = {
+    id: string;
+    kind: "exercise" | "theory" | "example";
+    text: string;
+  };
+
+  function collectSourcesForSkill(skillId: string): Source[] {
+    const theory = loadTheoryContent("unit-3");
+    const examples = loadExampleContent("unit-3");
+    const exercises = loadExercisesForSkill(skillId);
+
+    const sources: Source[] = [];
+    for (const node of theory) {
+      if (node.skillId !== skillId) continue;
+      node.practicePrompts.forEach((p, i) => {
+        sources.push({ id: `${node.id}.practicePrompts[${i}]`, kind: "theory", text: p });
+      });
+    }
+    for (const ex of examples) {
+      if (ex.skillId !== skillId) continue;
+      sources.push({ id: ex.id, kind: "example", text: ex.problem });
+    }
+    for (const ex of exercises) {
+      if (ex.skillId !== skillId) continue;
+      sources.push({ id: ex.id, kind: "exercise", text: ex.prompt });
+    }
+    return sources;
+  }
+
+  function findSource(sources: readonly Source[], id: string): Source | undefined {
+    return sources.find((s) => s.id === id);
+  }
+
+  /**
+   * Deterministic near-duplicate predicate for two normalized base statements.
+   * A pair is a near-duplicate when ANY of the following holds:
+   *   1. Equality: the two base statements are identical.
+   *   2. Containment: one base statement's tokens are a subset of the other's
+   *      AND they share at least 4 non-numeric tokens (numeric-only tokens
+   *      were already stripped by baseStatement).
+   *   3. Similarity: Jaccard similarity ≥ 0.7 over non-numeric tokens, AND
+   *      each side has at least 4 tokens (avoids flagging tiny fragments).
+   *   4. Math fingerprint equality (action-leading only): both prompts
+   *      embed the same `$...$` math expression(s). This catches the case
+   *      where one prompt is action-leading ("Resuelve $3x - 5 = 10$")
+   *      and the other is not ("Resolver la ecuación $3x - 5 = 10$"),
+   *      because the action-verb short-circuit in the legacy rules
+   *      would otherwise skip them.
+   * The containment rule is the primary non-equality detector; Jaccard is a
+   * secondary defense that catches near-misses the containment rule misses.
+   *
+   * Special case: if EITHER prompt is action-leading (its tail marker
+   * sits at index 0, so baseStatement fell back to the full text and
+   * kept numeric tokens), only EQUALITY and MATH-FINGERPRINT-EQUALITY
+   * apply. Containment/Jaccard would false-positive every "Resuelve
+   * [math]" prompt because they all share the action verb structure
+   * even when the math is distinct. The math fingerprint rescues the
+   * genuine same-equation cases that equality alone misses.
+   */
+  function isNearDuplicate(
+    a: { base: string; isActionLeading?: boolean; mathFingerprint?: string },
+    b: { base: string; isActionLeading?: boolean; mathFingerprint?: string }
+  ): boolean {
+    if (a.base === b.base) return true;
+    if (a.base.length === 0 || b.base.length === 0) return false;
+
+    if (a.isActionLeading || b.isActionLeading) {
+      // Math fingerprint rescue: same `$...$` equation(s) on both sides
+      // means same prompt regardless of the action verb wrapper. Empty
+      // fingerprint on either side skips the check (those prompts carry
+      // no math to compare).
+      if (a.mathFingerprint && b.mathFingerprint && a.mathFingerprint === b.mathFingerprint) {
+        return true;
+      }
+      return false;
+    }
+
+    const tokensA = new Set(a.base.split(" ").filter((t) => t.length > 0));
+    const tokensB = new Set(b.base.split(" ").filter((t) => t.length > 0));
+    if (tokensA.size === 0 || tokensB.size === 0) return false;
+
+    const shared = [...tokensA].filter((t) => tokensB.has(t));
+
+    // Containment: every token of one side appears in the other.
+    const aSubsetOfB = shared.length === tokensA.size;
+    const bSubsetOfA = shared.length === tokensB.size;
+    if ((aSubsetOfB || bSubsetOfA) && shared.length >= MIN_SHARED_TOKENS_FOR_CONTAINMENT) return true;
+
+    // Jaccard similarity over non-numeric tokens (secondary defense).
+    if (tokensA.size >= MIN_TOKENS_FOR_JACCARD && tokensB.size >= MIN_TOKENS_FOR_JACCARD) {
+      const unionSize = new Set([...tokensA, ...tokensB]).size;
+      const jaccard = shared.length / unionSize;
+      if (jaccard >= JACCARD_DUPLICATE_THRESHOLD) return true;
+    }
+    return false;
+  }
+
+  test("1.2 baseStatement normalization is deterministic and strips tails", () => {
+    // Tails are clipped at the first marker.
+    expect(baseStatement("El doble de un número, menos 3, es igual a 15. ¿Cuál es el número?"))
+      .toBe("el doble de un numero menos es igual a");
+    expect(baseStatement("La suma de tres números consecutivos es 36. Plantea la ecuación."))
+      .toBe("la suma de tres numeros consecutivos es");
+    expect(baseStatement("Un rectángulo tiene perímetro 30 cm. Halla las dimensiones."))
+      .toBe("un rectangulo tiene perimetro cm");
+    // Accent stripping + math delimiters + tail clipping. `2x` is a mixed
+    // alphanumeric token (kept), `3` and `15` are numeric-only (dropped).
+    // This prompt is non-action-leading in the OLD sense (the tail marker
+    // "resuelvo" does not appear in TAIL_MARKERS) so the numeric-only
+    // tokens are stripped from the BASE.
+    expect(baseStatement("Planteo $2x - 3 = 15$ y resuelvo")).toBe("planteo 2x y resuelvo");
+  });
+
+test("1.2c baseStatement preserves disambiguating digits for action-leading prompts (no math-operator collapse)", () => {
+    // The dedup contract is: two action-leading prompts like
+    // "Resuelve $9^x = 27$" and "Resuelve 2^x = 8" must NOT collide.
+    // If the digit-tokenization collapsed "9" away (e.g. by splitting
+    // "9x" into "9" + "x" and then dropping the digit), every
+    // exponenciales prompt would reduce to "resuelve x" and
+    // false-positive. The base statement preserves the distinct
+    // digits "9"/"2" so the equality check distinguishes them.
+    expect(baseStatement("Resuelve $9^x = 27$.")).toBe("resuelve 9 x 27");
+    expect(baseStatement("Resuelve 2^x = 8")).toBe("resuelve 2 x 8");
+    expect(baseStatement("Resuelve 5^x = 125")).toBe("resuelve 5 x 125");
+    expect(baseStatement("Resuelve 2^x = 1/8")).toBe("resuelve 2 x 1 8");
+    // Decimals stay together (3.5 is one token) — important for prompts
+    // that differ only in decimal values like "viaja 3.5 horas" vs
+    // "viaja 4 horas". Pure-integer tokens get dropped in scenario-based
+    // prompts so different values ("80 km/h" vs "60 km/h") don't break
+    // the dedup comparison.
+    expect(baseStatement("Un auto viaja 3.5 horas a 80 km/h. Hallá su distancia.")).toBe(
+      "un auto viaja 3.5 horas a km h"
+    );
+  });
+
+  test("1.2b action-leading prompts fall back to full normalized text (deterministic, non-empty)", () => {
+    // A prompt that STARTS with an action verb ("Plantea", "Resuelve", etc.)
+    // has the tail marker at index 0, so a naive `slice(0, 0)` produces an
+    // empty base statement. The deterministic contract is: if every tail
+    // marker sits at index 0, fall back to the full normalized text so the
+    // duplicate check has SOMETHING to compare against. This prevents
+    // action-leading duplicates from being silently skipped by the
+    // `base.length > 0` filter in the generic uniqueness loop.
+    const prompt = "Plantea, resuelve y verifica: el doble de un número más 5 es 17";
+
+    const base = baseStatement(prompt);
+    expect(base.length, "action-leading prompt must produce a non-empty base").toBeGreaterThan(0);
+
+    // Two identical action-leading prompts MUST be flagged as duplicates
+    // (not silently skipped by an empty-base filter).
+    const twin = baseStatement(prompt);
+    expect(isNearDuplicate({ base }, { base: twin })).toBe(true);
+
+    // Two action-leading prompts with DIFFERENT semantic content (different
+    // number/value structure, different operators) MUST NOT be flagged.
+    // The fallback normalizes the full prompt including the action verbs,
+    // so "el doble + 5 = 17" and "el triple - 3 = 27" diverge on the
+    // meaningful content tokens after the shared "plantea resuelve y
+    // verifica" prefix.
+    const divergent = baseStatement(
+      "Plantea, resuelve y verifica: el triple de un número menos 3 es 27"
+    );
+    expect(
+      isNearDuplicate({ base }, { base: divergent }),
+      "two action-leading prompts with distinct semantic content must not be flagged as duplicates"
+    ).toBe(false);
+  });
+
+  test("1.2d action-leading prompts sharing the same equation are detected as near-duplicates via mathFingerprint", () => {
+    // The action-leading baseStatement() fallback keeps the math tokens but
+    // loses the cross-prompt comparison signal: "Resuelve $3x - 5 = 10$."
+    // (action-leading) and "Resolver la ecuación $3x - 5 = 10$" (NOT
+    // action-leading because "resolver" doesn't contain "resuelve") reduce
+    // to different base strings ("resuelve 3x 5 10" vs "resolver la
+    // ecuacion 3x") and fail strict equality, AND the action-leading
+    // short-circuit in isNearDuplicate skips containment/Jaccard for
+    // action-leading pairs. The contract: when both prompts embed the SAME
+    // math expression inside `$...$` delimiters, the duplicate predicate
+    // must catch it via mathFingerprint equality.
+    const theoryPrompt = "Resuelve $3x - 5 = 10$.";
+    const examplePrompt = "Resolver la ecuación $3x - 5 = 10$";
+
+    const theoryBase = baseStatement(theoryPrompt);
+    const exampleBase = baseStatement(examplePrompt);
+    expect(theoryBase, "theory base must differ from example base (no false negative on equality alone)").not.toBe(exampleBase);
+
+    const theoryKind = promptKind(theoryPrompt);
+    const exampleKind = promptKind(examplePrompt);
+    expect(theoryKind, "theory prompt is action-leading").toBe("action-leading");
+    expect(exampleKind, "example prompt is NOT action-leading (no `resuelve` substring)").toBe("scenario-based");
+
+    const theoryMath = mathFingerprint(theoryPrompt);
+    const exampleMath = mathFingerprint(examplePrompt);
+    expect(theoryMath, "theory mathFingerprint must be non-empty").not.toBe("");
+    expect(exampleMath, "example mathFingerprint must be non-empty").not.toBe("");
+    expect(theoryMath, "theory and example must share the same mathFingerprint").toBe(exampleMath);
+
+    expect(
+      isNearDuplicate(
+        {
+          base: theoryBase,
+          isActionLeading: theoryKind === "action-leading",
+          mathFingerprint: theoryMath,
+        },
+        {
+          base: exampleBase,
+          isActionLeading: exampleKind === "action-leading",
+          mathFingerprint: exampleMath,
+        }
+      ),
+      `same-equation action-leading pair must be flagged as near-duplicate. theory: "${theoryPrompt}", example: "${examplePrompt}"`
+    ).toBe(true);
+
+    // Sanity: two prompts with DIFFERENT equations must NOT match.
+    expect(
+      isNearDuplicate(
+        {
+          base: baseStatement("Resuelve $6x - 1 = 17$."),
+          isActionLeading: true,
+          mathFingerprint: mathFingerprint("Resuelve $6x - 1 = 17$."),
+        },
+        {
+          base: baseStatement("Resolver la ecuación $3x - 5 = 10$"),
+          isActionLeading: false,
+          mathFingerprint: mathFingerprint("Resolver la ecuación $3x - 5 = 10$"),
+        }
+      ),
+      "different-equation pair must not be flagged as near-duplicate"
+    ).toBe(false);
+  });
+
+  test("isNearDuplicate catches equality, containment, and Jaccard similarity", () => {
+    // (1) Equality: identical normalized base statements.
+    expect(isNearDuplicate({ base: "el doble de un numero" }, { base: "el doble de un numero" })).toBe(true);
+    expect(isNearDuplicate({ base: "" }, { base: "" })).toBe(true);
+
+    // (2a) Containment: 5 shared tokens, one side is a strict subset.
+    expect(
+      isNearDuplicate(
+        { base: "el doble de un numero menos tres" },
+        { base: "el doble de un numero" }
+      )
+    ).toBe(true);
+    // (2b) Containment: 4 shared tokens, containment — flagged at threshold.
+    expect(
+      isNearDuplicate(
+        { base: "el doble de un numero menos" },
+        { base: "el doble de un numero mas" }
+      )
+    ).toBe(true);
+    // (2c) Containment with only 3 shared tokens — NOT flagged (below threshold).
+    expect(
+      isNearDuplicate(
+        { base: "el doble de" },
+        { base: "el doble de un numero tiene perimetro cm" }
+      )
+    ).toBe(false);
+
+    // (3a) Jaccard ≥ 0.7: 7 of 9 tokens shared, both sides ≥4 tokens.
+    expect(
+      isNearDuplicate(
+        { base: "el doble de un numero menos es igual a" },
+        { base: "el doble de un numero menos es igual b" }
+      )
+    ).toBe(true);
+    // (3b) Tiny fragment below the Jaccard size floor — NOT flagged even if contained.
+    expect(isNearDuplicate({ base: "el doble" }, { base: "el doble de un numero" })).toBe(false);
+    // (3c) Low overlap — NOT a duplicate.
+    expect(
+      isNearDuplicate(
+        { base: "el doble de un numero menos es igual a quince" },
+        { base: "la suma de tres numeros consecutivos es treinta y seis" }
+      )
+    ).toBe(false);
+  });
+
+  test("1.3 generic same-skill uniqueness across exercise ↔ example, exercise ↔ theory, theory ↔ example — ALL U3 skills", () => {
+    // Spec invariant: for any skillId (not only the modeling skill), no exercise
+    // prompt may be exact-or-near-identical to any same-skill example problem
+    // or theory practice prompt, and no theory practice prompt may collide with
+    // a same-skill worked example. Validate every relevant same-skill group,
+    // covering all three cross-source pair classes:
+    //   - exercise ↔ example  (a practice item must not duplicate a worked example)
+    //   - exercise ↔ theory   (a practice item must not duplicate a theory prompt)
+    //   - theory    ↔ example (a theory prompt must not duplicate a worked example)
+    const violations: string[] = [];
+
+    for (const skillId of U3_SKILL_IDS) {
+      const sources = collectSourcesForSkill(skillId)
+        .map((s) => ({
+          ...s,
+          base: baseStatement(s.text),
+          isActionLeading: promptKind(s.text) === "action-leading",
+          mathFingerprint: mathFingerprint(s.text),
+        }))
+        .filter((s) => s.base.length > 0);
+
+      for (let i = 0; i < sources.length; i++) {
+        for (let j = i + 1; j < sources.length; j++) {
+          const a = sources[i];
+          const b = sources[j];
+          if (a.kind === b.kind) continue; // only cross-source pairs
+          if (isNearDuplicate(a, b)) {
+            violations.push(
+              `skillId=${skillId} [${a.kind}] ${a.id} ↔ [${b.kind}] ${b.id}\n` +
+                `  A: "${a.text}"\n` +
+                `  B: "${b.text}"`
+            );
+          }
+        }
+      }
+    }
+
+    if (violations.length > 0) {
+      throw new Error(
+        `Cross-source prompt collisions:\n${violations.join("\n\n")}`
+      );
+    }
+    expect(violations).toEqual([]);
+  });
+
+  test("1.4 fixture: .2 must NOT share base statement with example-1 or practicePrompts[0]", () => {
+    const sources = collectSourcesForSkill(SKILL_ID);
+    const ex2 = findSource(sources, "ex.u3.traduccion_lenguaje_verbal.2");
+    const ex1 = findSource(sources, "example-traduccion-lenguaje-verbal-1");
+    const theory0 = findSource(sources, "theory-traduccion-lenguaje-verbal.practicePrompts[0]");
+
+    expect(ex2, "exercise .2 must exist").toBeDefined();
+    expect(ex1, "example-traduccion-lenguaje-verbal-1 must exist").toBeDefined();
+    expect(theory0, "practicePrompts[0] must exist").toBeDefined();
+
+    expect(baseStatement(ex2!.text)).not.toBe(baseStatement(ex1!.text));
+    expect(baseStatement(ex2!.text)).not.toBe(baseStatement(theory0!.text));
+  });
+
+  test("1.4 fixture: .3 must NOT share base statement with example-2 or practicePrompts[1]", () => {
+    const sources = collectSourcesForSkill(SKILL_ID);
+    const ex3 = findSource(sources, "ex.u3.traduccion_lenguaje_verbal.3");
+    const ex2 = findSource(sources, "example-traduccion-lenguaje-verbal-2");
+    const theory1 = findSource(sources, "theory-traduccion-lenguaje-verbal.practicePrompts[1]");
+
+    expect(ex3, "exercise .3 must exist").toBeDefined();
+    expect(ex2, "example-traduccion-lenguaje-verbal-2 must exist").toBeDefined();
+    expect(theory1, "practicePrompts[1] must exist").toBeDefined();
+
+    expect(baseStatement(ex3!.text)).not.toBe(baseStatement(ex2!.text));
+    expect(baseStatement(ex3!.text)).not.toBe(baseStatement(theory1!.text));
+  });
+
+  test("1.4 fixture: .4 must NOT share base statement with practicePrompts[2]", () => {
+    const sources = collectSourcesForSkill(SKILL_ID);
+    const ex4 = findSource(sources, "ex.u3.traduccion_lenguaje_verbal.4");
+    const theory2 = findSource(sources, "theory-traduccion-lenguaje-verbal.practicePrompts[2]");
+
+    expect(ex4, "exercise .4 must exist").toBeDefined();
+    expect(theory2, "practicePrompts[2] must exist").toBeDefined();
+
+    expect(baseStatement(ex4!.text)).not.toBe(baseStatement(theory2!.text));
+  });
+
+  test("1.5 pinned recoveryTarget mappings must remain stable", () => {
+    const feedback = loadFeedbackContent("unit-3");
+    const byTag = new Map(feedback.map((f) => [f.errorTag, f.recoveryTarget]));
+
+    expect(byTag.get("u3_traduccion_incorrecta")).toBe("example-traduccion-lenguaje-verbal-1");
+    expect(byTag.get("u3_verificacion_omitida")).toBe("example-traduccion-lenguaje-verbal-1");
+    expect(byTag.get("u3_interpretacion_contextual_incorrecta")).toBe("example-traduccion-lenguaje-verbal-2");
+  });
+
+  test("1.5b pinned recoveryTarget values must resolve to a worked example in loadExampleContent('unit-3')", () => {
+    // Pinned recovery IDs aren't useful if the worked example they point to
+    // no longer exists. This couples the feedback content to the example
+    // content so renaming or removing an example fails the gate.
+    const feedback = loadFeedbackContent("unit-3");
+    const examples = loadExampleContent("unit-3");
+    const exampleIds = new Set(examples.map((ex) => ex.id));
+
+    for (const f of feedback) {
+      expect(
+        typeof f.recoveryTarget,
+        `feedback ${f.errorTag} must declare a recoveryTarget`
+      ).toBe("string");
+      expect(
+        exampleIds.has(f.recoveryTarget!),
+        `feedback ${f.errorTag} recoveryTarget "${f.recoveryTarget}" must exist in loadExampleContent("unit-3")`
+      ).toBe(true);
+    }
+
+    // Also pin the three modeling recovery targets to their specific examples.
+    const byTag = new Map(feedback.map((f) => [f.errorTag, f.recoveryTarget]));
+    expect(exampleIds.has(byTag.get("u3_traduccion_incorrecta")!)).toBe(true);
+    expect(exampleIds.has(byTag.get("u3_verificacion_omitida")!)).toBe(true);
+    expect(exampleIds.has(byTag.get("u3_interpretacion_contextual_incorrecta")!)).toBe(true);
+  });
+
+  test("1.6 quality: .2/.3/.4 are multiple-choice with difficulty [1,2,2] and the modeling error tags", () => {
+    const exercises = loadExercisesForSkill(SKILL_ID);
+    const ids = [
+      "ex.u3.traduccion_lenguaje_verbal.2",
+      "ex.u3.traduccion_lenguaje_verbal.3",
+      "ex.u3.traduccion_lenguaje_verbal.4",
+    ];
+    const list = ids.map((id) => {
+      const ex = exercises.find((e) => e.id === id);
+      expect(ex, `exercise ${id} must exist`).toBeDefined();
+      return ex!;
+    });
+
+    expect(list.map((e) => e.type)).toEqual(["multiple-choice", "multiple-choice", "multiple-choice"]);
+    expect(list.map((e) => e.difficulty)).toEqual([1, 2, 2]);
+    for (const ex of list) {
+      expect(ex.options, `${ex.id} must declare options`).toBeDefined();
+      expect(ex.options!.length, `${ex.id} must have ≥3 options`).toBeGreaterThanOrEqual(3);
+    }
+
+    // Combined error tag coverage must include the three modeling tags.
+    const combined = new Set<string>();
+    for (const ex of list) {
+      for (const t of ex.commonErrorTags ?? []) combined.add(t);
+    }
+    expect(combined.has("u3_traduccion_incorrecta")).toBe(true);
+    expect(combined.has("u3_verificacion_omitida")).toBe(true);
+    expect(combined.has("u3_interpretacion_contextual_incorrecta")).toBe(true);
+  });
+
+test("1.7 desafio-02 must NOT be a near-duplicate of any exercise or theory prompt", () => {
+    // desafio-02 stays in the challenge set; it must not be a near-duplicate
+    // (equality / containment / Jaccard) of any same-skill exercise prompt or
+    // theory practice prompt after the swap. Reusing isNearDuplicate()
+    // instead of `not.toBe(base)` catches containment/Jaccard overlaps that
+    // equality alone would miss.
+    const sources = collectSourcesForSkill(SKILL_ID);
+    const desafios = loadChallengesForSkill(SKILL_ID);
+    const desafio02 = desafios.find((c) => c.id === "ex.u3.traduccion_lenguaje_verbal.desafio-02");
+    expect(desafio02, "desafio-02 must exist").toBeDefined();
+    const desafio02Base = baseStatement(desafio02!.prompt);
+    const desafio02Kind = promptKind(desafio02!.prompt);
+    expect(desafio02Base.length, "desafio-02 must have a non-empty base statement").toBeGreaterThan(0);
+
+    for (const src of sources) {
+      if (src.kind === "example") continue; // only exercise and theory pair with desafio
+      const srcBase = baseStatement(src.text);
+      const srcKind = promptKind(src.text);
+      const desafio02Math = mathFingerprint(desafio02!.prompt);
+      const srcMath = mathFingerprint(src.text);
+      expect(
+        isNearDuplicate(
+          {
+            base: desafio02Base,
+            isActionLeading: desafio02Kind === "action-leading",
+            mathFingerprint: desafio02Math,
+          },
+          {
+            base: srcBase,
+            isActionLeading: srcKind === "action-leading",
+            mathFingerprint: srcMath,
+          }
+        ),
+        `desafio-02 must not be a near-duplicate of [${src.kind}] ${src.id}: ${desafio02!.prompt}`
+      ).toBe(false);
+    }
+  });
+
+  test("1.8 U3 verbal-translation prompts collectively cover the full modeling chain", () => {
+    // Spec scenario "U3 verbal translation preserves transfer practice" requires
+    // replacement practice/theory prompts to require the chain:
+    //   incógnita → traducción → planteo → resolución → verificación → interpretación
+    // Assert deterministically: every modeling step appears in at least one
+    // prompt, AND at least one prompt requires ALL of them together.
+    const exercises = loadExercisesForSkill(SKILL_ID);
+    const node = loadTheoryContent("unit-3").find((n) => n.skillId === SKILL_ID);
+    expect(node, "theory node for U3 verbal-translation must exist").toBeDefined();
+
+    const prompts: { id: string; text: string }[] = [
+      ...exercises.map((ex) => ({ id: ex.id, text: ex.prompt })),
+      ...node!.practicePrompts.map((text) => ({ id: `${node!.id}.practicePrompts`, text })),
+    ];
+    expect(prompts.length).toBeGreaterThan(0);
+
+    const chainSteps: ReadonlyArray<{ name: string; re: RegExp }> = [
+      { name: "incógnita/translation", re: /\b(inc[oó]gnita|define|traduce|traducci[oó]n|representa|variable)\b/ },
+      { name: "equation setup (plantee)", re: /\b(plantea|planteo|plantear|ecuaci[oó]n)\b/ },
+      { name: "solving (resolución)", re: /\b(resuel\w+|halla\w+|hallar|x\s*=)\b/ },
+      { name: "verification (verificación)", re: /verific/ },
+      { name: "interpretation (interpretación)", re: /interpreta/ },
+    ];
+
+    // (a) Every modeling step must appear in at least one prompt (collective coverage).
+    const allText = prompts.map((p) => p.text.toLowerCase()).join("\n");
+    const missing = chainSteps.filter((s) => !s.re.test(allText)).map((s) => s.name);
+    expect(
+      missing,
+      `U3 verbal-translation prompts must collectively cover: ${chainSteps.map((s) => s.name).join(", ")}`
+    ).toEqual([]);
+
+    // (b) At least ONE prompt must require the FULL chain (all five steps in one prompt).
+    const fullChainPrompt = prompts.find((p) =>
+      chainSteps.every((s) => s.re.test(p.text.toLowerCase()))
+    );
+    expect(
+      fullChainPrompt,
+      `at least one U3 verbal-translation prompt must require the FULL modeling chain. Inspected: ${prompts.map((p) => p.id).join(", ")}`
+    ).toBeDefined();
+  });
+
+test("1.8b each of .2/.3/.4 covers the FULL modeling chain (not only collectively)", () => {
+    // The collective test (1.8) lets a single prompt carry all five steps
+    // while the others carry only three. That's too weak for transfer
+    // practice: the spec requires EACH replacement practice prompt to
+    // exercise the full chain (incógnita → traducción → planteo →
+    // resolución → verificación → interpretación). A prompt that asks
+    // only for "resuelve, verifica e interpreta" leaves the translation
+    // and planteo steps implicit and doesn't actually train them.
+    const exercises = loadExercisesForSkill(SKILL_ID);
+    const ids = [
+      "ex.u3.traduccion_lenguaje_verbal.2",
+      "ex.u3.traduccion_lenguaje_verbal.3",
+      "ex.u3.traduccion_lenguaje_verbal.4",
+    ];
+    const chainSteps: ReadonlyArray<{ name: string; re: RegExp }> = [
+      { name: "incógnita/translation", re: /\b(inc[oó]gnita|define|traduce|traducci[oó]n|representa|variable)\b/ },
+      { name: "equation setup (plantee)", re: /\b(plantea|planteo|plantear|ecuaci[oó]n)\b/ },
+      { name: "solving (resolución)", re: /\b(resuel\w+|halla\w+|hallar|x\s*=)\b/ },
+      { name: "verification (verificación)", re: /verific/ },
+      { name: "interpretation (interpretación)", re: /interpreta/ },
+    ];
+    for (const id of ids) {
+      const ex = exercises.find((e) => e.id === id);
+      expect(ex, `exercise ${id} must exist`).toBeDefined();
+      const text = ex!.prompt.toLowerCase();
+      for (const step of chainSteps) {
+        expect(
+          step.re.test(text),
+          `${id} prompt must require modeling step "${step.name}" — got: "${ex!.prompt}"`
+        ).toBe(true);
+      }
+    }
+  });
+
+  test("1.9 U3 verbal-translation theory practicePrompts must be mathematically feasible (no impossible triangle)", () => {
+    // The previous remediation introduced an isosceles-triangle prompt where
+    // one side was "el triple de cada uno de los otros dos lados iguales".
+    // With equal sides x and third side 3x, the perimeter forced (7, 7, 21),
+    // which violates the triangle inequality (7 + 7 = 14 < 21). That prompt
+    // cannot be solved by any student — it asks for sides that don't form a
+    // triangle. Reject the pattern explicitly so the regression doesn't
+    // return: any practicePrompt that pairs "triángulo isósceles" with
+    // "el triple" or "tres veces" applied to the equal sides is mathematically
+    // impossible.
+    const theory = loadTheoryContent("unit-3");
+    const node = theory.find((n) => n.skillId === SKILL_ID);
+    expect(node, "theory node for U3 verbal-translation must exist").toBeDefined();
+
+    for (const prompt of node!.practicePrompts) {
+      expect(
+        /tri[aá]ngulo\s+is[oó]sceles[^.]*\b(triple|tres\s+veces|3\s*veces)\b/i.test(prompt),
+        `practicePrompt uses an impossible triangle relation (one side triple the equal sides forces a degenerate triangle): ${prompt}`
+      ).toBe(false);
+    }
   });
 });

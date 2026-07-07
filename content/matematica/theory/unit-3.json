@@ -61,9 +61,9 @@
       "Devolver la respuesta como \"$x = 12$\" sin reformularla en el lenguaje del problema."
     ],
     "practicePrompts": [
-      "El doble de un número menos 3 es igual a 15. Plantea la ecuación y resuelve.",
-      "La suma de tres números consecutivos es 36. Plantea la ecuación.",
-      "Un rectángulo tiene perímetro 30 cm y el lado mayor es el doble del menor. Plantea la ecuación y halla las dimensiones."
+      "Si al triple de un número se le suman 8, se obtiene 29. Plantea la ecuación, resuélvela, verifica el resultado en el enunciado e interpreta su valor en el contexto del problema.",
+      "Un triángulo isósceles tiene cada uno de sus lados iguales que mide 4 cm más que la base, y su perímetro es 32 cm. Plantea la ecuación, halla la longitud de cada lado, verifica el perímetro total y nombra cada lado con su unidad.",
+      "Pedro tiene el triple de la edad de María, y dentro de 6 años la suma de sus edades será 48. Plantea la ecuación, halla las edades actuales, verifica la suma futura y nombra la edad de cada uno."
     ],
     "canonicalTrace": [
       {
@@ -122,9 +122,9 @@
       "Confundir el signo del coeficiente negativo: $-2x = 10 \\Rightarrow x = 5$ en vez de $x = -5$."
     ],
     "practicePrompts": [
-      "Resuelve $3x + 4 = 19$.",
-      "Resuelve $-5x + 7 = -3$.",
-      "Resuelve $2x - 8 = x + 1$."
+      "Resuelve $2x + 7 = 15$.",
+      "Resuelve $6x - 1 = 17$.",
+      "Resuelve $5x + 2 = 3x + 12$."
     ],
     "canonicalTrace": [
       {
@@ -183,8 +183,8 @@
       "Aplicar propiedad del producto cero solo a un factor y no a ambos."
     ],
     "practicePrompts": [
-      "Resuelve $x^2 - 5x + 6 = 0$.",
-      "Resuelve $x^2 - 9 = 0$.",
+      "Resuelve $x^2 - 7x + 10 = 0$.",
+      "Resuelve $x^2 - 16 = 0$.",
       "Resuelve $(x - 2)^2 = 16$."
     ],
     "canonicalTrace": [
@@ -254,7 +254,7 @@
       "Confundir $<$ con $\\leq$: $x < 4$ vs $x \\leq 4$."
     ],
     "practicePrompts": [
-      "Resuelve $3x - 2 \\geq 10$.",
+      "Resuelve $2x - 5 \\geq 7$.",
       "Resuelve $-2x + 4 < 12$.",
       "Resuelve $5x - 7 \\leq 3x + 1$."
     ],
@@ -343,8 +343,8 @@
       "Olvidar que $c$ debe ser positivo; si $c \\leq 0$, el análisis cambia ( $|expr| < 0$ no tiene solución; $|expr| > 0$ son todos los reales excepto donde $|expr| = 0$)."
     ],
     "practicePrompts": [
-      "Resuelve $|x - 2| < 5$.",
-      "Resuelve $|2x + 1| \\geq 3$.",
+      "Resuelve $|x - 3| < 4$.",
+      "Resuelve $|2x - 1| \\geq 5$.",
       "Resuelve $|x + 4| > 1$."
     ],
     "canonicalTrace": [
@@ -409,7 +409,7 @@
     ],
     "practicePrompts": [
       "¿Cuál es la pendiente y la ordenada al origen de $y = 5x - 2$?",
-      "Calcula la pendiente de la recta que pasa por $(1, 3)$ y $(4, 9)$.",
+      "Determine el valor de m para la recta que corta al origen y pasa por el punto $(3, 9)$.",
       "Escribe la ecuación de la recta con pendiente 2 y ordenada -1."
     ],
     "canonicalTrace": [
@@ -531,7 +531,7 @@
     ],
     "practicePrompts": [
       "Resuelve $3^x = 27$.",
-      "Resuelve $4^x = 32$.",
+      "Resuelve $16^x = 64$.",
       "Resuelve $9^x = 27$."
     ],
     "canonicalTrace": [
@@ -590,8 +590,8 @@
       "$\\log(a^n) = (\\log a)^n$ (FALSO): el exponente baja como factor, no se aplica como potencia al logaritmo."
     ],
     "practicePrompts": [
-      "Aplica la propiedad del producto: $\\log_2(4 \\cdot 8)$.",
-      "Aplica la propiedad de potencia: $\\log_2(8^3)$.",
+      "Usa la propiedad del producto para separar: $\\log_2(4 \\cdot 8)$.",
+      "Aplicá la propiedad de potencia al argumento: $\\log_2(8^3)$.",
       "Simplifica $\\log_{10}(1000)$."
     ],
     "canonicalTrace": [
