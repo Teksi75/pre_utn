@@ -52,9 +52,16 @@ export interface AccessibleSkill {
 }
 
 /**
- * Look up the declared prerequisites for a skill.
- * Returns an empty array when the skill is not in the dependency graph
- * (e.g. a "root" skill like `conjuntos_numericos` or `intervalos`).
+ * Returns the list of prerequisite skill IDs declared for the given skill in
+ * `SKILL_DEPENDENCIES` (see src/domain/models/skill-catalog.ts).
+ *
+ * Returns an empty array when the skill is not in the dependency graph, i.e.
+ * when it is a "root" skill (e.g. `mat.u1.conjuntos_numericos` or
+ * `mat.u1.intervalos`). Unit 1 is intentionally designed with two parallel
+ * entry points; this is a bifurcation, not a missing prerequisite edge.
+ *
+ * Adding a prerequisite to either root requires a chained ADR (>= ADR-009)
+ * and a student-progress migration plan. See ADR-009 and issue #62.
  */
 function prerequisitesFor(skillId: SkillId): readonly SkillId[] {
   const dep = SKILL_DEPENDENCIES.find((d) => d.skillId === skillId);

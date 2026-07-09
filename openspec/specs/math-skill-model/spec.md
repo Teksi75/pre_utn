@@ -115,3 +115,36 @@ El catalogo DEBE mantener un minimo suave de 4 ejercicios por skill para los ski
 - GIVEN el catalogo cargado
 - WHEN se cuentan los ejercicios por skill para mcm_mcd_polinomios y ecuaciones_fraccionarias
 - THEN cada nuevo skill tiene al menos 3 ejercicios
+
+---
+
+## Added by interval-unlock-clarify (issue #62)
+
+### Requirement: Root-Skill Bifurcation Convention
+
+La Unidad 1 de Matemática DEBE declarar dos skills raíz en paralelo (`mat.u1.conjuntos_numericos` y `mat.u1.intervalos`) sin prerrequisitos. Esta convención codifica el diseño intencional bifurcado de U1: dos puntos de entrada paralelos, NO una cadena lineal a través de `racionalizacion`. El catálogo (`SKILL_DEPENDENCIES` en `src/domain/models/skill-catalog.ts`) omite la entrada de `intervalos` por construcción, lo cual es semántico (es raíz) y NO un edge faltante.
+
+**Justificacion**: El issue #62 reportó que `intervalos` aparece como "Disponible" sin chip de "Requiere:" y se leyó como bug de prerrequisito faltante. La evidencia (test contract en `accessibility.test.ts:113` y `:212`, docstring de `prerequisitesFor()`, fuente pedagógica canónica `utn-ingreso-app-spec/docs/pedagogy/06-skill-map.md`) confirma que la bifurcación es intencional. Cualquier contribuidor futuro que agregue un prerrequisito a `intervalos` o a otro skill raíz DEBE abrir un cambio SDD encadenado con ADR nuevo y plan de migración de progreso del alumno.
+
+**Regla**: agregar o quitar un edge de prerrequisito sobre un skill raíz DEBE pasar por un cambio SDD con ADR (numerado después de ADR-008) que documente la razón pedagógica y la migración de progreso. El comment in-code `// INTENTIONAL: parallel-branch design — see ADR-009 and issue #62` por encima de `SKILL_DEPENDENCIES` Y la nota expandida en el docstring de `prerequisitesFor()` son los anclajes que cualquier contribuidor encuentra al investigar la bifurcación.
+
+#### Scenario: U1INT-BIF-001 — Dos skills raíz identificados en U1
+
+- GIVEN el catálogo `SKILL_DEPENDENCIES` cargado
+- WHEN se enumeran los skills sin entrada de prerequisites en U1
+- THEN `mat.u1.conjuntos_numericos` Y `mat.u1.intervalos` ambos estan en la lista
+- AND ningun otro skill U1 tiene lista de prerequisites vacía por diseño
+
+#### Scenario: U1INT-BIF-002 — Regla de chained-ADR al modificar un skill raíz
+
+- GIVEN un skill raíz existente (`mat.u1.conjuntos_numericos` o `mat.u1.intervalos`)
+- WHEN un contribuidor agrega una entrada de prerequisites para ese skill en `SKILL_DEPENDENCIES`
+- THEN el commit NO entra sin un ADR nuevo (ADR-NNN, N >= 9) que documente la razón y la migración
+- AND la migración cubre el progreso de los alumnos actuales que ya tienen el skill accesible
+
+#### Scenario: U1INT-BIF-003 — Sin "Requiere:" pill para skills raíz en práctica
+
+- GIVEN el `FocusSelector` renderiza la lista de U1 para un alumno con progreso vacío
+- WHEN se inspeccionan `conjuntos_numericos` e `intervalos`
+- THEN ninguno muestra chip "Requiere:" (no hay prerrequisito para mostrar)
+- AND los demas skills U1 muestran "Requiere:" con el skill correspondiente

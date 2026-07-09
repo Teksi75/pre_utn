@@ -103,6 +103,7 @@ export interface SkillDependency {
   readonly prerequisites: readonly SkillId[];
 }
 
+// INTENTIONAL: parallel-branch design — `mat.u1.conjuntos_numericos` and `mat.u1.intervalos` are both root skills; a skill absent from SKILL_DEPENDENCIES is a root by design. Adding a prerequisite to either root requires a chained ADR + student-progress migration. See ADR-009 and issue #62.
 export const SKILL_DEPENDENCIES: readonly SkillDependency[] = [
   { skillId: "mat.u1.propiedades_operaciones_reales", prerequisites: ["mat.u1.conjuntos_numericos"] },
   { skillId: "mat.u1.potencias_raices", prerequisites: ["mat.u1.propiedades_operaciones_reales"] },
