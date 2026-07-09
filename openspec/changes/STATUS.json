@@ -785,8 +785,32 @@
       "archive": "openspec/changes/archive/2026-07-06-align-u2-practice-official-exercises/",
       "verify": "PASS WITH WARNINGS — pnpm run test:run (3134/3134), pnpm run typecheck, pnpm run build",
       "summary": "Aligns Unit 2 practice with official UTN 2025 02_ej_utn.pdf: 31 → 63 exercises, 32 official-alignment exercises across existing 7 U2 skills, audit docs, feedback mappings for new U2 error tags, catalog/type/skill guard tests, and archived SDD artifacts. Merged via PR #81."
+    },
+    "app-scaffold": {
+      "status": "done",
+      "branch": null,
+      "startedAt": "2026-05-30",
+      "completedAt": "2026-05-30",
+      "mergedTo": "main",
+      "mergeCommit": "b2145e1",
+      "delivery": "single-feature-branch (pre-PR workflow)",
+      "verify": "PASS",
+      "archive": "openspec/changes/archive/2026-05-30-app-scaffold/",
+      "summary": "Sprint 0 — project foundation: Next.js 15 (App Router) + TypeScript strict + Tailwind + Vitest + directory layout (domain/components/hooks/lib/content/supabase/tests). pnpm-only package manager. Placeholder test in src/domain/__tests__/ proves Vitest works; domain purity verified (no React/Next/Supabase imports). 4/4 tests, typecheck + build green. Pre-dates STATUS.json — backfilled on housekeeping cleanup."
+    },
+    "practice-previous-exercise-readonly": {
+      "status": "done",
+      "branch": null,
+      "startedAt": "2026-06-08",
+      "completedAt": "2026-06-08",
+      "mergedTo": "main",
+      "mergeCommit": "59f6382",
+      "delivery": "single-feature-branch (pre-PR workflow)",
+      "verify": "PASS WITH WARNINGS (no RTL, no coverage tooling; both acknowledged in design.md)",
+      "archive": "openspec/changes/archive/2026-06-08-practice-previous-exercise-readonly/",
+      "summary": "Read-only review of the immediately previous practice exercise. Session-scoped in-memory snapshot via createPreviousExerciseSnapshot pure module + SubmittedAnswerDisplay component + mapSubmittedAnswer display mapper. `Ver anterior` button shown only when previous submission exists; `Volver al ejercicio actual` restores active exercise. No domain/persistence changes. 14 new tests (11 + 3), 961/961 tests pass, typecheck + build green. Pre-dates STATUS.json — backfilled on housekeeping cleanup."
     }
   },
   "activeBranches": [],
-  "lastAudit": "2026-07-06T15:50:00-03:00"
+  "lastAudit": "2026-07-08T12:00:00-03:00"
 }
