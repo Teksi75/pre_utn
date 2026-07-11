@@ -1,5 +1,97 @@
 [
   {
+    "id": "ex.u3.ecuaciones_valor_absoluto.desafio-01",
+    "skillId": "mat.u3.ecuaciones_valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 5,
+    "prompt": "Para las dos ecuaciones con valor absoluto (I) -|x| = -10.5 y (II) |x| + 8 = 3, ¿cuál opción clasifica correctamente el conjunto solución de cada una y verifica al menos una raíz o la frontera correspondiente en la ecuación original?",
+    "expectedAnswer": "(I) Multiplicar por -1 en ambos miembros: |x| = 10.5; como 10.5 > 0, hay DOS soluciones x = -10.5 y x = 10.5. Verificación: -|10.5| = -10.5 V; -|-10.5| = -10.5 V. (II) Aislar primero |x| = 3 - 8 = -5; como -5 < 0, NO hay solución en ℝ. Distinción clave: (I) tiene DOS raíces; (II) NO tiene solución porque el lado derecho aislado es estrictamente negativo.",
+    "options": [
+      "(I) Multiplicar por -1 en ambos miembros: |x| = 10.5; como 10.5 > 0, hay DOS soluciones x = -10.5 y x = 10.5. Verificación: -|10.5| = -10.5 V; -|-10.5| = -10.5 V. (II) Aislar primero |x| = 3 - 8 = -5; como -5 < 0, NO hay solución en ℝ. Distinción clave: (I) tiene DOS raíces; (II) NO tiene solución porque el lado derecho aislado es estrictamente negativo.",
+      "(I) Resuelvo solo -|x| = -10.5 ⇒ x = -10.5 (olvido multiplicar por -1 en ambos miembros). (II) |x| + 8 = 3 ⇒ |x| = 11 ⇒ x = ±11. Distingo mal entre los dos casos y obtengo DOS soluciones para ambas.",
+      "(I) Concluyo 'no hay solución' porque el lado derecho -10.5 es negativo (confundo el signo externo con k < 0 verdadero). (II) Reporto correctamente que no hay solución. Pero al fallar (I) la verificación muestra que x = 10.5 también cumple, así que descarto mi propia conclusión.",
+      "(I) y (II) tienen el mismo resultado 'no hay solución' (generalizo indebidamente que toda ecuación con signo negativo lleva a conjunto vacío, sin distinguir entre barras externas en ambos lados y suma constante afuera)."
+    ],
+    "commonErrorTags": ["u3_abs_eq_signo_negativo_incorrecto", "u3_abs_eq_suma_constante_fuera"],
+    "pedagogicalNote": "Este desafío integra el contraste P8g vs P8b del PDF oficial (03_ej_utn.pdf): (I) P8g -|x| = -10.5 ⇒ multiplicar por -1 en ambos miembros para cancelar los signos externos ⇒ |x| = 10.5 ⇒ x = ±10.5 (DOS soluciones); (II) P8b |x| + 8 = 3 ⇒ aislar primero |x| = 3 - 8 = -5 ⇒ como k < 0, NO hay solución. Trampas dominantes (todas capturadas por `u3_abs_eq_signo_negativo_incorrecto` y `u3_abs_eq_suma_constante_fuera`): (1) concluir 'no hay solución' para (I) porque el RHS es negativo (ignora que el signo negativo está en AMBOS lados y se cancela); (2) reportar |x| = 11 para (II) en lugar de aislar primero (suma constante mal ubicada); (3) generalizar 'no hay solución' a ambos casos. La verificación numérica desmiente los errores: -|10.5| = -10.5 V; -|-10.5| = -10.5 V.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-ecuaciones-valor-absoluto"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P8g/P8b: barras externas negativas (DOS soluciones) vs suma constante afuera (sin solución)",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Ancla el desafío diff-5 en el contraste P8g/P8b del PDF oficial. Exige encadenar multiplicar por -1 en ambos miembros + apertura de dos ramas para (I), y aislar primero + análisis de signo para (II). La trampa dominante es colapsar ambos casos en 'no hay solución' por generalización incorrecta."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.ecuaciones_lineales.desafio-01",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "type": "multiple-choice",
+    "difficulty": 5,
+    "prompt": "Para la ecuación 2·(√2 − (√5/2)·x) = (√2/2) + (√5/2)·x, ¿cuál opción muestra el planteo, el paso de agrupación, la racionalización y el resultado correcto verificable en la ecuación original?",
+    "expectedAnswer": "Planteo: 2√2 − √5·x = √2/2 + (√5/2)·x. Agrupación: (3√2/2) = (3√5/2)·x. Racionalizo: x = (3√2/2)·(2/(3√5)) = √2/√5 = √10/5. Verifico en la original: 2·(√2 − (√5/2)·(√10/5)) = 2·(√2 − √2/2) = 2·(√2/2) = √2; el lado derecho √2/2 + (√5/2)·(√10/5) = √2/2 + √2/2 = √2. Coinciden, x = √10/5 es la solución.",
+    "options": [
+      "Planteo: 2√2 − √5·x = √2/2 + (√5/2)·x. Agrupación: (3√2/2) = (3√5/2)·x. Racionalizo: x = (3√2/2)·(2/(3√5)) = √2/√5 = √10/5. Verifico en la original: 2·(√2 − (√5/2)·(√10/5)) = 2·(√2 − √2/2) = 2·(√2/2) = √2; el lado derecho √2/2 + (√5/2)·(√10/5) = √2/2 + √2/2 = √2. Coinciden, x = √10/5 es la solución.",
+      "Planteo: 2√2 − √5·x = √2/2 + (√5/2)·x. Agrupación: (3√2/2) = (3√5/2)·x. Aíslo: x = (3√2/2)·(2/(3√5)) = √2/√5. Doy la respuesta NO racionalizada (√2/√5) como definitiva y no verifico en la ecuación original.",
+      "Planteo: 2√2 − √5·x = √2/2 + (√5/2)·x. Agrupación: (3√2/2) = (3√5/2)·x. Racionalizo: x = √2/√5 = √10/5, pero al verificar reemplazo mal y obtengo que LHS ≠ RHS, así que descarto la solución correcta sin re-revisar el signo.",
+      "Planteo: 2√2 − √5·x = √2/2 + (√5/2)·x. Agrupación: (3√2/2) = (3√5/2)·x. Racionalizo multiplicando por √5/√5 y pierdo el signo del numerador: x = -√10/5. Acepto este signo incorrecto como definitivo y verifico omitiendo el cambio de signo.",
+      "Planteo: 2√2 − √5·x = √2/2 + (√5/2)·x. Agrupación: (3√2/2) = (3√5/2)·x. Racionalizo: x = √2/√5 = √10/5, verifico, pero cambio la conclusión a x = -2/5 por una 'simplificación final' sin replantear: la verificación matemática sobre la ecuación no reemplaza volver al planteo original."
+    ],
+    "commonErrorTags": ["u3_racionalizacion_irracional"],
+    "pedagogicalNote": "Este desafío integra los cuatro pasos de la cadena de P1l canónica (03_ej_utn.pdf): (1) distribución correcta del 2 a la izquierda, (2) agrupación de los términos con x de un solo lado preservando el coeficiente √5/2, (3) racionalización multiplicando por √5/√5 SIN perder el signo del numerador, (4) verificación algebraica en ambos lados de la ecuación original. La trampa dominante es producir x = √2/√5 sin racionalizar (deja la raíz en el denominador — captura de `u3_racionalizacion_irracional`), o racionalizar mal y obtener x = -√10/5 o x = -2/5. La verificación cruzada (LHS = RHS) sirve para detectar el signo perdido: 2·(√2 − (√5/2)·(−2/5)) ≠ √2/2 + (√5/2)·(−2/5). El resultado correcto e irreductible es x = √10/5.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-ecuaciones-lineales"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P1l: ecuación lineal con coeficientes irracionales (suma de surdos a ambos lados)",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Ancla el desafío diff-5 en P1l del PDF oficial 03_ej_utn.pdf. Exige encadenar distribución + agrupación + racionalización + verificación, con trampa concreta de signo perdido al racionalizar (x = -2/5 en lugar de x = √10/5). Integra el error tag nuevo `u3_racionalizacion_irracional` que se aplica exclusivamente a la firma P1l."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.ecuaciones_cuadraticas.desafio-01",
+    "skillId": "mat.u3.ecuaciones_cuadraticas",
+    "type": "multiple-choice",
+    "difficulty": 5,
+    "prompt": "Para la ecuación paramétrica -kx² - 2x + 4 = 0, ¿cuál opción determina correctamente el conjunto de valores de k para los cuales las raíces son complejas (no reales) y verifica la frontera?",
+    "expectedAnswer": "Discriminante Δ = (-2)² - 4·(-k)·4 = 4 + 16k. Para raíces complejas se requiere Δ < 0, entonces 4 + 16k < 0 ⇒ k < -1/4. Coeficiente líder -k ≠ 0 ⇒ k ≠ 0 (ya cubierto por k < -1/4). Conjunto solución: k ∈ (-∞, -1/4). Verificación de la frontera en k = -1/4: Δ = 4 + 16·(-1/4) = 4 - 4 = 0 ⇒ raíz doble real (no compleja), por eso el extremo -1/4 está abierto. Para k = -1: Δ = 4 + 16·(-1) = -12 < 0 ⇒ raíces complejas, confirmando que el intervalo abrevia correctamente.",
+    "options": [
+      "Discriminante Δ = (-2)² - 4·(-k)·4 = 4 + 16k. Para raíces complejas se requiere Δ < 0, entonces 4 + 16k < 0 ⇒ k < -1/4. Coeficiente líder -k ≠ 0 ⇒ k ≠ 0 (ya cubierto por k < -1/4). Conjunto solución: k ∈ (-∞, -1/4). Verificación de la frontera en k = -1/4: Δ = 4 + 16·(-1/4) = 4 - 4 = 0 ⇒ raíz doble real (no compleja), por eso el extremo -1/4 está abierto. Para k = -1: Δ = 4 + 16·(-1) = -12 < 0 ⇒ raíces complejas, confirmando que el intervalo abrevia correctamente.",
+      "Discriminante Δ = 4 + 16k. Para raíces complejas, Δ < 0 ⇒ k < -1/4. Cierro el extremo: k ∈ (-∞, -1/4] porque 'en la frontera el discriminante se hace cero y la raíz doble sigue siendo aceptable como caso límite'.",
+      "Discriminante Δ = 4 + 16k. Invierto el signo de la desigualdad por error y digo Δ > 0 ⇒ 4 + 16k > 0 ⇒ k > -1/4. Conjunto: k ∈ (-1/4, ∞). No verifico en k = -1/4 ni descarto k = 0.",
+      "Discriminante Δ = 4 + 16k. Confundo 'complejas' con 'reales distintos' y respondo Δ > 0 ⇒ k < -1/4 (signo invertido), sin notar que la condición es Δ < 0.",
+      "Discriminante Δ = (-2)² - 4·(-k)·4 = 4 - 16k (signo perdido al expandir -4·(-k)·4). Para complejas Δ < 0 ⇒ 4 - 16k < 0 ⇒ k > 1/4. Conjunto: k ∈ (1/4, ∞). Verifico k = 1: Δ = 4 - 16 = -12 < 0, complejo, pero la operación algebraica estaba invertida desde el planteo."
+    ],
+    "commonErrorTags": ["u3_discriminante_signo_incorrecto"],
+    "pedagogicalNote": "Este desafío integra la cadena de P6f (03_ej_utn.pdf): (1) escribir el discriminante Δ = b² - 4ac con b = -2, a = -k, c = 4 → Δ = 4 + 16k preservando el signo al expandir -4·(-k)·4; (2) imponer la condición Δ < 0 para raíces complejas; (3) resolver la desigualdad 4 + 16k < 0 ⇒ k < -1/4; (4) verificar el coeficiente líder -k ≠ 0 (ya implícito en k < -1/4); (5) verificar la frontera k = -1/4 con Δ = 0 → raíz doble, no compleja, extremo abierto. Trampas dominantes (todas capturadas por `u3_discriminante_signo_incorrecto`): invertir el signo de la desigualdad y responder k ∈ (-1/4, ∞); expandir mal -4·(-k)·4 como -16k; cerrar el extremo -1/4 por confusión entre raíz doble y compleja. La verificación numérica con k = -1 (Δ = -12 < 0) sirve para descartar las respuestas con signo invertido.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-ecuaciones-cuadraticas"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P6b/P6f: parámetro k para clasificación de raíces (reales distintos / complejas) en kx² - 2x + 4 = 0 y -kx² - 2x + 4 = 0",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Ancla el desafío diff-5 en P6b/P6f del PDF oficial 03_ej_utn.pdf. Exige encadenar discriminante con parámetro k → imposición de la condición (Δ > 0 vs Δ < 0) → resolución de la desigualdad → verificación de la frontera. La trampa dominante es invertir el signo del discriminante o de la desigualdad, lo que produce el conjunto complementario. Integra el error tag nuevo `u3_discriminante_signo_incorrecto` que se aplica exclusivamente a la firma P6 con coeficiente k en x²."
+      }
+    ]
+  },
+  {
     "id": "ex.u3.traduccion_lenguaje_verbal.desafio-01",
     "skillId": "mat.u3.traduccion_lenguaje_verbal",
     "type": "multiple-choice",
@@ -77,6 +169,73 @@
         "section": "Modelización geométrica — Calibración de dificultad y estilo de distractores",
         "sourceUse": "calibrated-from-exam",
         "pedagogicalIntent": "Dificultad y patrón de distractores calibrados al nivel del examen de ingreso: los distractores son casi-aciertos que pasan la prueba algebraica interna pero rompen la verificación contextual o la interpretación — verificar la ecuación no es suficiente, hay que volver al enunciado. Patrón típico de examen, no se copia ningún item."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.inecuaciones_producto_cociente.desafio-01",
+    "skillId": "mat.u3.inecuaciones_producto_cociente",
+    "type": "multiple-choice",
+    "difficulty": 5,
+    "prompt": "Para la inecuación racional (x² − x)/((x + 1)(2 − x)) ≥ 0, ¿cuál opción muestra el cuadro de signos completo, preserva el factor x, excluye correctamente las raíces del denominador y entrega el conjunto solución correcto?",
+    "expectedAnswer": "Cuadro de signos con 4 raíces críticas (numerador en x = 0 y x = 1; denominador en x = -1 y x = 2 — ambos EXCLUIDOS del dominio). 5 intervalos: (-∞, -1) NEGATIVO, (-1, 0) POSITIVO, (0, 1) NEGATIVO, (1, 2) POSITIVO, (2, +∞) NEGATIVO. Solución ≥ 0: (-1, 0] ∪ [1, 2). Verificación: en x = -0.5: (0.25 + 0.5)/((0.5)(2.5)) = 0.75/1.25 = 0.6 ≥ 0 ✓ (pertenece); en x = 0.5: (0.25 - 0.5)/((1.5)(1.5)) = -0.25/2.25 < 0 (no pertenece); en x = -1 y x = 2: expresión no definida (división por cero, excluidos).",
+    "options": [
+      "Cuadro de signos con 4 raíces críticas (numerador en x = 0 y x = 1; denominador en x = -1 y x = 2 — ambos EXCLUIDOS del dominio). 5 intervalos: (-∞, -1) NEGATIVO, (-1, 0) POSITIVO, (0, 1) NEGATIVO, (1, 2) POSITIVO, (2, +∞) NEGATIVO. Solución ≥ 0: (-1, 0] ∪ [1, 2). Verificación: en x = -0.5: (0.25 + 0.5)/((0.5)(2.5)) = 0.75/1.25 = 0.6 ≥ 0 ✓ (pertenece); en x = 0.5: (0.25 - 0.5)/((1.5)(1.5)) = -0.25/2.25 < 0 (no pertenece); en x = -1 y x = 2: expresión no definida (división por cero, excluidos).",
+      "Simplifico cancelando x en (x² − x) = x(x − 1) y obtengo (x − 1)/((x + 1)(2 − x)) ≥ 0. Raíces en x = 1, x = -1, x = 2. Cuadro: (-∞, -1) positivo, (-1, 1) negativo, (1, 2) positivo, (2, +∞) negativo. Solución: [-1, 1] ∪ [2, +∞).",
+      "Cuadro de signos completo: 4 raíces críticas, 5 intervalos. Solución ≥ 0: (-∞, -1] ∪ [0, 1] ∪ [2, +∞). Incluyo x = -1 y x = 2 como puntos críticos (la desigualdad usa ≥).",
+      "Cuadro de signos: numerador en x = 0 y x = 1, denominador en x = -1 y x = 2. Invierto el signo del numerador en (0, 1): POSITIVO en vez de NEGATIVO. Solución ≥ 0: (-1, 1] ∪ [2, +∞).",
+      "Cuadro: 4 raíces, 5 intervalos. Solución ≥ 0: (-1, 0] ∪ [1, 2]. Cierro x = 2 por usar ≥ en la desigualdad."
+    ],
+    "commonErrorTags": [
+      "u3_signchart_critical_root_omitido",
+      "u3_signchart_dominio_denominador",
+      "u3_signchart_factor_signo_incorrecto"
+    ],
+    "pedagogicalNote": "Este desafío integra el cuadro de signos completo de P9v del PDF oficial (03_ej_utn.pdf): (x² − x)/((x + 1)(2 − x)) ≥ 0. Cadena: (1) factorear el numerador x(x − 1) PRESERVANDO el factor x; (2) identificar las 4 raíces críticas — numerador en x = 0 y x = 1, denominador en x = -1 y x = 2 (ambos EXCLUIDOS del dominio); (3) evaluar el signo de cada factor en cada uno de los 5 intervalos (-∞, -1), (-1, 0), (0, 1), (1, 2), (2, +∞); (4) producto POSITIVO en (-1, 0) y (1, 2); (5) dado que la desigualdad usa ≥, cerrar los puntos donde la expresión vale 0 (x = 0, x = 1) y mantener abiertos los puntos de exclusión del dominio (x = -1, x = 2). Solución: (-1, 0] ∪ [1, 2). Trampas dominantes: (A) cancelar el factor x y perder la raíz en 0, dando [-1, 1] ∪ [2, +∞) — captura `u3_signchart_critical_root_omitido`; (B) incluir x = -1 o x = 2 en la solución — captura `u3_signchart_dominio_denominador`; (C) invertir el signo del producto en un intervalo — captura `u3_signchart_factor_signo_incorrecto`. La verificación con x = -0.5 (pertenece) y x = 0.5 (no pertenece) descarta los distractores de signo invertido.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-inecuaciones-producto-cociente"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P9v: cuadro de signos completo (x² − x)/((x + 1)(2 − x)) ≥ 0 — factor x preservado, dos exclusiones del dominio",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Ancla el desafío diff-5 en P9v del PDF oficial. Exige encadenar factoreo del numerador preservando el factor x + identificación de raíces críticas del numerador y denominador + cuadro de signos en 5 intervalos + cierre de extremos según ≥ y exclusión del dominio. Integra los tres errores tag OWN: `u3_signchart_critical_root_omitido`, `u3_signchart_dominio_denominador`, `u3_signchart_factor_signo_incorrecto`."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.recta.desafio-01",
+    "skillId": "mat.u3.recta",
+    "type": "multiple-choice",
+    "difficulty": 5,
+    "prompt": "Para la familia de rectas `2kx − 5y + 2k + 3 = 0` (con `k ≠ 0` para que la pendiente esté definida), ¿cuál opción determina correctamente el valor de k para cada una de las cuatro condiciones: (I) pasa por `P(3; −2)`, (II) pendiente `m = −1/2`, (III) ordenada al origen `b = 3`, (IV) pasa por el origen?",
+    "expectedAnswer": "I) k = −13/8; II) k = −5/4; III) k = 6; IV) k = −3/2",
+    "options": [
+      "I) k = −13/8; II) k = −5/4; III) k = 6; IV) k = −3/2",
+      "I) k = 13/8 (signo perdido al pasar 13 al otro lado de la igualdad); II) k = −5/4; III) k = 6; IV) k = −3/2",
+      "I) k = −13/8; II) k = 5/4 (signo perdido al despejar 2k/5 = −1/2); III) k = 6; IV) k = −3/2",
+      "I) k = −13/8; II) k = −5/4; III) k = 3 (olvido multiplicar 5 antes de restar 3 al despejar (2k+3)/5 = 3); IV) k = −3/2"
+    ],
+    "commonErrorTags": [
+      "u3_recta_pendiente_perpendicular"
+    ],
+    "pedagogicalNote": "Este desafío integra las cuatro condiciones de P21 del PDF oficial (03_ej_utn.pdf) sobre la familia paramétrica `2kx − 5y + 2k + 3 = 0`. Cadena por condición: (I) Reemplazar el punto `P(3; −2)` en la ecuación literal y despejar k — `2k·3 − 5·(−2) + 2k + 3 = 0` ⇒ `8k = −13` ⇒ `k = −13/8`. El signo de `−13` se pierde si el alumno distribuye mal el `−5·(−2)` o si mueve el 13 al otro lado sin cambiar el signo. (II) Despejar `y` para identificar la pendiente `2k/5` y la ordenada `(2k+3)/5`; imponer `m = −1/2` ⇒ `2k/5 = −1/2` ⇒ `k = −5/4`. El signo se pierde si el alumno no invierte al multiplicar por `5/2`. (III) Imponer `b = 3` sobre la ordenada `(2k+3)/5 = 3` ⇒ `2k = 12` ⇒ `k = 6`. (IV) Reemplazar el origen `(0; 0)` en la forma literal ⇒ `2k + 3 = 0` ⇒ `k = −3/2`. Los tres distractores son trampas aritméticas — uno por condición — que pierden signo u operación. Verificación cruzada: si la opción A satisface las cuatro condiciones simultáneamente (probando el valor de k en la ecuación original), es la correcta. La trampa dominante de perpendicularidad (recíproco vs. negativo del recíproco) NO aplica en este desafío porque la familia es paramétrica y no se pide encontrar una recta perpendicular a otra — pero se declara el tag OWN `u3_recta_pendiente_perpendicular` para mantener la trazabilidad con la taxonomía U3.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "relatedTheoryIds": [
+      "theory-recta"
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P21a-d — parámetro k en la familia 2kx − 5y + 2k + 3 = 0: cuatro determinaciones encadenadas (por punto, por pendiente, por ordenada, por origen)",
+        "sourceUse": "canonical-source",
+        "pedagogicalIntent": "Ancla el desafío diff-5 en P21 del PDF oficial. Exige encadenar cuatro determinaciones distintas de k sobre la misma familia paramétrica: (I) pertenencia por punto (reemplazo y despeje), (II) pendiente específica (identificar m = 2k/5 y despejar), (III) ordenada específica (identificar b = (2k+3)/5 y despejar), (IV) pertenencia por origen (reemplazo y despeje). El desafío pone a prueba la lectura simultánea de la forma literal y la forma explícita de la misma familia."
       }
     ]
   }

@@ -52,6 +52,8 @@ describe("Exercise Catalog", () => {
         "mat.u3.ecuaciones_cuadraticas",
         "mat.u3.inecuaciones_lineales",
         "mat.u3.inecuaciones_valor_absoluto",
+        "mat.u3.inecuaciones_producto_cociente",
+        "mat.u3.ecuaciones_valor_absoluto",
         "mat.u3.recta",
         "mat.u3.sistemas",
         "mat.u3.exponenciales",

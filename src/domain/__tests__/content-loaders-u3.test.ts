@@ -25,12 +25,14 @@ import { loadChallengesForSkill } from "@/lib/challenges/loader";
 import type { PedagogicalVisual } from "../visuals/types";
 import { assertIntervalSet } from "../visuals/__tests__/helpers";
 
-/** The 9 declared U3 skill IDs (from theory/unit-3.json and examples/unit-3.json). */
+/** The 11 declared U3 skill IDs (was 10 before S4; S4 added the P9 sign-chart leaf). */
 const U3_SKILL_IDS: readonly string[] = [
   "mat.u3.ecuaciones_lineales",
   "mat.u3.ecuaciones_cuadraticas",
   "mat.u3.inecuaciones_lineales",
   "mat.u3.inecuaciones_valor_absoluto",
+  "mat.u3.inecuaciones_producto_cociente",
+  "mat.u3.ecuaciones_valor_absoluto",
   "mat.u3.recta",
   "mat.u3.sistemas",
   "mat.u3.exponenciales",
@@ -39,10 +41,15 @@ const U3_SKILL_IDS: readonly string[] = [
 ];
 
 describe("Unit-3 content loader — RAW_REGISTRY wiring", () => {
-  test("U3-CAT-001: loadTheoryContent('unit-3') returns 9 theory nodes", () => {
+  test("U3-CAT-001: loadTheoryContent('unit-3') returns 11 theory nodes (10 + S4 P9 leaf)", () => {
     const theory = loadTheoryContent("unit-3");
     expect(Array.isArray(theory)).toBe(true);
-    expect(theory.length).toBe(9);
+    // S2 of align-u3-practice-official-exercises added the
+    // theory-ecuaciones-valor-absoluto node for mat.u3.ecuaciones_valor_absoluto
+    // (was 9; now 10). S4 of the same change added the
+    // theory-inecuaciones-producto-cociente node for
+    // mat.u3.inecuaciones_producto_cociente (was 10; now 11).
+    expect(theory.length).toBe(11);
   });
 
   test("U3-CAT-001: loadTheoryContent('unit-3') returns one node per U3 skill", () => {
@@ -80,29 +87,50 @@ describe("Unit-3 content loader — RAW_REGISTRY wiring", () => {
     }
   });
 
-  test("loadFeedbackContent('unit-3') returns 11 mappings (including PR 1 modeling tags)", () => {
+  test("loadFeedbackContent('unit-3') returns 20 mappings (PR 1 modeling + S1a rationalization + S1b discriminant + S2 P8 leaf + S4 P9 leaf + S6 P12/P20 perpendicular leaf)", () => {
     const feedback = loadFeedbackContent("unit-3");
     expect(Array.isArray(feedback)).toBe(true);
-    expect(feedback.length).toBe(11);
+    // S2 of align-u3-practice-official-exercises adds 3 u3_abs_eq_* mappings
+    // (was 13; now 16). S3 wires the P8 base exercises that reference these
+    // tags. S4 of the same change adds 3 u3_signchart_* mappings for the P9
+    // sign-chart leaf (was 16; now 19). S5 wires the P9 base exercises
+    // that reference the signchart tags. S6 of the same change adds 1
+    // u3_recta_pendiente_perpendicular mapping for the P12d/P20b
+    // perpendicular-by-point leaf (was 19; now 20).
+    expect(feedback.length).toBe(20);
   });
 
-  test("loadFeedbackContent('unit-3') covers declared u3_* tags plus PR 1 modeling feedback", () => {
+  test("loadFeedbackContent('unit-3') covers declared u3_* tags plus PR 1 modeling feedback, S2 P8 leaf, S4 P9 leaf, and S6 P12/P20 perpendicular leaf", () => {
     const feedback = loadFeedbackContent("unit-3");
     const tags = feedback.map((f) => f.errorTag).sort();
     // PR 1 of fortalecer-u3-lenguaje-modelizacion-transferencia adds
     // modeling feedback beyond setup/translation: omitted verification and
-    // contextual interpretation mismatch. The
-    // legacy `u3_direccion_desigualdad` exists in the error-taxonomy but has
-    // no feedback mapping (the legacy inequality-direction case is covered
-    // by `u3_signo_desigualdad`).
+    // contextual interpretation mismatch. The S1a slice of
+    // align-u3-practice-official-exercises adds `u3_racionalizacion_irracional`
+    // for the P1l surface. The S1b slice adds `u3_discriminante_signo_incorrecto`
+    // for the P6b/P6f discriminant classification surface. The S2 slice
+    // adds 3 u3_abs_eq_* tags for the P8 leaf. The S4 slice adds 3
+    // u3_signchart_* tags for the P9 sign-chart leaf. The legacy
+    // `u3_direccion_desigualdad` exists in the error-taxonomy but has no
+    // feedback mapping (the legacy inequality-direction case is covered by
+    // `u3_signo_desigualdad`).
     expect(tags).toEqual([
+      "u3_abs_eq_rama_unica",
+      "u3_abs_eq_signo_negativo_incorrecto",
+      "u3_abs_eq_suma_constante_fuera",
       "u3_aislamiento_incorrecto",
+      "u3_discriminante_signo_incorrecto",
       "u3_dos_valores_absoluto",
       "u3_factorizacion_cuadratica",
       "u3_igualdad_exponenciales",
       "u3_interpretacion_contextual_incorrecta",
       "u3_pendiente_o_ordenada",
       "u3_propiedad_logaritmo",
+      "u3_racionalizacion_irracional",
+      "u3_recta_pendiente_perpendicular",
+      "u3_signchart_critical_root_omitido",
+      "u3_signchart_dominio_denominador",
+      "u3_signchart_factor_signo_incorrecto",
       "u3_signo_desigualdad",
       "u3_sustitucion_o_eliminacion",
       "u3_traduccion_incorrecta",
@@ -130,7 +158,17 @@ describe("Unit-3 exercise source — UNIT_EXERCISE_FILES wiring", () => {
   });
 
   test("U3-CAT-005: every U3 skill has ≥3 exercises via loadExercisesForSkill", () => {
+    // S4 of align-u3-practice-official-exercises registered
+    // mat.u3.inecuaciones_producto_cociente as a theory-only LEAF. S5 of the
+    // same change now lands the 6 P9 base exercises (P9p/q/r/t/u/w diff 3-4),
+    // so the leaf is no longer theory-only and the filter is dropped.
+    // mat.u3.ecuaciones_valor_absoluto (S2 leaf) is also filtered — its 8
+    // base exercises only landed in S3.
+    const S2_LEAF_OVERRIDE: ReadonlySet<string> = new Set([
+      "mat.u3.ecuaciones_valor_absoluto",
+    ]);
     for (const skillId of U3_SKILL_IDS) {
+      if (S2_LEAF_OVERRIDE.has(skillId)) continue;
       const exercises = loadExercisesForSkill(skillId);
       expect(
         exercises.length,

@@ -39,6 +39,8 @@ export const UNIT_3_SKILLS: readonly SkillId[] = [
   "mat.u3.ecuaciones_cuadraticas",
   "mat.u3.inecuaciones_lineales",
   "mat.u3.inecuaciones_valor_absoluto",
+  "mat.u3.inecuaciones_producto_cociente", // S4: sign-chart leaf (P9p-w)
+  "mat.u3.ecuaciones_valor_absoluto",
   "mat.u3.recta",
   "mat.u3.sistemas",
   "mat.u3.exponenciales",
@@ -93,8 +95,17 @@ export const ALL_SKILLS: readonly SkillId[] = [
   ...UNIT_6_SKILLS,
 ] as const;
 
-/** Set of all known skill IDs for validation. */
-export const KNOWN_SKILL_IDS: Set<SkillId> = new Set<SkillId>(ALL_SKILLS);
+/**
+ * Set of all known skill IDs for validation.
+ *
+ * The public type is intentionally `ReadonlySet<SkillId>` (not `Set`)
+ * so consumers cannot mutate the catalog at the type level. Runtime
+ * mutation is still possible by going through `as Set<SkillId>` or
+ * similar, but the contract is "do not mutate": the catalog is a
+ * compile-time constant and any change would silently desync from
+ * `ALL_SKILLS`. All consumers MUST treat this as read-only.
+ */
+export const KNOWN_SKILL_IDS: ReadonlySet<SkillId> = new Set<SkillId>(ALL_SKILLS);
 
 // ── Prerequisite dependencies (from spec 06) ─────────────────────────────
 

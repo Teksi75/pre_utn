@@ -17,12 +17,14 @@ import {
 } from "../catalog/content-loaders";
 import type { Exercise } from "../models/exercise";
 
-/** The 9 U3 skill IDs declared for this unit. */
+/** The 11 U3 skill IDs declared for this unit (was 9 before S2; S2 added the P8 leaf; S4 + S5 added the P9 leaf). */
 const U3_SKILL_IDS: readonly string[] = [
   "mat.u3.ecuaciones_lineales",
   "mat.u3.ecuaciones_cuadraticas",
   "mat.u3.inecuaciones_lineales",
   "mat.u3.inecuaciones_valor_absoluto",
+  "mat.u3.inecuaciones_producto_cociente",
+  "mat.u3.ecuaciones_valor_absoluto",
   "mat.u3.recta",
   "mat.u3.sistemas",
   "mat.u3.exponenciales",
@@ -201,14 +203,23 @@ describe("U3 exercise shape — commonErrorTags only for declared u3_* tags", ()
     // monolith .1 entries that may carry obsolete tags from a different era.
     const source = UNIT_EXERCISE_FILES[3] as readonly Record<string, unknown>[];
     const declared = new Set([
+      "u3_abs_eq_rama_unica",
+      "u3_abs_eq_signo_negativo_incorrecto",
+      "u3_abs_eq_suma_constante_fuera",
       "u3_aislamiento_incorrecto",
       "u3_direccion_desigualdad",
+      "u3_discriminante_signo_incorrecto",
       "u3_dos_valores_absoluto",
       "u3_factorizacion_cuadratica",
       "u3_igualdad_exponenciales",
       "u3_interpretacion_contextual_incorrecta",
       "u3_pendiente_o_ordenada",
       "u3_propiedad_logaritmo",
+      "u3_racionalizacion_irracional",
+      "u3_recta_pendiente_perpendicular",
+      "u3_signchart_critical_root_omitido",
+      "u3_signchart_dominio_denominador",
+      "u3_signchart_factor_signo_incorrecto",
       "u3_signo_desigualdad",
       "u3_sustitucion_o_eliminacion",
       "u3_traduccion_incorrecta",

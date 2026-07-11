@@ -108,6 +108,16 @@ export const PILOT_SKILLS: readonly PilotSkill[] = [
     label: "Inecuaciones con valor absoluto",
   },
   {
+    skillId: "mat.u3.inecuaciones_producto_cociente",
+    unitKey: "unit-3",
+    label: "Inecuaciones producto y cociente",
+  },
+  {
+    skillId: "mat.u3.ecuaciones_valor_absoluto",
+    unitKey: "unit-3",
+    label: "Ecuaciones con valor absoluto",
+  },
+  {
     skillId: "mat.u3.recta",
     unitKey: "unit-3",
     label: "Ecuación de la recta",

@@ -4,6 +4,7 @@ import {
   saveProgress,
   resetProgress,
   addAttempt,
+  parseProgress,
   PRACTICE_STORAGE_KEY,
 } from "../practice-progress";
 import { PROFILES_STORAGE_KEY } from "../student-profile-storage";
@@ -420,9 +421,19 @@ describe("practice-progress localStorage adapter", () => {
     });
 
     // ----- REQ-ISOL-2 -----
+    //
+    // REPAIR CONTRACT (post-fix):
+    //   When the practice pointer is stale (points to a profile that is
+    //   NOT the currently-active one), the repair MUST:
+    //     1. PRESERVE ALL profile slots — including the slot the stale
+    //        pointer named. Deleting any slot would silently wipe a
+    //        student's history when only the pointer was out of sync.
+    //     2. Re-point `map.activeStudentId` to the actual active profile so
+    //        subsequent reads resolve to the right slice.
+    //     3. Return the active profile's slice on this call.
 
-    it("drops a corrupted active slot when practice pointer is stale (REQ-ISOL-2)", () => {
-      // profiles active = B; practice pointer stale = A; B's slot has a hybrid blob.
+    it("repairs stale pointer by re-pointing only — never deletes any slot (REQ-ISOL-2)", () => {
+      // profiles active = B; practice pointer stale = A; BOTH slots have data.
       seedTwoStudents({
         profilesActive: "local-b",
         stalePracticePointer: "local-a",
@@ -437,23 +448,14 @@ describe("practice-progress localStorage adapter", () => {
           },
         ],
         bAttempts: [
-          // Hybrid: this slot got polluted with A's data on a previous write.
-          {
-            exerciseId: "ex.a.01",
-            skillId: "mat.u1.intervalos",
-            correct: true,
-            answeredAt: "2025-01-01T00:00:00.000Z",
-            timeMs: 1000,
-            attemptIndex: 1,
-            studentId: "local-a",
-          },
+          // B's slot has its own legitimate data (the active profile is B).
           {
             exerciseId: "ex.b.legacy",
             skillId: "mat.u1.intervalos",
             correct: false,
             answeredAt: "2025-01-04T00:00:00.000Z",
             timeMs: 500,
-            attemptIndex: 2,
+            attemptIndex: 1,
             studentId: "local-b",
           },
         ],
@@ -461,17 +463,96 @@ describe("practice-progress localStorage adapter", () => {
 
       const result = asSync(loadProgress());
 
-      // Active is B; B's slot is corrupted → drop and return EMPTY_PROGRESS.
-      expect(result.attempts).toEqual([]);
+      // Active profile is B → B's slot is returned.
+      expect(result.attempts).toHaveLength(1);
+      expect(result.attempts[0].exerciseId).toBe("ex.b.legacy");
+      expect(result.attempts[0].studentId).toBe("local-b");
 
-      // Persisted map: A's slot intact, B's slot dropped.
+      // Persisted map: BOTH slots preserved, pointer re-pointed to B.
       const persisted = JSON.parse(
         localStorageMock.getItem(PRACTICE_STORAGE_KEY) ?? "{}"
       );
       expect(persisted.students["local-a"]).toBeDefined();
       expect(persisted.students["local-a"].attempts).toHaveLength(1);
       expect(persisted.students["local-a"].attempts[0].exerciseId).toBe("ex.a.01");
-      expect(persisted.students["local-b"]).toBeUndefined();
+      expect(persisted.students["local-b"]).toBeDefined();
+      expect(persisted.students["local-b"].attempts).toHaveLength(1);
+      expect(persisted.students["local-b"].attempts[0].exerciseId).toBe("ex.b.legacy");
+      expect(persisted.activeStudentId).toBe("local-b");
+    });
+
+    // REGRESSION FOR GGA BLOCKER (practice-progress pointer repair):
+    // The original GGA blocker reported that the repair deleted a profile
+    // slot — which silently wiped student progress. The contract that MUST
+    // hold, pinned by this regression test, is: NEVER DELETE ANY SLOT. The
+    // repair only moves the pointer. Both stale-pointer and active-profile
+    // slots are preserved verbatim.
+    it("REGRESSION: stale activeStudentId repair MUST never delete any profile slot", () => {
+      seedTwoStudents({
+        profilesActive: "local-b",
+        stalePracticePointer: "local-a",
+        aAttempts: [
+          {
+            exerciseId: "ex.a.unique1",
+            skillId: "mat.u1.intervalos",
+            correct: true,
+            answeredAt: "2025-01-01T00:00:00.000Z",
+            timeMs: 1000,
+            attemptIndex: 1,
+          },
+        ],
+        bAttempts: [
+          {
+            // Identifier designed to be detected ONLY in B's persisted slot.
+            exerciseId: "ex.b.KEEP_ME",
+            skillId: "mat.u1.intervalos",
+            correct: false,
+            answeredAt: "2025-01-04T00:00:00.000Z",
+            timeMs: 500,
+            attemptIndex: 1,
+            studentId: "local-b",
+          },
+          {
+            exerciseId: "ex.b.KEEP_ME_TOO",
+            skillId: "mat.u1.intervalos",
+            correct: true,
+            answeredAt: "2025-01-04T01:00:00.000Z",
+            timeMs: 600,
+            attemptIndex: 2,
+            studentId: "local-b",
+          },
+        ],
+      });
+
+      // Trigger the repair by reading.
+      const result = asSync(loadProgress());
+
+      // 1. Returned slice MUST be B's data (not EMPTY_PROGRESS, not A's data).
+      expect(result.attempts).toHaveLength(2);
+      expect(result.attempts.map((a) => a.exerciseId)).toEqual([
+        "ex.b.KEEP_ME",
+        "ex.b.KEEP_ME_TOO",
+      ]);
+      for (const a of result.attempts) {
+        expect(a.studentId).toBe("local-b");
+      }
+
+      // 2. Persisted map MUST still contain BOTH slots — never delete any.
+      const persisted = JSON.parse(
+        localStorageMock.getItem(PRACTICE_STORAGE_KEY) ?? "{}",
+      );
+      expect(persisted.students["local-b"]).toBeDefined();
+      expect(persisted.students["local-b"].attempts).toHaveLength(2);
+      expect(
+        persisted.students["local-b"].attempts.map((a: { exerciseId: string }) => a.exerciseId),
+      ).toEqual(["ex.b.KEEP_ME", "ex.b.KEEP_ME_TOO"]);
+      // Stale-pointer slot is preserved too — repair only moves the pointer.
+      expect(persisted.students["local-a"]).toBeDefined();
+      expect(persisted.students["local-a"].attempts).toHaveLength(1);
+      expect(persisted.students["local-a"].attempts[0].exerciseId).toBe("ex.a.unique1");
+
+      // 3. The pointer MUST be re-pointed to the active profile.
+      expect(persisted.activeStudentId).toBe("local-b");
     });
 
     // ----- REQ-ISOL-3 -----
@@ -510,15 +591,231 @@ describe("practice-progress localStorage adapter", () => {
       expect(result.value.attempts[0].exerciseId).toBe("ex.b.01");
       expect(result.value.attempts[0].studentId).toBe("local-b");
 
-      // Persisted map: A's slot untouched, B's slot = [b1].
+      // Persisted map after repair + addAttempt:
+      //   - A's stale slot is PRESERVED (the contract is: never delete any slot).
+      //   - B's slot has the new attempt [b1] AND pointer is re-pointed to B.
       const persisted = JSON.parse(
         localStorageMock.getItem(PRACTICE_STORAGE_KEY) ?? "{}"
       );
+      expect(persisted.students["local-a"]).toBeDefined();
       expect(persisted.students["local-a"].attempts).toHaveLength(1);
       expect(persisted.students["local-a"].attempts[0].exerciseId).toBe("ex.a.01");
       expect(persisted.students["local-b"].attempts).toHaveLength(1);
       expect(persisted.students["local-b"].attempts[0].exerciseId).toBe("ex.b.01");
       expect(persisted.students["local-b"].attempts[0].studentId).toBe("local-b");
+      expect(persisted.activeStudentId).toBe("local-b");
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// GGA BLOCKER FIX — parseProgress full-shape validation
+// ---------------------------------------------------------------------------
+//
+// The previous parseProgress only checked that `attempts` was an array
+// and cast the rest through `unknown`. The new contract validates the
+// COMPLETE PracticeProgress shape AND every attempt entry before
+// casting. These tests pin the new contract.
+
+describe("GGA BLOCKER — parseProgress full-shape validation", () => {
+  function fullProgress(overrides: Record<string, unknown> = {}) {
+    return {
+      attempts: [],
+      accuracyBySkill: {},
+      trendBySkill: {},
+      lastPracticedBySkill: {},
+      diagnosticResult: null,
+      studyPlan: null,
+      ...overrides,
+    };
+  }
+
+  it("rejects null / non-object input", () => {
+    expect(parseProgress(null)).toBeNull();
+    expect(parseProgress(undefined)).toBeNull();
+    expect(parseProgress(42)).toBeNull();
+    expect(parseProgress("string")).toBeNull();
+    expect(parseProgress([])).toBeNull();
+  });
+
+  it("rejects input missing the attempts array", () => {
+    const { attempts: _drop, ...rest } = fullProgress();
+    void _drop;
+    expect(parseProgress(rest)).toBeNull();
+  });
+
+  it("rejects input where attempts is not an array", () => {
+    expect(parseProgress(fullProgress({ attempts: "not-an-array" }))).toBeNull();
+    expect(parseProgress(fullProgress({ attempts: { length: 0 } }))).toBeNull();
+  });
+
+  it("rejects input where accuracyBySkill is missing or wrong-typed", () => {
+    const { accuracyBySkill: _drop, ...rest } = fullProgress();
+    void _drop;
+    expect(parseProgress(rest)).toBeNull();
+    expect(parseProgress(fullProgress({ accuracyBySkill: "wrong" }))).toBeNull();
+    expect(parseProgress(fullProgress({ accuracyBySkill: { foo: "bar" } }))).toBeNull();
+    expect(parseProgress(fullProgress({ accuracyBySkill: { foo: NaN } }))).toBeNull();
+  });
+
+  it("rejects input where trendBySkill has an unknown trend literal", () => {
+    expect(parseProgress(fullProgress({ trendBySkill: { foo: "unknown" } }))).toBeNull();
+    expect(parseProgress(fullProgress({ trendBySkill: { foo: 42 } }))).toBeNull();
+  });
+
+  it("accepts input where trendBySkill uses a valid trend literal", () => {
+    expect(parseProgress(fullProgress({ trendBySkill: { foo: "improving" } }))).not.toBeNull();
+    expect(parseProgress(fullProgress({ trendBySkill: { foo: "stable" } }))).not.toBeNull();
+    expect(parseProgress(fullProgress({ trendBySkill: { foo: "needs-review" } }))).not.toBeNull();
+  });
+
+  it("rejects input where lastPracticedBySkill is missing or wrong-typed", () => {
+    const { lastPracticedBySkill: _drop, ...rest } = fullProgress();
+    void _drop;
+    expect(parseProgress(rest)).toBeNull();
+    expect(parseProgress(fullProgress({ lastPracticedBySkill: { foo: 42 } }))).toBeNull();
+  });
+
+  it("rejects input where diagnosticResult is neither null nor an object", () => {
+    expect(parseProgress(fullProgress({ diagnosticResult: 42 }))).toBeNull();
+    expect(parseProgress(fullProgress({ diagnosticResult: "wrong" }))).toBeNull();
+    expect(parseProgress(fullProgress({ diagnosticResult: [] }))).toBeNull();
+  });
+
+  it("accepts input where diagnosticResult is null", () => {
+    expect(parseProgress(fullProgress({ diagnosticResult: null }))).not.toBeNull();
+  });
+
+  it("accepts input where diagnosticResult is an object", () => {
+    expect(
+      parseProgress(fullProgress({ diagnosticResult: { completedAt: "x" } })),
+    ).not.toBeNull();
+  });
+
+  it("rejects input where studyPlan is neither null nor an object", () => {
+    expect(parseProgress(fullProgress({ studyPlan: 42 }))).toBeNull();
+    expect(parseProgress(fullProgress({ studyPlan: "wrong" }))).toBeNull();
+  });
+
+  it("accepts input where studyPlan is null", () => {
+    expect(parseProgress(fullProgress({ studyPlan: null }))).not.toBeNull();
+  });
+
+  it("rejects an attempt entry missing exerciseId", () => {
+    const invalid = fullProgress({
+      attempts: [
+        {
+          // exerciseId missing
+          skillId: "mat.u1.x",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1,
+        },
+      ],
+    });
+    expect(parseProgress(invalid)).toBeNull();
+  });
+
+  it("rejects an attempt entry with non-boolean correct", () => {
+    const invalid = fullProgress({
+      attempts: [
+        {
+          exerciseId: "ex.x",
+          skillId: "mat.u1.x",
+          correct: "yes" as unknown as boolean,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1,
+        },
+      ],
+    });
+    expect(parseProgress(invalid)).toBeNull();
+  });
+
+  it("rejects an attempt entry with non-numeric timeMs", () => {
+    const invalid = fullProgress({
+      attempts: [
+        {
+          exerciseId: "ex.x",
+          skillId: "mat.u1.x",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: "1000" as unknown as number,
+          attemptIndex: 1,
+        },
+      ],
+    });
+    expect(parseProgress(invalid)).toBeNull();
+  });
+
+  it("rejects an attempt entry with attemptIndex < 1", () => {
+    const invalid = fullProgress({
+      attempts: [
+        {
+          exerciseId: "ex.x",
+          skillId: "mat.u1.x",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 0,
+        },
+      ],
+    });
+    expect(parseProgress(invalid)).toBeNull();
+  });
+
+  it("rejects an attempt entry with non-integer attemptIndex", () => {
+    const invalid = fullProgress({
+      attempts: [
+        {
+          exerciseId: "ex.x",
+          skillId: "mat.u1.x",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1.5,
+        },
+      ],
+    });
+    expect(parseProgress(invalid)).toBeNull();
+  });
+
+  it("rejects an attempt entry with optional studentId of wrong type", () => {
+    const invalid = fullProgress({
+      attempts: [
+        {
+          exerciseId: "ex.x",
+          skillId: "mat.u1.x",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1,
+          studentId: 42 as unknown as string,
+        },
+      ],
+    });
+    expect(parseProgress(invalid)).toBeNull();
+  });
+
+  it("accepts a well-formed empty PracticeProgress", () => {
+    expect(parseProgress(fullProgress())).not.toBeNull();
+  });
+
+  it("accepts a well-formed PracticeProgress with one well-formed attempt", () => {
+    const wellFormed = fullProgress({
+      attempts: [
+        {
+          exerciseId: "ex.x",
+          skillId: "mat.u1.x",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1,
+          studentId: "local-x",
+        },
+      ],
+    });
+    expect(parseProgress(wellFormed)).not.toBeNull();
   });
 });

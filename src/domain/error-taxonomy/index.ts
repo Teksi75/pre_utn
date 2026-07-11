@@ -917,6 +917,16 @@ const TAXONOMY: readonly ErrorTag[] = [
     ],
   },
   {
+    id: "u3_recta_pendiente_perpendicular",
+    unit: 3,
+    description:
+      "Error al construir una recta perpendicular por punto: usa el RECÍPROCO de la pendiente de referencia en vez del NEGATIVO DEL RECÍPROCO. La pendiente perpendicular a una recta de pendiente m es m_perp = −1/m (negativo del recíproco); la trampa dominante es quedarse con m_perp = 1/m (recíproco sin signo negativo), que produce una recta que no es perpendicular ni paralela a la original.",
+    examples: [
+      "Para la perpendicular a y = (1/4)x − 5 por el origen, escribir y = 4x (recíproco de 1/4 sin signo) en vez de y = −4x (negativo del recíproco)",
+      "Para la perpendicular a 2x − 3y + 5 = 0 (pendiente 2/3) por P(−1; 3), escribir y = (3/2)x + 9/2 (recíproco de 2/3 sin signo, ordenada mal recalculada) en vez de y = −(3/2)x + 3/2",
+    ],
+  },
+  {
     id: "u3_sustitucion_o_eliminacion",
     unit: 3,
     description:
@@ -958,6 +968,143 @@ const TAXONOMY: readonly ErrorTag[] = [
     examples: [
       "Interpretar x > 3 como valores menores que 3",
       "Graficar x ≤ -2 como círculo abierto en -2 y sombra a la derecha",
+    ],
+  },
+
+  // Unit 3: S1a (align-u3-practice-official-exercises) — P1l rationalization.
+  // The P1l canonical surface is `2·(√2 − (√5/2)·x) = (√2/2) + (√5/2)·x`,
+  // a linear equation with irrational coefficients on both sides. The exact
+  // root is `x = √10/5` (rationalized). The tightest documented
+  // misconception is producing `-2/5` (sign lost during the
+  // rationalization step where the student multiplies by `√5/√5`), or
+  // producing an un-rationalized `x = √2/√5` and stopping there.
+  //
+  // The detector in `src/domain/evaluator/error-tagging.ts` is purposefully
+  // scoped to the P1l prompt signature (must reference `√2` AND `√5/2` AND
+  // `x` AND `=`); it MUST NOT fire on unrelated radical exercises such as
+  // radical-isolation like `√(x − 2) = 4`, absolute-value equations, or
+  // logarithm/exponential equations.
+  {
+    id: "u3_racionalizacion_irracional",
+    unit: 3,
+    description:
+      "Error al racionalizar el resultado de una ecuación lineal con coeficientes irracionales: el alumno deja la raíz en el denominador, pierde el signo al multiplicar por el conjugado o factor racionalizante, o multiplica sólo arriba/abajo en vez de mantener la equivalencia. La respuesta correcta debe llegar SIN raíz en el denominador.",
+    examples: [
+      "Resolver 2·(√2 − (√5/2)·x) = (√2/2) + (√5/2)·x dando x = -2/5 (signo perdido al multiplicar por √5/√5; el resultado correcto es x = √10/5)",
+      "Resolver la misma ecuación y detenerse en x = √2/√5 sin racionalizar (raíz todavía en el denominador)",
+    ],
+  },
+
+  // Unit 3: S1b (align-u3-practice-official-exercises) — P6b/P6f discriminant.
+  // The P6 family classifies the roots of a parameter-k quadratic by sign of
+  // the discriminant Δ = b² − 4ac. The canonical misconceptions are:
+  //   - P6b (kx² − 2x + 4 = 0 with raíces reales distintos): Δ = 4 − 16k > 0
+  //     ⇒ k < 1/4 (and k ≠ 0 ⇒ k ∈ (-∞,0) ∪ (0,1/4)). Student forgets the
+  //     k = 0 exclusion or inverts the sign of the inequality.
+  //   - P6f (−kx² − 2x + 4 = 0 with raíces complejas): Δ = 4 + 16k < 0
+  //     ⇒ k < -1/4 (open). Student inverts the sign and reports k > -1/4,
+  //     or expands −4·(−k)·4 as −16k.
+  //
+  // The detector in `src/domain/evaluator/error-tagging.ts` is purposefully
+  // scoped to P6 parameter-k signature (prompt must reference `kx²` or
+  // `-kx²` AND a classification word like `complejos|reales|iguales`);
+  // it MUST NOT fire on P5d `(7x²−3)/4 = 141` (numeric coefficient, no k),
+  // on numeric-coefficient P5-style quadratics, or on unrelated
+  // absolute-value / log equations.
+  {
+    id: "u3_discriminante_signo_incorrecto",
+    unit: 3,
+    description:
+      "Error al evaluar el signo del discriminante Δ = b² − 4ac en una cuadrática con parámetro k: el alumno invierte el signo de la desigualdad al despejar k, expande mal −4·(−k)·c, u olvida excluir k = 0 para preservar la forma cuadrática. La frontera entre raíz doble (Δ = 0) y raíces complejas (Δ < 0) también se confunde.",
+    examples: [
+      "Para -kx² - 2x + 4 = 0 con raíces complejas, resolver Δ = 4 + 16k < 0 e invertir la desigualdad dando k > -1/4 (el resultado correcto es k < -1/4, conjunto (-∞, -1/4))",
+      "Para kx² - 2x + 4 = 0 con raíces reales distintos, olvidar la exclusión k = 0 y dar k ∈ (-∞, 1/4) en lugar de k ∈ (-∞, 0) ∪ (0, 1/4)",
+    ],
+  },
+
+  // Unit 3: S2 (align-u3-practice-official-exercises) — P8 absolute-value
+  // equations. Three OWN tags covering the spec-required cases:
+  //   - u3_abs_eq_signo_negativo_incorrecto: student concludes 'no hay
+  //     solución' or single value when both sides of -|x| = -k are negative.
+  //   - u3_abs_eq_suma_constante_fuera: student treats |x| + c = d as
+  //     |x + c| = d (sum inside vs. outside the bars).
+  //   - u3_abs_eq_rama_unica: student forgets one branch of the
+  //     |ax+b| = ±c decomposition and reports a single root.
+  // All three are pedagogical skeletons owned by S2; S3 will wire detectors
+  // in error-tagging.ts once P8 base exercises land.
+  {
+    id: "u3_abs_eq_signo_negativo_incorrecto",
+    unit: 3,
+    description:
+      "Error en ecuaciones con valor absoluto y barras externas negativas: el alumno concluye 'no hay solución' o un único valor cuando el signo negativo aparece en AMBOS lados. El paso correcto es multiplicar por -1 en ambos miembros para cancelar los signos externos y obtener |x| = k con k > 0, que tiene DOS soluciones.",
+    examples: [
+      "Resolver -|x| = -10.5 y responder 'no hay solución porque el lado derecho es negativo' (debe multiplicarse por -1 y obtener |x| = 10.5 con x = ±10.5)",
+      "Resolver -|x| = -10.5 y responder solo x = -10.5 (falta la raíz simétrica x = 10.5)",
+    ],
+  },
+  {
+    id: "u3_abs_eq_suma_constante_fuera",
+    unit: 3,
+    description:
+      "Error al distinguir suma dentro vs. fuera de las barras en |x| + c = d: el alumno trata la constante c como si estuviera DENTRO del valor absoluto y escribe |x + c| = d, o se olvida de aislar primero el valor absoluto restando c en ambos lados. El orden correcto es: (1) restar c en ambos lados ⇒ |x| = d - c, (2) abrir el valor absoluto en dos ramas.",
+    examples: [
+      "Resolver |x| + 4 = 10 como |x + 4| = 10 (suma mal ubicada; la suma está afuera de las barras, no adentro)",
+      "Resolver |x| + 4 = 10 y abrir directamente en dos ramas sin antes restar 4 en ambos lados",
+    ],
+  },
+  {
+    id: "u3_abs_eq_rama_unica",
+    unit: 3,
+    description:
+      "Error al descomponer |ax + b| = c: el alumno resuelve solo UNA de las dos ramas lineales (ax + b = c) y olvida la otra (ax + b = -c), reportando un único valor en vez del conjunto solución completo. La ecuación tiene exactamente DOS ramas porque el valor absoluto genera DOS casos.",
+    examples: [
+      "Resolver |2x - 4| = 6 y reportar solo x = 5 (olvidar la rama 2x - 4 = -6 que da x = -1)",
+      "Resolver |3x + 1| = 10 y reportar x = 3 sin considerar x = -11/3",
+    ],
+  },
+
+  // Unit 3: S4 (align-u3-practice-official-exercises) — P9 family product/
+  // quotient/rational inequalities. Three OWN tags covering the spec-required
+  // sign-chart methodology cases:
+  //   - u3_signchart_factor_signo_incorrecto: student gets the sign of one
+  //     factor wrong (or inverts the inequality when multiplying by -1),
+  //     producing wrong intervals.
+  //   - u3_signchart_critical_root_omitido: student cancels or simplifies
+  //     a factor and loses a critical root (P9p factor-x trap is the
+  //     canonical example).
+  //   - u3_signchart_dominio_denominador: student includes in the solution
+  //     a point that zeroes the denominator — there is a critical root
+  //     for domain exclusion that must always be excluded.
+  // All three are pedagogical skeletons owned by S4; S5 will wire detectors
+  // in error-tagging.ts once P9 base exercises land.
+  {
+    id: "u3_signchart_factor_signo_incorrecto",
+    unit: 3,
+    description:
+      "Error al evaluar el signo de un factor en el cuadro de signos: el alumno invierte el signo de un factor lineal en un intervalo dado, o multiplica por -1 sin invertir la desigualdad, lo que produce la elección de intervalos opuesta. Para (2x - 1) en el intervalo (-∞, 1/2) el factor es NEGATIVO, no positivo — la confusión típica es leer 2x − 1 como cero en x = 0.",
+    examples: [
+      "En (x − 2x²)(x + ½) ≤ 0, factorizar y escribir (2x − 1) como si fuera positivo en el intervalo (-∞, 0); lo correcto es negativo.",
+      "En (2x − 1)(x − 3) ≥ 0, evaluar el signo de (2x − 1) en el intervalo (1/2, 3) diciendo positivo (correcto), pero invertir la desigualdad final al pasar de ≤ a ≥ sin recordar el -1."
+    ],
+  },
+  {
+    id: "u3_signchart_critical_root_omitido",
+    unit: 3,
+    description:
+      "Error al cancelar o simplificar un factor común antes de armar el cuadro de signos: se pierde una raíz crítica y la solución queda incompleta. La regla explícita es NO simplificar NUNCA entre numerador y denominador (ni entre factores del mismo producto); cada factor lineal lleva su raíz crítica al cuadro, y cancelar destruye una fila.",
+    examples: [
+      "En (x − 2x²)(x + ½) ≤ 0 simplificar x y obtener el cuadro de DOS raíces críticas (-½ y ½) en vez de TRES; la solución sale como [-½, ½] en lugar de [-½, 0] ∪ [½, +∞).",
+      "En x² ≤ x cancelar x para llegar a x ≤ 1 sin considerar el caso x = 0 (que también cumple), perdiendo el extremo cerrado en 0 y dando (-∞, 1] en vez de [0, 1]."
+    ],
+  },
+  {
+    id: "u3_signchart_dominio_denominador",
+    unit: 3,
+    description:
+      "Error al incluir en la solución un punto que anula el denominador: la expresión NO está definida allí aunque la desigualdad use ≤ o ≥. Las raíces críticas que vienen del denominador SIEMPRE marcan puntos de exclusión del dominio, y estos hay que marcarlos en el cuadro de signos aunque la desigualdad sea no-estricta.",
+    examples: [
+      "En (x + 2)/(2 - x) ≥ 1 incluir x = 2 en la solución (la expresión no existe cuando x = 2 porque anula el denominador).",
+      "En (x² - x)/((x + 1)(2 - x)) ≥ 0 olvidar excluir x = -1 y/o x = 2 del resultado final (la expresión tiene DOS puntos de exclusión del dominio)."
     ],
   },
 

@@ -2,6 +2,14 @@
   "$schema": "SDD Change Registry — single source of truth for active changes",
   "$note": "This file is the portable state that syncs across machines. Update it when a change transitions phases. The audit script reads this to detect zombie branches.",
   "changes": {
+    "align-u3-practice-official-exercises": {
+      "status": "in-progress",
+      "branch": "feat/align-u3-practice-official-exercises",
+      "startedAt": "2026-07-09",
+      "issue": 84,
+      "companionIssues": [82, 83],
+      "summary": "Align Unit 3 symbolic/core practice with canonical exercises using explicit difficulty progression, structured inputs, and optional challenges at or above canonical maximum."
+    },
     "apply-math-watermark-globally": {
       "status": "done",
       "branch": null,

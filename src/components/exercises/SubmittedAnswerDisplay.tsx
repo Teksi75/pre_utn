@@ -1,10 +1,10 @@
 import { RichText } from "@/components/math/RichText";
 import { mapSubmittedAnswer } from "./submitted-answer-display";
-import type { Exercise } from "@/domain/models/exercise";
+import type { ExerciseBaseShape } from "@/domain/models/exercise";
 import type { EvaluationResult } from "@/domain/evaluator/index";
 
 interface SubmittedAnswerDisplayProps {
-  readonly exercise: Exercise;
+  readonly exercise: ExerciseBaseShape;
   readonly submittedAnswer: string;
   readonly evaluation: EvaluationResult;
   readonly feedback: string;

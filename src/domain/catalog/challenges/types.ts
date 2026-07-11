@@ -5,8 +5,7 @@
  * never imports, ensuring zero coupling to the base catalog.
  */
 
-import type { Exercise, ExerciseType, Difficulty } from "../../models/exercise";
-import type { SkillId } from "../../models/skill";
+import type { ExerciseBaseShape } from "../../models/exercise";
 
 // ---------------------------------------------------------------------------
 // Source Use
@@ -50,15 +49,23 @@ export interface ChallengeCanonicalTrace {
 
 /**
  * A challenge exercise is an integrative exercise tagged as a challenge.
- * It extends the base Exercise with challenge-specific invariants:
+ * It extends `ExerciseBaseShape` (the structural base) and adds the
+ * challenge-specific invariants:
  * - challengeSection: true (marks it as living in the challenge tree)
  * - category: "desafio"
  * - tags: includes "desafio" and "integrador"
- * - canonicalTrace: required, at least one entry
+ * - canonicalTrace: required, at least one entry (with `ChallengeSourceUse`)
  *
  * Difficulty is always 4 or 5 (hard exercises).
+ *
+ * NOTE on the base: `ChallengeExercise` deliberately extends
+ * `ExerciseBaseShape` (not `Exercise`) so its own `canonicalTrace` field —
+ * with the wider challenge-only literal set — does NOT collide with the
+ * narrowed per-surface `Exercise.canonicalTrace` type introduced in S0a.
+ * Consumers that do NOT read `canonicalTrace` can accept either surface by
+ * typing against `ExerciseBaseShape`.
  */
-export interface ChallengeExercise extends Exercise {
+export interface ChallengeExercise extends ExerciseBaseShape {
   /** Challenges live in the separate challenge section tree */
   readonly challengeSection: true;
   /** Challenges use the "desafio" category */

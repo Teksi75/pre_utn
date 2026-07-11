@@ -21,6 +21,7 @@ import { evaluateAnswer } from "../evaluator/index";
 import { loadTaxonomy } from "../error-taxonomy/index";
 import { generateFeedback } from "../feedback/index";
 import type { Exercise } from "../models/exercise";
+import { getExerciseOptionValue } from "../models/exercise";
 
 function makeExercise(overrides: Partial<Exercise> = {}): Exercise {
   return {
@@ -484,19 +485,221 @@ describe("u3_propiedad_logaritmo MC detection", () => {
 describe("U3 modeling feedback tags — runtime path", () => {
   test("tags both new modeling distractors and uses distinct feedback mappings", () => {
     const exercises = loadExercisesForSkill("mat.u3.traduccion_lenguaje_verbal");
+    const ex2 = exercises.find((ex) => ex.id === "ex.u3.traduccion_lenguaje_verbal.2");
+    expect(ex2).toBeDefined();
+    // The actual option[1] text for ex.2 (a declared option whose LHS uses
+    // `12x` where the expected is `x + 12` — a sum/times confusion).
+    // The previous test passed the short substring `"12x = 31"` which is NOT
+    // a declared option; the fix tightens the detector to fire only on
+    // declared options with a defensible algebraic operator-mismatch pattern.
+    const traduccionDistractorOption = ex2!.options!.find(
+      (o) => (typeof o === "string" ? o : o.value) !== ex2!.expectedAnswer,
+    )!;
     const cases = [
-      ["ex.u3.traduccion_lenguaje_verbal.2", "12x = 31", "u3_traduccion_incorrecta", "TRADUCCIÓN"],
-      ["ex.u3.traduccion_lenguaje_verbal.4", "2x - 4 = 18; falta resolver e interpretar la edad de María", "u3_verificacion_omitida", "verifica"],
-      ["ex.u3.traduccion_lenguaje_verbal.6", "Pedro tiene 15 años y Juan 25; confunde edades futuras con edades actuales", "u3_interpretacion_contextual_incorrecta", "representa"],
+      [
+        "ex.u3.traduccion_lenguaje_verbal.2",
+        typeof traduccionDistractorOption === "string"
+          ? traduccionDistractorOption
+          : traduccionDistractorOption.value,
+        "u3_traduccion_incorrecta",
+        "TRADUCCIÓN",
+      ],
+      [
+        "ex.u3.traduccion_lenguaje_verbal.4",
+        "2x - 4 = 18; falta resolver e interpretar la edad de María",
+        "u3_verificacion_omitida",
+        "verifica",
+      ],
+      [
+        "ex.u3.traduccion_lenguaje_verbal.6",
+        "Pedro tiene 15 años y Juan 25; confunde edades futuras con edades actuales",
+        "u3_interpretacion_contextual_incorrecta",
+        "representa",
+      ],
     ] as const;
     for (const [id, answer, tag, feedbackText] of cases) {
       const exercise = exercises.find((ex) => ex.id === id);
       expect(exercise).toBeDefined();
       const result = evaluateAnswer(exercise!, answer);
       expect(result.errorTag).toBe(tag);
-      expect(generateFeedback(result.correct, result.errorTag, loadFeedbackContent("unit-3")).message)
-        .toContain(feedbackText);
+      expect(
+        generateFeedback(
+          result.correct,
+          result.errorTag,
+          loadFeedbackContent("unit-3"),
+        ).message,
+      ).toContain(feedbackText);
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// u3_traduccion_incorrecta — declared-option + algebraic-operator-mismatch
+//
+// Scope (S2 — mat.u3.traduccion_lenguaje_verbal leaf skill). The detector
+// MUST only fire when:
+//   1. The exercise is MC, has the matching skillId, and the student picked
+//      a DECLARED option (one of `exercise.options`).
+//   2. Both the expected and the student's option contain an explicit
+//      equation (`X = Y` form).
+//   3. The LHS or RHS of those equations have a DIFFERENT algebraic operator
+//      class (sum/coefficient-multiplication/fraction/simple/exponent).
+//      This is the documented sum-times confusion or related translation
+//      misinterpretation pattern.
+//
+// REGRESSION FOR GGA BLOCKER (error-tagging traduccion):
+// The previous implementation returned `true` for ANY wrong MC answer on
+// the `mat.u3.traduccion_lenguaje_verbal` skill, labeling every wrong
+// distractor as the same concept. The fix pins the detector to declared
+// options and a defensible algebraic-operator-mismatch pattern.
+// ---------------------------------------------------------------------------
+
+describe("u3_traduccion_incorrecta MC detection (declared-option constraint)", () => {
+  /**
+   * Helper: build a translation-skill MC exercise whose expected answer
+   * translates a verbal phrase into an explicit equation `A = B`. The
+   * provided distractor options are all DECLARED options.
+   */
+  function makeTraduccionExercise(opts: {
+    readonly id: string;
+    readonly expectedEquationLhs: string; // e.g. "x + 12"
+    readonly expectedEquationRhs: string; // e.g. "31"
+    readonly expectedFull: string; // full expected answer text
+    readonly distractors: readonly string[];
+  }): Exercise {
+    return makeExercise({
+      id: opts.id as Exercise["id"],
+      skillId: "mat.u3.traduccion_lenguaje_verbal",
+      prompt:
+        "Si a un número se le suman 12, se obtiene 31. ¿Cuál opción traduce correctamente el enunciado?",
+      expectedAnswer: opts.expectedFull,
+      commonErrorTags: ["u3_traduccion_incorrecta"],
+      options: [
+        { value: opts.expectedFull, label: "A" },
+        ...opts.distractors.map((d, i) => ({
+          value: d,
+          label: String.fromCharCode(66 + i), // B, C, D...
+        })),
+      ],
+    });
+  }
+
+  test("tags sum/times confusion distractor (12x vs x + 12)", () => {
+    const exercise = makeTraduccionExercise({
+      id: "ex.u3.traduccion.sum-times",
+      expectedEquationLhs: "x + 12",
+      expectedEquationRhs: "31",
+      expectedFull:
+        "Defino x como el número pedido; planteo x + 12 = 31; resuelvo x = 19",
+      distractors: [
+        "Planteo 12x = 31 (conector 'se le suman' mal traducido como multiplicación); falta definir la incógnita, resolver y verificar.",
+      ],
+    });
+    expect(tagError(exercise, getExerciseOptionValue(exercise.options![1]))).toBe(
+      "u3_traduccion_incorrecta",
+    );
+  });
+
+  test("does NOT tag when student picks the correct answer", () => {
+    const exercise = makeTraduccionExercise({
+      id: "ex.u3.traduccion.correct",
+      expectedEquationLhs: "x + 12",
+      expectedEquationRhs: "31",
+      expectedFull:
+        "Defino x como el número pedido; planteo x + 12 = 31; resuelvo x = 19",
+      distractors: [
+        "Planteo 12x = 31; falta definir la incógnita.",
+      ],
+    });
+    expect(tagError(exercise, exercise.expectedAnswer)).toBeUndefined();
+  });
+
+  // ----- REGRESSION (GGA blocker) -----
+
+  test("REGRESSION: does NOT tag arbitrary wrong text that is NOT a declared option", () => {
+    // The buggy detector returned `true` for ANY wrong answer on this skill;
+    // the fix pins to declared options.
+    const exercise = makeTraduccionExercise({
+      id: "ex.u3.traduccion.regression-text",
+      expectedEquationLhs: "x + 12",
+      expectedEquationRhs: "31",
+      expectedFull:
+        "Defino x como el número pedido; planteo x + 12 = 31; resuelvo x = 19",
+      distractors: [
+        "Planteo 12x = 31 (conector 'se le suman' mal traducido como multiplicación); falta definir la incógnita, resolver y verificar.",
+      ],
+    });
+    // Arbitrary text that is NOT a declared option and NOT structurally
+    // an algebraic equation at all. The buggy detector returned
+    // `u3_traduccion_incorrecta` for this; the fixed detector stays silent.
+    expect(
+      tagError(exercise, "Pongo cualquier cosa que no está en las opciones"),
+    ).toBeUndefined();
+    expect(
+      tagError(exercise, "Respuesta cualquiera, sin estructura algebraica"),
+    ).toBeUndefined();
+  });
+
+  test("REGRESSION: does NOT tag a declared option without an algebraic equation (chain-skip)", () => {
+    // A declared option that simply OMITS the algebraic modeling step
+    // (e.g. "x = 19; falta definir la incógnita, plantear la ecuación
+    // explícita y verificar") describes a chain-of-modeling omission —
+    // that's covered by `u3_verificacion_omitida`, NOT by
+    // `u3_traduccion_incorrecta`. The traduccion detector MUST stay silent
+    // when the student's option has no first-equation form to compare.
+    const exercise = makeTraduccionExercise({
+      id: "ex.u3.traduccion.no-equation",
+      expectedEquationLhs: "x + 12",
+      expectedEquationRhs: "31",
+      expectedFull:
+        "Defino x como el número pedido; planteo x + 12 = 31; resuelvo x = 19",
+      distractors: [
+        // Pure interpretation, no equation.
+        "El número pedido es 19; falta definir la incógnita, plantear la ecuación explícita y verificar el resultado.",
+      ],
+    });
+    // No `=` in the distractor → no first equation to compare → detector
+    // must stay silent (the buggy detector returned `true` for any wrong
+    // answer on this skill, including this one).
+    expect(tagError(exercise, getExerciseOptionValue(exercise.options![1]))).toBeUndefined();
+  });
+
+  test("REGRESSION: does NOT tag a declared option whose structure matches (same class, different specifics)", () => {
+    // A declared option whose first equation uses the SAME algebraic class
+    // as the expected (e.g. both LHS are sum_diff: "x + 12" vs "x + 8")
+    // is not a translation-class misinterpretation — it's either correct
+    // or a different numeric-mistake outside the documented
+    // sum/coeff/mult confusion patterns. Detector must stay silent.
+    const exercise = makeTraduccionExercise({
+      id: "ex.u3.traduccion.same-class",
+      expectedEquationLhs: "x + 12",
+      expectedEquationRhs: "31",
+      expectedFull:
+        "Defino x como el número pedido; planteo x + 12 = 31; resuelvo x = 19",
+      distractors: [
+        // Same sum_diff class as the expected — different constant, but no
+        // algebraic operator-mismatch.
+        "Defino x como el número pedido; planteo x + 8 = 31; resuelvo x = 23",
+      ],
+    });
+    expect(tagError(exercise, getExerciseOptionValue(exercise.options![1]))).toBeUndefined();
+  });
+
+  test("does NOT tag when exercise is not a multiple-choice", () => {
+    const exercise = makeTraduccionExercise({
+      id: "ex.u3.traduccion.numerical",
+      expectedEquationLhs: "x + 12",
+      expectedEquationRhs: "31",
+      expectedFull: "19",
+      distractors: ["12x = 31"],
+    });
+    // type guard: type="numerical" must NOT trigger this MC-only detector.
+    const numericExercise: Exercise = {
+      ...exercise,
+      type: "numerical",
+      options: undefined,
+    };
+    expect(tagError(numericExercise, "12")).toBeUndefined();
   });
 });
 
@@ -525,6 +728,140 @@ describe("U3 error-tagging — declared-tag contract", () => {
       ],
     };
     expect(tagError(exercise2, "x = 100")).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// u3_abs_eq_signo_negativo_incorrecto — `- |x| = -k` (P8g) detection
+//
+// Scope (S3 — P8 family): tightly bound to the P8g signature. The detector
+// MUST distinguish between:
+//   - Distractor A: "no hay solución" / "sin solución" (treats -k as k<0).
+//   - Distractor B: a SINGLE root matching ±k (forgot the symmetric root).
+//   - Nothing else: any other MC distractor must NOT be tagged.
+//
+// REGRESSION FOR GGA BLOCKER (error-tagging abs_eq):
+// The previous implementation returned `true` for ANY wrong single-value
+// MC answer that didn't carry the compound-answer markers ("o" / "±" / ",").
+// That tagged every wrong distractor of a `- |x| = -k` exercise as
+// `u3_abs_eq_signo_negativo_incorrecto`, polluting every student session
+// with the same misconception. The fix pins the single-value distractor
+// to the documented ±k magnitude (the actual misconception) and nothing
+// else.
+// ---------------------------------------------------------------------------
+
+describe("u3_abs_eq_signo_negativo_incorrecto MC detection (P8g `- |x| = -k`)", () => {
+  /** Helper: construct a `- |x| = -k` exercise fixture. */
+  function makeP8gExercise(opts: {
+    readonly k: number;
+    readonly wrongDistractors: readonly string[];
+  }): Exercise {
+    const expectedAnswer = `x = -${opts.k} o x = ${opts.k}`;
+    const options: { value: string; label: string }[] = [
+      { value: expectedAnswer, label: "A" }, // correct (compound two-root)
+      ...opts.wrongDistractors.map((d, i) => ({
+        value: d,
+        label: String.fromCharCode(66 + i), // B, C, D...
+      })),
+    ];
+    return makeExercise({
+      id: `ex.u3.abs_eq.p8g.${opts.k}`,
+      skillId: "mat.u3.ecuaciones_valor_absoluto",
+      prompt: `Resuelve: -|x| = -${opts.k}`,
+      expectedAnswer,
+      commonErrorTags: ["u3_abs_eq_signo_negativo_incorrecto"],
+      options,
+    });
+  }
+
+  test("Detractor A: tags 'no hay solución' collapse", () => {
+    // P8g canonical `- |x| = -10.5` has solution `x = -10.5 o x = 10.5`.
+    // Reading -10.5 as a negative number makes the student conclude no solution.
+    const exercise = makeP8gExercise({
+      k: 10.5,
+      wrongDistractors: ["No hay solución"],
+    });
+    expect(tagError(exercise, "No hay solución")).toBe(
+      "u3_abs_eq_signo_negativo_incorrecto",
+    );
+  });
+
+  test("Distractor B: tags the single positive root `x = k`", () => {
+    const exercise = makeP8gExercise({
+      k: 10.5,
+      wrongDistractors: ["x = 10.5"], // forgot the negative symmetric root
+    });
+    expect(tagError(exercise, "x = 10.5")).toBe(
+      "u3_abs_eq_signo_negativo_incorrecto",
+    );
+  });
+
+  test("Distractor B: tags the single negative root `x = -k`", () => {
+    const exercise = makeP8gExercise({
+      k: 10.5,
+      wrongDistractors: ["x = -10.5"], // forgot the positive symmetric root
+    });
+    expect(tagError(exercise, "x = -10.5")).toBe(
+      "u3_abs_eq_signo_negativo_incorrecto",
+    );
+  });
+
+  test("does NOT tag the correct compound answer", () => {
+    const exercise = makeP8gExercise({
+      k: 10.5,
+      wrongDistractors: ["No hay solución", "x = 5"],
+    });
+    expect(tagError(exercise, "x = -10.5 o x = 10.5")).toBeUndefined();
+  });
+
+  // ----- REGRESSION (GGA blocker) -----
+
+  test("REGRESSION: does NOT tag arbitrary wrong MC distractor (`x = 0`, `x = 100`, etc.)", () => {
+    // The buggy detector returned true for ANY single-value wrong answer
+    // (the final `return true` fell through after the compound check).
+    // The fix pins the single-value trap to ±k specifically.
+    const exercise = makeP8gExercise({
+      k: 10.5,
+      // Three arbitrary distractors that are NEITHER "no hay solución" NOR
+      // a ±k value: the buggy detector would tag all three; the fixed
+      // detector must tag NONE of them.
+      wrongDistractors: ["x = 0", "x = 100", "x = 5"],
+    });
+    for (const wrong of ["x = 0", "x = 100", "x = 5"]) {
+      expect(
+        tagError(exercise, wrong),
+        `must NOT tag "${wrong}" as u3_abs_eq_signo_negativo_incorrecto: it is not a P8g distractor`,
+      ).toBeUndefined();
+    }
+  });
+
+  test("REGRESSION: does NOT tag a wrong MC distractor that does NOT match `-|x|=-k` signature", () => {
+    // P8c family — `|x - 2| = 5` is NOT a -|x|=-k exercise. Even if the
+    // student picks a wrong single value, the skill-scoped + prompt-signature
+    // guard MUST keep it quiet.
+    const exercise = makeExercise({
+      id: "ex.u3.abs_eq.signature-guard",
+      skillId: "mat.u3.ecuaciones_valor_absoluto",
+      prompt: "Resuelve: |x − 2| = 5",
+      expectedAnswer: "x = -3 o x = 7",
+      commonErrorTags: ["u3_abs_eq_signo_negativo_incorrecto"],
+      options: [
+        { value: "x = -3 o x = 7", label: "A" },
+        { value: "x = 7", label: "B" },
+        { value: "x = 100", label: "C" },
+        { value: "x = -7", label: "D" },
+      ],
+    });
+    expect(tagError(exercise, "x = 7")).toBeUndefined();
+    expect(tagError(exercise, "x = 100")).toBeUndefined();
+  });
+
+  test("does NOT tag when student picks correct answer (always undefined)", () => {
+    const exercise = makeP8gExercise({
+      k: 10.5,
+      wrongDistractors: ["x = 5"],
+    });
+    expect(tagError(exercise, "x = -10.5 o x = 10.5")).toBeUndefined();
   });
 });
 

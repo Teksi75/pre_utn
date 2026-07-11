@@ -30,22 +30,22 @@ import _conjuntosNumericosExercises from "../../../content/matematica/exercises/
 /** Skill IDs that have dedicated per-skill exercise files. */
 const PER_SKILL_SKILL_IDS = new Set(["mat.u1.conjuntos_numericos"]);
 
-// ---------------------------------------------------------------------------
-// Lazy composition cache — populated on first call to loadCatalog()
-// ---------------------------------------------------------------------------
-let _composedExercises: readonly Exercise[] | null = null;
-
 /**
  * Compose exercises from all sources (unit files + main catalog + per-skill
- * files) with validated parsing. Result is cached after first call.
+ * files) with validated parsing. Pure: re-runs on every call.
  *
  * Uses parseRecord() for safe validation at the JSON boundary — no unchecked
  * `as Record<string, unknown>` casts. applyExerciseDefaults is called only
  * here, never at module init.
+ *
+ * GGA BLOCKER FIX: this function previously cached its result in a module-level
+ * mutable (`let _composedExercises`). That violated the L0 domain-purity rule
+ * (AGENTS.md: "Mantener `src/domain/` libre de ... efectos secundarios"). The
+ * composition cost is dominated by validation in `loadCatalog` (which always
+ * ran on every call); removing the cache preserves functional behavior with no
+ * observable regression and lets the domain stay pure.
  */
 function getComposedExercises(): readonly Exercise[] {
-  if (_composedExercises !== null) return _composedExercises;
-
   const seenIds = new Set<string>();
   const composed: Record<string, unknown>[] = [];
 
@@ -90,8 +90,7 @@ function getComposedExercises(): readonly Exercise[] {
     }
   }
 
-  _composedExercises = composed.map(applyExerciseDefaults) as readonly Exercise[];
-  return _composedExercises;
+  return composed.map(applyExerciseDefaults) as readonly Exercise[];
 }
 
 /**
@@ -241,12 +240,97 @@ export function queryByDifficultyRange(
 
 /**
  * Sort exercises by difficulty ascending, then ID ascending.
+ *
+ * In S0 this remains the default ordering. The cross-family override
+ * for validated U3 logarithmic metadata (P37 expansion precedes P38
+ * combining) lives in `compareValidatedU3LogExercises`, which the
+ * loader/coverage layer composes into a stable sort WHEN both sides of
+ * every adjacent comparison carry the validated metadata. For ordinary
+ * catalog use, this comparator is the entire ordering contract.
  */
 function sortExercises(exercises: Exercise[]): Exercise[] {
-  return [...exercises].sort((a, b) => {
-    if (a.difficulty !== b.difficulty) {
-      return a.difficulty - b.difficulty;
+  return [...exercises].sort((a, b) => compareExercisesByMetadata(a, b));
+}
+
+/**
+ * Pair-scoped comparator that overrides the default difficulty+ID
+ * ordering ONLY when ALL of the following hold:
+ *
+ *   1. `a.skillId === "mat.u3.logaritmicas"` AND
+ *      `b.skillId === "mat.u3.logaritmicas"`.
+ *   2. Both entries carry a recognized `progressionFamily`
+ *      (`"log-expansion"` or `"log-combining"`).
+ *   3. Both entries carry a finite numeric `progressionOrder`.
+ *
+ * Otherwise the comparator falls back to legacy difficulty ASC then ID
+ * lexicographic ASC. This includes: missing/malformed metadata on
+ * either side, single-side metadata, malformed `progressionFamily`
+ * outside the recognized set, non-finite or non-numeric
+ * `progressionOrder`, AND pairs whose `skillId` is anything other than
+ * `"mat.u3.logaritmicas"`.
+ *
+ * Family rank: `log-expansion` = 0, `log-combining` = 1.
+ * Within the same family, numeric `progressionOrder` is sorted ASC.
+ *
+ * This is the ONLY cross-family override in the catalog — every other
+ * pair uses legacy ordering. S0 owns the comparator; S9 consumes it
+ * from the catalog loader to enforce P37-before-P38.
+ *
+ * `skillId` is OPTIONAL on the generic constraint so narrow types
+ * (e.g. synthetic `Compared` shapes in tests) still typecheck. At
+ * runtime, the override requires BOTH operands to carry
+ * `skillId === "mat.u3.logaritmicas"`; a missing or different skillId
+ * triggers the legacy fallback.
+ */
+export function compareValidatedU3LogExercises<
+  T extends {
+    readonly id: string;
+    readonly skillId?: string;
+    readonly difficulty: number;
+    readonly progressionFamily?: "log-expansion" | "log-combining";
+    readonly progressionOrder?: number;
+  },
+>(a: T, b: T): number {
+  // Override condition: BOTH sides are U3 logarithms AND both carry
+  // validated metadata. Anything else falls back to legacy.
+  const aMeta =
+    a.skillId === "mat.u3.logaritmicas" &&
+    (a.progressionFamily === "log-expansion" || a.progressionFamily === "log-combining") &&
+    typeof a.progressionOrder === "number" &&
+    Number.isFinite(a.progressionOrder);
+  const bMeta =
+    b.skillId === "mat.u3.logaritmicas" &&
+    (b.progressionFamily === "log-expansion" || b.progressionFamily === "log-combining") &&
+    typeof b.progressionOrder === "number" &&
+    Number.isFinite(b.progressionOrder);
+
+  if (aMeta && bMeta) {
+    const FAMILY_RANK: Readonly<Record<"log-expansion" | "log-combining", number>> = {
+      "log-expansion": 0,
+      "log-combining": 1,
+    };
+    const rankA = FAMILY_RANK[a.progressionFamily!];
+    const rankB = FAMILY_RANK[b.progressionFamily!];
+    if (rankA !== rankB) return rankA - rankB;
+    // Same family: numeric progressionOrder ASC.
+    if (a.progressionOrder! !== b.progressionOrder!) {
+      return a.progressionOrder! - b.progressionOrder!;
     }
-    return a.id.localeCompare(b.id);
-  });
+    // Same family + same order: tie-break by legacy rule (fall through).
+  }
+  // Legacy fallback (always — even when one side carries metadata,
+  // or when skillId isn't "mat.u3.logaritmicas").
+  if (a.difficulty !== b.difficulty) return a.difficulty - b.difficulty;
+  return a.id.localeCompare(b.id);
+}
+
+/**
+ * Internal stable comparator used by the catalog's sortExercises.
+ * Defaults to legacy difficulty+ID; subclasses (U3 logaritmicas sort
+ * in S9) can compose `compareValidatedU3LogExercises` for cross-family
+ * precedence once content exists. S0 keeps the legacy contract
+ * pristine.
+ */
+function compareExercisesByMetadata(a: Exercise, b: Exercise): number {
+  return compareValidatedU3LogExercises(a, b);
 }

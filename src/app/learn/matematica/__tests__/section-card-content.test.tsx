@@ -156,6 +156,8 @@ describe("LearnMatematicaPage — Unit 3 section card visible contract", () => {
     "mat.u3.ecuaciones_cuadraticas",
     "mat.u3.inecuaciones_lineales",
     "mat.u3.inecuaciones_valor_absoluto",
+    "mat.u3.inecuaciones_producto_cociente",
+    "mat.u3.ecuaciones_valor_absoluto",
     "mat.u3.recta",
     "mat.u3.sistemas",
     "mat.u3.exponenciales",
@@ -200,21 +202,23 @@ describe("LearnMatematicaPage — Unit 3 section card visible contract", () => {
     expect(html).toContain("Unidad 3 — Ecuaciones y sistemas");
   });
 
-  test("Unit 3 section has exactly 9 rendered cards", () => {
+  test("Unit 3 section has exactly 11 rendered cards (S2 P8 leaf + S4 P9 leaf)", () => {
     const html = renderPage();
     const u3Section = extractUnit3Section(html);
     expect(u3Section, "Unit 3 section not found").not.toBeNull();
     // Count <a> elements linking to /learn/matematica/mat.u3.*
     // These are the section cards; other links (like the back button)
-    // do NOT match the U3 path prefix.
+    // do NOT match the U3 path prefix. S2 added the P8 leaf card, so the
+    // U3 section went from 9 → 10. S4 of the same change adds the P9
+    // sign-chart leaf card → 11.
     const u3Cards =
       u3Section!.match(
         /<a[^>]*href="\/learn\/matematica\/mat\.u3\.[^"]*"/g,
       ) ?? [];
     expect(
       u3Cards,
-      `expected 9 U3 card links, got ${u3Cards.length}`,
-    ).toHaveLength(9);
+      `expected 11 U3 card links, got ${u3Cards.length}`,
+    ).toHaveLength(11);
   });
 
   test("each U3 card links to /learn/matematica/{skillId}", () => {

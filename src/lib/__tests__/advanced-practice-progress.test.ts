@@ -16,6 +16,7 @@ import {
   addChallengeAttempt,
   loadAdvancedProgress,
   computeAdvancedReadiness,
+  parseAdvancedProgress,
   ADVANCED_PRACTICE_STORAGE_KEY,
   type ChallengeAttempt,
   type AdvancedPracticeProgress,
@@ -495,7 +496,7 @@ describe("advanced-practice-progress localStorage adapter", () => {
         })
       );
 
-      // Make setItem throw (quota exceeded)
+// Make setItem throw (quota exceeded)
       localStorageMock.setItem.mockImplementationOnce(() => {
         throw new Error("QuotaExceededError");
       });
@@ -680,5 +681,282 @@ describe("advanced-practice-progress localStorage adapter", () => {
         expect(result.value.readinessBySkill["mat.u1.valor_absoluto"]).toBeUndefined();
       }
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// GGA BLOCKER FIX — parseAdvancedProgress full-attempt-shape validation
+// ---------------------------------------------------------------------------
+//
+// The previous parseAdvancedProgress only checked that `challengeAttempts`
+// was an array and cast the rest through `unknown`. The new contract
+// validates EVERY attempt entry before casting. These tests pin the new
+// contract.
+
+describe("GGA BLOCKER — parseAdvancedProgress full-attempt-shape validation", () => {
+  function fullProgress(overrides: Record<string, unknown> = {}) {
+    return {
+      challengeAttempts: [],
+      readinessBySkill: {},
+      ...overrides,
+    };
+  }
+
+  it("rejects null / non-object input", () => {
+    expect(parseAdvancedProgress(null)).toBeNull();
+    expect(parseAdvancedProgress(undefined)).toBeNull();
+    expect(parseAdvancedProgress(42)).toBeNull();
+    expect(parseAdvancedProgress("string")).toBeNull();
+    expect(parseAdvancedProgress([])).toBeNull();
+  });
+
+  it("rejects input missing challengeAttempts array", () => {
+    const { challengeAttempts: _drop, ...rest } = fullProgress();
+    void _drop;
+    expect(parseAdvancedProgress(rest)).toBeNull();
+  });
+
+  it("rejects input where challengeAttempts is not an array", () => {
+    expect(parseAdvancedProgress(fullProgress({ challengeAttempts: "no" }))).toBeNull();
+  });
+
+  it("rejects an attempt entry missing exerciseId", () => {
+    const invalid = fullProgress({
+      challengeAttempts: [
+        {
+          // exerciseId missing
+          studentId: "s",
+          skillId: "mat.u1.x",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1,
+        },
+      ],
+    });
+    expect(parseAdvancedProgress(invalid)).toBeNull();
+  });
+
+  it("rejects an attempt entry missing skillId", () => {
+    const invalid = fullProgress({
+      challengeAttempts: [
+        {
+          studentId: "s",
+          exerciseId: "ex.x",
+          // skillId missing
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1,
+        },
+      ],
+    });
+    expect(parseAdvancedProgress(invalid)).toBeNull();
+  });
+
+  it("rejects an attempt entry with non-boolean correct", () => {
+    const invalid = fullProgress({
+      challengeAttempts: [
+        {
+          studentId: "s",
+          exerciseId: "ex.x",
+          skillId: "mat.u1.x",
+          correct: "yes" as unknown as boolean,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1,
+        },
+      ],
+    });
+    expect(parseAdvancedProgress(invalid)).toBeNull();
+  });
+
+  it("rejects an attempt entry with non-numeric timeMs", () => {
+    const invalid = fullProgress({
+      challengeAttempts: [
+        {
+          studentId: "s",
+          exerciseId: "ex.x",
+          skillId: "mat.u1.x",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: "1000" as unknown as number,
+          attemptIndex: 1,
+        },
+      ],
+    });
+    expect(parseAdvancedProgress(invalid)).toBeNull();
+  });
+
+  it("rejects an attempt entry with attemptIndex < 1", () => {
+    const invalid = fullProgress({
+      challengeAttempts: [
+        {
+          studentId: "s",
+          exerciseId: "ex.x",
+          skillId: "mat.u1.x",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 0,
+        },
+      ],
+    });
+    expect(parseAdvancedProgress(invalid)).toBeNull();
+  });
+
+  it("rejects an attempt entry with non-integer attemptIndex", () => {
+    const invalid = fullProgress({
+      challengeAttempts: [
+        {
+          studentId: "s",
+          exerciseId: "ex.x",
+          skillId: "mat.u1.x",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1.5,
+        },
+      ],
+    });
+    expect(parseAdvancedProgress(invalid)).toBeNull();
+  });
+
+  it("rejects an attempt entry with empty-string studentId (when present)", () => {
+    const invalid = fullProgress({
+      challengeAttempts: [
+        {
+          studentId: "",
+          exerciseId: "ex.x",
+          skillId: "mat.u1.x",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1,
+        },
+      ],
+    });
+    expect(parseAdvancedProgress(invalid)).toBeNull();
+  });
+
+  it("accepts a legacy anonymous attempt entry (no studentId)", () => {
+    // Backward compat: legacy attempts saved before the student-identity
+    // bridge do not carry studentId. The parser must still accept them
+    // so the downstream filter can exclude them from active-student reads.
+    const legacy = fullProgress({
+      challengeAttempts: [
+        {
+          exerciseId: "ex.x",
+          skillId: "mat.u1.x",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1,
+        },
+      ],
+    });
+    expect(parseAdvancedProgress(legacy)).not.toBeNull();
+  });
+
+  it("rejects readinessBySkill with out-of-range numeric value", () => {
+    expect(
+      parseAdvancedProgress(fullProgress({ readinessBySkill: { foo: 150 } })),
+    ).toBeNull();
+    expect(
+      parseAdvancedProgress(fullProgress({ readinessBySkill: { foo: -1 } })),
+    ).toBeNull();
+  });
+
+  it("rejects readinessBySkill that is not an object", () => {
+    expect(
+      parseAdvancedProgress(fullProgress({ readinessBySkill: "no" })),
+    ).toBeNull();
+    expect(
+      parseAdvancedProgress(fullProgress({ readinessBySkill: [50] })),
+    ).toBeNull();
+  });
+
+  it("accepts readinessBySkill with finite in-range numbers and null sentinels", () => {
+    expect(
+      parseAdvancedProgress(
+        fullProgress({ readinessBySkill: { foo: 0, bar: 100, baz: null } }),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("accepts a well-formed empty AdvancedPracticeProgress", () => {
+    expect(parseAdvancedProgress(fullProgress())).not.toBeNull();
+  });
+
+  it("accepts a well-formed AdvancedPracticeProgress with one well-formed attempt", () => {
+    const wellFormed = fullProgress({
+      challengeAttempts: [
+        {
+          studentId: "local-x",
+          exerciseId: "ex.x",
+          skillId: "mat.u1.x",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1,
+        },
+      ],
+    });
+    expect(parseAdvancedProgress(wellFormed)).not.toBeNull();
+  });
+
+  // GGA BLOCKER FIX: the parsed envelope (`ParsedAdvancedPracticeProgress`)
+  // now admits legacy anonymous records as a discriminated union. The
+  // runtime truth is: an anonymous entry does NOT have a `studentId` key;
+  // a stamped entry DOES. The `in` operator distinguishes them, and that
+  // is what every consumer uses to narrow before filtering by `activeStudentId`.
+  // These tests pin both halves of that contract.
+
+  it("GGA BLOCKER: parsed legacy anonymous record has NO `studentId` key at runtime", () => {
+    const legacy = fullProgress({
+      challengeAttempts: [
+        {
+          exerciseId: "ex.legacy.1",
+          skillId: "mat.u1.complejos",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1,
+        },
+      ],
+    });
+    const parsed = parseAdvancedProgress(legacy);
+    expect(parsed).not.toBeNull();
+    const [a] = parsed!.challengeAttempts;
+    // The `in` operator narrows the union to the anonymous variant.
+    expect("studentId" in a).toBe(false);
+    // Direct property access on the anonymous variant is undefined at runtime
+    // (the property simply does not exist).
+    expect((a as { studentId?: string }).studentId).toBeUndefined();
+  });
+
+  it("GGA BLOCKER: parsed stamped record carries `studentId` key at runtime", () => {
+    const stamped = fullProgress({
+      challengeAttempts: [
+        {
+          studentId: "local-stamped",
+          exerciseId: "ex.x",
+          skillId: "mat.u1.complejos",
+          correct: true,
+          answeredAt: "2025-01-01T00:00:00.000Z",
+          timeMs: 1000,
+          attemptIndex: 1,
+        },
+      ],
+    });
+    const parsed = parseAdvancedProgress(stamped);
+    expect(parsed).not.toBeNull();
+    const [a] = parsed!.challengeAttempts;
+    expect("studentId" in a).toBe(true);
+    // After `in` narrowing the union collapses to `ChallengeAttempt`,
+    // so `a.studentId` is `string`, not `string | undefined`.
+    if ("studentId" in a) {
+      expect(a.studentId).toBe("local-stamped");
+    }
   });
 });

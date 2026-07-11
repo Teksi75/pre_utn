@@ -81,10 +81,12 @@ function setProfiles(activeStudentId: string): void {
 // ---------------------------------------------------------------------------
 
 describe("createLocalStorageAdapter — profile isolation (REQ-ISOL-4)", () => {
-  it("drops the active slot via the repaired loadProgress path when the practice pointer is stale", () => {
+  it("repairs the stale pointer WITHOUT deleting any profile slot (REQ-ISOL-2 contract)", () => {
     // profiles active = B; practice pointer stale = A (points to a real student).
-    // Per REQ-ISOL-2 (aggressive repair), the active slot MUST be dropped
-    // and persisted when the pointer points to a real student in the map.
+    // Repair contract (final, after GGA blocker fix): NEVER delete any
+    // profile slot. The pointer is the only thing that moves. Both A and
+    // B slots survive the repair intact; only `activeStudentId` is
+    // re-pointed from A → B.
     setProfiles("local-b");
     localStorageMock.setItem(
       PRACTICE_STORAGE_KEY,
@@ -122,21 +124,24 @@ describe("createLocalStorageAdapter — profile isolation (REQ-ISOL-4)", () => {
     const adapter = createLocalStorageAdapter();
     const result = asSync(adapter.loadProgress("local-b"));
 
-    // Must NOT return A's attempts. After aggressive repair, the active
-    // slot is dropped and the result is EMPTY_PROGRESS.
-    expect(result.attempts).toEqual([]);
+    // Must return B's attempts (the active profile's slice), NOT A's
+    // attempts and NOT EMPTY_PROGRESS.
+    expect(result.attempts).toHaveLength(1);
+    expect(result.attempts[0].exerciseId).toBe("ex.b.01");
     expect(result.attempts).not.toContainEqual(
-      expect.objectContaining({ exerciseId: "ex.a.01" })
+      expect.objectContaining({ exerciseId: "ex.a.01" }),
     );
 
-    // A's slot MUST remain intact.
+    // Contract: NEVER delete any slot. Both A and B slots survive
+    // intact. Only the pointer is re-pointed to B.
     const persisted = JSON.parse(
-      localStorageMock.getItem(PRACTICE_STORAGE_KEY) ?? "{}"
+      localStorageMock.getItem(PRACTICE_STORAGE_KEY) ?? "{}",
     );
     expect(persisted.students["local-a"]).toBeDefined();
     expect(persisted.students["local-a"].attempts[0].exerciseId).toBe("ex.a.01");
-    // B's slot dropped.
-    expect(persisted.students["local-b"]).toBeUndefined();
+    expect(persisted.students["local-b"]).toBeDefined();
+    expect(persisted.students["local-b"].attempts[0].exerciseId).toBe("ex.b.01");
+    expect(persisted.activeStudentId).toBe("local-b");
   });
 
   it("returns the active student's slice when the practice pointer is null (REQ-ISOL-4)", () => {

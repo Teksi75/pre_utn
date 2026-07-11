@@ -12,10 +12,17 @@
  * import — domain is free of module-initialization side effects.
  */
 
-import type { TheoryNode, ConceptBlock, CanonicalTrace, IntervalVisualExample, SourceUse } from "../models/theory";
+import type { TheoryNode, ConceptBlock, IntervalVisualExample } from "../models/theory";
 import type { WorkedExample, SolutionStep } from "../models/worked-example";
 import type { FeedbackMapping } from "../feedback/index";
-import type { Exercise, ExerciseId, ExerciseOption, ExerciseType, Difficulty } from "../models/exercise";
+import type {
+  Exercise,
+  ExerciseCanonicalTrace,
+  ExerciseId,
+  ExerciseOption,
+  ExerciseType,
+  Difficulty,
+} from "../models/exercise";
 import type { SkillId } from "../models/skill";
 import { parseSkillUnit } from "../shared/skill-id";
 import type { IntervalModel, IntervalEndpoint } from "../intervals/index";
@@ -72,8 +79,10 @@ function parseObjectField(raw: Record<string, unknown>, field: string, context: 
 /**
  * Validate an optional field is an array of non-null objects, returning the
  * array with each element verified as a plain object. Returns undefined if the
- * field is absent or empty. Used for `intervalRepresentations` and similar
- * deep-typed arrays.
+ * field is absent or empty. THROWS when the field is present but is not an
+ * array — a malformed JSON entry must fail fast at the loader so the loader
+ * doesn't silently treat "present-but-wrong-shape" the same as "absent".
+ * Used for `intervalRepresentations` and similar deep-typed arrays.
  */
 function parseOptionalObjectArray(
   raw: Record<string, unknown>,
@@ -82,7 +91,13 @@ function parseOptionalObjectArray(
 ): readonly Record<string, unknown>[] | undefined {
   const v = raw[field];
   if (v === undefined || v === null) return undefined;
-  if (!Array.isArray(v)) return undefined;
+  if (!Array.isArray(v)) {
+    failParse(
+      field,
+      context,
+      `expected array, got ${typeof v}${Array.isArray(v) ? " (array)" : ""}`
+    );
+  }
   if (v.length === 0) return undefined;
   return v.map((item, i) => parseRecord(item, `${context}.${field}[${i}]`));
 }
@@ -145,11 +160,25 @@ function parseOptionalStringArray(raw: Record<string, unknown>, field: string): 
   return v.filter((e): e is string => typeof e === "string");
 }
 
-/** Runtime-validate a SourceUse literal. */
-function parseSourceUse(raw: Record<string, unknown>, field: string, id: string): SourceUse {
+/**
+ * Runtime-validate an Exercise / Theory / WorkedExample surface `sourceUse`.
+ * Returns ONLY the 3-value exercise literal set; challenge-only literals
+ * (`canonical-source`, `calibrated-from-exam`, `solution-pattern`) fail fast.
+ * Runtime half of the S0a per-surface guard; compile-time half lives in
+ * `ExerciseCanonicalTrace`.
+ */
+function parseExerciseSourceUse(
+  raw: Record<string, unknown>,
+  field: string,
+  id: string
+): "adapted" | "reinforcement" | "reference" {
   const v = raw[field];
   if (v === "adapted" || v === "reinforcement" || v === "reference") return v;
-  failParse(field, id, `expected adapted|reinforcement|reference, got ${typeof v} ${v}`);
+  failParse(
+    field,
+    id,
+    `expected adapted|reinforcement|reference (challenge-only literals are not allowed on the Exercise/Theory/WorkedExample surface), got ${typeof v} ${String(v)}`
+  );
 }
 
 function parseIntervalEndpoint(raw: Record<string, unknown>, context: string): IntervalEndpoint {
@@ -193,7 +222,25 @@ function parseEndpointInclusion(raw: Record<string, unknown>, field: string, con
   failParse(field, context, `expected open|closed, got ${String(value)}`);
 }
 
-function parseIntervalRepresentation(raw: Record<string, unknown>, context: string): IntervalRepresentation {
+/**
+ * Public-runtime validator for an `IntervalRepresentation`. Exported so
+ * the challenge catalog loader (`src/lib/challenges/loader.ts`) can reuse
+ * the SAME validator the base Exercise surface uses to parse option
+ * `intervalRepresentation` values — this guarantees a malformed shape
+ * fails fast at module-init time instead of silently slipping through
+ * the loader via an `as ExerciseOption` cast.
+ *
+ * Contract: a malformed `raw` throws via the `failParse` helper with a
+ * precise diagnostic (the `context` arg flows into every diagnostic).
+ * A well-formed `raw` returns a structurally-typed `IntervalRepresentation`
+ * that the caller can attach directly to the `intervalRepresentation`
+ * field of an `ExerciseOption` literal — no cast needed at the loader
+ * boundary, which closes the gap the GGA reviewer flagged.
+ */
+export function parseIntervalRepresentation(
+  raw: Record<string, unknown>,
+  context: string
+): IntervalRepresentation {
   return {
     id: parseStringField(raw, "id", context),
     notation: parseStringField(raw, "notation", context),
@@ -223,23 +270,236 @@ function parseExerciseOption(raw: unknown, context: string): ExerciseOption {
   return intervalRepresentation ? { value, label, intervalRepresentation } : { value, label };
 }
 
-/** Runtime-parse a CanonicalTrace object. */
-function parseCanonicalTrace(raw: Record<string, unknown>, id: string): CanonicalTrace {
+/**
+ * Runtime-parse a CanonicalTrace entry restricted to the EXERCISE / THEORY /
+ * WORKED-EXAMPLE surface.
+ *
+ * Returns the per-surface `ExerciseCanonicalTrace`. The narrowed literal set
+ * (`adapted | reinforcement | reference`) is enforced inside
+ * `parseExerciseSourceUse`; challenge-only literals fail fast here. The
+ * returned value is structurally assignable to the wider
+ * `CanonicalTrace` interface (used by `TheoryNode.canonicalTrace` and
+ * `WorkedExample.canonicalTrace`) because `ExerciseSourceUse ⊆ SourceUse`.
+ *
+ * Empty-or-whitespace `path` / `pedagogicalIntent` is rejected by
+ * `parseStringField` (the trim check is shared with the loader). `section`
+ * is OPTIONAL on the Exercise surface (see `ExerciseCanonicalTrace`), so an
+ * absent value is fine; a PRESENT-but-empty-or-whitespace value is
+ * indistinguishable from "renderer skips this" and almost certainly
+ * indicates a malformed entry, so we reject it here to fail fast at the
+ * import boundary.
+ */
+function parseCanonicalTrace(
+  raw: Record<string, unknown>,
+  id: string
+): ExerciseCanonicalTrace {
+  const section = raw.section;
+  let sectionValue: string | undefined;
+  if (section === undefined || section === null) {
+    sectionValue = undefined;
+  } else if (typeof section !== "string") {
+    failParse("section", id, `expected string when present, got ${typeof section}`);
+  } else if (section.trim().length === 0) {
+    failParse("section", id, "expected non-empty string when present");
+  } else {
+    sectionValue = section;
+  }
   return {
     path: parseStringField(raw, "path", id),
-    section: typeof raw.section === "string" ? raw.section : undefined,
-    sourceUse: parseSourceUse(raw, "sourceUse", id),
+    section: sectionValue,
+    sourceUse: parseExerciseSourceUse(raw, "sourceUse", id),
     pedagogicalIntent: parseStringField(raw, "pedagogicalIntent", id),
   };
 }
 
-/** Runtime-parse a readonly CanonicalTrace array (defaults to empty). */
-function parseCanonicalTraceArray(raw: Record<string, unknown>, id: string): readonly CanonicalTrace[] {
+/**
+ * Runtime-parse a readonly CanonicalTrace array.
+ *
+ * Default behavior (used by Exercise, where `canonicalTrace` is OPTIONAL):
+ * missing/non-array falls back to `[]` so the field is silently absent
+ * from the returned exercise. A malformed entry DOES throw inside
+ * `parseCanonicalTrace` so a present-but-broken shape fails fast.
+ *
+ * When `required` is true (Theory / WorkedExample surface, where the
+ * typed model requires a non-empty trace): missing/empty/non-array all
+ * throw at the loader. The previous implementation returned `[]` for
+ * missing/non-array, hiding a missing-trace defect until the validator
+ * downstream rejected it — the fix surfaces the failure at the JSON
+ * import boundary so the malformed entry fails fast at module init.
+ */
+function parseCanonicalTraceArray(
+  raw: Record<string, unknown>,
+  id: string,
+  required: boolean = false
+): readonly ExerciseCanonicalTrace[] {
   const v = raw.canonicalTrace;
-  if (!Array.isArray(v)) return [];
+  if (!Array.isArray(v)) {
+    if (required) {
+      failParse(
+        "canonicalTrace",
+        id,
+        `expected non-empty array of trace entries, got ${typeof v}${Array.isArray(v) ? " (array)" : ""}`,
+      );
+    }
+    return [];
+  }
+  if (v.length === 0 && required) {
+    failParse("canonicalTrace", id, "expected non-empty array of trace entries, got empty array");
+  }
   return v.map((t, i) =>
     parseCanonicalTrace(parseRecord(t, `${id}.canonicalTrace[${i}]`), id)
   );
+}
+
+/**
+ * Runtime-parse the optional `canonicalTrace` field for an Exercise.
+ *
+ * Returns `null` when the field is absent or empty (the field is fully
+ * optional on Exercise). Returns the parsed entry array otherwise.
+ *
+ * The argument accepts EITHER an array of trace entries OR a single
+ * trace entry; both shapes appear in the wild (S0 callers sometimes
+ * pass one raw entry, JSON-shipped exercises always pass the full
+ * `canonicalTrace` array). This is the canonical S0 entry point for
+ * typed `canonicalTrace` parsing on the Exercise surface — the same
+ * parser the rest of the catalog uses for Theory/WorkedExample
+ * entries (same canonical-trace shape), exposed at a stable location
+ * so S11's audit can reuse it.
+ *
+ * The return type is `readonly ExerciseCanonicalTrace[]` (per-surface,
+ * 3-value `sourceUse` set). Challenge-only literals
+ * (`canonical-source`, `calibrated-from-exam`, `solution-pattern`)
+ * fail fast inside `parseExerciseSourceUse`.
+ *
+ * @param raw - The raw canonicalTrace value (array, single entry, or absent)
+ * @param id  - The exercise id used in parse-error messages
+ */
+export function parseOptionalCanonicalTrace(
+  raw: unknown,
+  id: string
+): readonly ExerciseCanonicalTrace[] | null {
+  // Absent / null semantics per model: the canonicalTrace field is
+  // OPTIONAL on the Exercise surface, and the typed model treats
+  // `undefined | null` as "no trace attached". A PRESENT-but-malformed
+  // non-object (number / string / boolean) was previously folded into
+  // `return null` too, silently swallowing a broken JSON entry. The
+  // fix: throw when `raw` is present but is not an array and not a
+  // plain object, so a malformed entry fails fast at the JSON import
+  // boundary instead of being coerced into "no trace".
+  if (raw === undefined || raw === null) return null;
+  let entries: unknown[];
+  if (Array.isArray(raw)) {
+    if (raw.length === 0) return null;
+    entries = raw;
+  } else if (typeof raw === "object" && Object.keys(raw as Record<string, unknown>).length > 0) {
+    entries = [raw];
+  } else if (typeof raw !== "object" || raw === null) {
+    // Present-but-non-object primitive (number, string, boolean).
+    // The previous implementation routed these through `return null`,
+    // silently coercing them to the absent semantic — a malformed
+    // JSON entry was indistinguishable from a missing field. Throw
+    // so the loader surfaces the failure.
+    failParse(
+      "canonicalTrace",
+      id,
+      `present but not a trace entry object (got ${raw === null ? "null" : typeof raw})`,
+    );
+  } else {
+    // Empty object: preserved as the existing "absent" semantic so
+    // a JSON entry that explicitly set `canonicalTrace: {}` is not
+    // flagged as malformed.
+    return null;
+  }
+  return entries.map((t, i) =>
+    parseCanonicalTrace(parseRecord(t, `${id}.canonicalTrace[${i}]`), id)
+  );
+}
+
+/**
+ * Scoped U3 alignment audit (INERT scaffold).
+ *
+ * S0 ships the signature and shape so S11 can activate enforcement
+ * (`enabled: true`) once all nine difficulty-5 alignment challenges
+ * are in place. Until then, the function returns `{ violations: [] }`
+ * to keep the rest of the test suite green while we still don't have
+ * the new content.
+ *
+ * Input shape is intentionally tolerant: callers can pass a minimal
+ * `{ expectedSkillIds, challengesBySkill }` and the audit will report
+ * any skillId missing a single difficulty-5 challenge of type
+ * `multiple-choice` once `enabled` is true.
+ */
+export interface U3AlignmentAuditInput {
+  /** SkillIds that must each have exactly one new diff-5 challenge. */
+  readonly expectedSkillIds: readonly string[];
+  /** Map of skillId → array of `{ difficulty, type }` for that skill. */
+  readonly challengesBySkill: Readonly<Record<string, readonly { readonly difficulty: number; readonly type: string }[]>>;
+  /** Inert gate. Default `false` (S0); S11 flips to `true`. */
+  readonly enabled?: boolean;
+}
+
+/** A single audit violation — one per offending skillId. */
+export interface U3AlignmentAuditViolation {
+  readonly skillId: string;
+  readonly reason:
+    | "missing-challenge"
+    | "wrong-difficulty"
+    | "wrong-type"
+    | "duplicate-challenge";
+}
+
+export interface U3AlignmentAuditResult {
+  readonly violations: readonly U3AlignmentAuditViolation[];
+}
+
+/**
+ * Run the scoped U3 alignment audit. INERT in S0 — caller passes
+ * `enabled: true` to actually surface violations (default false).
+ * S11 wires `enabled: true`; S0-S10 must NOT flip the default to keep
+ * the test suite green while content is being added.
+ *
+ * When enabled, emits a DISTINCT reason per failure mode so callers
+ * can tell apart:
+ *   - `missing-challenge`   — the skill has zero challenges
+ *   - `wrong-difficulty`    — challenges exist but none is diff=5
+ *   - `wrong-type`          — diff=5 challenges exist but none is MC
+ *   - `duplicate-challenge` — more than one diff=5 MC was authored
+ *
+ * The previous implementation collapsed all three failure modes into
+ * `missing-challenge`, hiding whether the missing piece was a
+ * difficulty bump, a type fix, or no challenge at all. Distinct
+ * reasons let S11 surface a precise checklist to whoever owns the
+ * content authoring.
+ */
+export function runU3AlignmentAudit(input: U3AlignmentAuditInput): U3AlignmentAuditResult {
+  const enabled = input.enabled === true;
+  if (!enabled) {
+    return { violations: [] };
+  }
+  const violations: U3AlignmentAuditViolation[] = [];
+  for (const skillId of input.expectedSkillIds) {
+    const list = input.challengesBySkill[skillId] ?? [];
+    if (list.length === 0) {
+      violations.push({ skillId, reason: "missing-challenge" });
+      continue;
+    }
+    const diff5 = list.filter((c) => c.difficulty === 5);
+    if (diff5.length === 0) {
+      violations.push({ skillId, reason: "wrong-difficulty" });
+      continue;
+    }
+    const diff5Mc = diff5.filter((c) => c.type === "multiple-choice");
+    if (diff5Mc.length === 0) {
+      violations.push({ skillId, reason: "wrong-type" });
+      continue;
+    }
+    if (diff5Mc.length > 1) {
+      violations.push({ skillId, reason: "duplicate-challenge" });
+      continue;
+    }
+    // Single diff-5 MC present — the audit is satisfied for this skill.
+  }
+  return { violations };
 }
 
 /** Runtime-parse a ConceptBlock from a raw object. */
@@ -363,7 +623,7 @@ export function parseWorkedExample(raw: Record<string, unknown>, index: number):
     steps,
     finalAnswer: parseStringField(raw, "finalAnswer", id),
     pedagogicalNote: parseStringField(raw, "pedagogicalNote", id),
-    canonicalTrace: parseCanonicalTraceArray(raw, id),
+    canonicalTrace: parseCanonicalTraceArray(raw, id, true),
   };
 }
 
@@ -421,7 +681,7 @@ export function parseTheoryNode(raw: Record<string, unknown>, index: number): Th
     notation: parseOptionalStringArray(raw, "notation"),
     commonMistakes: parseOptionalStringArray(raw, "commonMistakes"),
     practicePrompts: parseOptionalStringArray(raw, "practicePrompts"),
-    canonicalTrace: parseCanonicalTraceArray(raw, id),
+    canonicalTrace: parseCanonicalTraceArray(raw, id, true),
     ...(intervalVisuals !== undefined ? { intervalVisuals } : {}),
     ...(visualExamples !== undefined ? { visualExamples } : {}),
   };
@@ -599,6 +859,26 @@ export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
   const options = Array.isArray(raw.options)
     ? raw.options.map((option, index) => parseExerciseOption(option, `${id}.options[${index}]`))
     : undefined;
+  // S0: optional canonicalTrace — parsed via the dedicated S0 helper.
+  // Returns null when absent or empty, so the field is only attached
+  // when the entry actually carries a trace.
+  const canonicalTrace = parseOptionalCanonicalTrace(raw.canonicalTrace, id);
+  // S0: optional U3 progression metadata. Family must be the recognized
+  // literal; order must be a finite NONNEGATIVE number. Otherwise we drop
+  // the metadata so the legacy comparator applies. The nonnegativity
+  // contract comes from the spec: progressionOrder positions entries
+  // inside the family, so negative values would silently invert the
+  // ordering — a malformed entry should drop both fields rather than
+  // ship a confusing negative position.
+  const progressionFamily =
+    raw.progressionFamily === "log-expansion" || raw.progressionFamily === "log-combining"
+      ? raw.progressionFamily
+      : undefined;
+  const rawOrder = raw.progressionOrder;
+  const progressionOrder =
+    typeof rawOrder === "number" && Number.isFinite(rawOrder) && rawOrder >= 0
+      ? rawOrder
+      : undefined;
 
   // Preserve extra fields from raw that aren't part of the Exercise
   // interface (e.g. relatedTheoryIds, relatedExampleIds) so that
@@ -606,6 +886,7 @@ export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
   const KNOWN_FIELDS = new Set([
     "id", "skillId", "type", "difficulty", "prompt", "expectedAnswer",
     "commonErrorTags", "pedagogicalNote", "category", "tags", "options", "unit",
+    "canonicalTrace", "progressionFamily", "progressionOrder",
   ]);
   const extra: Record<string, unknown> = {};
   for (const key of Object.keys(raw)) {
@@ -620,7 +901,14 @@ export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
     commonErrorTags, pedagogicalNote, category, tags,
     unit: parseSkillUnit(skillId),
   };
-  return (options ? { ...base, options } : base) as Exercise;
+  const withTrace = canonicalTrace ? { ...base, canonicalTrace } : base;
+  const withProgressionFamily = progressionFamily
+    ? { ...withTrace, progressionFamily }
+    : withTrace;
+  const withProgression = progressionOrder !== undefined
+    ? { ...withProgressionFamily, progressionOrder }
+    : withProgressionFamily;
+  return (options ? { ...withProgression, options } : withProgression) as Exercise;
 }
 
 /** Per-skill exercise file registry (raw JSON, validated lazily). */

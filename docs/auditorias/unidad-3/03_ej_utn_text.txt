@@ -1,0 +1,1257 @@
+--- PAGE 1 ---
+ 
+ 
+EJERCICIOS UNIDAD III 
+MATEM├üTICA -2025 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PAGE 2 ---
+2 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+  M├ôDULO 3. ECUACIONES ÔÇô SISTEMAS DE ECUACIONES LINEALES.  
+ 
+Ecuaciones Lineales 
+3 
+Ecuaciones Cuadr├íticas 
+5 
+Ecuaciones con Valor Absoluto 
+6 
+Inecuaciones  
+6 
+Ecuaciones de la Recta 
+8 
+Sistemas de Ecuaciones Lineales 
+10 
+Sistemas de Ecuaciones Lineales Homog├®neos 
+13 
+Ecuaciones Exponenciales y Logar├¡tmicas  
+14 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+--- PAGE 3 ---
+3 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+ECUACI├ôN LINEAL 
+ 
+1) Encuentra el conjunto soluci├│n de las siguientes ecuaciones lineales y verifica. 
+ 
+a) 
+2 . ( 3 + 2 x ) = 3 . ( x ÔÇô 4 )   
+ 
+b) 
+6 ÔÇô x = ÔÇô x + 9 
+ 
+c) 
+5 ÔêÆ
+6 ­ØæÑ­ØæÑÔêÆ4
+5
+= ­ØæÑ­ØæÑÔêÆ3 
+ 
+d) 
+3 . ( 2 ÔÇô x ) = ÔÇô3 x +6 
+ 
+ 
+e) 
+0,9 t = 0,4 ÔÇô 0,1 t 
+ 
+f) 
+8 x ÔÇô ( 2 x + 1 ) = 3 x ÔÇô 10 
+ 
+g) 
+­ØæÑ­ØæÑ
+3 ÔêÆ
+­ØæÑ­ØæÑÔêÆ1
+2 =
+­ØæÑ­ØæÑÔêÆ13
+9  
+ 
+h) 
+5 ÔÇô ( 2 x ÔÇô 1 ) = 10 
+ 
+i) 
+ÔêÜ­ØæÑ­ØæÑÔêÆ2 = 4 
+ 
+j) 
+4­ØæÑ­ØæÑÔêÆ6
+12 ÔêÆ
+3­ØæÑ­ØæÑÔêÆ8
+4
+=
+2­ØæÑ­ØæÑÔêÆ9
+6
+ÔêÆ
+­ØæÑ­ØæÑÔêÆ4
+8  
+ 
+k) 
+2ÔêÆ(1ÔêÆ­ØæÑ­ØæÑ)
+3
+ÔêÆ­ØæÑ­ØæÑ= 1 ÔêÆ
+2
+3 ­ØæÑ­ØæÑ 
+ 
+l) 
+2 ßëåÔêÜ2 ÔêÆÓÂº5
+2 ­ØæÑ­ØæÑßëç= ÔêÜ2
+2 + ÓÂº5
+2 ­ØæÑ­ØæÑ 
+ 
+m) 
+2­ØæÑ­ØæÑ+4ÔêÆ5­ØæÑ­ØæÑ+3
+4
+ÔêÆ
+7­ØæÑ­ØæÑÔêÆ9+3­ØæÑ­ØæÑÔêÆ8
+7
++ 2 = 4­ØæÑ­ØæÑ 
+ 
+n) 
+7
+9 (­ØæÑ­ØæÑÔêÆ2) +
+5
+6 (­ØæÑ­ØæÑÔêÆ4) = 20 ÔêÆ
+7
+3 (­ØæÑ­ØæÑÔêÆ7) 
+ 
+2) Expresa en s├¡mbolos: 
+ 
+a) Un n├║mero disminuido en 5 ÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇª..ÔÇªÔÇªÔÇªÔÇª 
+b) Un n├║mero aumentado en 3ÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇª..ÔÇªÔÇªÔÇª  
+c) El doble de un n├║mero ÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇª.. 
+d) La mitad de un n├║mero ................................................................................................................. 
+e) El consecutivo de un n├║mero ........................................................................................................ 
+
+
+--- PAGE 4 ---
+4 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+f) El anterior de un n├║mero .............................................................................................................. 
+g) Un n├║mero par .............................................................................................................................. 
+h) Un n├║mero impar .......................................................................................................................... 
+i) 
+El consecutivo par de un n├║mero par ............................................................................................ 
+j) 
+El triple del anterior de un n├║mero ............................................................................................... 
+k) El cu├ídruplo del consecutivo de un n├║mero ................................................................................. 
+l) 
+El siguiente del doble de un n├║mero ............................................................................................. 
+m) El anterior del triple de un n├║mero ............................................................................................... 
+n) El 20 % de una cantidad x .............................................................................................................. 
+o) Si  una tarifa est├í dada por  x , una tarifa y media ser├í  ................................................................ 
+p) El per├¡metro de un cuadrado de lado x  ........................................................................................ 
+q) El per├¡metro de un rect├íngulo de ancho x  y alto y  ...................................................................... 
+r) El ├írea de un rect├íngulo de ancho x  y alto y  ............................................................................... 
+s) Si el costo de fabricar una m├íquina es de $ 150, indica el costo de fabricar x m├íquinas 
+ÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇª....... 
+t) La cantidad x supera a la cantidad y en 2 ...................................................................................... 
+u) Juan recibir├í ┬¥ de lo que recibi├│ Ana ( indique con x la cantidad recibida por 
+Ana)ÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇªÔÇª.. 
+v) Luis recibir├í la mitad de lo que recibi├│ Juan .................................................................................. 
+ 
+3) Plantea y resuelve (si es posible) los siguientes problemas:  
+ 
+a) Luis ha resuelto 2 x + 3 ejercicios, Ana resolvi├│ 4 x ÔÇô 5 y Juan resolvi├│   3 x + 4. Si en total han 
+resuelto 47 ejercicios, ┬┐cu├íntos resolvi├│ cada uno? 
+b) Carlos obtuvo calificaciones en los ex├ímenes parciales de 80, 83, 71, 61 y 95. Va a presentar 
+un ├║ltimo examen  
+que cuenta como dos ex├ímenes parciales, es decir su nota se 
+repetir├í. ┬┐Cu├ínto necesita obtener en dicho examen para alcanzar un promedio de 80? 
+c) La suma de tres n├║meros consecutivos es igual a 126. ┬┐Cu├íles son dichos n├║meros? 
+d) Al aumentar en 3 cm el lado de un pent├ígono regular, su per├¡metro resulta 35,5cm. ┬┐Cu├íl era 
+el lado del pent├ígono inicial? 
+e) La suma de tres n├║meros consecutivos es igual a 46. ┬┐Cu├íles son dichos n├║meros? 
+f) Un distribuidor de autom├│viles, en una liquidaci├│n, reduce el precio de lista de los modelos 
+del a├▒o anterior en  un 20%. Si cierto modelo  tiene un precio rebajado de $ 8000, ┬┐cu├íl era su 
+precio original? 
+g) Si en el seminario universitario de Matem├ítica se exige el 75% de asistencia, y se cuentan con 
+13 semanas de clase. ┬┐A cu├íntas clases  debe asistir un alumno para no quedar libre? 
+h) Cortando un cuadrado de 20 cm de per├¡metro por una paralela a uno de los lados, se obtienen 
+dos rect├íngulos. El per├¡metro de uno de ellos es de 12 cm. ┬┐Cu├íl es el per├¡metro del otro?. 
+Realiza un esquema de la situaci├│n. 
+i) 
+Un fabricante de casas rodantes reduce el precio de un modelo en un  20 %. Si el precio 
+rebajado es de $125000, ┬┐cu├íl era su precio original? 
+j) 
+Una herencia de $ 900 000 deber├í repartirse entre Katy, Miguel y Daniel de la siguiente 
+manera: Miguel recibir├í ┬¥ de lo que obtenga Katy, mientras que Daniel obtendr├í la mitad de 
+lo que reciba Katy. ┬┐Cu├ínto recibir├í cada uno? 
+k) Una mol├®cula de az├║car tiene el doble de ├ítomos de hidr├│geno que de ox├¡geno y un ├ítomo 
+m├ís de carbono que de ox├¡geno. Si una mol├®cula de az├║car tiene un total de 45 ├ítomos. 
+┬┐Cu├íntos ├ítomos de carbono, cu├íntos de ox├¡geno y cu├íntos de hidr├│geno hay en una 
+mol├®cula de az├║car? 
+l) 
+Al cerrar la caja de un comercio, se totaliza $ 10610. El cajero observa que la cantidad de 
+billetes de $ 50 es la  mitad de la cantidad de billetes de $ 100, la cantidad de billetes de $ 5 es 
+el triple de la cantidad de billetes de $ 50 y que la cantidad de monedas $ 1 es un cuarto de la 
+cantidad de billetes de $50. ┬┐Cu├íntos billetes de cada denominaci├│n hay? 
+
+
+--- PAGE 5 ---
+5 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+m) En una planta de tratamiento de alcohol, se disponen de dos m├íquinas embotelladoras. La 
+primera llena 300 botellas por hora y la segunda 500 botellas a la hora. ┬┐Cu├ínto tiempo 
+tardar├í en preparar un pedido de 10000 botellas? 
+n) Por cada hora extra un trabajador recibe un 50% m├ís que por cada hora b├ísica. Si por 48 
+horas de trabajo (de las cuales 40 fueron horas b├ísicas) recibi├│ un salario de $ 88,4. ┬┐Cu├íl es 
+el salario por hora b├ísica y por hora extra? 
+o) En un juego de b├ísquetbol, un equipo anot├│ 70 puntos y la cantidad de canastas que se hizo 
+fue el triple que la cantidad de tiros libres. ┬┐Cu├íntas canastas anot├│? (Cada canasta vale 2 
+puntos y cada tiro libre un punto) 
+p) Se van a plantar ├írboles, a distancias regulares, a uno de los lados del camino que une dos 
+casas. Si se plantan cada 30 m, se necesitan 18 ├írboles m├ís que si se plantan cada 35 m. ┬┐Cu├íl 
+es la distancia entre las casas? 
+q) En las elecciones para presidente, el candidato A obtuvo 5919 votos m├ís que el candidato B. Si 
+entre ambos hubo un total de 18653 votos. ┬┐Cu├íntos votos obtuvo cada uno? 
+r) Un cartel tiene una superficie impresa de 100 cm por 140 cm. Los m├írgenes del cartel son una 
+franja de ancho uniforme alrededor de los cuatro lados. El per├¡metro del cartel es una vez y 
+media el per├¡metro del ├írea impresa. 
+ 
+4) Inventa una ecuaci├│n que tenga como ├║nica soluci├│n a x=3.  Otra que tenga infinitas 
+soluciones. Y otra que no tenga soluci├│n. 
+ 
+ 
+ECUACI├ôN CUADR├üTICA 
+ 
+5) Encontrar la soluci├│n de cada ecuaci├│n de segundo grado: 
+ 
+a)  18 =  6x +  x(x ÔêÆ 13)  
+ 
+b) (2x ÔêÆ 3) =  1 ÔêÆ 2x + x2  
+ 
+c) x2 +  x +  1 =  0 
+ 
+d) 
+7­ØæÑ­ØæÑ2ÔêÆ3
+4
+= 141 
+ 
+e) 8­ØæÑ­ØæÑ(­ØæÑ­ØæÑ+ 2) ÔêÆ2 = 2(8­ØæÑ­ØæÑÔêÆ1) 
+ 
+f) 3(­ØæÑ­ØæÑ2 ÔêÆ2­ØæÑ­ØæÑ) + 3(3­ØæÑ­ØæÑ2 + 2) = 3­ØæÑ­ØæÑ2 + 6 
+ 
+g) 
+24­ØæÑ­ØæÑÔêÆ6­ØæÑ­ØæÑ2
+15
+= 0 
+ 
+h) 
+3­ØæÑ­ØæÑ2+6­ØæÑ­ØæÑ
+3
+ÔêÆ120 = 0 
+ 
+ 
+6) Determinar el o los valores de k de modo que las dos ra├¡ces de la ecuaci├│n 
+ 
+a) x2 ÔêÆkx + 36 = 0 sean iguales 
+ 
+b) kx2 ÔêÆ2x + 4 = 0 sean reales distintos 
+ 
+c) x2 + ­Øæÿ­Øæÿx ÔêÆk = 0 sean complejos 
+
+
+--- PAGE 6 ---
+6 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+ 
+d) x2 + ­Øæÿ­Øæÿx ÔêÆk = 0 sean iguales 
+ 
+e) x2 + ­Øæÿ­Øæÿx ÔêÆk = 0 sean reales distintos 
+ 
+f) ÔêÆkx2 ÔêÆ2x + 4 = 0 sean complejos 
+ 
+g) 3x2 ÔêÆ2x + k = 0 sean reales  
+ 
+ 
+7) Para vallar una finca rectangular de 750 m┬▓ se han utilizado 110 m de cerca. Calcula las 
+dimensiones de la finca. 
+ 
+ 
+ECUACIONES CON VALOR ABSOLUTO 
+ 
+8) Halla, si existen, el o  los valores que verifican cada una de las siguientes ecuaciones: 
+ 
+a)  |x+2| = 8  
+ 
+b) |x|+8 = 3 
+ 
+c) |v-2| = 3 
+ 
+d) |10 -x| = 5 
+ 
+e) |6 -2t| = 4 
+ 
+f) |3x+18| = 0 
+ 
+g) -|x| = - |-9|- |-1,5| 
+ 
+h) |x-1| = |1-4|  
+ 
+i) - |r| = -6+ |r|  
+ 
+INECUACIONES  
+ 
+9) Resuelve las siguientes inecuaciones: 
+ 
+a) 3+xÔëÑ6 
+ 
+b) 
+­ØæÑ­ØæÑ
+2 +
+­ØæÑ­ØæÑ
+3 > 5 
+ 
+c) 
+ÔêÆ4+­ØæÑ­ØæÑ
+2
+ ÔëñÔêÆ1  
+ 
+d) 2<2x-4Ôëñ6 
+ 
+e) -3 < -9 -4x Ôëñ11 
+
+
+--- PAGE 7 ---
+7 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+ 
+f) 2x -4 > 6x 
+ 
+g) -1 Ôëñ (5-2x)<1 
+ 
+h) | x ÔÇô 2|Ôëñ 5 
+ 
+i) | x+ 5|ÔëÑ2 
+ 
+j) | x ÔÇô 1|>3 
+ 
+k) | x + 4|< 1 
+ 
+l) | x +2|Ôëñ|(-3).4| 
+ 
+m) | (-1).(x+5)|> 9 ÔÇô (-2) 
+ 
+n) 3|x ÔÇô 5|-1<2|x ÔÇô 5| 
+ 
+o) 2| x +3|>2 +| x+3| 
+ 
+p) (­ØæÑ­ØæÑÔêÆ2­ØæÑ­ØæÑ2)ßëÇ­ØæÑ­ØæÑ+
+1
+2ßëüÔëñ0 
+ 
+q) ­ØæÑ­ØæÑ2 Ôëñ­ØæÑ­ØæÑ 
+ 
+r) 
+­ØæÑ­ØæÑ
+­ØæÑ­ØæÑ+1 < 3 
+ 
+s) 
+1
+2 ­ØæÑ­ØæÑÔêÆ
+1
+4 ÔëÑ
+1
+2 
+ 
+t) 
+ÔêÆ1ÔêÆ3­ØæÑ­ØæÑ
+1ÔêÆ4­ØæÑ­ØæÑ< 2 
+ 
+u) 
+­ØæÑ­ØæÑ+2
+2ÔêÆ­ØæÑ­ØæÑÔëÑ1 
+ 
+v) 
+­ØæÑ­ØæÑ2ÔêÆ­ØæÑ­ØæÑ
+(­ØæÑ­ØæÑ+1)(2ÔêÆ­ØæÑ­ØæÑ) ÔëÑ0 
+ 
+w) (2­ØæÑ­ØæÑÔêÆ1)(­ØæÑ­ØæÑÔêÆ3) ÔëÑ0 
+ 
+ 
+10) Resuelve los siguientes problemas: 
+ 
+a) Determina el conjunto de todos los n├║meros reales tales que su distancia a 3 sea mayor o igual 
+que 4. 
+ 
+b) Determina el conjunto de todos los n├║meros reales tales que su distancia a -3 sea menor a 5. 
+
+
+--- PAGE 8 ---
+8 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+ 
+c) La carga m├íxima que puede transportar un cami├│n es de 3500 kg. Si se sabe que en cada viaje 
+transporta como m├¡nimo 2800 kg, ┬┐cu├íntos paquetes de 70 Kg puede transportar en cada viaje? 
+ 
+d) Con 11,2 litros de agua alcanza y sobra para llenar 7 botellas iguales pero no para llenar 8 de 
+esas botellas. Mediante inecuaciones indicar entre qu├® valores se halla la capacidad de las 
+botellas. 
+ 
+e) El peso m├íximo que soporta un ascensor es de 225 kg. Un hombre de 72 kg, transporta consigo 
+ba├║les los cuales pesan cada uno 21,75 kg. ┬┐Cu├íntos ba├║les puede transportar? 
+ 
+f) En un ascensor se cargan 3 cajas de igual peso m├ís un bulto de 25 kg. Se sabe que la carga 
+m├íxima que soporta el ascensor es de 110 kg. Utilizando una inecuaci├│n encontrar el conjunto 
+de valores (en kg) que pueden tener las cajas. 
+ 
+g) En una camioneta se cargan 3 cajas de igual peso y otro bulto de 400 kg. Plantee una inecuaci├│n 
+y halle entre qu├® valores puede oscilar el peso de cada caja sabiendo que la carga m├íxima de la 
+camioneta no puede superar los 1500 kg. 
+ 
+h) En una playa de la costa marplatense alquilan motos acu├íticas y cobran $50 m├ís $2 por 
+kil├│metro recorrido. En una playa en Miramar cobran s├│lo $6 por kil├│metro recorrido. 
+Utilizando una inecuaci├│n, responde a partir de cu├íntos kil├│metros conviene alquilar en Mar del 
+Plata. 
+ 
+ECUACIONES DE LA  RECTA - DISTANCIA ENTRE DOS PUNTOS 
+ 
+ 
+11) Dadas las gr├íficas de 4 rectas en un diagrama cartesiano y sus intersecciones con los ejes, 
+determine las ecuaciones de dichas rectas 
+ 
+12) Para cada caso, encuentra la ecuaci├│n de la recta y grafique: 
+a) tiene pendiente m = - 5
+3  y ordenada al origen b = -2. 
+b) tiene pendiente m = -3 y pasa por el punto de coordenadas (0;-4). 
+Y
+X
+ X 
+
+
+--- PAGE 9 ---
+9 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+c) es paralela a la recta y = -x +2 y contiene al punto p(-2;1). 
+d) es perpendicular a la recta y = -5 + 4
+1 x  y pasa por el origen de coordenadas. 
+e) pasa por los puntos p(-2;3) y q(0;4). 
+f) pasa por los puntos r(3;-1) y s(-2;-5). 
+g) que pasa por el punto p(2;3) y es paralela a la recta que contiene a los puntos r(0;1) y 
+q(2;5).  
+ 
+13)  Un ingeniero debe comprar una maquinaria para elaborar determinados art├¡culos para su 
+empresa, cuyo costo fijo es de $5.253. Si cada art├¡culo tiene un costo de $37 entre mano de 
+obra y material y se deben vender a $58.  
+a) Determina si gana o pierde y cu├ínto, si vende  141 art├¡culos. 
+b) Si se desea una utilidad de $ 4.256, ┬┐cu├íntos art├¡culos debe vender? 
+ 
+14)  Se desea cercar un parque de forma rectangular cuyo per├¡metro es de 224m. ┬┐Cu├íles deben 
+ser las medidas de los lados, si se quiere que el largo supere al ancho en 4m? Se necesita cercar 
+colocando postes cada 2m. ┬┐Cu├ínto gastar├í en cercar si el metro lineal de cerca le cuesta $15 
+entre material y mano de obra y los postes tienen un costo de $3 cada uno? 
+ 
+15)  Una empresa A de alquiler de veh├¡culos para uso particular, cobra $15 fijos m├ís $3 por 
+kil├│metro recorrido, mientras que la empresa B cobra s├│lo el kilometraje recorrido a $7 cada 
+uno.  
+a) Determina la situaci├│n para la cu├íl es indistinto contratar una u otra empresa 
+b) Indica cu├índo le conviene m├ís una empresa que la otra y por qu├®. 
+c) Grafica en un sistema de ejes coordenados las rectas que modelan la situaci├│n. 
+ 
+16)  Desde el primero de enero de este a├▒o a la fecha, el precio de la harina ha aumentado a un 
+ritmo constante de 2 pesos por mes. El d├¡a 1 de agosto, el precio alcanz├│ el precio de $14.20 
+por kilo.  
+a) Escribe la expresi├│n  que coloca al precio en funci├│n del tiempo medido en meses. 
+b) Determina el precio a fin del a├▒o. 
+ 
+17)  Tres operarios trabajan una cierta cantidad total de horas semanales en la supervisi├│n del 
+ensamblado de tel├®fonos satelitales. El tiempo dedicado por el primero de ellos, es igual a 3/5 
+del tiempo empleado por el segundo y ├®ste emplea 5/8 del dedicado por el tercero. 
+a) Determina la expresi├│n que coloca el n├║mero total de horas en funci├│n del tiempo 
+con respecto al segundo operario. 
+b) ┬┐Cu├íntas horas semanales permanece en la supervisi├│n el primer operario, si el tiempo 
+total  de trabajo entre los tres obreros es de 96 horas? 
+ 
+18)  Se coloca, sobre el fuego, un recipiente con agua que est├í a 10┬║C de temperatura. La 
+temperatura aumenta a raz├│n de 15┬║C por minuto y al llegar a 100┬║C, que es su punto de 
+ebullici├│n, se mantiene a esa temperatura hasta su total ebullici├│n.  
+a) Escribe la expresi├│n de la temperatura en funci├│n del tiempo transcurrido. 
+b)  Determina en qu├® momento alcanza el punto de ebullici├│n. 
+c) Indica qu├® temperatura tiene el agua a los  2 y a los 3 minutos (suponga que la 
+cantidad de agua es suficiente para no evaporarse completamente). 
+ 
+19)  Si s(t)= 3 t +2 describe el espacio recorrido por un m├│vil que se desplaza con MRU (t en 
+segundos y s en metros). Determina: 
+a) El espacio recorrido a los 5 segundos, a los 10 segundos y a los 25 segundos. 
+b) La ecuaci├│n que describe el espacio recorrido por otro m├│vil que se desplaza a igual 
+velocidad y que est├í 2 metros adelantado con respecto al primero. 
+
+
+--- PAGE 10 ---
+10 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+c) La ecuaci├│n que describe el espacio recorrido por otro m├│vil que se desplaza al doble 
+de velocidad y en el instante t=0 se encuentra en el mismo punto que el primero. 
+ 
+20) Hallar las ecuaciones de las siguientes rectas y graficar 
+a) Pasa por el punto P(2,2) y es paralela a la recta de ecuaci├│n 3x-2y+1=0 
+b) Pasa por el punto P(-1,3) y es perpendicular a la recta de ecuaci├│n -3/2x+5x-8=2 
+c) La recta l pasa por el punto Q(2,3) y l┬┤pasa por el punto R(-2,-3), sabiendo que l y l┬┤son 
+perpendiculares. 
+ 
+21) Hallar el valor del par├ímetro k de modo tal que la recta de ecuaci├│n 2kx-5y+2k+3=0 
+a) Pase por el punto P(3,-2) 
+b) Tenga pendiente m=-1/2 
+c) Tenga ordenada al origen igual a 3 
+d) Pase por el origen de coordenadas 
+ 
+22) Determinar la ecuaci├│n de las siguientes rectas en R2 
+ 
+ 
+ 
+ 
+23) Demostrar que los puntos A(3,3); B(11,5) y C(8,17) son v├®rtice de un tri├íngulo rect├íngulo. 
+Hallar el per├¡metro del mismo. 
+ 
+ 
+SISTEMAS DE ECUACIONES LINEALES 
+ 
+24) Resuelve gr├íficamente los siguientes sistemas 
+a) 
+´ú│
+´ú▓
+´ú▒
+ÔêÆ
+=
++
+=
+ÔêÆ
+1
+2
+1
+2
+y
+x
+y
+x
+ 
+ 
+b) 
+´ú│
+´ú▓
+´ú▒
+ÔêÆ
+=
++
+ÔêÆ
+=
+ÔêÆ
+4
+2
+2
+2
+y
+x
+y
+x
+ 
+ 
+c) 
+´ú┤´ú│
+´ú┤´ú▓
+´ú▒
++
+=
+=
++
+ÔêÆ
+y
+x
+y
+x
+3
+1
+1
+2
+3
+ 
+ 
+25)  Clasifica y determina anal├¡ticamente el conjunto soluci├│n de los siguientes sistemas:   
+ 
+a) 
+´ú│
+´ú▓
+´ú▒
+=
++
+=
+ÔêÆ
+2
+2
+1
+2
+y
+x
+y
+x
+ 
+ 
+ 
+b) 
+´ú│
+´ú▓
+´ú▒
+=
++
+=
++
+9
+7
+5
+1
+3
+2
+b
+a
+b
+a
+  
+
+
+--- PAGE 11 ---
+11 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+ 
+c) 
+´ú│
+´ú▓
+´ú▒
+ÔêÆ
+=
+ÔêÆ
+=
++
+ÔêÆ
+4
+4
+2
+2
+y
+x
+y
+x
+ 
+ 
+d) 
+´ú│
+´ú▓
+´ú▒
+=
+ÔêÆ
+=
++
+2
+3
+2
+1
+2
+3
+1
+y
+x
+y
+x
+  
+ 
+e) 
+´ú│
+´ú▓
+´ú▒
+=
+ÔêÆ
+=
+ÔêÆ
+2
+9
+3
+x
+y
+y
+x
+ 
+ 
+f) 
+´ú│
+´ú▓
+´ú▒
+=
++
+=
++
+15
+3
+6
+10
+4
+2
+1
+2
+2
+1
+x
+x
+x
+x
+ 
+ 
+g) 
+´ú│
+´ú▓
+´ú▒
+=
+ÔêÆ
+=
++
+ÔêÆ
+0
+0
+2
+2
+y
+x
+x
+y
+ 
+ 
+h) 
+´ú│
+´ú▓
+´ú▒
+ÔêÆ
+=
+ÔêÆ
+=
++
+x
+y
+y
+x
+2
+2
+2
+1
+ 
+ 
+i) 
+´ú│
+´ú▓
+´ú▒
+=
+ÔêÆ
+=
+ÔêÆ
+1
+6
+3
+5
+2
+4
+u
+v
+v
+u
+ 
+ 
+26)  Proporcione un sistema de ecuaciones cuya representaci├│n gr├ífica sea la siguiente: 
+ 
+ 
+ 
+27) Determina el/los valor/es de k para que el sistema 
+´ú│
+´ú▓
+´ú▒
+=
+ÔêÆ
+=
+ÔêÆ
+k
+y
+x
+y
+x
+2
+2
+3  
+a) sea compatible determinado 
+b) sea compatible indeterminado 
+c) sea incompatible. 
+
+
+--- PAGE 12 ---
+12 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+28)  Determina el/los valor/es de p y s para que el sistema 
+´ú│
+´ú▓
+´ú▒
+=
++
+ÔêÆ
+ÔêÆ
+=
+ÔêÆ
+0
+4
+2
+2
+3
+6
+y
+s
+x
+y
+px
+  
+a) no tenga soluci├│n 
+b) tenga ├║nica soluci├│n 
+c) tenga infinitas soluciones. 
+ 
+29)  Determine para que valores de k, el sistema tiene una, infinitas o ninguna soluci├│n: 
+ 
+a) ´ú│
+´ú▓
+´ú▒
+=
++
+=
++
+1
+1
+ky
+x
+y
+kx
+ 
+ 
+b) ´ú│
+´ú▓
+´ú▒
+=
++
+ÔêÆ
+ÔêÆ
+=
+ÔêÆ
++
+ÔêÆ
+k
+y
+x
+k
+k
+y
+k
+x
+)1
+(
+)1
+(
+ 
+ 
+ 
+ 
+ 
+c) ´ú│
+´ú▓
+´ú▒
+=
++
++
+=
++
+8
+5
+2
+5
+8
+y
+x
+k
+ky
+x
+ 
+ 
+ 
+30)  Indica si las siguientes proposiciones son verdaderas o falsas. Justifica cada caso. 
+ 
+Si el sistema de ecuaciones lineales es compatible, las rectas 
+tienen la misma pendiente. 
+ 
+Si en un sistema la soluci├│n es ├║nica entonces las rectas tienen 
+distintas pendientes. 
+ 
+Si el sistema de ecuaciones es homog├®neo, s├│lo tiene soluci├│n 
+trivial. 
+ 
+Un punto (x, y) que satisface una sola ecuaci├│n de un sistema, es 
+soluci├│n del mismo. 
+ 
+Un sistema de ecuaciones lineales es compatible indeterminado 
+cuando tiene dos puntos de intersecci├│n entre las rectas que lo forman. 
+ 
+ 
+31)  Resuelve los siguientes problemas: 
+ 
+
+
+--- PAGE 13 ---
+13 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+a) Estamos en la ciudad de Mendoza y se quiere controlar a dos ├│mnibus A y B de larga distancia 
+que se encuentran a una distancia de 340 km entre s├¡, que emprenden sus respectivos viajes 
+en el mismo instante. El veh├¡culo A, parte de la ciudad de C├│rdoba hacia la ciudad de Mendoza 
+a una velocidad constante de 90 km por hora y el B, de Mendoza a C├│rdoba, a una velocidad 
+constante de 80 km por hora. Determine cu├íntos km se han recorrido y cu├íl es el tiempo 
+transcurrido cuando los dos ├│mnibus se encuentran. 
+ 
+b) Se invirti├│ un total de $30000, una parte al 2% y resto al 4%. Si la ganancia anual es de $1000. 
+┬┐Cu├ínto capital se invirti├│ a cada tipo de inter├®s? 
+ 
+c) Una compa├▒├¡a de elaboraci├│n de software, vende un programa a $220. El costo de 
+elaboraci├│n se calcula por el costo fijo que tiene la empresa m├ís los costos de producci├│n. Si 
+se sabe que los costos fijos son de $98000 y los de producci├│n por cada programa es de $80.  
+i. Determinar cu├íntos programas se debe vender para llegar al punto de 
+beneficio nulo. 
+ii. ┬┐Cu├íntos programas se debe vender para tener una ganancia de $10500? 
+ 
+d) Si el per├¡metro de un rect├íngulo es de 28 cm y la diferencia entre la base y la altura es de 2 
+cm. Calcular el ├írea. 
+ 
+e) Si el largo de un terreno de forma rectangular es igual al triple de su ancho y si se sabe que la 
+cantidad de longitud del contorno del terreno es de 160 metros. ┬┐Cu├íl es la medida del largo y 
+del ancho del terreno? 
+ 
+f) Un cami├│n de entregas lleva a un almac├®n 8 cajas peque├▒as y 5 cajas grandes. Si el cobro total 
+por el traslado de las cajas fue de $ 184 y el flete de una caja grande cuesta $ 3 m├ís que el 
+flete de una caja peque├▒a. ┬┐Cu├íl es el costo del flete de cada tipo de caja? 
+ 
+g) Un agricultor siembra cebada y trigo. Si la cosecha anual alcanza las 12 toneladas y la cosecha 
+de trigo es el doble de la de cebada, m├ís tres toneladas. ┬┐Cu├íntas toneladas de trigo y cu├íntas 
+de cebada se cosecharon? 
+ 
+h) Cuatro hamburguesas y dos gaseosas cuestan $ 79. Si dos gaseosas cuestan 15 pesos m├ís que 
+una hamburguesa. ┬┐Cu├ínto cuesta la hamburguesa y cu├ínto la gaseosa? 
+ 
+i) 
+En un partido de f├║tbol, las entradas para los socios cuestan $ 50, mientras que los que no son 
+socios deben pagar una entrada de $ 80. Si el n├║mero de entradas vendidas para no socios fue 
+3/4 del n├║mero total de localidades vendidas y la recaudaci├│n fue de $ 2030000 ┬┐Cu├íntas 
+entradas de cada clase se vendieron? 
+ 
+j) 
+Un ciclista que circula por una senda rectil├¡nea a una velocidad constante de 4 m/s, pasa, en 
+un cierto momento, por un puesto de control. Otro ciclista que circula por la misma senda, 
+pero en sentido contrario, a una velocidad constante de 3 m/s, pasa por el mismo puesto 20 
+segundos despu├®s. ┬┐En qu├® instante se encuentran los ciclistas? 
+ 
+SISTEMAS HOMOG├ëNEOS 
+ 
+32) Resuelva los siguientes sistemas de ecuaciones lineales homog├®neos y clasif├¡quelos: 
+ 
+a) ´ú│
+´ú▓
+´ú▒
+=
+ÔêÆ
+=
+ÔêÆ
+0
+0
+2
+3
+y
+x
+y
+x
+  
+
+
+--- PAGE 14 ---
+14 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+ 
+b)  ´ú│
+´ú▓
+´ú▒
+=
++
+ÔêÆ
+=
+ÔêÆ
+0
+6
+2
+0
+3
+y
+x
+y
+x
+ 
+ 
+Nota: en el segundo caso encontrar├í que el sistema es SCI, y el conjunto soluci├│n se escribe 
+simb├│licamente: S = {(x, y) Ôêê RxR / y = 
+3
+1  x} 
+33) Determine para que valores de k, el sistema tiene una, infinitas o ninguna soluci├│n: 
+ 
+´ú│
+´ú▓
+´ú▒
+=
+ÔêÆ
+=
+ÔêÆ
+0
+2
+2
+0
+v
+u
+kv
+u
+ 
+34) Clasifica, grafica y halla el conjunto soluci├│n de los siguientes SEL: 
+ 
+c) ´ú│
+´ú▓
+´ú▒
+=
+ÔêÆ
+=
+ÔêÆ
+0
+3.0
+0
+5
+2
+y
+x
+y
+x
+  
+ 
+ 
+d) ´ú│
+´ú▓
+´ú▒
+=
+ÔêÆ
+=
+0
+2
+9
+14
+3
+4
+3
+7
+x
+y
+y
+x
+ 
+ 
+ 
+ECUACIONES EXPONENCIALES  Y LOGAR├ìTMICAS 
+ 
+35) Calcula utilizando la definici├│n 
+ 
+a)  logc c = 
+b)  log0,9 1 = 
+c)  log10 1 00 = 
+d)  log2 1 28 = 
+e)  log10 1 0.000 = 
+f)  log10 0 . 001 = 
+ 
+ 
+36) Halla los siguientes logaritmos aplicando propiedades 
+ 
+a)  log 2 5 + log 4 0 = 
+b) log2 4 0 ÔêÆlog2 1 0 = 
+c) log3 1 8 ÔêÆlog3 6 = 
+d)  ln e10 ÔêÆln e7 = 
+ 
+37) Desarrolla aplicando propiedades de logaritmos 
+a) log
+x3Ôïày
+z  
+b) log
+(x+y)3
+xÔïàz2  
+c) ln
+ÓÁ½x2ÔêÆ1ÓÁ»
+ÔêÜx+1  
+d) log
+ÓÂÑxÔïà2y
+3
+(x3+y)2 
+38) Agrupa en un s├│lo logaritmo (aplica propiedad inversa de logaritmos) 
+ 
+a) a)
+1
+3 log x +
+3
+2 log( x + 2) 
+
+
+--- PAGE 15 ---
+15 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+b) 2 log a ÔêÆ3 log b +
+2
+3 log( a ÔêÆb) 
+c) ln 6 +
+1
+3 ln 7 ÔêÆ
+1
+3 (ln 5 + ln 6) 
+ 
+39) Resuelve las siguientes ecuaciones exponenciales 
+ 
+a) 52xÔêÆ1 = ÓÂº25x2ÔêÆ1
+4
+3
+ 
+ 
+b) 4x+1 + 2x+3 ÔêÆ320 = 0 
+ 
+c) 32(x+1) ÔêÆ28. 3x + 3 = 0 
+ 
+d) 103x = 1 
+ 
+e) 2x+1 + 22xÔêÆ1 + 2(2xÔêÆ1) + 22xÔêÆ3 + 22(xÔêÆ2) ÔêÆ1984 = 0 
+ 
+f) 2xÔêÆ1 + 2xÔêÆ2 + 2xÔêÆ3 + 2xÔêÆ4 = 960 
+ 
+g) 3x + 31ÔêÆx = 9 
+ 
+h) 4eÔêÆ3x ÔêÆ5eÔêÆx + ex = 0 
+ 
+i)  9ÔêÆ3x = (1/27)x+3 
+ 
+j)  32x+7 = 3 
+ 
+k)  3x+1 = 4xÔêÆ1 
+ 
+l)  5x+2 ÔêÆ105 Ôïà5xÔêÆ1 = 100 
+ 
+m)  9x2+2xÔêÆ3 = 1 
+ 
+n)  9x ÔêÆ2 Ôïà3x ÔêÆ3 = 0 
+ 
+o)  ÔêÜ5 Ôïà(1/5)2xÔêÆ4 = 253x 
+ 
+p)  ex + eÔêÆx = 2 
+ 
+q)  42xÔêÆ1 ├À 82ÔêÆx = 16 Ôïà22ÔêÆ2x 
+ 
+40) Resuelve las siguientes ecuaciones logar├¡tmicas 
+ 
+ 
+a) (x2 ÔêÆ5x + 9) log 2 + log 125 = 3 
+ 
+b) log(22ÔêÆx)2ÔêÆx + log 1250 = 4 
+ 
+c) 
+log 2+logÓÁ½11ÔêÆx2ÓÁ»
+log(5ÔêÆx)
+= 2 
+ 
+d) (x2 ÔêÆ4x + 7) log 5 + log 16 = 4 
+ 
+
+
+--- PAGE 16 ---
+16 
+UNIVERSIDAD TECNOL├ôGICA NACIONAL ÔÇô FACULTAD REGIONAL MENDOZA ÔÇô SEMINARIO DE INGRESO 2025 -
+ 
+e) logÓÁ½x + ÔêÜx2 ÔêÆ1ÓÁ»+ logÓÁ½x ÔêÆÔêÜx2 ÔêÆ1ÓÁ»= 0; x ÔëÑ1 
+ 
+f) 3 log x ÔêÆlog 32 = log ßëÇ
+x
+2ßëü 
+ 
+g) log2 x . logx 2x . log2xy = logx x2 
+ 
+h) 5 log
+x
+2 + 2 log
+x
+3 = 3 log x ÔêÆlog ßëÇ
+32
+9 ßëü 
+ 
+i) 2 log x = 3 + log ßëÇ
+x
+10ßëü 
+ 
+j) logÓÁ½ÔêÜ3x + 1ÓÁ»ÔêÆlogÓÁ½ÔêÜ2x ÔêÆ3ÓÁ»= 1 ÔêÆlog 5 
+ 
+k)  log2( x + 4) + log2( x ÔêÆ4) = 2 
+ 
+l)  2 Ôïàlog2 x2 ÔêÆ2 Ôïàlog2( ÔêÆx) = 4 
+  
+m) log2( x2 ÔêÆ7x + 8) + log2( 1 ÔêÆx) = 1 
+  
+n) logÔêÜ5( x + 1) ÔêÆlog5( x + 1) = log5 7 
+ 
+o)  ln x2 ÔêÆln ÔêÜx =
+14
+3  
+ 
+
+

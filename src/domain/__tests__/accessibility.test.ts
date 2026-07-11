@@ -201,10 +201,23 @@ describe("getAccessibleSkills — accessibility rules", () => {
         "mat.u3.inecuaciones_lineales": 0.85,
       },
     };
-    // All pilot skills are contentReady at this point, including complejos
-    // (has theory, examples, exercises, and feedback as of PR 3+).
+    // All practice-ready pilot skills are contentReady at this point,
+    // including complejos (has theory, examples, exercises, and feedback as
+    // of PR 3+). mat.u3.ecuaciones_valor_absoluto is REGISTERED in pilot
+    // by S2 (align-u3-practice-official-exercises) but is NOT yet
+    // contentReady — its exercises + challenge land in S3. S4 of the
+    // same change registered mat.u3.inecuaciones_producto_cociente as the
+    // P9 sign-chart leaf — theory-only at S4; S5 lands 6 base exercises
+    // and the diff-5 challenge, flipping the skill to practice-ready.
+    // The filter below covers only the S2 leaf; the S4 leaf is no longer
+    // overridden because S5 made it practice-ready. Dedicated tests in
+    // u3-sign-chart.test.ts cover the S5 readiness flip explicitly.
     const result = getAccessibleSkills(progress);
+    const PRACTICE_READY_OVERRIDE: ReadonlySet<string> = new Set([
+      "mat.u3.ecuaciones_valor_absoluto",
+    ]);
     for (const skill of result) {
+      if (PRACTICE_READY_OVERRIDE.has(skill.skillId)) continue;
       expect(skill.accessible).toBe(true);
     }
   });

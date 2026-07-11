@@ -162,6 +162,47 @@ describe("TheoryNode", () => {
       }
     });
 
+    test("rejects trace with whitespace-only pedagogicalIntent", () => {
+      const node = makeNode({
+        canonicalTrace: [makeTrace({ pedagogicalIntent: "   " })],
+      });
+      const result = validateTheoryNode(node);
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error.field).toBe("canonicalTrace[0].pedagogicalIntent");
+      }
+    });
+
+    test("rejects trace with whitespace-only path", () => {
+      const node = makeNode({
+        canonicalTrace: [makeTrace({ path: "   " })],
+      });
+      const result = validateTheoryNode(node);
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error.field).toBe("canonicalTrace[0].path");
+      }
+    });
+
+    test("rejects trace with whitespace-only section (when section is present)", () => {
+      const node = makeNode({
+        canonicalTrace: [makeTrace({ section: "   " })],
+      });
+      const result = validateTheoryNode(node);
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error.field).toBe("canonicalTrace[0].section");
+      }
+    });
+
+    test("accepts trace where section is absent (section is optional on theory surface)", () => {
+      const node = makeNode({
+        canonicalTrace: [makeTrace({ section: undefined })],
+      });
+      const result = validateTheoryNode(node);
+      expect(result.ok).toBe(true);
+    });
+
     test("rejects trace with invalid sourceUse", () => {
       const node = makeNode({
         canonicalTrace: [makeTrace({ sourceUse: "invalid" as CanonicalTrace["sourceUse"] })],

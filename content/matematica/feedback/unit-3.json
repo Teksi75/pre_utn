@@ -48,6 +48,12 @@
     "recoveryTarget": "example-recta-1"
   },
   {
+    "errorTag": "u3_recta_pendiente_perpendicular",
+    "type": "conceptual",
+    "message": "REGLA CRÍTICA para perpendiculares: si una recta tiene pendiente $m$, una recta perpendicular a ella tiene pendiente $m_{\\perp} = -1/m$ (el NEGATIVO DEL RECÍPROCO). El error más común es quedarse con $m_{\\perp} = 1/m$ (sólo el recíproco, sin el signo negativo), que produce una recta que NO es perpendicular ni paralela a la original — es una recta con pendiente invertida en magnitud pero con el mismo signo. Truco: verificá siempre que tu nueva pendiente multiplicada por la original dé exactamente $-1$ (no $+1$, no otro número). Para una perpendicular a $y = (1/4)x - 5$ por el origen: $m_{\\perp} = -1/(1/4) = -4$, ecuación $y = -4x$. Si te da $y = 4x$, perdiste el signo negativo en el recíproco — atrapado por `u3_recta_pendiente_perpendicular`. Para una perpendicular a $2x - 3y + 5 = 0$ (m = 2/3): $m_{\\perp} = -3/2$. Si te da $(3/2)x$, perdiste el negativo del recíproco.",
+    "recoveryTarget": "example-recta-2"
+  },
+  {
     "errorTag": "u3_sustitucion_o_eliminacion",
     "type": "procedural",
     "message": "En sistemas de ecuaciones, hay dos puntos donde ocurren los errores más comunes: (1) al sustituir, distribuir mal el signo negativo — recordá que $-(5 - x) = -5 + x$, NO $-5 - x$. (2) al eliminar, sumar en vez de restar o viceversa — si los coeficientes son OPUESTOS ($+y$ y $-y$), SUMÁ; si son IGUALES, RESTÁ. Verificá siempre la solución en AMBAS ecuaciones originales antes de dar la respuesta final. Si solo verificás en una, perdés la otra mitad del control.",
@@ -60,9 +66,57 @@
     "recoveryTarget": "example-exponenciales-1"
   },
   {
+    "errorTag": "u3_racionalizacion_irracional",
+    "type": "conceptual",
+    "message": "Respuesta no racionalizada o racionalizada con signo perdido. Para 2·(√2 − (√5/2)·x) = (√2/2) + (√5/2)·x, el camino algebraico es: (1) distribuir: 2√2 − √5·x = √2/2 + (√5/2)·x; (2) agrupar términos con x de un solo lado: (3√2/2) = (3√5/2)·x; (3) aislar: x = √2/√5; (4) RACIONALIZAR multiplicando numerador y denominador por √5/√5 (no sólo arriba, no sólo abajo — el factor multiplica ambos para preservar la equivalencia): x = √2/√5 · (√5/√5) = √10/5. Error frecuente: detenerse en x = √2/√5 (raíz todavía en el denominador) o perder el signo del numerador al racionalizar y reportar x = -√10/5 o x = -2/5. Si obtuviste x = -2/5, revisá el signo al multiplicar por √5/√5: la fracción √2/√5 es positiva (ambos radicandos son positivos), así que el resultado debe ser positivo. Reemplazá x = √10/5 en la ecuación original y verificá que LHS = √2 y RHS = √2 antes de aceptar la respuesta.",
+    "recoveryTarget": "example-ecuaciones-lineales-1"
+  },
+  {
+    "errorTag": "u3_discriminante_signo_incorrecto",
+    "type": "conceptual",
+    "message": "El discriminante Δ = b² - 4ac es el que decide la naturaleza de las raíces: Δ > 0 → dos raíces reales distintas; Δ = 0 → raíz doble real; Δ < 0 → raíces complejas (no reales). Para una cuadrática con parámetro k como kx² - 2x + 4 = 0, el discriminante es Δ = (-2)² - 4·k·4 = 4 - 16k. Si la condición pedida es 'raíces reales distintos', necesitás Δ > 0, es decir 4 - 16k > 0 ⇒ k < 1/4 (y además k ≠ 0 para que la ecuación siga siendo cuadrática, lo que da k ∈ (-∞, 0) ∪ (0, 1/4)). Para -kx² - 2x + 4 = 0 con condición 'raíces complejas', el discriminante es Δ = 4 + 16k y necesitás Δ < 0, es decir k < -1/4. Error frecuente: invertir el signo de la desigualdad (4 + 16k > 0 ⇒ k > -1/4) o expandir mal -4·(-k)·4 como -16k en vez de +16k. Truco: verificá siempre la frontera con un valor concreto (k = -1 da Δ = -12 < 0 → complejo; k = 0 da Δ = 4 > 0 → real).",
+    "recoveryTarget": "example-ecuaciones-cuadraticas-1"
+  },
+  {
     "errorTag": "u3_propiedad_logaritmo",
     "type": "conceptual",
     "message": "Las propiedades de logaritmos son sistemáticamente mal aplicadas. Tres errores clásicos que tenés que evitar: (1) $\\log(a + b) \\neq \\log a + \\log b$ — el logaritmo NO distribuye sobre la suma. (2) $\\log(a \\cdot b) = \\log a + \\log b$ (SÍ), pero $\\log(a \\cdot b) \\neq \\log a \\cdot \\log b$. (3) $\\log(a^n) = n \\cdot \\log a$ (el exponente BAJA como factor), pero $\\log(a^n) \\neq (\\log a)^n$. Si dudás entre producto, suma, factor o potencia, escribí la propiedad literalmente y compará con lo que estás por hacer.",
     "recoveryTarget": "example-logaritmicas-1"
+  },
+  {
+    "errorTag": "u3_abs_eq_signo_negativo_incorrecto",
+    "type": "conceptual",
+    "message": "En una ecuación del tipo -|x| = -k, los signos negativos están en AMBOS lados por fuera de las barras. El primer paso es multiplicar por -1 en ambos miembros para cancelar los signos externos y obtener |x| = k. Si k > 0, la ecuación |x| = k tiene DOS soluciones: x = k y x = -k. Error frecuente: concluir 'no hay solución porque el lado derecho es negativo' — eso confunde el signo fuera de las barras con un k < 0 verdadero. Truco: reemplazá los valores candidatos en la ecuación original. Para -|x| = -10.5, x = 10.5 da -|10.5| = -10.5 V; x = -10.5 da -|-10.5| = -10.5 V. Ambos verifican, así que la solución correcta es el conjunto {-10.5, 10.5}, no 'no hay solución' ni un único valor.",
+    "recoveryTarget": "example-ecuaciones-valor-absoluto-1"
+  },
+  {
+    "errorTag": "u3_abs_eq_suma_constante_fuera",
+    "type": "procedural",
+    "message": "En una ecuación del tipo |x| + c = d, la constante c está AFUERA de las barras, no adentro. El primer paso es AISLAR el valor absoluto restando c en ambos lados: |x| + c = d ⇒ |x| = d - c. Recién entonces se abre el valor absoluto en dos ramas (x = d - c o x = -(d - c)). Error frecuente: tratar la suma como si estuviera dentro de las barras y escribir |x + c| = d, lo que da una ecuación distinta. Verificación rápida: si reemplazás x = 0 en |x| + 4 = 10, obtenés 4 = 10 ?, NO se cumple — la solución no es un único valor sino un conjunto. Tras aislar |x| = 6, abrí las dos ramas y verificá cada una en la ecuación original.",
+    "recoveryTarget": "example-ecuaciones-valor-absoluto-1"
+  },
+  {
+    "errorTag": "u3_abs_eq_rama_unica",
+    "type": "procedural",
+    "message": "En una ecuación del tipo |ax + b| = c, el valor absoluto genera exactamente DOS ramas: ax + b = c o ax + b = -c. Resolvés cada una por separado y la solución total es la UNIÓN de ambas (pueden coincidir si c = 0). Error frecuente: resolver solo UNA de las dos ramas y reportar un único valor. Truco: si tu respuesta es un único número, casi siempre te falta la otra rama. Verificación: para |2x - 4| = 6, la rama 1 da 2x - 4 = 6 ⇒ x = 5; la rama 2 da 2x - 4 = -6 ⇒ x = -1. La solución completa es x = 5 o x = -1. Reemplazá ambos en la ecuación original y confirmá: |2·5 - 4| = |6| = 6 V y |2·(-1) - 4| = |-6| = 6 V.",
+    "recoveryTarget": "example-ecuaciones-valor-absoluto-1"
+  },
+  {
+    "errorTag": "u3_signchart_factor_signo_incorrecto",
+    "type": "conceptual",
+    "message": "Error al evaluar el signo de un factor en cada intervalo del cuadro de signos. Cada factor lineal (ax + b) tiene un único cero en x = -b/a; a la derecha del cero es POSITIVO si a > 0 (NEGATIVO si a < 0), y a la izquierda es el opuesto. Error frecuente: leer 2x − 1 como si fuera 'positivo para x > 0' (lo correcto es positivo para x > 1/2). Truco: substituí un valor concreto del intervalo — para x ∈ (-1/2, 0) con factor (2x − 1): 2·(-0.25) − 1 = -1.5, NEGATIVO. Y si en algún paso multiplicás por -1 (por ejemplo al pasar de (1 - 2x) a (2x - 1) o viceversa), RECORDÁ invertir la desigualdad al mismo tiempo. Verificación: con (2x − 1)(x − 3) ≥ 0, en x = 4 el producto es (7)(1) = 7 ≥ 0 ✓ y la solución debe incluir x = 4.",
+    "recoveryTarget": "example-inecuaciones-producto-cociente-3"
+  },
+  {
+    "errorTag": "u3_signchart_critical_root_omitido",
+    "type": "conceptual",
+    "message": "REGLA CRÍTICA: NO simplificar ni cancelar NINGÚN factor antes de armar el cuadro de signos. Cada factor lineal (incluso si aparece repetido o factorizado desde otro factor) lleva una raíz crítica al cuadro. Si se cancelan o se simplifican los factores comunes, se PIERDEN raíces críticas y la solución queda incompleta o directamente incorrecta. Para (x − 2x²)(x + 1/2) ≤ 0, el factor x se preserva explícitamente — su raíz crítica en x = 0 es la frontera entre los dos intervalos de la solución [-1/2, 0] ∪ [1/2, +∞). Si se hubiera cancelado, la solución sería [-1/2, 1/2] (INCORRECTA porque no incluye [1/2, +∞)). Truco: cada factor (incluido el 'x' suelto) es una fila de la tabla — contá cuántos ceros debería tener tu tabla SIEMPRE debe coincidir con la cantidad de filas. Para x² ≤ x, factorizar x(x − 1) ≤ 0 produce DOS raíces críticas (0 y 1) y solución [0, 1] cerrada en ambos extremos; si se hubiera cancelado el x, se perdería x = 0.",
+    "recoveryTarget": "example-inecuaciones-producto-cociente-1"
+  },
+  {
+    "errorTag": "u3_signchart_dominio_denominador",
+    "type": "procedural",
+    "message": "Las raíces críticas que anulan el DENOMINADOR (no el numerador) son SIEMPRE puntos de EXCLUSIÓN del dominio: la expresión NO está definida allí, así que estos valores NO se incluyen en la solución NUNCA, ni siquiera si la desigualdad usa ≤ o ≥. Para (x + 2)/(2 - x) ≥ 1, x = 2 anula el denominador y queda excluido aunque la desigualdad sea ≥; la solución excluye 2 explícitamente. Para (x² - x)/((x + 1)(2 - x)) ≥ 0 los puntos x = -1 y x = 2 quedan excluidos del dominio y deben aparecer como huecos en la recta final. Truco: ANTES de armar el cuadro de signos, marzá en una línea separada 'x ≠ ' seguida de TODAS las raíces del denominador — esa línea te acompañá durante todo el ejercicio y te impide incluirlas en la respuesta final. Verificación: sustituí el valor excluido en la expresión original; si da 'división por cero', ese punto no es parte de la solución.",
+    "recoveryTarget": "example-inecuaciones-producto-cociente-3"
   }
-]
+] 

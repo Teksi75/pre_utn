@@ -19,20 +19,17 @@
  *     (02_ej_utn_12a + 12c + 13a + 14a rational-expression .5-.8
  *      + 02_ej_utn_15a + 15b + 15c + 15g fractional-equation .9-.12) = 221
  *
- * Baseline values (current — post-PR7 rational-expression + fractional-equation):
- *   loadCatalog().length = 221        (189 + 4 PR3 + 6 PR4 + 10 PR5 + 4 PR6 + 8 PR7)
+ * Baseline values (current — post-S5 P9 sign-chart content):
+ *   loadCatalog().length = 239        (233 + 6 S5 P9 base exercises)
  *   queryByUnit(1).length = 101
- *   queryByUnit(3).length = 42        (37 + 5 new translation exercises)
+ *   queryByUnit(3).length = 60        (54 + 6 S5 P9 .2-.7 exercises)
  *   queryBySkill("mat.u1.conjuntos_numericos").length = 44
- *
- * PR 8 will keep BASELINE_TOTAL unchanged (no new exercises planned in
- * PR 8 — it is the verify/consolidation/feedback-mapping slice).
  */
 
-/** Pre-PR1 baseline counts, incremented by PR 3 (+4), PR 4 (+6), PR 5 (+10), PR 6 (+4), PR 7 (+8). */
-const BASELINE_TOTAL = 221;
+/** Pre-PR1 baseline counts, incremented by PR 3 (+4), PR 4 (+6), PR 5 (+10), PR 6 (+4), PR 7 (+8), S1a (+1), S1b (+3), S3 (+8), S5 (+6), S6 (+4). */
+const BASELINE_TOTAL = 243;
 const BASELINE_UNIT_1 = 101;
-const BASELINE_UNIT_3 = 42;
+const BASELINE_UNIT_3 = 64;
 const BASELINE_CONJUNTOS_NUMERICOS = 44;
 
 import { describe, test, expect } from "vitest";
@@ -93,5 +90,52 @@ describe("catalog split equivalence — baseline snapshot", () => {
     const second = queryBySkill("mat.u1.conjuntos_numericos");
     expect(first.length).toBe(second.length);
     expect(first.map((e) => e.id)).toEqual(second.map((e) => e.id));
+  });
+
+  // ---------------------------------------------------------------------------
+  // GGA BLOCKER FIX — domain purity: no module-level mutable cache
+  // ---------------------------------------------------------------------------
+  //
+  // The previous `getComposedExercises()` cached its result in a module-level
+  // mutable (`let _composedExercises`). AGENTS.md requires `src/domain/` to be
+  // free of side effects, so the cache was removed. These tests pin the
+  // post-fix contract: catalog queries are deterministic and equivalent
+  // across repeated calls under the same module state — behavior preserved,
+  // cache gone.
+
+  describe("domain purity — no module-level mutable cache", () => {
+    test("loadCatalog returns equivalent content across many repeated calls", () => {
+      const ids: readonly string[] = loadCatalog().map((e) => e.id);
+      for (let i = 0; i < 5; i++) {
+        const again = loadCatalog();
+        expect(again.length).toBe(ids.length);
+        expect(again.map((e) => e.id)).toEqual(ids);
+      }
+    });
+
+    test("loadCatalog returns independent arrays — no shared module-level cache", () => {
+      // GGA BLOCKER FIX contract: there is no module-level mutable cache in
+      // src/domain/catalog/index.ts. loadCatalog builds a fresh array via
+      // `[...validated]`. Mutating one result must not affect any other call.
+      const first = loadCatalog();
+      const firstLength = first.length;
+      const firstFirstId = first[0]?.id;
+
+      // Mutate the first result in place. If a module-level cache shared
+      // a reference to this array, subsequent reads would observe the mutation.
+      first.length = 0;
+      first.push({} as (typeof first)[number]);
+
+      const second = loadCatalog();
+      expect(second.length).toBe(firstLength);
+      expect(second[0]?.id).toBe(firstFirstId);
+    });
+
+    test("queryByUnit returns equivalent results across many repeated calls", () => {
+      const unit1 = queryByUnit(1).map((e) => e.id);
+      for (let i = 0; i < 5; i++) {
+        expect(queryByUnit(1).map((e) => e.id)).toEqual(unit1);
+      }
+    });
   });
 });

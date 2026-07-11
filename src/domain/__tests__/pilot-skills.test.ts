@@ -6,8 +6,13 @@ import {
 import { SKILL_DEPENDENCIES } from "../models/skill-catalog";
 
 describe("PILOT_SKILLS", () => {
-  test("contains 24 pilot skills (8 unit-1 + 7 unit-2 + 9 unit-3)", () => {
-    expect(PILOT_SKILLS).toHaveLength(24);
+  test("contains 26 pilot skills (8 unit-1 + 7 unit-2 + 11 unit-3 — S4 P9 leaf added)", () => {
+    // S2 of align-u3-practice-official-exercises adds
+    // mat.u3.ecuaciones_valor_absoluto to the pilot (was 24, now 25; U3 9 → 10).
+    // S4 of the same change adds mat.u3.inecuaciones_producto_cociente
+    // (was 25, now 26; U3 10 → 11). S5 will not add a new skill — only
+    // P9 base exercises + challenge.
+    expect(PILOT_SKILLS).toHaveLength(26);
   });
 
   test("contains the 8 unit-1 pilot skills", () => {
@@ -88,6 +93,8 @@ describe("PILOT_SKILLS — Unit 3 (PR 3 / implement-unit-3-mathematics)", () => 
     "mat.u3.ecuaciones_cuadraticas",
     "mat.u3.inecuaciones_lineales",
     "mat.u3.inecuaciones_valor_absoluto",
+    "mat.u3.inecuaciones_producto_cociente",
+    "mat.u3.ecuaciones_valor_absoluto",
     "mat.u3.recta",
     "mat.u3.sistemas",
     "mat.u3.exponenciales",
@@ -95,9 +102,13 @@ describe("PILOT_SKILLS — Unit 3 (PR 3 / implement-unit-3-mathematics)", () => 
     "mat.u3.traduccion_lenguaje_verbal",
   ] as const;
 
-  test("contains all 9 unit-3 pilot skills (U3-PILOT-001)", () => {
+  test("contains all 11 unit-3 pilot skills (U3-PILOT-001 + S2 P8 leaf + S4 P9 leaf)", () => {
+    // S2 of align-u3-practice-official-exercises adds the P8 leaf
+    // (mat.u3.ecuaciones_valor_absoluto) — was 9, now 10.
+    // S4 of the same change adds the P9 sign-chart leaf
+    // (mat.u3.inecuaciones_producto_cociente) — was 10, now 11.
     const u3 = PILOT_SKILLS.filter((s) => s.unitKey === "unit-3");
-    expect(u3).toHaveLength(9);
+    expect(u3).toHaveLength(11);
     const u3Ids = u3.map((s) => s.skillId);
     for (const id of U3_SKILL_IDS) {
       expect(u3Ids).toContain(id);

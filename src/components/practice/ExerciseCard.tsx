@@ -2,10 +2,10 @@
 
 import { getExerciseTypeLabel } from "@/components/exercises/exercise-labels";
 import { RichText } from "@/components/math/RichText";
-import type { Exercise } from "@/domain/models/exercise";
+import type { ExerciseBaseShape } from "@/domain/models/exercise";
 
 interface ExerciseCardProps {
-  readonly exercise: Exercise;
+  readonly exercise: ExerciseBaseShape;
 }
 
 /**

@@ -309,6 +309,87 @@
     ]
   },
   {
+    "id": "example-ecuaciones-valor-absoluto-2",
+    "skillId": "mat.u3.ecuaciones_valor_absoluto",
+    "problem": "Resolver la ecuación con valor absoluto |x + 2| = 8",
+    "steps": [
+      { "order": 1, "explanation": "Observamos que la forma es |ax + b| = c con a = 1, b = 2 y c = 8. El lado derecho es positivo, así que sabemos que la ecuación tendrá DOS soluciones." },
+      { "order": 2, "explanation": "Paso 1 (rama 1): x + 2 = 8 ⇒ x = 8 - 2 = 6." },
+      { "order": 3, "explanation": "Paso 2 (rama 2): x + 2 = -8 ⇒ x = -8 - 2 = -10." },
+      { "order": 4, "explanation": "Paso 3 (verificación): para x = 6, |6 + 2| = |8| = 8 V. Para x = -10, |-10 + 2| = |-8| = 8 V. Ambos valores satisfacen la ecuación original." },
+      { "order": 5, "explanation": "Solución final: el conjunto solución es {x = -10, x = 6}, NO un único valor." }
+    ],
+    "finalAnswer": "x = 6 o x = -10 (conjunto {-10, 6})",
+    "pedagogicalNote": "P8a del PDF oficial (03_ej_utn.pdf): |x + 2| = 8. Camino: descomponer en dos ramas lineales (x + 2 = 8 o x + 2 = -8). Rama 1 da x = 6; rama 2 da x = -10. Solución completa: {x = -10, x = 6}. Distractor dominante: reportar solo una de las dos raíces (captura de `u3_abs_eq_rama_unica`). Distractor 2: concluir 'no hay solución' — error típico cuando el alumno no recuerda que |x|=k>0 siempre tiene DOS raíces. La verificación numérica desmiente los dos errores: tanto 6 como -10 satisfacen la ecuación original.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P8a: Ecuación |x + 2| = 8 con dos soluciones",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P8a del PDF oficial (caso base |x+b|=k con k>0 y dos soluciones) en un worked example de la familia |ax+b|=c — el resultado correcto es el conjunto {-10, 6}, no un único valor."
+      }
+    ]
+  },
+  {
+    "id": "example-ecuaciones-valor-absoluto-3",
+    "skillId": "mat.u3.ecuaciones_valor_absoluto",
+    "problem": "Contrastar dos ecuaciones con valor absoluto: (A) |x - 3| = |x - 7| y (B) |x| + 8 = 3",
+    "steps": [
+      { "order": 1, "explanation": "Ecuación (A): |x - 3| = |x - 7|. La distancia de x a 3 es igual a la distancia de x a 7 EXACTAMENTE en el punto medio entre 3 y 7: x = (3 + 7)/2 = 5. Verificación: |5 - 3| = 2 y |5 - 7| = 2. ✓ Solución única: x = 5 (NO dos raíces, NO 'no hay solución')." },
+      { "order": 2, "explanation": "Ecuación (B): |x| + 8 = 3. La constante 8 está AFUERA de las barras. Primero AISLAR el valor absoluto: |x| = 3 - 8 = -5." },
+      { "order": 3, "explanation": "Como |x| = -5, con k = -5 < 0, NO hay solución en ℝ (el valor absoluto nunca es negativo). Esto es distinto del caso P8g (-|x| = -k): aquí el signo negativo está en UN SOLO lado y se obtiene un k negativo legítimo." },
+      { "order": 4, "explanation": "Contraste: (A) tiene UNA solución (el punto medio, x = 5). (B) NO tiene solución (|x| = -5 con k < 0). Es un error grave confundir los dos casos: el primero es una ecuación simétrica con UN punto que satisface la igualdad de distancias; el segundo es un caso k < 0 verdadero con conjunto solución vacío." },
+      { "order": 5, "explanation": "Las DOS ecuaciones muestran que 'no hay solución' NO es el resultado típico de las ecuaciones con valor absoluto — solo aparece cuando el lado derecho reducido k es estrictamente negativo (caso B). En el caso A, la respuesta es un único valor." }
+    ],
+    "finalAnswer": "(A) x = 5 (una solución); (B) sin solución (|x| = -5 < 0)",
+    "pedagogicalNote": "P8i vs P8b contrast del PDF oficial. Caso (A) P8i (|x - a| = |x - b|): la distancia de x a a es igual a la distancia a b SOLO en el punto medio x = (a+b)/2. Caso (B) P8b (|x| + c = d con c > d): aislar primero |x| = d - c; si d - c < 0, no hay solución. Distractor dominante: leer 'no hay solución' como único resultado posible de las ecuaciones con valor absoluto (confusión con S2 P8g donde la aparente negatividad del RHS se cancela multiplicando por -1). El contraste con P8i deja claro que el patrón 'simétrico ⇒ un punto' y '|x|+c=d con d<c ⇒ vacío' son dos casos estructuralmente distintos. La verificación numérica en (A): x = 5 da |5-3|=2 y |5-7|=2 ✓.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P8i vs P8b: variable simétrica (midpoint) vs suma constante afuera (no-solución)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Separa la unicidad de solución (P8i, x = (a+b)/2) del caso sin-solución legítimo (P8b, |x|+c=d con d<c) para evitar que S2 P8g se lea como 'siempre no hay solución cuando hay un signo negativo'."
+      }
+    ]
+  },
+  {
+    "id": "example-ecuaciones-valor-absoluto-1",
+    "skillId": "mat.u3.ecuaciones_valor_absoluto",
+    "problem": "Resolver la ecuación con valor absoluto y barras externas negativas: -|x| = -10.5",
+    "steps": [
+      {
+        "order": 1,
+        "explanation": "Observamos que aparecen signos negativos en AMBOS lados de la igualdad, por fuera de las barras. Multiplicamos por -1 en ambos miembros para cancelar los signos externos y obtener la forma canónica |x| = 10.5."
+      },
+      {
+        "order": 2,
+        "explanation": "Paso 1 (algebraico): -|x| = -10.5  ⇒  multiplicar por -1 en ambos miembros  ⇒  |x| = 10.5."
+      },
+      {
+        "order": 3,
+        "explanation": "Paso 2 (caso k > 0): el lado derecho 10.5 es positivo, así que la ecuación |x| = 10.5 tiene DOS soluciones: x = 10.5 o x = -10.5. La solución NO es 'no hay solución' (error típico cuando el alumno ve el signo negativo inicial)."
+      },
+      {
+        "order": 4,
+        "explanation": "Paso 3 (verificación): para x = 10.5, -|10.5| = -10.5 V. Para x = -10.5, -|-10.5| = -10.5 V. Ambos valores verifican la ecuación original."
+      },
+      {
+        "order": 5,
+        "explanation": "Solución final: el conjunto solución es {x = -10.5, x = 10.5}, NO un único valor y NO 'no hay solución'."
+      }
+    ],
+    "finalAnswer": "x = -10.5 o x = 10.5 (conjunto {-10.5, 10.5})",
+    "pedagogicalNote": "P8g del PDF oficial (03_ej_utn.pdf): -|x| = -10.5. Camino correcto: multiplicar por -1 en ambos miembros para cancelar los signos externos y obtener |x| = 10.5; como k = 10.5 > 0, la solución tiene DOS valores x = ±10.5. Distractor dominante: concluir 'no hay solución porque el lado derecho es -10.5 es negativo' — esto confunde el signo fuera de las barras con un k negativo verdadero. Otro distractor: quedarse con un único valor x = -10.5 o x = 10.5. La verificación numérica desmiente los dos errores: ambos valores satisfacen la ecuación original.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P8g: Ecuación con valor absoluto y barras externas negativas -|x| = -k",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P8g del PDF oficial (barras externas negativas en ambos lados) en un worked example de la familia |x|=k>0 con dos soluciones — el resultado correcto es el conjunto {-10.5, 10.5}, no 'no hay solución'"
+      }
+    ]
+  },
+  {
     "id": "example-recta-1",
     "skillId": "mat.u3.recta",
     "problem": "Para la recta y = -2x + 4, identificar la pendiente y la ordenada al origen",
@@ -506,5 +587,72 @@
         "pedagogicalIntent": "Aplicar la propiedad de potencia y alertar sobre la confusión factor-exponente vs exponente-de-logaritmo"
       }
     ]
+  },
+  {
+    "id": "example-inecuaciones-producto-cociente-1",
+    "skillId": "mat.u3.inecuaciones_producto_cociente",
+    "problem": "Resolver $(x - 2x^2)(x + 1/2) \\leq 0$ (ejercicio P9p del PDF oficial)",
+    "steps": [
+      { "order": 1, "explanation": "Pasamos todo a un mismo lado y factorizamos el factor común $x$ en $(x - 2x^2)$. Atención: NO simplificamos ni cancelamos el factor $x$, lo preservamos para que la raíz crítica $x = 0$ aparezca en el cuadro de signos." },
+      { "order": 2, "explanation": "$x(1 - 2x)(x + 1/2) \\leq 0$. Reescribimos $(1 - 2x) = -(2x - 1)$ y usamos la regla del signo: cambiar el signo a un factor y a la desigualdad simultáneamente da $x(2x - 1)(x + 1/2) \\geq 0$." },
+      { "order": 3, "explanation": "Las raíces críticas son los ceros de CADA factor: $x = -1/2$ (de $x + 1/2$), $x = 0$ (del factor $x$), $x = 1/2$ (de $2x - 1$). Las ordenamos: $-1/2 < 0 < 1/2$." },
+      { "order": 4, "explanation": "Construimos el cuadro de signos con tres intervalos: $(-\\infty, -1/2)$, $(-1/2, 0)$, $(0, 1/2)$, $(1/2, +\\infty)$. Evaluamos el signo de cada factor en cada intervalo." },
+      { "order": 5, "explanation": "El producto $x(2x - 1)(x + 1/2)$ es negativo en $(-\\infty, -1/2)$, positivo en $(-1/2, 0)$, negativo en $(0, 1/2)$, positivo en $(1/2, +\\infty)$. La desigualdad pide $\\geq 0$ (invertimos por el $-1$ del paso 2), así que la solución incluye donde el producto es positivo O vale $0$." },
+      { "order": 6, "explanation": "Las raíces críticas $-1/2$, $0$ y $1/2$ son puntos donde el producto vale $0$, así que la desigualdad $\\geq 0$ los acepta. La solución final une los intervalos donde el producto es positivo con los puntos críticos cerrados." }
+    ],
+    "finalAnswer": "[-1/2, 0] ∪ [1/2, +∞)",
+    "pedagogicalNote": "REGLA CRÍTICA: NO simplificar ni cancelar el factor $x$ en $(x - 2x^2)(x + 1/2)$. Si se cancelara, se perdería la raíz crítica $x = 0$ y la solución sería $[-1/2, 1/2]$ en vez de $[-1/2, 0] \\cup [1/2, +\\infty)$. La PRESERVACIÓN de todos los factores lineales es lo que hace que el cuadro de signos tenga TODAS las raíces críticas necesarias.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P9p: (x − 2x²)(x + ½) ≤ 0 con preservación del factor x",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Anclar P9p del PDF oficial (factor x preservado) y enseñar la regla pedagógica explícita: nunca cancelar ni simplificar factores antes de armar el cuadro de signos"
+      }
+    ]
+  },
+  {
+    "id": "example-inecuaciones-producto-cociente-2",
+    "skillId": "mat.u3.inecuaciones_producto_cociente",
+    "problem": "Resolver $x^2 \\leq x$ (ejercicio P9q del PDF oficial)",
+    "steps": [
+      { "order": 1, "explanation": "Pasamos todo a un mismo lado: $x^2 - x \\leq 0$." },
+      { "order": 2, "explanation": "Factorizamos preservando TODOS los factores: $x^2 - x = x(x - 1)$. La factorización NO se reduce más; el factor $x$ cuenta como una raíz crítica ($x = 0$)." },
+      { "order": 3, "explanation": "Reescribimos la desigualdad: $x(x - 1) \\leq 0$. Las raíces críticas son $x = 0$ y $x = 1$." },
+      { "order": 4, "explanation": "Construimos el cuadro de signos en los tres intervalos $(-\\infty, 0)$, $(0, 1)$, $(1, +\\infty)$. Para $x \\in (-\\infty, 0)$: $(x)$ negativo (porque $x < 0$), $(x - 1)$ negativo (porque $x - 1 < -1 < 0$). El producto es $(-)(-)= +$. Para $x \\in (0, 1)$: $(x)$ positivo, $(x - 1)$ negativo. El producto es $(+)(-) = -$. Para $x \\in (1, +\\infty)$: $(x)$ positivo, $(x - 1)$ positivo. El producto es $(+)(+) = +$." },
+      { "order": 5, "explanation": "El producto $x(x - 1)$ es positivo en $(-\\infty, 0)$ (no cumple $\\leq 0$), negativo en $(0, 1)$ (sí cumple $\\leq 0$), y positivo en $(1, +\\infty)$ (no cumple). Los puntos críticos $x = 0$ y $x = 1$ son donde el producto vale $0$, así que la desigualdad $\\leq 0$ los acepta (inclusión por $\\leq$). Solución final: $[0, 1]$." }
+    ],
+    "finalAnswer": "[0, 1]",
+    "pedagogicalNote": "El error frecuente es pasar de $x^2 \\leq x$ a $x \\leq 1$ cancelando $x$; esto solo vale si $x > 0$, pero si $x = 0$ también cumple la desigualdad. La factorización completa $x(x - 1) \\leq 0$ con el cuadro de signos evita tener que dividir en casos según el signo de $x$.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P9q: x² ≤ x — factoreo preservando ambos ceros",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Anclar P9q del PDF oficial mostrando que pasar a un solo lado y factorizar (sin simplificar) produce la solución completa $[0, 1]$ sin dividir en casos"
+      }
+    ]
+  },
+  {
+    "id": "example-inecuaciones-producto-cociente-3",
+    "skillId": "mat.u3.inecuaciones_producto_cociente",
+    "problem": "Resolver $(2x - 1)(x - 3) \\geq 0$ (ejercicio P9w del PDF oficial)",
+    "steps": [
+      { "order": 1, "explanation": "Las raíces críticas son los ceros de cada factor: $x = 1/2$ (de $2x - 1$) y $x = 3$ (de $x - 3$). Las ordenamos: $1/2 < 3$." },
+      { "order": 2, "explanation": "Construimos el cuadro de signos en los tres intervalos $(-\\infty, 1/2)$, $(1/2, 3)$, $(3, +\\infty)$. Evaluamos el signo de cada factor:" },
+      { "order": 3, "explanation": "Para $x \\in (-\\infty, 1/2)$: $(2x - 1)$ negativo (porque $2x < 1$), $(x - 3)$ negativo (porque $x < 3$). El producto es $(-)(-)= +$." },
+      { "order": 4, "explanation": "Para $x \\in (1/2, 3)$: $(2x - 1)$ positivo, $(x - 3)$ negativo. El producto es $(+)(-) = -$." },
+      { "order": 5, "explanation": "Para $x \\in (3, +\\infty)$: $(2x - 1)$ positivo, $(x - 3)$ positivo. El producto es $(+)(+) = +$. La desigualdad pide $\\geq 0$, así que la solución son los intervalos donde el producto es positivo, MÁS los puntos críticos cerrados." }
+    ],
+    "finalAnswer": "(-∞, 1/2] ∪ [3, +∞)",
+    "pedagogicalNote": "Esta es la forma base del método: tres intervalos, un cuadro de signos con dos filas (una por factor) y la fila del producto al final. La elección de los extremos depende del uso de $\\leq$ o $<$ (aquí $\\geq$ cierra ambos extremos). Para ver la estructura completa del método, comparar con el ejemplo P9q donde el factor $x$ agrega una raíz crítica adicional en $0$.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P9w: (2x − 1)(x − 3) ≥ 0 — caso base de dos raíces",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Anclar el caso base del método (dos raíces críticas, tres intervalos, producto de signos) sin simplificaciones, previo a los casos de tres raíces como P9p"
+      }
+    ]
   }
-]
+] 

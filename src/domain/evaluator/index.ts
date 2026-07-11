@@ -4,7 +4,7 @@
  * TDD coverage: src/domain/__tests__/evaluator-index.test.ts.
  */
 
-import type { Exercise } from "../models/exercise";
+import type { ExerciseBaseShape } from "../models/exercise";
 import { evaluateNumeric } from "./numeric";
 import { evaluateExact } from "./exact";
 import { evaluateBoolean } from "./boolean";
@@ -47,7 +47,7 @@ const CONFIGURATION_ERROR_RESULT: EvaluationResult = {
  * @returns EvaluationResult with correctness, optional error tag, and optional feedback
  */
 export function evaluateAnswer(
-  exercise: Exercise,
+  exercise: ExerciseBaseShape,
   userAnswer: string
 ): EvaluationResult {
   // Unsupported types require manual review

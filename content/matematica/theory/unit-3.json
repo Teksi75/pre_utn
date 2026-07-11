@@ -357,6 +357,90 @@
     ]
   },
   {
+    "id": "theory-ecuaciones-valor-absoluto",
+    "skillId": "mat.u3.ecuaciones_valor_absoluto",
+    "concepts": [
+      {
+        "id": "concept-eva-definicion",
+        "title": "1. Definición: ecuación con valor absoluto",
+        "bodyParagraphs": [
+          "Idea principal: una ecuación con valor absoluto es una igualdad donde la incógnita aparece DENTRO de un valor absoluto $|expr|$. Por definición $|y| = y$ si $y \\geq 0$ y $|y| = -y$ si $y < 0$, así que el valor absoluto siempre devuelve un número NO negativo.",
+          "Ejemplo: en $|x - 3| = 5$ la incógnita está dentro del valor absoluto. Resolver significa encontrar todos los $x$ cuya DISTANCIA al centro 3 es exactamente 5. La respuesta no es un único valor: es un conjunto finito (uno o dos elementos)."
+        ]
+      },
+      {
+        "id": "concept-eva-casos-k",
+        "title": "2. Casos de $|x| = k$ según el signo de $k$",
+        "bodyParagraphs": [
+          "Idea principal: $|x| = k$ tiene una cantidad de soluciones que depende del signo del lado derecho. (a) Si $k > 0$: hay DOS soluciones, $x = k$ y $x = -k$. (b) Si $k = 0$: hay UNA solución, $x = 0$ (porque $|x| = 0$ sólo si $x = 0$). (c) Si $k < 0$: NO hay solución (el valor absoluto nunca da un resultado negativo, así que $|x|$ nunca puede ser igual a un $k < 0$).",
+          "Ejemplo caso (a): $|x| = 7$ da $x = 7$ o $x = -7$. Ejemplo caso (b): $|x| = 0$ da $x = 0$. Ejemplo caso (c): $|x| = -3$ NO tiene solución. Error frecuente: en el caso $k < 0$ inventar una 'solución compleja' o seguir operando algebraicamente; la respuesta correcta es 'no hay solución en $\\mathbb{R}$'."
+        ]
+      },
+      {
+        "id": "concept-eva-axb-c",
+        "title": "3. Reducción de $|ax + b| = c$ a dos ecuaciones lineales",
+        "bodyParagraphs": [
+          "Idea principal: cuando el argumento del valor absoluto es una expresión lineal $ax + b$, la ecuación $|ax + b| = c$ se DESCOMPONE en dos ecuaciones lineales: $ax + b = c$ o $ax + b = -c$. Se resuelve cada una por separado y la solución total es la UNIÓN de los dos resultados (pueden coincidir en $c = 0$).",
+          "Ejemplo: $|2x - 4| = 6$ da dos ramas. Rama 1: $2x - 4 = 6 \\Rightarrow 2x = 10 \\Rightarrow x = 5$. Rama 2: $2x - 4 = -6 \\Rightarrow 2x = -2 \\Rightarrow x = -1$. Solución: $x = 5$ o $x = -1$."
+        ]
+      },
+      {
+        "id": "concept-eva-bares-negativos-p8g",
+        "title": "4. Barras externas negativas (P8g): $-|x| = -k$",
+        "bodyParagraphs": [
+          "Idea principal: en $-|x| = -k$ aparecen signos negativos en AMBOS lados, por fuera de las barras. Multiplicar por $-1$ en ambos miembros cancela los signos externos y devuelve la forma canónica $|x| = k$. La resolución continúa desde ahí. Es decir, $-|x| = -10.5$ es EQUIVALENTE a $|x| = 10.5$ y la solución es $\\{x = -10.5, x = 10.5\\}$.",
+          "Ejemplo: $-|x| = -10.5 \\Rightarrow$ multiplicar por $-1$ en ambos miembros $\\Rightarrow |x| = 10.5 \\Rightarrow x = \\pm 10.5$. Error frecuente: concluir 'no hay solución porque el lado derecho es negativo' sin notar que el signo negativo está en AMBOS lados, no sólo en uno. El resultado correcto es el conjunto de dos valores $\\{-10.5, 10.5\\}$."
+        ]
+      },
+      {
+        "id": "concept-eva-constante-fuera-p8b",
+        "title": "5. Contraste con $|x| + c = d$ (P8b): sumar afuera vs. sumar adentro",
+        "bodyParagraphs": [
+          "Idea principal: $|x| + c = d$ NO se descompone en dos ecuaciones como $|ax + b| = c$. Primero hay que AISLAR el valor absoluto restando $c$ en ambos lados: $|x| = d - c$. Recién entonces se abre en dos casos. Pasar por alto este paso previo es uno de los errores más comunes.",
+          "Ejemplo: $|x| + 4 = 10 \\Rightarrow |x| = 6 \\Rightarrow x = 6$ o $x = -6$. Distractor: tratar $|x| + 4 = 10$ como $|x + 4| = 10$ y obtener $x = 6$ o $x = -14$ — son ecuaciones distintas y la primera es la que pide el enunciado."
+        ]
+      },
+      {
+        "id": "concept-eva-variables-simetricas-p8i",
+        "title": "6. Ecuaciones con variable simétrica: $|x - a| = |x - b|$",
+        "bodyParagraphs": [
+          "Idea principal: cuando aparecen DOS valores absolutos y ambos contienen $x$ en expresiones SIMÉTRICAS (mismo coeficiente, distinto centro), la ecuación $|x - a| = |x - b|$ se resuelve reconociendo que la distancia de $x$ a $a$ es igual a la distancia de $x$ a $b$ en EXACTAMENTE un punto: el PUNTO MEDIO entre $a$ y $b$.",
+          "Ejemplo: $|x - 3| = |x - 7|$ se cumple sólo en $x = 5$ (el promedio entre 3 y 7). Verificación: $|5 - 3| = 2$ y $|5 - 7| = 2$. Error frecuente: abrir cada valor absoluto en dos ramas y resolver cuatro combinaciones lineales; el método del punto medio es directo y evita errores algebraicos."
+        ]
+      }
+    ],
+    "notation": [
+      "$|x| = k$ con $k > 0 \\Rightarrow x = k$ o $x = -k$ (dos soluciones)",
+      "$|x| = 0 \\Rightarrow x = 0$ (una solución)",
+      "$|x| = k$ con $k < 0 \\Rightarrow$ no hay solución en $\\mathbb{R}$",
+      "$|ax + b| = c$ se descompone en $ax + b = c$ o $ax + b = -c$",
+      "$-|x| = -k \\Leftrightarrow |x| = k$ (multiplicar por $-1$ en ambos miembros)",
+      "$|x| + c = d \\Rightarrow$ primero $|x| = d - c$, luego abrir en dos ramas"
+    ],
+    "commonMistakes": [
+      "Concluir 'no hay solución' cuando $|x| = k$ tiene $k < 0$, sin chequear que efectivamente $k < 0$.",
+      "Tratar $|x| + c = d$ como $|x + c| = d$: la suma está AFUERA de las barras, no adentro.",
+      "En $-|x| = -10.5$ concluir que el lado derecho es negativo y entonces 'no hay solución': el signo negativo está en AMBOS lados, multiplicar por $-1$ recupera $|x| = 10.5$ con dos soluciones.",
+      "Para $|ax + b| = c$ olvidar resolver una de las dos ramas ($ax + b = c$ o $ax + b = -c$).",
+      "En $|x - a| = |x - b|$ abrir cuatro combinaciones lineales en vez de reconocer el punto medio $\\frac{a + b}{2}$."
+    ],
+    "practicePrompts": [
+      "Resolver $|x| = 8$ indicando la cantidad de soluciones según el signo de $k$.",
+      "Resolver $|3x - 6| = 12$ descomponiendo en dos ecuaciones lineales y verificando ambas.",
+      "Resolver $-|x| = -4.5$ multiplicando por $-1$ en ambos miembros y dando el conjunto solución completo.",
+      "Resolver $|x| + 5 = 12$ aislando primero el valor absoluto.",
+      "Resolver $|x - 4| = |x - 10|$ reconociendo el punto medio."
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "Capítulo P8: Ecuaciones con valor absoluto — |x|=k, |ax+b|=c, barras externas negativas",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Establecer las tres ramas de $|x|=k$ según el signo del lado derecho, la reducción $|ax+b|=c \\Leftrightarrow ax+b = \\pm c$, y el manejo de $-|x|=-k$ como paso previo al caso $k>0$ — incluye contraste con $|x|+c=d$ y punto medio en ecuaciones simétricas"
+      }
+    ]
+  },
+  {
     "id": "theory-recta",
     "skillId": "mat.u3.recta",
     "concepts": [
@@ -602,5 +686,77 @@
         "pedagogicalIntent": "Reforzar las propiedades (producto → suma, potencia → factor) y alertar sobre las confusiones frecuentes (suma → producto, factor → potencia)"
       }
     ]
+  },
+  {
+    "id": "theory-inecuaciones-producto-cociente",
+    "skillId": "mat.u3.inecuaciones_producto_cociente",
+    "concepts": [
+      {
+        "id": "concept-ipc-que-es",
+        "title": "1. Inecuaciones producto y cociente: forma general",
+        "bodyParagraphs": [
+          "Idea principal: una inecuación producto-cociente tiene la forma $f(x) \\geq 0$, $f(x) > 0$, $f(x) \\leq 0$ o $f(x) < 0$, donde $f(x)$ se obtiene de MULTIPLICAR y/o DIVIDIR varios factores lineales (y, a veces, cuadráticos sencillos). Ejemplos del PDF oficial: $(2x - 1)(x - 3) \\geq 0$, $x^2 \\leq x$, $\\frac{x+2}{2-x} \\geq 1$.",
+          "La estrategia sistemática — llamada tabla de signos o cuadro de variación — transforma la desigualdad en una pregunta sobre el SIGNO de cada factor. NO se desarrolla ni se cancela; se mira el signo de cada factor en cada intervalo entre las raíces críticas.",
+          "Caso especial: si la expresión tiene denominador, hay que excluir del dominio todo valor de $x$ que haga cero al denominador — esos puntos no forman parte de la solución aunque la desigualdad sea $\\geq 0$ o $\\leq 0$."
+        ]
+      },
+      {
+        "id": "concept-ipc-raices-criticas",
+        "title": "2. Raíces críticas: dónde se anulan numerador y denominador",
+        "bodyParagraphs": [
+          "Idea principal: las raíces críticas son los valores de $x$ que ANULAN al numerador o al denominador (si son racionales). En esos puntos la expresión vale $0$ (si anulan numerador) o NO está definida (si anulan denominador). El método requiere ENCONTRAR TODAS — omitir una raiz crítica inválida todo el resultado.",
+          "Para una inecuación producto, las raíces críticas son las raíces de cada factor lineal. Para una inecuación racional $\\frac{P(x)}{Q(x)} \\geq 0$, también hay que marcar donde $Q(x) = 0$: esos puntos NO son parte de la solución (el denominador se hace $0$ y la expresión no existe), pero sí PARTICIONAN la recta en intervalos."
+        ]
+      },
+      {
+        "id": "concept-ipc-tabla-signos",
+        "title": "3. Tabla de signos: signo de cada factor en cada intervalo",
+        "bodyParagraphs": [
+          "Idea principal: se ordenan las raíces críticas de menor a mayor y se dividen en intervalos. En cada intervalo, se evalúa el signo de CADA factor (positivo si $x$ es mayor que su raíz, negativo si es menor — suponiendo factor con coeficiente principal positivo; si es negativo se invierten). El signo del producto (o cociente) se obtiene multiplicando los signos: $(+)(-) = -$, $(-)(-) = +$, etc.",
+          "Para cocientes: el resultado sigue las mismas reglas de multiplicación de signos PERO la raíz del denominador marca un punto de EXCLUSIÓN (no se incluye aunque la desigualdad use $\\leq$ o $\\geq$). En el intervalo donde el denominador se anula, el cociente no existe y esa columna del cuadro aparece vacía o con una línea."
+        ]
+      },
+      {
+        "id": "concept-ipc-factorear-preservando",
+        "title": "4. Factorear sin simplificar: PRESERVAR todos los factores",
+        "bodyParagraphs": [
+          "Idea principal: cuando se factoriza una expresión para aplicar el método del cuadro de signos, NO se simplifica (no se cancelan factores comunes entre numerador y denominador), porque cada cancelación destruye una raíz crítica. Si se cancelan, la raíz crítica DESAPARECE del cuadro y la solución queda incompleta o incorrecta.",
+          "Regla explícita: si una inecuación como $(x - 2x^2)(x + \\tfrac{1}{2}) \\leq 0$ se factoriza, el factor $x$ NO se cancela aunque aparezca en todos los términos. La forma correcta para el cuadro es $x(2x - 1)(x + \\tfrac{1}{2}) \\geq 0$, con raíces críticas $-1/2$, $0$, $1/2$. Si se cancelara el $x$, se perdería la raíz $0$ y la solución sería $[\nobreak-1/2, 1/2]$ en vez de $[-1/2, 0] \\cup [1/2, +\\infty)$."
+        ]
+      },
+      {
+        "id": "concept-ipc-extremos",
+        "title": "5. Extremo del intervalo: ¿abierto o cerrado?",
+        "bodyParagraphs": [
+          "Idea principal: la frontera de cada solución es una raíz crítica. Si la desigualdad usa $<$ o $>$, los extremos son ABIERTOS: la raíz crítica NO se incluye porque en ella el producto vale exactamente $0$ (o el cociente se hace $0$). Si la desigualdad usa $\\leq$ o $\\geq$, los extremos son CERRADOS — la raíz crítica SÍ se incluye siempre que la expresión esté definida allí (es decir, si NO anula el denominador).",
+          "Excepción: una raíz crítica que anula AL DENOMINADOR nunca se incluye, incluso con $\\leq$ o $\\geq$, porque allí la expresión no existe. Para $\\frac{x+2}{2-x} \\geq 1$, la raíz $x = 2$ del denominador queda EXCLUIDA aunque la desigualdad sea $\\geq$."
+        ]
+      }
+    ],
+    "notation": [
+      "$f(x) = \\prod (a_i x + b_i)$ — producto de factores lineales",
+      "$\\frac{P(x)}{Q(x)}$ — cociente; $Q(x) = 0$ marca puntos de exclusión del dominio",
+      "Signos en cada intervalo: $(-)^n \\cdot (+)^m$ según paridad del número de factores negativos"
+    ],
+    "commonMistakes": [
+      "Cancelar factores comunes con el denominador (o factores repetidos) ANTES de armar el cuadro de signos: se pierden raíces críticas y la solución queda incompleta.",
+      "Olvidar marcar como raíz crítica un factor que solo aparece en uno de los términos del producto o cociente.",
+      "Tratar el signo del cociente como si fuera independiente del denominador; olvidar excluir las raíces que anulan $Q(x)$.",
+      "En inecuaciones tipo $(x - 2x^2)(x + 1/2) \\leq 0$, simplificar distribuyendo primero y perder el factor $x$, lo que borra la raíz crítica $0$.",
+      "Incluir en la solución una raíz que anula el denominador (la expresión no está definida allí)."
+    ],
+    "practicePrompts": [
+      "Para $(x - 2x^2)(x + 1/2) \\leq 0$, hallá las raíces críticas con el cuadro de signos y determiná la solución SIN cancelar el factor $x$.",
+      "Para $x^2 \\leq x$, pasá todo a un lado y factorizás $x(x - 1) \\leq 0$. Aplicá el cuadro de signos de tres raíces críticas.",
+      "Para $\\frac{x+2}{2-x} \\geq 1$, identificá la raíz del numerador y la raíz del denominador. El denominador marca una exclusión del dominio."
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "Capítulo 9: Inecuaciones producto y cociente (P9p-P9w) — cuadro de signos",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Anclar la estrategia del cuadro de signos al PDF oficial (P9p-P9w) sin simplificar ni cancelar factores: factorizar para registrar TODAS las raíces críticas (incluido el factor $x$ en P9p) y distinguirlas de las exclusiones del dominio cuando hay denominador"
+      }
+    ]
   }
-]
+] 

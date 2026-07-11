@@ -10,8 +10,30 @@ import type { IntervalModel } from "../intervals/index";
 import type { IntervalRepresentation } from "../intervals/representation";
 import type { PedagogicalVisual } from "../visuals/types";
 
-/** Source use classification for canonical material. */
-export type SourceUse = "adapted" | "reinforcement" | "reference";
+/**
+ * Source-use classification shared across surfaces.
+ *
+ * The wider literal UNION here is required for `ChallengeCanonicalTrace`
+ * (`canonical-source` is allowed only on the challenge surface) to be
+ * structurally assignable to `CanonicalTrace` so a `ChallengeExercise`
+ * (which carries `canonicalTrace` with the wider challenge enum) still
+ * type-checks as an `Exercise`.
+ *
+ * Runtime validation at the parse boundary ENFORCES the per-surface
+ * enum:
+ *  - Exercise / Theory / WorkedExample surfaces accept
+ *    `ExerciseSourceUse = "adapted" | "reinforcement" | "reference"`
+ *    via `parseSourceUse` in `content-loaders.ts`.
+ *  - Challenge surface accepts the four-value challenge enum
+ *    via `validateChallengeEntry` in `src/lib/challenges/loader.ts`.
+ */
+export type SourceUse =
+  | "adapted"
+  | "reinforcement"
+  | "reference"
+  | "canonical-source"
+  | "calibrated-from-exam"
+  | "solution-pattern";
 
 /** Traceability to canonical material. */
 export interface CanonicalTrace {
@@ -116,6 +138,18 @@ export function validateTheoryNode(
     const trace = input.canonicalTrace[i];
     if (!trace.path || trace.path.trim().length === 0) {
       return err({ field: `canonicalTrace[${i}].path`, message: "path is required" });
+    }
+    // `section` is OPTIONAL on the theory surface (the wider
+    // `CanonicalTrace` interface declares it as `readonly section?: string`),
+    // so an absent value is fine. A PRESENT-but-empty-or-whitespace value,
+    // however, is indistinguishable from "the renderer can skip this" and
+    // almost certainly indicates a malformed entry — reject it explicitly
+    // so the loader fails fast at the import boundary.
+    if (trace.section !== undefined && trace.section.trim().length === 0) {
+      return err({
+        field: `canonicalTrace[${i}].section`,
+        message: "section must be a non-empty string when present",
+      });
     }
     if (!trace.pedagogicalIntent || trace.pedagogicalIntent.trim().length === 0) {
       return err({ field: `canonicalTrace[${i}].pedagogicalIntent`, message: "pedagogicalIntent is required" });

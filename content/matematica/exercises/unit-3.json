@@ -120,6 +120,30 @@
     "pedagogicalNote": "Pasa el -6 sumando (4 + 6 = 10) y divide entre -2: x = 10 / -2 = -5. Distractor común: olvidar el cambio de signo del -2."
   },
   {
+    "id": "ex.u3.ecuaciones_lineales.6",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve la ecuación lineal de coeficientes irracionales: 2·(√2 − (√5/2)·x) = (√2/2) + (√5/2)·x",
+    "expectedAnswer": "x = √10/5",
+    "options": [
+      "x = √10/5",
+      "x = -2/5",
+      "x = √5/5",
+      "x = √2/√5"
+    ],
+    "commonErrorTags": ["u3_racionalizacion_irracional"],
+    "pedagogicalNote": "Ecuación P1l canónica del PDF oficial (03_ej_utn.pdf): 2·(√2 − (√5/2)·x) = (√2/2) + (√5/2)·x. Resolución paso a paso: (1) distribuír el 2 a la izquierda: 2√2 − √5·x = √2/2 + (√5/2)·x. (2) agrupar términos con x de un lado: 2√2 − √2/2 = (√5/2)·x + √5·x ⇒ (3√2/2) = (3√5/2)·x. (3) aislar: x = (3√2/2)/(3√5/2) = √2/√5. (4) RACIONALIZAR multiplicando numerador y denominador por √5/√5: x = (√2·√5)/(√5·√5) = √10/5. Distractor clave: x = -2/5 (signo perdido al racionalizar — el detector `u3_racionalizacion_irracional` lo captura). Otros distractores: x = √5/5 (olvidó multiplicar el numerador por √5) y x = √2/√5 (dejó la raíz en el denominador, no racionalizó). El resultado correcto es x = √10/5 (forma racionalizada canónica para esta superficie).",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P1l: Ecuación lineal con coeficientes irracionales",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P1l del PDF oficial (sumas de irracionales a ambos lados) en una superficie MC de diff-3 para que el alumno encadene distribución → agrupación → racionalización sin saltar el paso final."
+      }
+    ]
+  },
+  {
     "id": "ex.u3.ecuaciones_cuadraticas.2",
     "skillId": "mat.u3.ecuaciones_cuadraticas",
     "type": "multiple-choice",
@@ -182,6 +206,78 @@
     ],
     "commonErrorTags": [],
     "pedagogicalNote": "Factoriza: (x - 3)(x - 4) = 0, dando x = 3 o x = 4. Error frecuente: factorizar con un signo invertido como (x + 3)(x + 4)."
+  },
+  {
+    "id": "ex.u3.ecuaciones_cuadraticas.6",
+    "skillId": "mat.u3.ecuaciones_cuadraticas",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve (7x² - 3) / 4 = 141",
+    "expectedAnswer": "x = -9, x = 9",
+    "options": [
+      "x = -9, x = 9",
+      "x = 9",
+      "x = -9",
+      "x = 81"
+    ],
+    "commonErrorTags": ["u3_factorizacion_cuadratica"],
+    "pedagogicalNote": "P5d canónica del PDF oficial (03_ej_utn.pdf): (7x² - 3) / 4 = 141. Resolución paso a paso: (1) multiplicar ambos lados por 4: 7x² - 3 = 564; (2) pasar el -3 al otro lado: 7x² = 567; (3) dividir entre 7: x² = 81; (4) raíz cuadrada: x = ±√81 = ±9. La ecuación cuadrática admite DOS raíces: x = -9 y x = 9. Distractor dominante: dar solo x = 9 (omitir la raíz negativa). El resultado correcto y completo es el conjunto {x = -9, x = 9}.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P5d: ecuación cuadrática con coeficiente fraccionario",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P5d del PDF oficial (cociente y producto cruzados despejados) en una superficie MC de diff-3 para que el alumno encadene despeje → raíz cuadrada → reconocimiento de las dos raíces sin omitir la negativa."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.ecuaciones_cuadraticas.7",
+    "skillId": "mat.u3.ecuaciones_cuadraticas",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Determinar los valores de k para que las raíces de kx² - 2x + 4 = 0 sean reales distintos.",
+    "expectedAnswer": "(-∞, 0) ∪ (0, 1/4)",
+    "options": [
+      "(-∞, 0) ∪ (0, 1/4)",
+      "(-∞, 1/4)",
+      "(1/4, ∞)",
+      "(0, 1/4)"
+    ],
+    "commonErrorTags": ["u3_discriminante_signo_incorrecto"],
+    "pedagogicalNote": "P6b canónica del PDF oficial (03_ej_utn.pdf): kx² - 2x + 4 = 0 con raíces reales distintos. (1) Coeficiente líder k ≠ 0 (debe ser cuadrática). (2) Discriminante Δ = (-2)² - 4·k·4 = 4 - 16k > 0 → k < 1/4. Combinando: k ∈ (-∞, 0) ∪ (0, 1/4). Distractor dominante: olvidar la exclusión k = 0 y dar solo k ∈ (-∞, 1/4). El conjunto correcto excluye explícitamente el cero porque k = 0 degrada la ecuación a una lineal y deja de cumplir la condición 'cuadrática con dos raíces'.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P6b: parámetro k para raíces reales distintos en kx² - 2x + 4 = 0",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P6b del PDF oficial (clasificación por discriminante) en una superficie MC de diff-4 para que el alumno encadene análisis del coeficiente líder (k ≠ 0) + signo del discriminante (Δ > 0) sin colapsar la unión."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.ecuaciones_cuadraticas.8",
+    "skillId": "mat.u3.ecuaciones_cuadraticas",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Determinar los valores de k para que las raíces de -kx² - 2x + 4 = 0 sean complejas (no reales).",
+    "expectedAnswer": "(-∞, -1/4)",
+    "options": [
+      "(-∞, -1/4)",
+      "(-1/4, ∞)",
+      "(-∞, -1/4]",
+      "(0, ∞)"
+    ],
+    "commonErrorTags": ["u3_discriminante_signo_incorrecto"],
+    "pedagogicalNote": "P6f canónica del PDF oficial (03_ej_utn.pdf): -kx² - 2x + 4 = 0 con raíces complejas. (1) Coeficiente líder -k ≠ 0 → k ≠ 0 (ya cubierto). (2) Discriminante Δ = (-2)² - 4·(-k)·4 = 4 + 16k < 0 → k < -1/4. El conjunto solución es k ∈ (-∞, -1/4) (abierto en -1/4 porque Δ = 0 da raíz doble, no compleja). Distractor dominante: invertir el signo de la desigualdad y responder k ∈ (-1/4, ∞) (signo perdido al evaluar el discriminante).",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P6f: parámetro k para raíces complejas en -kx² - 2x + 4 = 0",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P6f del PDF oficial (clasificación por discriminante negativo) en una superficie MC de diff-4 para que el alumno encadene análisis del coeficiente líder (k ≠ 0) + signo del discriminante (Δ < 0) sin invertir el signo de la desigualdad."
+      }
+    ]
   },
   {
     "id": "ex.u3.inecuaciones_lineales.2",
@@ -370,6 +466,102 @@
     "pedagogicalNote": "Forma pendiente-ordenada: y = mx + b, con m = -2 y b = 4. Error frecuente: cambiar el signo de la pendiente o de la ordenada."
   },
   {
+    "id": "ex.u3.recta.6",
+    "skillId": "mat.u3.recta",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Hallá la ecuación de la recta paralela a `3x − 2y + 1 = 0` que pasa por el punto `P(2; 2)`.",
+    "expectedAnswer": "y = (3/2)x − 1",
+    "options": [
+      "y = (3/2)x − 1",
+      "y = (−3/2)x + 5",
+      "y = (3/2)x + 1",
+      "y = (−2/3)x + 10/3"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "P20a — paralela por punto. De `3x − 2y + 1 = 0` se despeja `y = (3/2)x + 1/2`, por lo que la pendiente es `m = 3/2`. Una paralela conserva la pendiente, así que por `P(2; 2)`: `y − 2 = (3/2)(x − 2)` ⇒ `y = (3/2)x − 1`. Distractor 1: usa la NEGATIVA de la pendiente (`−3/2`) — sería el caso de perpendicular por punto, no paralela. Distractor 2: usa la pendiente correcta pero conserva la ordenada de la recta original (`+1`) en vez de calcularla para el punto. Distractor 3: usa la RECÍPROCA sin signo (`−2/3`) — confunde paralela con perpendicular o invierte numerador y denominador.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P20a — paralela a 3x − 2y + 1 = 0 por P(2; 2)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Anclar el caso canónico de paralela por punto: la pendiente se conserva y la ordenada se calcula a partir del punto por donde pasa la recta."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.recta.7",
+    "skillId": "mat.u3.recta",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Hallá la ecuación de la recta perpendicular a `y = (1/4)x − 5` que pasa por el origen.",
+    "expectedAnswer": "y = −4x",
+    "options": [
+      "y = −4x",
+      "y = 4x",
+      "y = −(1/4)x",
+      "y = (1/4)x"
+    ],
+    "commonErrorTags": ["u3_recta_pendiente_perpendicular"],
+    "pedagogicalNote": "P12d — perpendicular por punto (anchor). La pendiente de la recta de referencia es `1/4`. La pendiente perpendicular es el NEGATIVO DEL RECÍPROCO: `m_perp = −1/(1/4) = −4`. Como pasa por el origen, la ecuación es `y = −4x`. Distractor 1 (el trampa dominante): usa el RECÍPROCO SIN SIGNO `m = 4` ⇒ `y = 4x`. Esa es la captura de `u3_recta_pendiente_perpendicular`. Distractor 2: usa el negativo de la MISMA pendiente (`−1/4`) en vez del recíproco. Distractor 3: usa la pendiente original (`1/4`), lo que produciría una paralela, no una perpendicular. P12d es el anchor del spec: la pendiente de referencia es `1/4` (NO `4/1`).",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P12d — perpendicular a y = (1/4)x − 5 por el origen (pendiente de referencia 1/4, NO 4/1)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Anclar el caso canónico de perpendicular por punto con pendiente de referencia 1/4 (fraccionario): el alumno debe aplicar el negativo del recíproco (−4), no solo el recíproco (4) ni el negativo de la misma pendiente (−1/4)."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.recta.8",
+    "skillId": "mat.u3.recta",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Hallá la ecuación de la recta perpendicular a `2x − 3y + 5 = 0` que pasa por el punto `P(−1; 3)`.",
+    "expectedAnswer": "y = −(3/2)x + 3/2",
+    "options": [
+      "y = −(3/2)x + 3/2",
+      "y = (3/2)x + 9/2",
+      "y = (2/3)x + 11/3",
+      "y = −(2/3)x + 7/3"
+    ],
+    "commonErrorTags": ["u3_recta_pendiente_perpendicular"],
+    "pedagogicalNote": "P20b — perpendicular por punto. De `2x − 3y + 5 = 0` se despeja `y = (2/3)x + 5/3`, por lo que la pendiente es `m = 2/3`. La pendiente perpendicular es el negativo del recíproco: `m_perp = −3/2`. Por `P(−1; 3)`: `y − 3 = −(3/2)(x − (−1))` ⇒ `y = −(3/2)x − 3/2 + 3` ⇒ `y = −(3/2)x + 3/2`. Distractor 1 (trampa dominante): usa el recíproco SIN SIGNO `m = 3/2` y recalcula la ordenada mal — captura de `u3_recta_pendiente_perpendicular`. Distractor 2: usa la pendiente original (`2/3`) — sería paralela, no perpendicular. Distractor 3: usa el negativo de la MISMA pendiente (`−2/3`), no el recíproco.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P20b — perpendicular a 2x − 3y + 5 = 0 por P(−1; 3)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Anclar el caso de perpendicular por punto con pendiente fraccionaria (2/3) en forma general: el alumno debe calcular el negativo del recíproco (−3/2) y la ordenada a partir del punto."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.recta.9",
+    "skillId": "mat.u3.recta",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Hallá la ecuación de la recta que pasa por el punto `p(2; 3)` y es paralela a la recta que pasa por `r(0; 1)` y `q(2; 5)`.",
+    "expectedAnswer": "y = 2x − 1",
+    "options": [
+      "y = 2x − 1",
+      "y = −2x + 7",
+      "y = 2x + 3",
+      "y = (1/2)x + 2"
+    ],
+    "commonErrorTags": [],
+    "pedagogicalNote": "P12g — paralela por punto (con pendiente inferida de dos puntos). Primero se calcula la pendiente de la recta de referencia usando `r(0; 1)` y `q(2; 5)`: `m_ref = (5 − 1)/(2 − 0) = 2`. Una paralela conserva la pendiente, así que por `p(2; 3)`: `y − 3 = 2(x − 2)` ⇒ `y = 2x − 1`. Distractor 1: usa la NEGATIVA de la pendiente (`−2`) — sería perpendicular, no paralela. Distractor 2: usa la pendiente correcta pero toma la coordenada y del punto como ordenada al origen (`+3` en vez de recalcular). Distractor 3: usa el RECÍPROCO sin signo (`1/2`) — confunde paralela con perpendicular.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P12g — paralela por punto, con pendiente inferida de dos puntos: p(2; 3), paralela a la recta por r(0; 1) y q(2; 5)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Anclar el caso de paralela por punto cuando la pendiente de referencia se obtiene indirectamente a partir de dos puntos: el alumno debe combinar la fórmula de pendiente entre dos puntos con la conservación de pendiente en paralelas."
+      }
+    ]
+  },
+  {
     "id": "ex.u3.sistemas.2",
     "skillId": "mat.u3.sistemas",
     "type": "multiple-choice",
@@ -548,5 +740,301 @@
     "expectedAnswer": "5",
     "commonErrorTags": [],
     "pedagogicalNote": "Como 32 = 2⁵, log₂(32) = 5."
+  },
+  {
+    "id": "ex.u3.ecuaciones_valor_absoluto.2",
+    "skillId": "mat.u3.ecuaciones_valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "Resuelve |v - 2| = 3",
+    "expectedAnswer": "v = 5 o v = -1",
+    "options": ["v = 5 o v = -1", "v = 5", "v = -1", "No hay solución"],
+    "commonErrorTags": ["u3_abs_eq_rama_unica"],
+    "pedagogicalNote": "P8c del PDF oficial (03_ej_utn.pdf): |v - 2| = 3 ⇒ rama 1 v - 2 = 3 ⇒ v = 5; rama 2 v - 2 = -3 ⇒ v = -1. Solución completa: {v = 5, v = -1}. Distractor dominante: reportar solo una rama (v = 5 o v = -1) — captura `u3_abs_eq_rama_unica`.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P8c: Ecuación con valor absoluto y argumento lineal",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P8c del PDF oficial (caso base |v-a|=c con dos soluciones) en una superficie MC de diff-1 para que el alumno encadene descomposición en dos ramas sin omitir ninguna."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.ecuaciones_valor_absoluto.3",
+    "skillId": "mat.u3.ecuaciones_valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 1,
+    "prompt": "Resuelve |x + 2| = 8",
+    "expectedAnswer": "x = 6 o x = -10",
+    "options": ["x = 6 o x = -10", "x = 6", "x = -10", "No hay solución"],
+    "commonErrorTags": ["u3_abs_eq_rama_unica"],
+    "pedagogicalNote": "P8a del PDF oficial (03_ej_utn.pdf): |x + 2| = 8 ⇒ rama 1 x + 2 = 8 ⇒ x = 6; rama 2 x + 2 = -8 ⇒ x = -10. Solución completa: {x = 6, x = -10}. Distractor dominante: reportar solo una rama — captura `u3_abs_eq_rama_unica`.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P8a: Ecuación |x + 2| = 8",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P8a del PDF oficial en una superficie MC de diff-1 para que el alumno encadene descomposición en dos ramas lineales sin omitir ninguna."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.ecuaciones_valor_absoluto.4",
+    "skillId": "mat.u3.ecuaciones_valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resuelve |10 - x| = 5",
+    "expectedAnswer": "x = 5 o x = 15",
+    "options": ["x = 5 o x = 15", "x = 5", "x = 15", "No hay solución"],
+    "commonErrorTags": ["u3_abs_eq_rama_unica"],
+    "pedagogicalNote": "P8d del PDF oficial (03_ej_utn.pdf): |10 - x| = 5 ⇒ rama 1 10 - x = 5 ⇒ x = 5; rama 2 10 - x = -5 ⇒ x = 15. Solución completa: {x = 5, x = 15}. Distractor: reportar solo una rama.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P8d: Ecuación |10 - x| = 5",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P8d del PDF oficial (coeficiente 1 con signo invertido dentro del valor absoluto) en una superficie MC de diff-2."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.ecuaciones_valor_absoluto.5",
+    "skillId": "mat.u3.ecuaciones_valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resuelve |6 - 2t| = 4",
+    "expectedAnswer": "t = 1 o t = 5",
+    "options": ["t = 1 o t = 5", "t = 1", "t = 5", "No hay solución"],
+    "commonErrorTags": ["u3_abs_eq_rama_unica"],
+    "pedagogicalNote": "P8e del PDF oficial (03_ej_utn.pdf): |6 - 2t| = 4 ⇒ rama 1 6 - 2t = 4 ⇒ t = 1; rama 2 6 - 2t = -4 ⇒ t = 5. Solución completa: {t = 1, t = 5}. Distractor: olvidar una rama.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P8e: Ecuación |6 - 2t| = 4",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P8e del PDF oficial (coeficiente -2 dentro del valor absoluto) en una superficie MC de diff-2."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.ecuaciones_valor_absoluto.6",
+    "skillId": "mat.u3.ecuaciones_valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resuelve |3x + 18| = 0",
+    "expectedAnswer": "x = -6 (raíz única)",
+    "options": ["x = -6 (raíz única)", "x = 6", "x = -6 y x = 6", "No hay solución"],
+    "commonErrorTags": [],
+    "pedagogicalNote": "P8f del PDF oficial (03_ej_utn.pdf): |3x + 18| = 0 ⇒ 3x + 18 = 0 (cuando c = 0 las dos ramas colapsan en una sola). Solución: x = -6. Distractor dominante: pensar que tiene dos raíces ±6 (eso ocurre cuando c > 0, no cuando c = 0).",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P8f: Ecuación |3x + 18| = 0 con raíz única",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P8f del PDF oficial (caso |ax+b| = 0 con raíz única) en una superficie MC de diff-2 — distingue el caso c = 0 de los casos c > 0 (dos raíces) y c < 0 (sin solución)."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.ecuaciones_valor_absoluto.7",
+    "skillId": "mat.u3.ecuaciones_valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resuelve |x - 1| = |1 - 4|",
+    "expectedAnswer": "x = 4 o x = -2",
+    "options": ["x = 4 o x = -2", "x = 4", "x = -2", "No hay solución"],
+    "commonErrorTags": [],
+    "pedagogicalNote": "P8h del PDF oficial (03_ej_utn.pdf): primero evaluar el lado derecho |1 - 4| = 3, queda |x - 1| = 3 ⇒ x - 1 = 3 ⇒ x = 4; x - 1 = -3 ⇒ x = -2. Solución completa: {x = 4, x = -2}.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P8h: Ecuación |x - 1| = |1 - 4|",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P8h del PDF oficial (valor absoluto a ambos lados) en una superficie MC de diff-2 — exige evaluar primero el miembro derecho y luego descomponer en dos ramas."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.ecuaciones_valor_absoluto.8",
+    "skillId": "mat.u3.ecuaciones_valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve la ecuación con valor absoluto y barras externas negativas: -|x| = -10.5",
+    "expectedAnswer": "x = -10.5 o x = 10.5",
+    "options": ["x = -10.5 o x = 10.5", "x = -10.5", "x = 10.5", "No hay solución"],
+    "commonErrorTags": ["u3_abs_eq_signo_negativo_incorrecto"],
+    "pedagogicalNote": "P8g del PDF oficial (03_ej_utn.pdf): -|x| = -10.5. Multiplicar por -1 en ambos miembros: |x| = 10.5. Como 10.5 > 0, hay DOS soluciones x = ±10.5. Distractor dominante: concluir 'no hay solución porque el lado derecho es negativo' — captura `u3_abs_eq_signo_negativo_incorrecto`. El resultado correcto es {-10.5, 10.5}.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P8g: Ecuación con valor absoluto y barras externas negativas -|x| = -k",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P8g del PDF oficial (barras externas negativas en ambos lados) en una superficie MC de diff-3 — el resultado correcto es el conjunto {-10.5, 10.5}, NO 'no hay solución'."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.ecuaciones_valor_absoluto.9",
+    "skillId": "mat.u3.ecuaciones_valor_absoluto",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve -|r| = -6 + |r|",
+    "expectedAnswer": "r = 3 o r = -3",
+    "options": ["r = 3 o r = -3", "r = 3", "r = -3", "No hay solución"],
+    "commonErrorTags": [],
+    "pedagogicalNote": "P8i del PDF oficial (03_ej_utn.pdf): -|r| = -6 + |r| ⇒ pasar -|r| sumando ambos miembros: 0 = -6 + 2|r| ⇒ 2|r| = 6 ⇒ |r| = 3 ⇒ r = ±3. Solución completa: {r = 3, r = -3}.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P8i: Ecuación -|r| = -6 + |r| con variable simétrica",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P8i del PDF oficial (valor absoluto a ambos lados con coeficientes opuestos) en una superficie MC de diff-3 — distingue del caso P8g y muestra cómo la presencia de |r| en ambos miembros se reduce a un único paso de despeje."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.inecuaciones_producto_cociente.2",
+    "skillId": "mat.u3.inecuaciones_producto_cociente",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve $(2x + 1)(x - 5) \\geq 0$ (variante P9w del PDF oficial)",
+    "expectedAnswer": "(-∞, -1/2] ∪ [5, +∞)",
+    "options": [
+      "(-∞, -1/2] ∪ [5, +∞)",
+      "[-1/2, 5]",
+      "(-1/2, 5)",
+      "(-∞, -1/2) ∪ (5, +∞]"
+    ],
+    "commonErrorTags": ["u3_signchart_factor_signo_incorrecto"],
+    "pedagogicalNote": "Variante P9w del PDF oficial (03_ej_utn.pdf): $(2x + 1)(x - 5) \\geq 0$. Raíces críticas $x = -1/2$ y $x = 5$. Cuadro de signos: signo del producto es POSITIVO en $(-∞, -1/2)$ (ambos factores negativos) y en $(5, +∞)$ (ambos positivos), NEGATIVO en $(-1/2, 5)$. Como la desigualdad usa $\\geq$, los puntos críticos cierran ambos extremos. Solución: $(-∞, -1/2] \\cup [5, +∞)$. Distractor dominante: invertir el signo de un factor en un intervalo y reportar $[-1/2, 5]$ — captura `u3_signchart_factor_signo_incorrecto`.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P9w variante: producto (2x + 1)(x − 5) ≥ 0 — caso base de dos raíces",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P9w del PDF oficial (caso base de producto con dos raíces críticas) en una superficie MC de diff-3 para enseñar el cuadro de signos completo sin simplificaciones."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.inecuaciones_producto_cociente.3",
+    "skillId": "mat.u3.inecuaciones_producto_cociente",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve $x^2 \\leq 3x$ (variante P9q del PDF oficial)",
+    "expectedAnswer": "[0, 3]",
+    "options": [
+      "[0, 3]",
+      "(0, 3)",
+      "[0, 3)",
+      "(0, 3]"
+    ],
+    "commonErrorTags": ["u3_signchart_critical_root_omitido"],
+    "pedagogicalNote": "Variante P9q del PDF oficial (03_ej_utn.pdf): $x^2 \\leq 3x$. Pasar a un mismo lado y factorizar SIN simplificar: $x^2 - 3x \\leq 0 \\Rightarrow x(x - 3) \\leq 0$. Raíces críticas $x = 0$ y $x = 3$. Cuadro de signos: producto POSITIVO en $(-∞, 0)$ y en $(3, +∞)$, NEGATIVO en $(0, 3)$. Como la desigualdad usa $\\leq$, los puntos críticos cierran ambos extremos. Solución: $[0, 3]$. Distractor dominante: cancelar el factor $x$ y perder el cero en 0 — captura `u3_signchart_critical_root_omitido`.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P9q variante: x² ≤ 3x — factoreo preservando ambos ceros",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P9q del PDF oficial (cuadrática con factor x que debe preservarse) en una superficie MC de diff-3 para enseñar el cuadro de signos sin dividir en casos según el signo de x."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.inecuaciones_producto_cociente.4",
+    "skillId": "mat.u3.inecuaciones_producto_cociente",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Resuelve $(x - 2x^2)(x + 1/3) \\leq 0$ (variante P9p del PDF oficial)",
+    "expectedAnswer": "[-1/3, 0] ∪ [1/2, +∞)",
+    "options": [
+      "[-1/3, 0] ∪ [1/2, +∞)",
+      "[-1/3, 1/2]",
+      "(-1/3, 0] ∪ [1/2, +∞)",
+      "[-1/3, 0) ∪ (1/2, +∞)"
+    ],
+    "commonErrorTags": ["u3_signchart_critical_root_omitido", "u3_signchart_factor_signo_incorrecto"],
+    "pedagogicalNote": "Variante P9p del PDF oficial (03_ej_utn.pdf): $(x - 2x^2)(x + 1/3) \\leq 0$. REGLA CRÍTICA: NO simplificar el factor $x$ en $(x - 2x^2) = x(1 - 2x)$. Reescribir como $x(2x - 1)(x + 1/3) \\geq 0$ (multiplicar $(1 - 2x)$ por -1 y voltear $\\leq$ a $\\geq$). Raíces críticas $x = -1/3$, $x = 0$ (del factor $x$ — NO cancelar), $x = 1/2$. Cuadro de signos en 4 intervalos: NEGATIVO en $(-∞, -1/3)$, POSITIVO en $(-1/3, 0)$, NEGATIVO en $(0, 1/2)$, POSITIVO en $(1/2, +∞)$. Solución $\\geq 0$ con extremos cerrados: $[-1/3, 0] \\cup [1/2, +∞)$. Distractor dominante A: cancelar el factor $x$ y perder el cero en 0, dando el conjunto $[-1/3, 1/2]$ — captura `u3_signchart_critical_root_omitido`. Distractor B: olvidar invertir la desigualdad al multiplicar por -1 — captura `u3_signchart_factor_signo_incorrecto`.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P9p variante: (x − 2x²)(x + ⅓) ≤ 0 con preservación del factor x",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P9p del PDF oficial (trampa del factor x) en una superficie MC de diff-4 — usa la misma estructura que P9p canónico pero con constante 1/3 en lugar de 1/2 para producir una raíz crítica distinta y un fingerprint único."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.inecuaciones_producto_cociente.5",
+    "skillId": "mat.u3.inecuaciones_producto_cociente",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Resuelve $\\frac{x}{x - 3} < 2$ (variante P9r del PDF oficial)",
+    "expectedAnswer": "(-∞, 3) ∪ [6, +∞)",
+    "options": [
+      "(-∞, 3) ∪ [6, +∞)",
+      "[3, 6]",
+      "(-∞, 3] ∪ [6, +∞)",
+      "(-∞, 3) ∪ (6, +∞)"
+    ],
+    "commonErrorTags": ["u3_signchart_factor_signo_incorrecto", "u3_signchart_dominio_denominador"],
+    "pedagogicalNote": "Variante P9r del PDF oficial (03_ej_utn.pdf): $\\frac{x}{x - 3} < 2$. Reescribir como $\\frac{x}{x - 3} - 2 < 0 \\Rightarrow \\frac{x - 2(x-3)}{x-3} < 0 \\Rightarrow \\frac{-x + 6}{x - 3} < 0 \\Rightarrow \\frac{x - 6}{x - 3} > 0$. Raíces críticas: numerador en $x = 6$, denominador en $x = 3$ (EXCLUIDO del dominio). Cuadro: POSITIVO en $(-∞, 3)$ y en $(6, +∞)$, NEGATIVO en $(3, 6)$. Solución $> 0$ con extremo cerrado en $6$ y abierto en $3$ (exclusión del dominio): $(-∞, 3) \\cup [6, +∞)$. Distractor A: invertir el signo del factor en un intervalo — captura `u3_signchart_factor_signo_incorrecto`. Distractor B: incluir $x = 3$ en la solución — captura `u3_signchart_dominio_denominador`.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P9r variante: x/(x − 3) < 2 — racional con denominador",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P9r del PDF oficial (inecuación racional con denominador) en una superficie MC de diff-4 — exige pasar todo a un mismo lado, factorear, identificar exclusión del dominio, y armar el cuadro de signos."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.inecuaciones_producto_cociente.6",
+    "skillId": "mat.u3.inecuaciones_producto_cociente",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Resuelve $\\frac{2x - 1}{3 - 5x} < 4$ (variante P9t del PDF oficial)",
+    "expectedAnswer": "(-∞, 13/22] ∪ (3/5, +∞)",
+    "options": [
+      "(-∞, 13/22] ∪ (3/5, +∞)",
+      "(13/22, 3/5)",
+      "(-∞, 13/22) ∪ (3/5, +∞)",
+      "(13/22, 3/5]"
+    ],
+    "commonErrorTags": ["u3_signchart_factor_signo_incorrecto", "u3_signchart_dominio_denominador"],
+    "pedagogicalNote": "Variante P9t del PDF oficial (03_ej_utn.pdf): $\\frac{2x - 1}{3 - 5x} < 4$. Pasar a un mismo lado: $\\frac{2x - 1 - 4(3 - 5x)}{3 - 5x} < 0 \\Rightarrow \\frac{2x - 1 - 12 + 20x}{3 - 5x} < 0 \\Rightarrow \\frac{22x - 13}{3 - 5x} < 0$. Raíces críticas: numerador en $x = 13/22$, denominador en $x = 3/5$ (EXCLUIDO del dominio). Cuadro: NEGATIVO en $(-∞, 13/22)$ y en $(3/5, +∞)$ (porque el numerador cambia de signo en $13/22$ y el denominador cambia en $3/5$), POSITIVO en $(13/22, 3/5)$. Solución $< 0$ con extremo cerrado en $13/22$ (porque la expresión vale 0 allí) y abierto en $3/5$ (exclusión del dominio): $(-∞, 13/22] \\cup (3/5, +∞)$. Distractor A: invertir el signo del factor — captura `u3_signchart_factor_signo_incorrecto`. Distractor B: cerrar el extremo en $3/5$ o incluirlo — captura `u3_signchart_dominio_denominador`.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P9t variante: (2x − 1)/(3 − 5x) < 4 — racional con denominador y numerador",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P9t del PDF oficial (inecuación racional con numerador y denominador que se cruzan) en una superficie MC de diff-4 — exige multiplicar cruzado, identificar exclusión del dominio, y armar el cuadro de signos en cuatro intervalos."
+      }
+    ]
+  },
+  {
+    "id": "ex.u3.inecuaciones_producto_cociente.7",
+    "skillId": "mat.u3.inecuaciones_producto_cociente",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Resuelve $\\frac{x + 3}{2 - x} \\geq 1$ (variante P9u del PDF oficial)",
+    "expectedAnswer": "[-1/2, 2)",
+    "options": [
+      "[-1/2, 2)",
+      "[-1/2, 2]",
+      "(-1/2, 2)",
+      "(-1/2, 2]"
+    ],
+    "commonErrorTags": ["u3_signchart_dominio_denominador"],
+    "pedagogicalNote": "Variante P9u del PDF oficial (03_ej_utn.pdf): $\\frac{x + 3}{2 - x} \\geq 1$. Pasar a un mismo lado: $\\frac{x + 3 - (2 - x)}{2 - x} \\geq 0 \\Rightarrow \\frac{2x + 1}{2 - x} \\geq 0$. Raíces críticas: numerador en $x = -1/2$, denominador en $x = 2$ (EXCLUIDO del dominio). Cuadro: NEGATIVO en $(-∞, -1/2)$ y en $(2, +∞)$, POSITIVO en $(-1/2, 2)$. Solución $\\geq 0$ con extremo cerrado en $-1/2$ y abierto en $2$ (exclusión del dominio): $[-1/2, 2)$. Distractor dominante: cerrar el extremo en $x = 2$ — captura `u3_signchart_dominio_denominador`.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "P9u variante: (x + 3)/(2 − x) ≥ 1 — frontera del denominador",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ancla el ejercicio P9u del PDF oficial (racional con frontera explícita del denominador en x=2) en una superficie MC de diff-4 — usa numerador x+3 en lugar de x+2 para producir una raíz crítica distinta y un fingerprint único, manteniendo la apertura OBLIGATORIA en x=2."
+      }
+    ]
   }
 ]

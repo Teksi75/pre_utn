@@ -9,8 +9,46 @@ import type { SkillId } from "./skill";
 import type { IntervalRepresentation } from "../intervals/representation";
 import { isFiniteNumericAnswer } from "../utils/numeric";
 
+/**
+ * Canonical-trace entry restricted to the EXERCISE / THEORY / WORKED-EXAMPLE
+ * surface. Pins `sourceUse` to `ExerciseSourceUse` so a challenge-only
+ * literal (e.g. `"canonical-source"`) CANNOT structurally assign to a base
+ * `Exercise.canonicalTrace`. Runtime enforcement is in
+ * `parseOptionalCanonicalTrace` (content-loaders.ts).
+ */
+export interface ExerciseCanonicalTrace {
+  readonly path: string;
+  readonly section?: string;
+  readonly sourceUse: ExerciseSourceUse;
+  readonly pedagogicalIntent: string;
+}
+
 /** Exercise ID format: ex.u{1-6}.{skill_slug}.{index} or ex.u{1-6}.{skill_slug}.{slug-id} */
 export type ExerciseId = `ex.u${1 | 2 | 3 | 4 | 5 | 6}.${string}.${string}`;
+
+/**
+ * Source-use enum exposed on the EXERCISE surface. Same as `SourceUse` in
+ * `theory.ts` but re-exported here so consumers of the Exercise model don't
+ * need to import from `theory.ts` just to type a trace entry.
+ * The CHALLENGE surface uses a different, parallel enum
+ * (`ChallengeSourceUse`) — DO NOT mix the two.
+ */
+export type ExerciseSourceUse = "adapted" | "reinforcement" | "reference";
+
+/**
+ * Recognized U3 progression families for `math-exercise-catalog`'s
+ * cross-family ranking override (S0/S9 contract). The default comparator
+ * (difficulty-then-ID) is replaced ONLY when BOTH entries carry one of
+ * these families and a finite numeric `progressionOrder`.
+ */
+export type ProgressionFamily = "log-expansion" | "log-combining";
+
+/**
+ * Numeric position inside a progression family. Must be a finite
+ * non-negative number for the cross-family override to apply; otherwise
+ * the comparator falls back to legacy difficulty+ID.
+ */
+export type ProgressionOrder = number;
 
 /** An exercise option with optional interval representation for graphical exercises. */
 export type ExerciseOption = string | {
@@ -42,8 +80,14 @@ export type ExerciseType =
 /** Difficulty level: 1 (easiest) to 5 (hardest). */
 export type Difficulty = 1 | 2 | 3 | 4 | 5;
 
-/** A validated mathematics exercise. */
-export interface Exercise {
+/**
+ * Structural base shape (no `canonicalTrace`) shared by `Exercise` and the
+ * challenge surface (`ChallengeExercise`). Renderers / the evaluator that do
+ * NOT read `canonicalTrace` accept either surface by typing against this
+ * base. This is NOT a widened `sourceUse` union — each surface still pins
+ * its own per-surface trace type.
+ */
+export interface ExerciseBaseShape {
   readonly id: ExerciseId;
   readonly skillId: SkillId;
   readonly type: ExerciseType;
@@ -60,6 +104,47 @@ export interface Exercise {
   readonly category?: string;
   /** Semantic tags for filtering and pedagogical tracing. */
   readonly tags?: readonly string[];
+}
+
+/** A validated mathematics exercise. */
+export interface Exercise extends ExerciseBaseShape {
+  readonly id: ExerciseId;
+  readonly skillId: SkillId;
+  readonly type: ExerciseType;
+  readonly difficulty: Difficulty;
+  readonly prompt: string;
+  readonly expectedAnswer: string;
+  readonly commonErrorTags: readonly string[];
+  readonly pedagogicalNote: string;
+  /** Unit number (1–6) derived from skillId during defaulting. */
+  readonly unit: number;
+  /** Selectable choices for multiple-choice exercises. Required when type is "multiple-choice". */
+  readonly options?: readonly ExerciseOption[];
+  /** Practice category for bank organization (e.g. "clasificacion", "pertenencia"). */
+  readonly category?: string;
+  /** Semantic tags for filtering and pedagogical tracing. */
+  readonly tags?: readonly string[];
+  /**
+   * Optional canonical-trace entries. Type is the per-surface
+   * `ExerciseCanonicalTrace` (3-value `sourceUse`); challenge-only literals
+   * are rejected at compile time AND by `parseOptionalCanonicalTrace` at
+   * runtime. `path` SHOULD resolve to an existing repository file (verified
+   * by `validateTracePath` in `src/lib/trace-path.ts`).
+   */
+  readonly canonicalTrace?: readonly ExerciseCanonicalTrace[];
+  /**
+   * Optional U3 progression family. When present together with a
+   * finite numeric `progressionOrder`, the comparator in
+   * `src/domain/catalog/index.ts` ranks the exercise inside its
+   * `ProgressionFamily` instead of by raw difficulty.
+   */
+  readonly progressionFamily?: ProgressionFamily;
+  /**
+   * Numeric position inside `progressionFamily`. Must be a finite
+   * non-negative number. Undefined or non-finite falls back to legacy
+   * difficulty+ID ordering.
+   */
+  readonly progressionOrder?: ProgressionOrder;
 }
 
 /** Validation error with field and message. */
@@ -116,14 +201,17 @@ function hasStructuredMathAnswer(value: string): boolean {
  * Validate an exercise object.
  *
  * @param input - The exercise to validate
- * @param knownSkillIds - Set of known SkillIds for skill reference validation
+ * @param knownSkillIds - Set of known SkillIds for skill reference validation.
+ *                        Typed `ReadonlySet` to match the public catalog
+ *                        surface (`KNOWN_SKILL_IDS`) without forcing a
+ *                        widening cast at every call site.
  * @param knownErrorTagIds - Set of known error tag IDs for error tag reference validation
  * @returns Ok<Exercise> on success, Err<ValidationError> on failure
  */
 export function validateExercise(
   input: Exercise,
-  knownSkillIds: Set<SkillId>,
-  knownErrorTagIds: Set<string>
+  knownSkillIds: ReadonlySet<SkillId>,
+  knownErrorTagIds: ReadonlySet<string>
 ): Result<Exercise, ValidationError> {
   // Validate ID format
   const idMatch = EXERCISE_ID_PATTERN.exec(input.id);
