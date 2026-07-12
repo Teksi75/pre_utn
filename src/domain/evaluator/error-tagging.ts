@@ -7,7 +7,7 @@
  * commonErrorTags. If no declared tag matches, returns undefined.
  */
 
-import type { Exercise } from "../models/exercise";
+import type { EvaluableExercise } from "../models/exercise";
 import { getExerciseOptionValue } from "../models/exercise";
 
 /** Tags that represent sign-related misconceptions. */
@@ -158,7 +158,7 @@ function numericExpected(expectedAnswer: string): number {
  * equals the expected value, but the sign is negated.
  * Only applies to numerical exercises.
  */
-function isSignError(exercise: Exercise, userAnswer: string): boolean {
+function isSignError(exercise: EvaluableExercise, userAnswer: string): boolean {
   if (exercise.type !== "numerical") return false;
 
   const expectedNum = numericExpected(exercise.expectedAnswer);
@@ -175,7 +175,7 @@ function isSignError(exercise: Exercise, userAnswer: string): boolean {
  * left-to-right, ignoring PEMDAS (e.g., 2 + 3 × 4 → 5 × 4 = 20).
  * Only applies to numerical exercises.
  */
-function isOrderOfOpsError(exercise: Exercise, userAnswer: string): boolean {
+function isOrderOfOpsError(exercise: EvaluableExercise, userAnswer: string): boolean {
   if (exercise.type !== "numerical") return false;
 
   const expected = numericExpected(exercise.expectedAnswer);
@@ -205,7 +205,7 @@ function isOrderOfOpsError(exercise: Exercise, userAnswer: string): boolean {
  * bracket type (parenthesis vs square bracket) for endpoint inclusion.
  * Only applies to exercises with interval notation (currently unused — symbolic type removed).
  */
-function isIntervalEndpointError(exercise: Exercise, userAnswer: string): boolean {
+function isIntervalEndpointError(exercise: EvaluableExercise, userAnswer: string): boolean {
   // Symbolic type was removed; this detector is retained for future use
   // but currently never matches any exercise type.
   void exercise;
@@ -248,7 +248,7 @@ function isIntervalEndpointError(exercise: Exercise, userAnswer: string): boolea
  * student answered 0, a common misconception that anything to the power 0 is 0.
  * Only applies to numerical exercises.
  */
-function isZeroExponentError(exercise: Exercise, userAnswer: string): boolean {
+function isZeroExponentError(exercise: EvaluableExercise, userAnswer: string): boolean {
   if (exercise.type !== "numerical") return false;
 
   const expected = numericExpected(exercise.expectedAnswer);
@@ -266,7 +266,7 @@ function isZeroExponentError(exercise: Exercise, userAnswer: string): boolean {
  * but student writes -3.
  * Only applies to numerical exercises.
  */
-function isPrincipalRootError(exercise: Exercise, userAnswer: string): boolean {
+function isPrincipalRootError(exercise: EvaluableExercise, userAnswer: string): boolean {
   if (exercise.type !== "numerical") return false;
 
   const expected = numericExpected(exercise.expectedAnswer);
@@ -279,7 +279,7 @@ function isPrincipalRootError(exercise: Exercise, userAnswer: string): boolean {
 }
 
 /** Detect product-of-powers misconception: a^m × a^n treated as a^(m×n). */
-function isProductOfPowersError(exercise: Exercise, userAnswer: string): boolean {
+function isProductOfPowersError(exercise: EvaluableExercise, userAnswer: string): boolean {
   if (exercise.type !== "numerical") return false;
 
   const prompt = normalizeSuperscripts(exercise.prompt);
@@ -298,7 +298,7 @@ function isProductOfPowersError(exercise: Exercise, userAnswer: string): boolean
 }
 
 /** Detect quotient-of-powers misconception: a^m ÷ a^n treated as a^(m+n). */
-function isQuotientOfPowersError(exercise: Exercise, userAnswer: string): boolean {
+function isQuotientOfPowersError(exercise: EvaluableExercise, userAnswer: string): boolean {
   if (exercise.type !== "numerical") return false;
 
   const prompt = normalizeSuperscripts(exercise.prompt);
@@ -317,7 +317,7 @@ function isQuotientOfPowersError(exercise: Exercise, userAnswer: string): boolea
 }
 
 /** Detect power-of-power misconception: (a^m)^n treated as a^(m+n). */
-function isPowerOfPowerError(exercise: Exercise, userAnswer: string): boolean {
+function isPowerOfPowerError(exercise: EvaluableExercise, userAnswer: string): boolean {
   if (exercise.type !== "numerical") return false;
 
   const prompt = normalizeSuperscripts(exercise.prompt);
@@ -336,7 +336,7 @@ function isPowerOfPowerError(exercise: Exercise, userAnswer: string): boolean {
 }
 
 /** Detect answers that treat √(negative) as a real number in multiple choice. */
-function isNegativeEvenRootError(exercise: Exercise, userAnswer: string): boolean {
+function isNegativeEvenRootError(exercise: EvaluableExercise, userAnswer: string): boolean {
   if (exercise.type !== "multiple-choice") return false;
   const prompt = normalizeSuperscripts(exercise.prompt);
   const hasNegativeEvenRoot =
@@ -357,7 +357,7 @@ function isNegativeEvenRootError(exercise: Exercise, userAnswer: string): boolea
  * but the student answer has a single term whose degree matches the expected
  * max degree and coefficient equals the sum of all expected coefficients.
  */
-function isU2LikeTermError(exercise: Exercise, userAnswer: string): boolean {
+function isU2LikeTermError(exercise: EvaluableExercise, userAnswer: string): boolean {
   if (exercise.type !== "multiple-choice") return false;
 
   // Normalize superscripts for degree extraction
@@ -391,7 +391,7 @@ function isU2LikeTermError(exercise: Exercise, userAnswer: string): boolean {
  * or remainder theorem, and the student picked a distractor (numeric answer
  * that differs from expected but is in the options list).
  */
-function isU2RuffiniSignoAError(exercise: Exercise, userAnswer: string): boolean {
+function isU2RuffiniSignoAError(exercise: EvaluableExercise, userAnswer: string): boolean {
   if (exercise.type !== "multiple-choice") return false;
 
   const prompt = exercise.prompt.toLowerCase();
@@ -422,7 +422,7 @@ function isU2RuffiniSignoAError(exercise: Exercise, userAnswer: string): boolean
  * number of terms or other property. Applies to MC exercises asking
  * about polynomial degree.
  */
-function isU2DegreeError(exercise: Exercise, userAnswer: string): boolean {
+function isU2DegreeError(exercise: EvaluableExercise, userAnswer: string): boolean {
   if (exercise.type !== "multiple-choice") return false;
 
   const prompt = exercise.prompt.toLowerCase();
@@ -448,7 +448,7 @@ function isU2DegreeError(exercise: Exercise, userAnswer: string): boolean {
  * positions that should be zero. Applies to exercises where the expected
  * answer is a coefficient array (currently unused — symbolic type removed).
  */
-function isU2MissingTermError(exercise: Exercise, userAnswer: string): boolean {
+function isU2MissingTermError(exercise: EvaluableExercise, userAnswer: string): boolean {
   // Symbolic type was removed; this detector is retained for future use
   // but currently never matches any exercise type.
   void exercise;
@@ -484,7 +484,7 @@ function isU2MissingTermError(exercise: Exercise, userAnswer: string): boolean {
  * expression that still contains factorable sub-expressions.
  * Applies to MC exercises about factorization.
  */
-function isU2IncompleteFactorError(exercise: Exercise, userAnswer: string): boolean {
+function isU2IncompleteFactorError(exercise: EvaluableExercise, userAnswer: string): boolean {
   if (exercise.type !== "multiple-choice") return false;
 
   const prompt = exercise.prompt.toLowerCase();
@@ -520,7 +520,7 @@ function isU2IncompleteFactorError(exercise: Exercise, userAnswer: string): bool
  * Symbolic branch removed (symbolic type no longer supported).
  */
 function isU2SignoFactorizacionError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   // For MC: compare selected option with expected, check factor sign differences
@@ -591,7 +591,7 @@ function isU2SignoFactorizacionError(
  * from the expected case label.
  */
 function isU2CasoIncorrectoError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -665,7 +665,7 @@ function normalizeMinus(value: string): string {
  * 4. Check if the student's answer contains any EXACT excluded value.
  */
 function isU2DenominadorCeroError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -725,7 +725,7 @@ function isU2DenominadorCeroError(
  *    than the expected answer (picked the MCM-like distractor)
  */
 function isU2ConfundeMcmMcdError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -799,7 +799,7 @@ function isU2ConfundeMcmMcdError(
  * Applies to MC exercises whose prompt is a linear equation.
  */
 function isU3AislamientoIncorrectoError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -850,7 +850,7 @@ function isU3AislamientoIncorrectoError(
  * Applies to MC exercises about square-root equations.
  */
 function isU3FactorizacionCuadraticaError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -898,7 +898,7 @@ function isU3FactorizacionCuadraticaError(
  * Applies to MC exercises solving linear inequalities.
  */
 function isU3SignoDesigualdadError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -964,7 +964,7 @@ function flipInequalityOp(op: string): string {
  *   - Student's picked option is a single value or simple equality.
  */
 function isU3DosValoresAbsolutoError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -1004,7 +1004,7 @@ function isU3DosValoresAbsolutoError(
  * Applies to MC exercises about line slope/intercept.
  */
 function isU3PendienteOOrdenadaError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -1066,7 +1066,7 @@ function isU3PendienteOOrdenadaError(
  * Applies to MC exercises about systems of equations.
  */
 function isU3SustitucionOEliminacionError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -1119,7 +1119,7 @@ function isU3SustitucionOEliminacionError(
  * Applies to MC exercises about exponential equations.
  */
 function isU3IgualdadExponencialesError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -1159,7 +1159,7 @@ function isU3IgualdadExponencialesError(
  * Applies to MC exercises about logarithmic properties.
  */
 function isU3PropiedadLogaritmoError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -1189,7 +1189,7 @@ function isU3PropiedadLogaritmoError(
 }
 
 function isU3VerificacionOmitidaError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -1203,7 +1203,7 @@ function isU3VerificacionOmitidaError(
 }
 
 function isU3InterpretacionContextualIncorrectaError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -1217,7 +1217,7 @@ function isU3InterpretacionContextualIncorrectaError(
 }
 
 function isU3TraduccionIncorrectaError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
@@ -1239,7 +1239,7 @@ function isU3TraduccionIncorrectaError(
  * @returns A declared error tag string, or undefined if no match
  */
 export function tagError(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string
 ): string | undefined {
   const tags = exercise.commonErrorTags;

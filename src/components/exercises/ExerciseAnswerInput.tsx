@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { RichText } from "@/components/math/RichText";
 import { IntervalNumberLine } from "@/components/practice/IntervalNumberLine";
-import type { Exercise, ExerciseOption } from "@/domain/models/exercise";
+import type { ExerciseBaseShape, ExerciseOption } from "@/domain/models/exercise";
 import {
   canSubmitExerciseAnswer,
   getSubmittedExerciseAnswer,
@@ -22,7 +22,7 @@ import {
 } from "./exercise-option-shuffle";
 
 interface ExerciseAnswerInputProps {
-  readonly exercise: Exercise;
+  readonly exercise: ExerciseBaseShape;
   readonly disabled: boolean;
   readonly onSubmit: (answer: string) => void;
   readonly autoFocus?: boolean;

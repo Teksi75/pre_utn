@@ -42,7 +42,7 @@ Revert PR2 first (parser/defaulting and its tests), then PR1 (contracts, exports
 
 ## Dependencies
 
-Prerequisite `recuperar-u3-fundacion-minima` (merged `0cf2c51`). Read-only source `0f79d634843651366eb0ee8b0cb1467fb77f73de`. Clean base `02d29680e3336e1237e99ec9932ea8c28bb5c87c` (`origin/main`, post PR #94).
+Prerequisite `recuperar-u3-fundacion-minima` (merged `0cf2c51`). Read-only source `0f79d634843651366eb0ee8b0cb1467fb77f73de`. Clean base `08da4b2f23ad7aaa3bad6e35e260cbbb0c0b55d1` (`origin/main`, post PR #94).
 
 ## Success Criteria
 
