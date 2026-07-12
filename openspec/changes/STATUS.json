@@ -2,6 +2,25 @@
   "$schema": "SDD Change Registry — single source of truth for active changes",
   "$note": "This file is the portable state that syncs across machines. Update it when a change transitions phases. The audit script reads this to detect zombie branches.",
   "changes": {
+    "recuperar-u3-fundacion-minima": {
+      "status": "in-progress",
+      "branch": "feat/u3-recuperar-fundacion-minima",
+      "startedAt": "2026-07-11",
+      "cleanBase": "05639d48a264e871d01031984c05a127c51f8d57",
+      "readOnlySourceBranch": "feat/align-u3-practice-official-exercises",
+      "readOnlySourceCommit": "0f79d634843651366eb0ee8b0cb1467fb77f73de",
+      "parentRoadmap": "recuperar-u3-practica-canonica",
+      "delivery": "single bounded PR (planning + impl + test + STATUS terminal; hard <=400 changed lines)",
+      "summary": "Narrowed to safe canonical trace-path validation only. Recover src/lib/trace-path.ts (Node-only, no domain deps) from read-only source 0f79d63 onto clean base 05639d48. Add one focused Vitest test file proving boolean/no-throw contract. Contract: validateTracePath(repositoryRoot, tracePath) returns true only for non-empty root + non-empty repository-relative path resolving inside root and existing on disk; false without throwing for absolute, parent escape, empty/whitespace, missing, fs errors. Out: Exercise/canonicalTrace model fields, parsers, theory/examples, persistence, useChallengeFlow. Infrastructure-only. Prerequisite for later compatibility change."
+    },
+    "align-u3-practice-official-exercises": {
+      "status": "in-progress",
+      "branch": "feat/align-u3-practice-official-exercises",
+      "startedAt": "2026-07-09",
+      "issue": 84,
+      "companionIssues": [82, 83],
+      "summary": "Align Unit 3 symbolic/core practice with canonical exercises using explicit difficulty progression, structured inputs, and optional challenges at or above canonical maximum."
+    },
     "apply-math-watermark-globally": {
       "status": "done",
       "branch": null,
