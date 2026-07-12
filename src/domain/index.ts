@@ -38,7 +38,11 @@ export type {
   ExerciseId,
   ExerciseType,
   Difficulty,
+  ExerciseBaseShape,
+  ExerciseCanonicalTrace,
+  ExerciseSourceUse,
   Exercise,
+  EvaluableExercise,
   ValidationError as ExerciseValidationError,
 } from "./models/exercise";
 export { validateExercise } from "./models/exercise";

@@ -47,7 +47,9 @@ export function ChallengeFlow({ challenges, skillId, onDone }: ChallengeFlowProp
     (answer: string) => {
       if (!currentChallenge) return;
 
-      // Evaluate using domain evaluator (handles normalization, tolerance, error tags)
+      // Evaluate using domain evaluator (handles normalization, tolerance, error tags).
+      // Accepts the structural EvaluableExercise contract — ChallengeExercise already
+      // provides all required fields via ExerciseBaseShape, no cast needed.
       const evaluation = evaluateAnswer(currentChallenge, answer);
 
       if (evaluation.correct) {

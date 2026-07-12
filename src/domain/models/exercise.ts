@@ -42,8 +42,45 @@ export type ExerciseType =
 /** Difficulty level: 1 (easiest) to 5 (hardest). */
 export type Difficulty = 1 | 2 | 3 | 4 | 5;
 
-/** A validated mathematics exercise. */
-export interface Exercise {
+/**
+ * Source-use classification for the general exercise surface.
+ *
+ * Compatible with U2 (which permits `alignment`) and the read-only
+ * source catalog (which uses the three narrower literals). `alignment`
+ * remains valid for the general `Exercise` contract; a separate U3-only
+ * audit may narrow U3 trace use to the three literals excluding
+ * `alignment`. Challenge-only literals (canonical-source,
+ * calibrated-from-exam, solution-pattern) live on the independent
+ * `ChallengeSourceUse` contract and are not assignable here.
+ */
+export type ExerciseSourceUse =
+  | "adapted"
+  | "reinforcement"
+  | "reference"
+  | "alignment";
+
+/**
+ * Pedagogical traceability for the general exercise surface.
+ *
+ * `section` is optional; `path` and `pedagogicalIntent` are required.
+ * The `sourceUse` literal must belong to the general `ExerciseSourceUse`
+ * set — challenge-only literals are rejected at compile time and at
+ * runtime by the general parser (PR2).
+ */
+export interface ExerciseCanonicalTrace {
+  readonly path: string;
+  readonly section?: string;
+  readonly sourceUse: ExerciseSourceUse;
+  readonly pedagogicalIntent: string;
+}
+
+/**
+ * Shared structural surface for general exercises and the independent
+ * challenge surface. Both `Exercise` and `ChallengeExercise` extend this
+ * shape; the trace field is owned by each subtype with its own type so
+ * the two contracts cannot be confused.
+ */
+export interface ExerciseBaseShape {
   readonly id: ExerciseId;
   readonly skillId: SkillId;
   readonly type: ExerciseType;
@@ -60,6 +97,43 @@ export interface Exercise {
   readonly category?: string;
   /** Semantic tags for filtering and pedagogical tracing. */
   readonly tags?: readonly string[];
+}
+
+/**
+ * A validated mathematics exercise.
+ *
+ * Extends `ExerciseBaseShape` so the structural rendering/input fields
+ * stay shared with the challenge surface. The optional `canonicalTrace`
+ * uses the general `ExerciseSourceUse` contract (compatible with U2's
+ * `alignment`) and is independent from the challenge trace type.
+ */
+export interface Exercise extends ExerciseBaseShape {
+  /** Optional pedagogical traceability back to canonical material. */
+  readonly canonicalTrace?: readonly ExerciseCanonicalTrace[];
+}
+
+/**
+ * Structural input contract for the domain evaluator.
+ *
+ * Carries ONLY the fields the evaluator actually reads: `type`,
+ * `expectedAnswer`, `prompt`, `commonErrorTags`, `skillId`, and
+ * `options`. Both `Exercise` and `ChallengeExercise` extend
+ * `ExerciseBaseShape` (which declares these six fields), so they are
+ * assignable to `EvaluableExercise` without being mutually assignable
+ * to each other — the general trace and the challenge trace remain
+ * independent.
+ *
+ * Reusable across any surface that satisfies this minimal shape; never
+ * carries the `trace`, `challengeSection`, `category`, or `tags`
+ * discriminators.
+ */
+export interface EvaluableExercise {
+  readonly type: ExerciseType;
+  readonly expectedAnswer: string;
+  readonly prompt: string;
+  readonly commonErrorTags: readonly string[];
+  readonly skillId: SkillId;
+  readonly options?: readonly ExerciseOption[];
 }
 
 /** Validation error with field and message. */

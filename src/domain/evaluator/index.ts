@@ -4,7 +4,7 @@
  * TDD coverage: src/domain/__tests__/evaluator-index.test.ts.
  */
 
-import type { Exercise } from "../models/exercise";
+import type { EvaluableExercise } from "../models/exercise";
 import { evaluateNumeric } from "./numeric";
 import { evaluateExact } from "./exact";
 import { evaluateBoolean } from "./boolean";
@@ -41,13 +41,16 @@ const CONFIGURATION_ERROR_RESULT: EvaluationResult = {
 /**
  * Evaluate a student's answer against an exercise's expected answer.
  * Dispatches to the appropriate comparison module based on exercise type.
+ * Accepts the structural `EvaluableExercise` contract so both general
+ * (`Exercise`) and challenge (`ChallengeExercise`) surfaces can be
+ * evaluated without being mutually assignable.
  *
  * @param exercise - The exercise being answered
  * @param userAnswer - The student's answer
  * @returns EvaluationResult with correctness, optional error tag, and optional feedback
  */
 export function evaluateAnswer(
-  exercise: Exercise,
+  exercise: EvaluableExercise,
   userAnswer: string
 ): EvaluationResult {
   // Unsupported types require manual review
