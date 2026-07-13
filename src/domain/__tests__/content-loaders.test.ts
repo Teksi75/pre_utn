@@ -102,6 +102,25 @@ describe("applyExerciseDefaults", () => {
       "unsupported exercise type"
     );
   });
+
+  // parseExerciseId boundary contract — characterization only (no regex inspection).
+  // GGA finding reproduction: parseExerciseId introduces domain validation without
+  // focused tests covering valid and malformed IDs. The 6 cases below exercise the
+  // regex accept branch (2 real catalog IDs) and four distinct rejection branches
+  // without modifying production code, regex, or exports.
+  describe("parseExerciseId boundary contract", () => {
+    test.each(["ex.u3.operaciones_polinomios.4", "ex.u1.conjuntos_numericos.cn-per-01"])(
+      "accepts valid id: %s",
+      (id) => expect(applyExerciseDefaults({ ...baseRaw, id }).id).toBe(id)
+    );
+    test.each(["exx.u3.polinomios.1", "ex.u7.polinomios.1", "ex.u3..1", "ex.u3.polinomios."])(
+      "rejects malformed id: %s",
+      (id) =>
+        expect(() => applyExerciseDefaults({ ...baseRaw, id })).toThrow(
+          /invalid ExerciseId format/
+        )
+    );
+  });
 });
 
 describe("loadSkillBank — wiring bank validator into catalog load path", () => {

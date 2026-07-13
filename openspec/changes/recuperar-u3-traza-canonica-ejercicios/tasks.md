@@ -39,15 +39,15 @@ PR1 line accounting: actual `git diff --shortstat` additions+deletions ≤400 (n
 
 Branch: feat/u3-traza-canonica-parser ← main (post-PR1).
 
-- [ ] 2.1 RED: four absence expressions (undefined, null, [], {}) on parseOptionalCanonicalTrace return null, no throw
-- [ ] 2.2 RED: single non-empty entry and non-empty array parse into typed ExerciseCanonicalTrace[] in input order
-- [ ] 2.3 RED: alignment accepted; challenge-only or unknown sourceUse literals throw with literal named
-- [ ] 2.4 RED: non-object primitive raw, missing path, missing pedagogicalIntent each throw; legacy JSON loads with no trace attached
-- [ ] 2.5 GREEN: parseOptionalCanonicalTrace(raw: unknown, id: string): readonly ExerciseCanonicalTrace[] | null in content-loaders.ts; export from catalog/index.ts
-- [ ] 2.6 GREEN: add canonicalTrace to KNOWN_FIELDS in applyExerciseDefaults; spread only when non-null
-- [ ] 2.7 GREEN: auditU3TraceSourceUse(exercises): readonly U3TraceAuditViolation[] in new src/domain/catalog/u3-trace-audit.ts; filter unit-3 skillId; flag alignment; U2 returns [] without inspection
-- [ ] 2.8 RED: U3 alignment produces violation; U2 alignment produces zero violations and is not inspected; U3 adapted/reinforcement/reference produce zero
-- [ ] 2.9 REFACTOR: typecheck + build; verify U1/U2 legacy entries load with no trace attached
+- [x] 2.1 RED: four absence expressions (undefined, null, [], {}) on parseOptionalCanonicalTrace return null, no throw
+- [x] 2.2 RED: single non-empty entry and non-empty array parse into typed ExerciseCanonicalTrace[] in input order
+- [x] 2.3 RED: alignment accepted; challenge-only or unknown sourceUse literals throw with literal named
+- [x] 2.4 RED: non-object primitive raw, missing path, missing pedagogicalIntent each throw; legacy JSON loads with no trace attached
+- [x] 2.5 GREEN: parseOptionalCanonicalTrace(raw: unknown, id: string): readonly ExerciseCanonicalTrace[] | null in content-loaders.ts; export from catalog/index.ts
+- [x] 2.6 GREEN: add canonicalTrace to KNOWN_FIELDS in applyExerciseDefaults; spread only when non-null
+- [x] 2.7 GREEN: auditU3TraceSourceUse(exercises): readonly U3TraceAuditViolation[] in new src/domain/catalog/u3-trace-audit.ts; filter unit-3 skillId; flag alignment; U2 returns [] without inspection
+- [x] 2.8 RED: U3 alignment produces violation; U2 alignment produces zero violations and is not inspected; U3 adapted/reinforcement/reference produce zero
+- [x] 2.9 REFACTOR: typecheck + build; verify U1/U2 legacy entries load with no trace attached
 - [ ] 2.10 Commit catalog spec + STATUS delta (pr2.status=ready; change remains in-progress)
 - [ ] 2.11 Mark PR2 reviewed; post-apply lifecycle (merge to main) is outside the apply phase
 

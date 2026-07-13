@@ -15,7 +15,7 @@
 import type { TheoryNode, ConceptBlock, CanonicalTrace, IntervalVisualExample, SourceUse } from "../models/theory";
 import type { WorkedExample, SolutionStep } from "../models/worked-example";
 import type { FeedbackMapping } from "../feedback/index";
-import type { Exercise, ExerciseId, ExerciseOption, ExerciseType, Difficulty } from "../models/exercise";
+import type { Difficulty, Exercise, ExerciseCanonicalTrace, ExerciseId, ExerciseOption, ExerciseSourceUse, ExerciseType } from "../models/exercise";
 import type { SkillId } from "../models/skill";
 import { parseSkillUnit } from "../shared/skill-id";
 import type { IntervalModel, IntervalEndpoint } from "../intervals/index";
@@ -126,6 +126,49 @@ function parseStringField(raw: Record<string, unknown>, field: string, id: strin
     failParse(field, id, `expected non-empty string, got ${typeof v}`);
   }
   return v;
+}
+
+/** Parse a source-use literal for the general exercise surface. */
+function parseExerciseSourceUse(
+  raw: Record<string, unknown>,
+  field: string,
+  id: string
+): ExerciseSourceUse {
+  const value = raw[field];
+  if (
+    value === "adapted" ||
+    value === "reinforcement" ||
+    value === "reference" ||
+    value === "alignment"
+  ) {
+    return value;
+  }
+  failParse(field, id, `expected adapted|reinforcement|reference|alignment, got ${String(value)}`);
+}
+
+/** Parse optional canonical trace metadata for a general exercise. */
+export function parseOptionalCanonicalTrace(
+  raw: unknown,
+  id: string
+): readonly ExerciseCanonicalTrace[] | null {
+  if (raw === undefined || raw === null) return null;
+  if (Array.isArray(raw) && raw.length === 0) return null;
+  if (typeof raw === "object" && !Array.isArray(raw) && Object.keys(raw).length === 0) return null;
+
+  const entries = Array.isArray(raw) ? raw : [raw];
+  return entries.map((entry, index) => {
+    const context = `canonicalTrace[${index}]`;
+    const record = parseRecord(entry, `${id}.${context}`);
+    const section = typeof record.section === "string" && record.section.trim().length > 0
+      ? record.section
+      : undefined;
+    const parsed: ExerciseCanonicalTrace = {
+      path: parseStringField(record, "path", `${id}.${context}`),
+      sourceUse: parseExerciseSourceUse(record, "sourceUse", `${id}.${context}`),
+      pedagogicalIntent: parseStringField(record, "pedagogicalIntent", `${id}.${context}`),
+    };
+    return section === undefined ? parsed : { ...parsed, section };
+  });
 }
 
 /** Runtime-validate a SkillId (mat.u{1-6}.{slug}). */
@@ -599,6 +642,7 @@ export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
   const options = Array.isArray(raw.options)
     ? raw.options.map((option, index) => parseExerciseOption(option, `${id}.options[${index}]`))
     : undefined;
+  const canonicalTrace = parseOptionalCanonicalTrace(raw.canonicalTrace, id);
 
   // Preserve extra fields from raw that aren't part of the Exercise
   // interface (e.g. relatedTheoryIds, relatedExampleIds) so that
@@ -606,6 +650,7 @@ export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
   const KNOWN_FIELDS = new Set([
     "id", "skillId", "type", "difficulty", "prompt", "expectedAnswer",
     "commonErrorTags", "pedagogicalNote", "category", "tags", "options", "unit",
+    "canonicalTrace",
   ]);
   const extra: Record<string, unknown> = {};
   for (const key of Object.keys(raw)) {
@@ -620,7 +665,8 @@ export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
     commonErrorTags, pedagogicalNote, category, tags,
     unit: parseSkillUnit(skillId),
   };
-  return (options ? { ...base, options } : base) as Exercise;
+  const withOptions = options ? { ...base, options } : base;
+  return (canonicalTrace ? { ...withOptions, canonicalTrace } : withOptions) as Exercise;
 }
 
 /** Per-skill exercise file registry (raw JSON, validated lazily). */

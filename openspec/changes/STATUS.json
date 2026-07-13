@@ -855,12 +855,12 @@
       },
       "pr2": {
         "branch": "feat/u3-traza-canonica-parser",
-        "status": "planned",
-        "target": "feat/u3-traza-canonica-contracts",
+        "status": "implemented",
+        "target": "main",
         "dependsOn": "pr1",
-        "summary": "Optional parser/defaulting and parser/legacy behavior tests; must follow PR1."
+        "summary": "Optional parser/defaulting and isolated U3 audit implemented under strict TDD; final delegated gates and review remain pending."
       },
-      "summary": "PR1 merged (#97, d03010e). PR2 remains planned on feat/u3-traza-canonica-parser targeting PR1 branch. General optional Exercise.canonicalTrace compatibility uses ExerciseBaseShape plus ExerciseCanonicalTrace/ExerciseSourceUse (adapted|reinforcement|reference|alignment), preserving U2. ChallengeExercise remains independent: it extends ExerciseBaseShape and retains ChallengeCanonicalTrace/ChallengeSourceUse. The general parser accepts alignment and rejects challenge-only/unknown literals; a separate U3-only audit may reject alignment only for Unit 3 inputs and never inspects or migrates U2. Consumer prop widening has no UI behavior change. PR1/PR2 each include behavior, tests, and artifacts within the hard 400-line budget. Out: validateTracePath (merged 0cf2c51), theory/worked-example schema, topic content, U2 migration, persistence, loaders wholesale, useChallengeFlow, challenge loader/store/flow/readiness, and runtime provenance."
+      "summary": "PR1 merged (#97, d03010e). PR2 implementation candidate is on feat/u3-traza-canonica-parser targeting main. General optional Exercise.canonicalTrace compatibility uses ExerciseBaseShape plus ExerciseCanonicalTrace/ExerciseSourceUse (adapted|reinforcement|reference|alignment), preserving U2. ChallengeExercise remains independent: it extends ExerciseBaseShape and retains ChallengeCanonicalTrace/ChallengeSourceUse. The general parser accepts alignment and rejects challenge-only/unknown literals; a separate U3-only audit rejects alignment only for Unit 3 inputs and never inspects or migrates U2. Consumer prop widening has no UI behavior change. PR1/PR2 each include behavior, tests, and artifacts within the hard 400-line budget. Out: validateTracePath (merged 0cf2c51), theory/worked-example schema, topic content, U2 migration, persistence, loaders wholesale, useChallengeFlow, challenge loader/store/flow/readiness, and runtime provenance."
     }
   },
   "activeBranches": [],

@@ -16,6 +16,10 @@ import { loadTaxonomy } from "../error-taxonomy/index";
 import { parseSkillUnit } from "../shared/skill-id";
 import { getUnitThreshold, applyExerciseDefaults, parseRecord } from "./content-loaders";
 
+export { parseOptionalCanonicalTrace } from "./content-loaders";
+export { auditU3TraceSourceUse } from "./u3-trace-audit";
+export type { U3TraceAuditViolation } from "./u3-trace-audit";
+
 // ---------------------------------------------------------------------------
 // Raw JSON imports — stored as unknown, no parsing at module init.
 // Static imports are safe (bundler loads data); the composition that
