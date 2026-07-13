@@ -861,6 +861,20 @@
         "summary": "Optional parser/defaulting and isolated U3 audit implemented under strict TDD; final delegated gates and review remain pending."
       },
       "summary": "PR1 merged (#97, d03010e). PR2 implementation candidate is on feat/u3-traza-canonica-parser targeting main. General optional Exercise.canonicalTrace compatibility uses ExerciseBaseShape plus ExerciseCanonicalTrace/ExerciseSourceUse (adapted|reinforcement|reference|alignment), preserving U2. ChallengeExercise remains independent: it extends ExerciseBaseShape and retains ChallengeCanonicalTrace/ChallengeSourceUse. The general parser accepts alignment and rejects challenge-only/unknown literals; a separate U3-only audit rejects alignment only for Unit 3 inputs and never inspects or migrates U2. Consumer prop widening has no UI behavior change. PR1/PR2 each include behavior, tests, and artifacts within the hard 400-line budget. Out: validateTracePath (merged 0cf2c51), theory/worked-example schema, topic content, U2 migration, persistence, loaders wholesale, useChallengeFlow, challenge loader/store/flow/readiness, and runtime provenance."
+    },
+    "u5-00-unit-5-foundation": {
+      "status": "in-progress",
+      "branch": "sdd/u5-00-spec-sources-traceability",
+      "startedAt": "2026-07-13",
+      "delivery": "force-chained; stacked-to-main; review budget 800 lines",
+      "sizeException": {
+        "approved": true,
+        "approvedBy": "maintainer",
+        "approvedAt": "2026-07-13",
+        "scope": "THIS U5-00 docs-only foundation packet only (~1100-1200 lines); does NOT carry to U5-01+. Each U5-01..U5-11 slice must independently stay within the 800 authored line review budget or request a separate size:exception.",
+        "reason": "U5-00 is a planning and documentation-only foundation packet: 5 OpenSpec delta specs (unit-5-foundation, math-skill-model, math-exercise-model, math-answer-evaluator, math-exercise-catalog), 2 design artifacts (source-receipts.json + traceability.md), U5-00 proposal/design/exploration/tasks bundle, and the U5-00 STATUS entry. The packet is bound to source governance, exact provisional retirement inventory, versioned migration contract, slice roadmap U5-01..U5-11, and structured-answer architecture; further compression would split cross-referenced invariants across PRs and break the foundation acceptance gate defined in specs/unit-5-foundation/spec.md. Future implementation slices remain individually reviewable and strictly bounded to their own authored review budget."
+      },
+      "summary": "U5-00 exploration only: canonical source receipts, exact provisional retirement inventory, full Unit 5 practice traceability, migration and structured-answer architecture, and ordered U5-00 through U5-11 vertical slices. No application/content/test/migration implementation and no U3 changes."
     }
   },
   "activeBranches": [],
