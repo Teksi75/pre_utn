@@ -886,6 +886,13 @@
         "Add per-subitem canonical trace keys in later content implementation specs/catalog work."
       ],
       "summary": "U5-00 exploration only: canonical source receipts, exact provisional retirement inventory, full Unit 5 practice traceability, migration and structured-answer architecture, and ordered U5-00 through U5-11 vertical slices. No application/content/test/migration implementation and no U3 changes."
+    },
+    "u5-01-provisional-retirement": {
+      "status": "in-progress",
+      "branch": "docs/u5-01-static-retirement-checkpoint",
+      "startedAt": "2026-07-14",
+      "delivery": "documentation checkpoint; static repository retirement tasks must be rebuilt before implementation",
+      "summary": "Binding decision: provisional U5 was never exposed as a practicable user unit. Retire the exact six provisional skills, five placeholder exercises, and active catalog/content/reference/spec/document/test artifacts without migration, sidecars, SQL, write gates, blocking, persistence changes, U3, U5-02, or archived U5-00 edits."
     }
   },
   "activeBranches": [],
