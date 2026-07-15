@@ -54,7 +54,7 @@ raising a coverage failure.
 | Focused test command and exact result | Historical: `CI=true pnpm run test` → 1 failed / 3187 passed / 3188 total (187 files), 19.79s; see the retained output below. Confirmed clean checkpoint: `CI=true pnpm run test` → 187 files passed / 3188 tests passed. |
 | Typecheck command and exact result | `pnpm run typecheck` → `$ tsc --noEmit` (exit 0). |
 | Runtime harness command/scenario and exact result | N/A — no runtime boundary exists. The change is a static repository retirement of catalog/content/taxonomy/reference/spec/document/test artifacts; no executable behavior, no migration, no persistence, no SQL, no adapter. Runtime harness would only exist for end-to-end behavior, which is out of scope (and explicitly forbidden) for U5-01. |
-| Rollback boundary | Revert the 17 working-tree modifications (`content/matematica/exercises.json`, the three spec files under `openspec/specs/`, the seven test files under `src/domain/__tests__/`, `src/domain/catalog/content-loaders.ts`, `src/domain/error-taxonomy/index.ts`, `src/domain/models/skill-catalog.ts`, `utn-ingreso-app-spec/docs/pedagogy/06-skill-map.md`) plus the U3 restore (`error-taxonomy-u3.test.ts`). Revert `tasks.md` to its pre-U5-01 INVALID status. Revert `STATUS.json` u5-01 entry to `in-progress`. Reverting leaves all 23 SDD tasks unchecked and every U5 placeholder skill/exercise/tag/edge restored. |
+| Rollback boundary | Revert the 17 working-tree modifications (`content/matematica/exercises.json`, the three spec files under `openspec/specs/`, the seven test files under `src/domain/__tests__/`, `src/domain/catalog/content-loaders.ts`, `src/domain/error-taxonomy/index.ts`, `src/domain/models/skill-catalog.ts`, `utn-ingreso-app-spec/docs/pedagogy/06-skill-map.md`) including the obsolete provisional-U5 cross-cutting assertion replacement in `error-taxonomy-u3.test.ts`. Revert `tasks.md` to its pre-U5-01 INVALID status. Revert `STATUS.json` u5-01 entry to `in-progress`. Reverting leaves all 23 SDD tasks unchecked and every U5 placeholder skill/exercise/tag/edge restored. |
 
 ### Exact `pnpm run typecheck` output
 
@@ -129,7 +129,7 @@ run is the current test evidence.
 | `src/domain/__tests__/complejos-domain.test.ts` | Modified | Replaced the `mat.u5.complejos_forma_polar` downstream-edge assertion with a no-U5-downstream invariant. |
 | `src/domain/__tests__/diagnostic.test.ts` | Modified | Removed two U5-specific test cases (`ex.u5.circunferencia_trigonometrica.1` and `ex.u5.radianes.1` reliability/structural tests) and re-pointed the "real catalog diagnostic includes Unit 5" test to assert zero U5 exercises. |
 | `src/domain/__tests__/error-taxonomy.test.ts` | Modified | Updated the ≥2-tags-per-unit test to skip Unit 5 with explicit comment; updated the per-unit tag list to expect zero Unit 5 tags; added explicit `Unit 5 has zero tags after U5-01 retirement` test. |
-| `src/domain/__tests__/error-taxonomy-u3.test.ts` | Modified (corrective restore) | **Restored to its pre-U5-01 content** (`aa7ad91616a67a12dfa7641ab6372a84981e657a`). The U5-skip and U5-has-zero-tags additions were moved to `error-taxonomy.test.ts` per the U3-immutability constraint. The U3 file's pre-existing `each unit still has at least 2 tags (coverage contract preserved)` test now fails on Unit 5 — see *Issues found*. |
+| `src/domain/__tests__/error-taxonomy-u3.test.ts` | Modified | Replaced only the obsolete cross-cutting provisional-U5 assertion that required every unit, including the intentionally empty Unit 5, to have at least two tags. This did not restore the file and did not change U3 behavior, pedagogical content, or catalog content. |
 | `src/domain/__tests__/evaluator-index.test.ts` | Modified | Removed three U5 entries from the migrated-exercises list and the standalone `ex.u5.radianes.1` evaluator test. |
 | `src/domain/__tests__/per-unit-thresholds.test.ts` | Modified | Added explicit `UNIT_THRESHOLDS["unit-5"] === 0` and `getUnitThreshold("unit-5") === 0` assertions; updated the default-5 fallback test to assert Unit 4 and Unit 6 (no longer Unit 5). |
 | `src/domain/catalog/content-loaders.ts` | Modified | Added `"unit-5": 0` to `UNIT_THRESHOLDS`; documented the empty-U5-permitted rationale in the JSDoc. |
@@ -225,18 +225,18 @@ None. Implementation matches `design.md` exactly:
 
 **Historical cross-cutting consequence — U3 coverage contract vs. empty Unit 5.**
 
-After restoring `src/domain/__tests__/error-taxonomy-u3.test.ts` to its
-pre-U5-01 content, the historical test run failed on Unit 5 (0 tags vs. ≥2
-expected). This was the direct, expected cross-cutting consequence of the
-static retirement: U3's taxonomy coverage contract was authored under the
-assumption that every unit (1–6) has at least two error tags; U5-01 retires
-the two U5 taxonomy tags per Phase 3 tasks 3.1–3.2. The later clean
-checkpoint run passed 187 files / 3188 tests.
+The historical test run failed on Unit 5 (0 tags vs. ≥2 expected) because
+the obsolete cross-cutting provisional-U5 assertion required every unit (1–6)
+to have at least two error tags. U5-01 retires the two U5 taxonomy tags per
+Phase 3 tasks 3.1–3.2. The assertion was subsequently replaced only to remove
+that obsolete provisional-U5 requirement; it was not restored. No U3 behavior,
+pedagogical content, or catalog content changed. The later clean checkpoint
+run passed 187 files / 3188 tests.
 
-The orchestrator's corrective instruction explicitly forbids modifying any
-U3 file (`U3 is immutable`), so this historical failure is retained as
-**accurate evidence** in this apply-progress artifact. It is not a defect
-in U5-01 itself.
+The corrective boundary forbids changing U3 behavior, pedagogical content, or
+catalog content. The assertion replacement does none of those things, so this
+historical failure is retained as **accurate evidence** in this apply-progress
+artifact. It is not a defect in U5-01 itself.
 
 Resolution paths (deliberately out of scope for this corrective re-run —
 the orchestrator will route the chosen path in a future SDD slice):
@@ -254,10 +254,10 @@ the orchestrator will route the chosen path in a future SDD slice):
    consequence of static retirement and proceed with verification
    regardless, with the orchestrator's explicit acknowledgement.
 
-This apply run deliberately does not pick a resolution. The orchestrator's
-corrective instruction limits this run to: create apply-progress, restore
-U3, run exact `pnpm run test`, reconcile wording, report foreign-authority
-blocker.
+This apply run deliberately does not pick a further resolution. The
+orchestrator's corrective instruction limits this run to: create
+apply-progress, replace the obsolete cross-cutting provisional-U5 assertion,
+run exact `pnpm run test`, reconcile wording, report foreign-authority blocker.
 
 ## TDD applicability
 
