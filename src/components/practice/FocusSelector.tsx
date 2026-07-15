@@ -53,6 +53,20 @@ const SKILLS_BY_UNIT: Record<number, readonly SkillId[]> = {
   6: UNIT_6_SKILLS,
 };
 
+/**
+ * Derive a unit's availability from its active skill count.
+ * U5-01 contract: the selector MUST NOT hardcode per-unit (e.g., U5)
+ * unavailability flags — availability follows the live
+ * `SKILLS_BY_UNIT` table, so a unit that gains active skills in a
+ * future slice is automatically selectable again.
+ */
+function getUnitAvailability(
+  unit: number
+): { readonly available: boolean; readonly activeSkillCount: number } {
+  const activeSkillCount = SKILLS_BY_UNIT[unit]?.length ?? 0;
+  return { available: activeSkillCount > 0, activeSkillCount };
+}
+
 interface FocusSelectorProps {
   readonly onSkillSelect: (skillId: SkillId) => void;
   readonly selectedSkillId?: SkillId;
@@ -78,6 +92,13 @@ export function FocusSelector({
     if (selectedUnit === null) return [];
     return SKILLS_BY_UNIT[selectedUnit] ?? [];
   }, [selectedUnit]);
+
+  // Derive the empty-unit render state from the same live SKILLS_BY_UNIT
+  // count used for option availability. A previously-disabled unit that
+  // gains active skills flips back to the normal skill-list on the next
+  // render without any flag mutation or persistence change.
+  const showEmptyUnitState =
+    selectedUnit !== null && skillsForUnit.length === 0;
 
   // When the accessible-skills map is provided we treat a skill as
   // accessible ONLY when it appears in the map AND `accessible === true`.
@@ -117,7 +138,21 @@ export function FocusSelector({
 
   function handleUnitChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const value = e.target.value;
-    setSelectedUnit(value === "" ? null : Number(value));
+    if (value === "") {
+      setSelectedUnit(null);
+      return;
+    }
+    const candidateUnit = Number(value);
+    // Reject zero-skill (unavailable) unit values defensively. The
+    // native `disabled` attribute on the <option> already prevents
+    // the user from picking one through the UI, but stale state from
+    // back/forward navigation or programmatic events could still
+    // surface an unavailable value here.
+    if (!getUnitAvailability(candidateUnit).available) {
+      setSelectedUnit(null);
+      return;
+    }
+    setSelectedUnit(candidateUnit);
   }
 
   function handleSkillClick(skillId: SkillId) {
@@ -177,11 +212,19 @@ export function FocusSelector({
             className="w-full appearance-none border border-brand-300 rounded-[var(--radius-button)] pl-3 pr-9 py-2.5 text-sm bg-white text-brand-900 min-h-[44px] cursor-pointer transition-colors duration-[var(--duration-fast)] hover:border-brand-400 focus-visible:shadow-[var(--ring-focus)]"
           >
             <option value="">Seleccionar unidad...</option>
-            {UNITS.map((unit) => (
-              <option key={unit} value={unit}>
-                Unidad {unit}
-              </option>
-            ))}
+            {UNITS.map((unit) => {
+              const { available } = getUnitAvailability(unit);
+              return (
+                <option
+                  key={unit}
+                  value={unit}
+                  disabled={!available}
+                  aria-disabled={!available}
+                >
+                  {available ? `Unidad ${unit}` : `Unidad ${unit} — Próximamente`}
+                </option>
+              );
+            })}
           </select>
           <span
             aria-hidden="true"
@@ -197,89 +240,165 @@ export function FocusSelector({
           <label className="block text-sm font-semibold text-brand-700 mb-2">
             Habilidad
           </label>
-          <div className="grid gap-2" role="listbox" aria-label="Habilidades">
-            {skillsForUnit.map((skillId, index) => {
-              const readiness = readinessMap.get(skillId);
-              const isReady = readiness?.ready ?? false;
-              const missingPrereqLabel = missingPrereqLabelMap.get(skillId);
-              // Three visual states: available, blocked-by-prereq, no-content.
-              const blockedByPrereq = !isReady && Boolean(missingPrereqLabel);
-              const accessibleSkill = accessibleSkills?.get(skillId);
-              const masteryPillInfo = accessibleSkill
-                ? getMasteryPillInfo(accessibleSkill.masteryLevel)
-                : null;
+          <UnavailableUnitBanner
+            unit={selectedUnit}
+            visible={showEmptyUnitState}
+            onReset={() => setSelectedUnit(null)}
+          />
+          {showEmptyUnitState ? (
+            <div
+              className="rounded-[var(--radius-card)] border border-brand-100 bg-brand-50 p-4 text-sm text-brand-400 flex items-center justify-between gap-3"
+              data-testid="unit-empty-state"
+            >
+              <span className="text-brand-700">
+                Esta unidad todavía no expone habilidades practicables.
+              </span>
+              <StatusPill
+                variant="neutral"
+                className="shrink-0"
+                data-testid="availability-pill"
+              >
+                Próximamente
+              </StatusPill>
+            </div>
+          ) : (
+            <div className="grid gap-2" role="listbox" aria-label="Habilidades">
+              {skillsForUnit.map((skillId, index) => {
+                const readiness = readinessMap.get(skillId);
+                const isReady = readiness?.ready ?? false;
+                const missingPrereqLabel = missingPrereqLabelMap.get(skillId);
+                // Three visual states: available, blocked-by-prereq, no-content.
+                const blockedByPrereq = !isReady && Boolean(missingPrereqLabel);
+                const accessibleSkill = accessibleSkills?.get(skillId);
+                const masteryPillInfo = accessibleSkill
+                  ? getMasteryPillInfo(accessibleSkill.masteryLevel)
+                  : null;
 
-              return (
-                <button
-                  key={skillId}
-                  ref={(el) => { skillRefs.current[index] = el; }}
-                  onClick={() => handleSkillClick(skillId)}
-                  onKeyDown={(e) => handleSkillKeyDown(e, index)}
-                  disabled={!isReady}
-                  aria-disabled={!isReady}
-                  aria-describedby={
-                    blockedByPrereq ? `skill-prereq-${index}` : undefined
-                  }
-                  title={
-                    blockedByPrereq && missingPrereqLabel
-                      ? `Necesitás dominar ${missingPrereqLabel} antes`
-                      : undefined
-                  }
-                  role="option"
-                  aria-selected={selectedSkillId === skillId}
-                  className={`w-full text-left px-4 py-3 text-sm rounded-[var(--radius-card)] border transition-colors duration-[var(--duration-fast)] min-h-[44px] ${
-                    selectedSkillId === skillId
-                      ? "bg-accent-500/10 border-accent-500 text-brand-900 font-medium shadow-[var(--shadow-card)]"
-                      : isReady
-                        ? "bg-white border-brand-200 text-brand-700 hover:border-brand-400 hover:shadow-[var(--shadow-card)]"
-                        : blockedByPrereq
-                          ? "bg-amber-50 border-amber-200 text-amber-900 cursor-not-allowed opacity-80"
-                          : "bg-brand-50 border-brand-100 text-brand-400 cursor-not-allowed"
-                  }`}
-                >
-                  <span className="flex items-center justify-between gap-3">
-                    <span className="flex-1 min-w-0">
-                      <span className="flex items-center gap-2 flex-wrap">
-                        {masteryPillInfo !== null && (
-                          <StatusPill
-                            variant={masteryPillInfo.variant}
-                            data-testid="mastery-pill"
-                            className="shrink-0"
-                          >
-                            {masteryPillInfo.label}
-                          </StatusPill>
-                        )}
-                        <span className="min-w-0 truncate">{skillLabel(skillId)}</span>
-                      </span>
-                      {blockedByPrereq && missingPrereqLabel && (
-                        <span
-                          id={`skill-prereq-${index}`}
-                          className="block mt-0.5 text-xs text-amber-700"
-                        >
-                          Requiere: {missingPrereqLabel}
+                return (
+                  <button
+                    key={skillId}
+                    ref={(el) => { skillRefs.current[index] = el; }}
+                    onClick={() => handleSkillClick(skillId)}
+                    onKeyDown={(e) => handleSkillKeyDown(e, index)}
+                    disabled={!isReady}
+                    aria-disabled={!isReady}
+                    aria-describedby={
+                      blockedByPrereq ? `skill-prereq-${index}` : undefined
+                    }
+                    title={
+                      blockedByPrereq && missingPrereqLabel
+                        ? `Necesitás dominar ${missingPrereqLabel} antes`
+                        : undefined
+                    }
+                    role="option"
+                    aria-selected={selectedSkillId === skillId}
+                    className={`w-full text-left px-4 py-3 text-sm rounded-[var(--radius-card)] border transition-colors duration-[var(--duration-fast)] min-h-[44px] ${
+                      selectedSkillId === skillId
+                        ? "bg-accent-500/10 border-accent-500 text-brand-900 font-medium shadow-[var(--shadow-card)]"
+                        : isReady
+                          ? "bg-white border-brand-200 text-brand-700 hover:border-brand-400 hover:shadow-[var(--shadow-card)]"
+                          : blockedByPrereq
+                            ? "bg-amber-50 border-amber-200 text-amber-900 cursor-not-allowed opacity-80"
+                            : "bg-brand-50 border-brand-100 text-brand-400 cursor-not-allowed"
+                    }`}
+                  >
+                    <span className="flex items-center justify-between gap-3">
+                      <span className="flex-1 min-w-0">
+                        <span className="flex items-center gap-2 flex-wrap">
+                          {masteryPillInfo !== null && (
+                            <StatusPill
+                              variant={masteryPillInfo.variant}
+                              data-testid="mastery-pill"
+                              className="shrink-0"
+                            >
+                              {masteryPillInfo.label}
+                            </StatusPill>
+                          )}
+                          <span className="min-w-0 truncate">{skillLabel(skillId)}</span>
                         </span>
+                        {blockedByPrereq && missingPrereqLabel && (
+                          <span
+                            id={`skill-prereq-${index}`}
+                            className="block mt-0.5 text-xs text-amber-700"
+                          >
+                            Requiere: {missingPrereqLabel}
+                          </span>
+                        )}
+                      </span>
+                      {isReady ? (
+                        <StatusPill variant="available" className="shrink-0" data-testid="availability-pill">
+                          Disponible
+                        </StatusPill>
+                      ) : blockedByPrereq ? (
+                        <StatusPill variant="locked" className="shrink-0" data-testid="availability-pill">
+                          Bloqueada
+                        </StatusPill>
+                      ) : (
+                        <StatusPill variant="neutral" className="shrink-0" data-testid="availability-pill">
+                          Próximamente
+                        </StatusPill>
                       )}
                     </span>
-                    {isReady ? (
-                      <StatusPill variant="available" className="shrink-0" data-testid="availability-pill">
-                        Disponible
-                      </StatusPill>
-                    ) : blockedByPrereq ? (
-                      <StatusPill variant="locked" className="shrink-0" data-testid="availability-pill">
-                        Bloqueada
-                      </StatusPill>
-                    ) : (
-                      <StatusPill variant="neutral" className="shrink-0" data-testid="availability-pill">
-                        Próximamente
-                      </StatusPill>
-                    )}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
+    </div>
+  );
+}
+
+interface UnavailableUnitBannerProps {
+  readonly unit: number;
+  readonly visible: boolean;
+  readonly onReset: () => void;
+}
+
+/**
+ * U5-01 contract: this is the literal, character-exact string that the
+ * banner MUST render to the DOM whenever it is shown for Unit 5. The
+ * wording is fixed by user mandate; the selector level intentionally
+ * does not interpolate the unit number, so a future slice that re-opens
+ * Unit 5 (or changes the unavailable unit) MUST adopt a new banner copy
+ * via a different gate rather than softening this string.
+ */
+const UNAVAILABLE_UNIT_MESSAGE =
+  "Unidad 5 todavía no está disponible. Estamos preparando sus contenidos.";
+
+/**
+ * Banner shown when the selector's React state lands on an unavailable
+ * unit — the user-mandated exact Spanish message plus a recovery hook
+ * that drops the user back at the unit dropdown. This covers the
+ * persisted/state/direct-attempt paths without introducing any
+ * persistence, URL, or localStorage contract: the trigger is the
+ * selector's own state, no URL parsing is added.
+ */
+function UnavailableUnitBanner({
+  unit,
+  visible,
+  onReset,
+}: UnavailableUnitBannerProps) {
+  if (!visible) return null;
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className="rounded-[var(--radius-card)] border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 shadow-[var(--shadow-card)]"
+      data-testid="unavailable-unit-banner"
+    >
+      <p className="font-semibold mb-1">
+        Unidad {unit} — Esta unidad todavía no está disponible
+      </p>
+      <p className="mb-3">{UNAVAILABLE_UNIT_MESSAGE}</p>
+      <button
+        type="button"
+        onClick={onReset}
+        className="text-xs font-semibold text-amber-900 underline hover:no-underline min-h-[44px] inline-flex items-center"
+      >
+        Volver al selector
+      </button>
     </div>
   );
 }

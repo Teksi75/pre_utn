@@ -142,4 +142,96 @@ describe("FocusSelector", () => {
     expect(masteryMatches!.length).toBeGreaterThanOrEqual(1);
     expect(availabilityMatches!.length).toBeGreaterThanOrEqual(1);
   });
+
+  // -------------------------------------------------------------------
+  // U5-01 FocusSelector availability correction
+  // (count-derived, native disabled, Próximamente, no empty listbox)
+  // -------------------------------------------------------------------
+
+  test("derives unit availability from SKILLS_BY_UNIT[unit].length > 0 (no hardcoded U5)", () => {
+    const comp = source(componentPath);
+    // The component must compute availability from the active-skill count.
+    // We assert that a single helper `getUnitAvailability(unit)` (or
+    // equivalent inline expression) drives the option rendering, not a
+    // hardcoded `unit === 5` clause.
+    expect(comp).toMatch(
+      /\bgetUnitAvailability\s*\(/
+    );
+    // The availability calculation must read SKILLS_BY_UNIT length,
+    // either inline or via an intermediate variable. We accept both
+    // direct and optional-chained (`?.length`) reads because the
+    // active spec calls for the semantic contract (count > 0), not
+    // a particular expression.
+    expect(comp).toMatch(/SKILLS_BY_UNIT\[[^\]]+\][?]?\.length/);
+    expect(comp).toMatch(/(activeSkillCount|count|length)\s*>\s*0/);
+    // No hard-coded U5 unit disablement via `unit === 5`.
+    expect(comp).not.toMatch(/unit\s*===\s*5\b/);
+  });
+
+  test("zero-skill unit option renders native disabled + aria-disabled='true'", () => {
+    const comp = source(componentPath);
+    // The disabled prop must be applied based on availability, not via a
+    // hardcoded unit id.
+    expect(comp).toMatch(/disabled=\{!available\}/);
+    // aria-disabled mirrors the native disabled for assistive tech.
+    expect(comp).toMatch(/aria-disabled=\{!available\}/);
+  });
+
+  test("unavailable unit option label reads 'Unidad 5 — Próximamente'; available units read 'Unidad N'", () => {
+    const comp = source(componentPath);
+    // Unavailable label is the unit name plus the Próximamente suffix.
+    expect(comp).toContain("`Unidad ${unit} — Próximamente`");
+    // Available label is the bare unit name (no suffix).
+    expect(comp).toContain("`Unidad ${unit}`");
+  });
+
+  test("handleUnitChange rejects a zero-skill unit value (does not set selectedUnit)", () => {
+    const comp = source(componentPath);
+    // The handler must early-return when the picked unit is not
+    // available, before calling setSelectedUnit. This enforces the
+    // user-mandated 'prevent selecting it' contract.
+    const handlerMatch = comp.match(
+      /function\s+handleUnitChange\s*\([^)]*\)\s*\{[\s\S]*?\n\s{2}\}/
+    );
+    expect(handlerMatch).not.toBeNull();
+    const body = handlerMatch![0];
+    // The early-return guard must read availability before setState.
+    expect(body).toMatch(/getUnitAvailability/);
+    expect(body).toMatch(/return;/);
+    // The handler must NOT unconditionally call setSelectedUnit with the
+    // raw Number(value) — that would let a stale or programmatic value
+    // slip through.
+    expect(body).not.toMatch(/setSelectedUnit\(value === "" \? null : Number\(value\)\)/);
+  });
+
+  test("auto-re-enable: derived availability means no flag mutation is required when a unit gains active skills", () => {
+    // The selector must NOT persist or carry a per-unit availability
+    // flag — derive only from the SKILLS_BY_UNIT length. We assert that
+    // there is no separate `availableUnits` / `disabledUnits` state in
+    // the component.
+    const comp = source(componentPath);
+    expect(comp).not.toMatch(/const\s+\[\s*availableUnits\s*,/);
+    expect(comp).not.toMatch(/const\s+\[\s*disabledUnits\s*,/);
+  });
+
+  test("renders the UnavailableUnitBanner (exact Spanish message) when state has a zero-skill unit selected", () => {
+    const comp = source(componentPath);
+    // The exact user-mandated message must appear verbatim.
+    expect(comp).toContain(
+      "Unidad 5 todavía no está disponible. Estamos preparando sus contenidos."
+    );
+    // The banner must expose a reset hook so the user can recover.
+    expect(comp).toMatch(/Volver al selector/);
+  });
+
+  test("suppresses the empty listbox: shows a single Próximamente pill when the selected unit has zero active skills", () => {
+    const comp = source(componentPath);
+    // The render path must guard against `skillsForUnit.length === 0`
+    // and show a Próximamente pill instead of an empty listbox.
+    expect(comp).toMatch(/skillsForUnit\.length\s*===\s*0/);
+    // The Próximamente pill rendered in this branch must carry the
+    // availability-pill testid for consistency.
+    expect(comp).toMatch(/showEmptyUnitState/);
+    expect(comp).toMatch(/data-testid="availability-pill"/);
+  });
 });

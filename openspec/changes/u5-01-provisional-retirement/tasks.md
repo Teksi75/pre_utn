@@ -1,78 +1,71 @@
-# Tasks: U5-01 — Provisional Unit 5 Static Retirement
+# Tasks: U5-01 — FocusSelector Availability Correction
 
 ## Review Workload Forecast
 
 | Field | Value |
 |-------|-------|
-| Estimated changed lines | ~280 net deletions (400+ gross) |
-| 400-line budget risk | Medium |
+| Estimated changed lines | ~150–200 (net additions) |
+| 400-line budget risk | Low |
 | Chained PRs recommended | No |
-| Suggested split | Single PR — all phases are deletions and independent |
-| Delivery strategy | auto-forecast |
+| Suggested split | Single PR — all changes are in the same focused area |
+| Delivery strategy | auto-chain |
 | Chain strategy | not-applicable |
 
 Decision needed before apply: No
 Chained PRs recommended: No
 Chain strategy: not-applicable
-400-line budget risk: Medium
+400-line budget risk: Low
 
 ### Suggested Work Units
 
 | Unit | Goal | Likely PR | Focused test command | Runtime harness | Rollback boundary |
-|------|------|-----------|---------------------|-----------------|-------------------|
-| 1 | Retire U5 skill catalog and dependency edges | PR 1 | `pnpm test -- --grep "UNIT_5_SKILLS\|catalog" --run` | `pnpm run build` | `src/domain/models/skill-catalog.ts` revert |
+|------|------|-----------|----------------------|-----------------|-------------------|
+| 1 | FocusSelector count-derived availability + unavailable-unit fallback | PR 1 | `pnpm test -- --grep "FocusSelector\|start-skill" --run` | `pnpm run build` | `src/components/practice/FocusSelector.tsx`, `src/app/practice/usePracticeFlow.ts`, `src/app/practice/page.tsx` revert |
 
-## Phase 1: Skill Catalog Retirement
+## Phase 1: FocusSelector — Derived Availability
 
-- [x] 1.1 Reduce `UNIT_5_SKILLS` to empty collection in `src/domain/models/skill-catalog.ts` (export retained per active spec `openspec/specs/unit-5-foundation/spec.md:11`; six provisional IDs removed)
-- [x] 1.2 Remove `...UNIT_5_SKILLS` from `ALL_SKILLS` array spread (line 92)
-- [x] 1.3 Remove U5 dependency rows from `SKILL_DEPENDENCIES`: `mat.u5.ecuaciones_trigonometricas` and `mat.u5.complejos_forma_polar` (lines 130–131)
-- [x] 1.4 Verify `KNOWN_SKILL_IDS`, `ALL_SKILLS`, and `SKILL_DEPENDENCIES` contain no U5 IDs after removal
+- [x] 1.1 RED: Add test — Unit 5 `<option>` carries `disabled` attribute and `aria-disabled="true"` when `SKILLS_BY_UNIT[5].length === 0`
+- [x] 1.2 RED: Add test — Unit 5 option label reads `Unidad 5 — Próximamente`; other units read `Unidad N`
+- [x] 1.3 RED: Add test — Selecting a zero-skill unit does NOT invoke `onSkillSelect`; no empty skill list renders
+- [x] 1.4 GREEN: In `FocusSelector.tsx`, add `getUnitAvailability(unit: number): { available: boolean; activeSkillCount: number }` deriving `available` from `SKILLS_BY_UNIT[unit].length > 0`
+- [x] 1.5 GREEN: In unit `<option>`, apply `disabled` attribute and `aria-disabled` when `!available`; set label to `Unidad {n} — Próximamente`
+- [x] 1.6 GREEN: Guard `selectedUnit !== null && skillsForUnit.length === 0` in the skill list render path; show a single "Próximamente" pill instead of an empty listbox
 
-## Phase 2: Content and Threshold Contract
+## Phase 2: Flow Guard — Unavailable-Unit Rejection
 
-- [x] 2.1 Remove five U5 placeholder exercises from `content/matematica/exercises.json`: `ex.u5.angulos.1`, `ex.u5.radianes.1`, `ex.u5.circunferencia_trigonometrica.1`, `ex.u5.identidades.1`, `ex.u5.ecuaciones_trigonometricas.1` (lines 133–202)
-- [x] 2.2 Add `UNIT_THRESHOLDS["unit-5"] = 0` in `src/domain/catalog/content-loaders.ts` to permit empty U5 without threshold failure
-- [x] 2.3 Verify `ex.u6.funcion_concepto.1` (line 204) remains intact after JSON deletion
+- [x] 2.1 RED: Add test in `start-skill.test.ts` — `analyzeRequestedUnit("5")` returns `{ kind: "unavailable-unit"; unit: "5" }` when `SKILLS_BY_UNIT[5].length === 0`
+- [x] 2.2 RED: Add test — direct/stale unit selection exposes the banner with exact text `Unidad 5 todavía no está disponible. Estamos preparando sus contenidos.` (state path, no new URL contract — the banner reads the same message via the inline UnavailableUnitBanner triggered by the FocusSelector React state)
+- [x] 2.3 GREEN: In `start-skill.ts`, add `UnitRequestAnalysis` discriminated union with `"unavailable-unit"` variant and `analyzeRequestedUnit(unit: string | null): UnitRequestAnalysis`
+- [x] 2.4 GREEN: Banner is rendered inline inside `FocusSelector` when React state has an unavailable `selectedUnit` — no `?unit=` URL parsing, no new localStorage, no new persistence seam, consistent with the "no new persistence/URL contract" user mandate
 
-## Phase 3: Error Taxonomy Retirement
+## Phase 3: Page — Unavailable-Unit Banner
 
-- [x] 3.1 Remove `u5_cuadrante_angulo` error tag from `src/domain/error-taxonomy/index.ts` (lines 986–996)
-- [x] 3.2 Remove `u5_identidad_pitagorica` error tag from `src/domain/error-taxonomy/index.ts` (lines 997–1006)
-- [x] 3.3 Verify `loadTaxonomy()` unit coverage check passes for units 1–4 and 6 (Unit 5 intentionally has 0 tags)
+- [x] 3.1 GREEN: Inline `UnavailableUnitBanner` lives inside `FocusSelector.tsx` with the literal `UNAVAILABLE_UNIT_MESSAGE = "Unidad 5 todavía no está disponible. Estamos preparando sus contenidos."` (exact user-mandated copy) plus a "Volver al selector" button calling `setSelectedUnit(null)`
+- [x] 3.2 GREEN: Banner renders above the skill listbox when `selectedUnit !== null && skillsForUnit.length === 0` (the same empty-state guard from task 1.6); no `flow.blockedUnit` shape is added because the trigger lives in the selector's own state
 
-## Phase 4: Documentation and Reference Cleanup
+## Phase 4: FocusSelector Component Tests
 
-- [x] 4.1 Remove six U5 skill IDs from `utn-ingreso-app-spec/docs/pedagogy/06-skill-map.md` (lines 89–94)
-- [x] 4.2 Remove two U5 dependency rows from `utn-ingreso-app-spec/docs/pedagogy/06-skill-map.md` (lines 159–160)
+- [x] 4.1 RED: Add test — `handleUnitChange` rejects a zero-skill value early and does NOT call `setSelectedUnit` with that value (defence-in-depth against stale/programmatic state; the disabled `<option>` already blocks the user via the UI)
+- [x] 4.2 RED: Add test — auto-re-enable: no per-unit `availableUnits`/`disabledUnits` flag is carried; availability is derived live from the `SKILLS_BY_UNIT` map so a future populated Unit 5 automatically becomes selectable
+- [x] 4.3 GREEN: All `FocusSelector.test.ts` assertions pass (existing + 7 new U5-01 tests)
 
-## Phase 5: Test Retirement and Verification
+## Phase 5: Flow/Page Integration Tests
 
-- [x] 5.1 Update `src/domain/__tests__/catalog.test.ts` — remove U5 skill assertions from `UNIT_5_SKILLS` checks
-- [x] 5.2 Update `src/domain/__tests__/per-unit-thresholds.test.ts` — add `expect(UNIT_THRESHOLDS["unit-5"]).toBe(0)` assertion
-- [x] 5.3 Update `src/domain/__tests__/diagnostic.test.ts` — remove any U5 provisional skill/exercise references
-- [x] 5.4 Update `src/domain/__tests__/evaluator-index.test.ts` — remove U5 references
-- [x] 5.5 Update `src/domain/__tests__/catalog-answer-contract.test.ts` — remove U5 references
-- [x] 5.6 Update `src/domain/__tests__/complejos-domain.test.ts` — remove `mat.u5.complejos_forma_polar` reference
-- [x] 5.7 Update `src/domain/__tests__/error-taxonomy.test.ts` — remove U5 tag coverage assertions
-- [x] 5.8 Run `pnpm run test` and `pnpm run typecheck` to verify all phases integrated (the historical failing test run is retained in `apply-progress.md`; a later clean checkpoint run passed 187 files / 3188 tests; `pnpm run typecheck` passed with `tsc --noEmit`)
+- [x] 5.1 RED: Add test — `analyzeRequestedUnit("5")` returns `{ kind: "unavailable-unit"; unit: "5" }` and the banner's exact Spanish message is rendered (verified via source inspection)
+- [x] 5.2 GREEN: All `start-skill.test.ts` assertions pass (existing + 5 new U5-01 tests)
 
-## Active Spec Retirement (canonical-embodiment requirement)
+## Phase 6: Validation
 
-- [x] 6.1 Rewrite `openspec/specs/unit-5-foundation/spec.md` to describe post-retirement state without prior migration/sidecar exposure
-- [x] 6.2 Update `openspec/specs/math-exercise-catalog/spec.md` to allow empty Unit 5 coverage
-- [x] 6.3 Update `openspec/specs/complex-numbers-skill/spec.md` to remove `mat.u5.complejos_forma_polar` downstream edge reference
+- [x] 6.1 Run `pnpm test -- --grep "FocusSelector\|start-skill\|unavailable\|blocked.*unit" --run` — all 3200 tests pass (187 files)
+- [x] 6.2 Run `pnpm run test` — full suite green: 187 files / 3200 tests pass (baseline was 187 files / 3188 tests; this run adds the 12 new U5-01 coverage tests)
+- [x] 6.3 Run `pnpm run typecheck` — no errors (`tsc --noEmit` exit 0)
+- [x] 6.4 Run `pnpm run build` — clean build (post-push full check: ✓ Compiled successfully in 6.4s, 11/11 static pages generated, route `/practice` resolves)
 
 ## Out-of-Scope Reminders
 
-- Do NOT modify U3, U5-02, archived U5-00, canonical U5 content, SQL, or persistence
+- Do NOT modify U3, U4, U5-02, archived U5-00, canonical U5 content, SQL, or persistence
 - Do NOT add migration, sidecar, marker, write gate, or adapter changes
-- Do NOT add aliases or compatibility layers for `mat.u5.ecuaciones_trigonometricas`
-- Synthetic fixtures `mat.u5.trigonometria_basica`, `ex.u5.bad.1`, `ex.u5.good.1` are retained
-
-## Out-of-Scope Reminders
-
-- Do NOT modify U3, U5-02, archived U5-00, canonical U5 content, SQL, or persistence
-- Do NOT add migration, sidecar, marker, write gate, or adapter changes
-- Do NOT add aliases or compatibility layers for `mat.u5.ecuaciones_trigonometricas`
-- Synthetic fixtures `mat.u5.trigonometria_basica`, `ex.u5.bad.1`, `ex.u5.good.1` are retained
+- Do NOT hardcode U5 unavailability — use `SKILLS_BY_UNIT[unit].length > 0` derivation
+- Do NOT change URL format, localStorage schema, or add new route parameters
+- Do NOT restore provisional IDs, canonical U5 content, aliases, or mappings
+- The `BlockedReason = "unavailable-unit"` is a UI-layer string, not a persistence or domain model change
