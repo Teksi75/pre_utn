@@ -84,16 +84,7 @@ export const UNIT_4_SKILLS = [
 
 ### Unidad 5
 
-```ts
-export const UNIT_5_SKILLS = [
-  'mat.u5.angulos',
-  'mat.u5.radianes',
-  'mat.u5.circunferencia_trigonometrica',
-  'mat.u5.identidades',
-  'mat.u5.ecuaciones_trigonometricas',
-  'mat.u5.complejos_forma_polar',
-] as const;
-```
+Unidad 5 intencionalmente sin skills tras el retiro estático del catálogo provisional. Se omite `UNIT_5_SKILLS` para mantener coherencia con el contrato activo de catálogo (`src/domain/models/skill-catalog.ts`) donde `UNIT_5_SKILLS = []`.
 
 ### Unidad 6
 
@@ -155,9 +146,6 @@ export const SKILL_DEPENDENCIES = [
 
   { skillId: 'mat.u4.pitagoras', prerequisites: ['mat.u1.potencias_raices'] },
   { skillId: 'mat.u4.razones_trigonometricas', prerequisites: ['mat.u4.pitagoras'] },
-
-  { skillId: 'mat.u5.ecuaciones_trigonometricas', prerequisites: ['mat.u5.identidades'] },
-  { skillId: 'mat.u5.complejos_forma_polar', prerequisites: ['mat.u1.complejos', 'mat.u5.radianes'] },
 
   { skillId: 'mat.u6.dominio_imagen', prerequisites: ['mat.u1.intervalos'] },
   { skillId: 'mat.u6.funcion_afin', prerequisites: ['mat.u3.recta'] },

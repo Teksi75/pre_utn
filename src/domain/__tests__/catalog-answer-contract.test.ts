@@ -33,8 +33,6 @@ const MIGRATED_SYMBOLIC_IDS: readonly string[] = [
   "ex.u3.recta.1",
   "ex.u3.sistemas.1",
   "ex.u4.thales.1",
-  "ex.u5.identidades.1",
-  "ex.u5.ecuaciones_trigonometricas.1",
   "ex.u6.dominio_imagen.1",
   "ex.u6.funcion_afin.1",
   "ex.u6.funcion_cuadratica.1",

@@ -8,7 +8,7 @@ Content and behavioral contract for making `mat.u1.complejos` traversable: theor
 
 ### Requirement: Skill Order and Prerequisites
 
-`mat.u1.complejos` MUST appear in PILOT_SKILLS as the 8th entry, after `mat.u1.logaritmos`. Its prerequisite SHALL be `mat.u1.propiedades_operaciones_reales`. `mat.u5.complejos_forma_polar` MUST list `mat.u1.complejos` as prerequisite.
+`mat.u1.complejos` MUST appear in PILOT_SKILLS as the 8th entry, after `mat.u1.logaritmos`. Its prerequisite SHALL be `mat.u1.propiedades_operaciones_reales`. The active prerequisite graph for `mat.u1.complejos` MUST NOT include any downstream edge referencing a Unit 5 skill, and no active `SKILL_DEPENDENCIES` entry may list a `mat.u5.*` source as a downstream prerequisite.
 
 #### Scenario: correct insertion order
 
@@ -16,10 +16,12 @@ Content and behavioral contract for making `mat.u1.complejos` traversable: theor
 - THEN `mat.u1.logaritmos` precedes `mat.u1.complejos`
 - AND `mat.u1.complejos` is the last pilot entry
 
-#### Scenario: downstream dependency resolves
+#### Scenario: no Unit 5 downstream edge references mat.u1.complejos
 
-- GIVEN SKILL_DEPENDENCIES
-- THEN `mat.u5.complejos_forma_polar` lists `mat.u1.complejos` in prerequisites
+- GIVEN the active catalog after the U5-01 static retirement
+- WHEN `SKILL_DEPENDENCIES` entries that list `mat.u1.complejos` as a prerequisite are enumerated
+- THEN none of those entries is a Unit 5 skill
+- AND the U1 prerequisite for `mat.u1.complejos` remains `mat.u1.propiedades_operaciones_reales`
 
 ### Requirement: Transitive Availability
 

@@ -23,17 +23,23 @@ describe("UnitValidationThresholds", () => {
 
   test("unit-3 has explicit threshold of 24 (PR 2 declaration)", () => {
     // PR 2: implement-unit-3-mathematics declares UNIT_THRESHOLDS["unit-3"] = 24
-    // when 24+ U3 exercises are loaded. Units 4-6 remain without explicit
-    // thresholds and fall back to the default minimum (5).
+    // when 24+ U3 exercises are loaded. Units 4 and 6 remain without
+    // explicit thresholds and fall back to the default minimum (5).
     expect(UNIT_THRESHOLDS["unit-3"]).toBe(24);
     expect(getUnitThreshold("unit-3")).toBe(24);
   });
 
-  test("units 4-6 remain without explicit thresholds (default 5)", () => {
+  test("unit-5 threshold is 0 (U5-01 static retirement — empty catalog permitted)", () => {
+    // U5-01 retires the six provisional U5 skills and five placeholder
+    // exercises. Unit 5 is intentionally permitted to be empty so the
+    // catalog loader does not raise a coverage failure for unit-5.
+    expect(UNIT_THRESHOLDS["unit-5"]).toBe(0);
+    expect(getUnitThreshold("unit-5")).toBe(0);
+  });
+
+  test("units 4 and 6 remain without explicit thresholds (default 5)", () => {
     expect(UNIT_THRESHOLDS["unit-4"]).toBeUndefined();
     expect(getUnitThreshold("unit-4")).toBe(5);
-    expect(UNIT_THRESHOLDS["unit-5"]).toBeUndefined();
-    expect(getUnitThreshold("unit-5")).toBe(5);
     expect(UNIT_THRESHOLDS["unit-6"]).toBeUndefined();
     expect(getUnitThreshold("unit-6")).toBe(5);
   });

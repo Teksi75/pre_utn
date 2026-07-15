@@ -1,5 +1,6 @@
 /**
- * Skill catalog — 45 mathematics skills from spec 06.
+ * Skill catalog — 39 mathematics skills (Unit 5 intentionally empty
+ * after U5-01 static retirement).
  * Each skill ID follows mat.u{1-6}.{slug} format.
  * This file is a constant-only module with no logic.
  */
@@ -56,16 +57,15 @@ export const UNIT_4_SKILLS: readonly SkillId[] = [
   "mat.u4.seno_coseno",
 ] as const;
 
-// ── Unit 5: Trigonometría ─────────────────────────────────────────────────
+// ── Unit 5: Trigonometría (intentionally empty after U5-01 retirement) ──
 
-export const UNIT_5_SKILLS: readonly SkillId[] = [
-  "mat.u5.angulos",
-  "mat.u5.radianes",
-  "mat.u5.circunferencia_trigonometrica",
-  "mat.u5.identidades",
-  "mat.u5.ecuaciones_trigonometricas",
-  "mat.u5.complejos_forma_polar",
-] as const;
+// The six provisional IDs (mat.u5.angulos, radianes,
+// circunferencia_trigonometrica, identidades, ecuaciones_trigonometricas,
+// complejos_forma_polar) and their dependency edges are retired. Unit 5
+// may be re-populated by a future slice without alias or migration
+// guarantees from this change. `mat.u5.ecuaciones_trigonometricas` is
+// unencumbered for future reuse.
+export const UNIT_5_SKILLS: readonly SkillId[] = [] as const;
 
 // ── Unit 6: Funciones ─────────────────────────────────────────────────────
 
@@ -126,9 +126,6 @@ export const SKILL_DEPENDENCIES: readonly SkillDependency[] = [
 
   { skillId: "mat.u4.pitagoras", prerequisites: ["mat.u1.potencias_raices"] },
   { skillId: "mat.u4.razones_trigonometricas", prerequisites: ["mat.u4.pitagoras"] },
-
-  { skillId: "mat.u5.ecuaciones_trigonometricas", prerequisites: ["mat.u5.identidades"] },
-  { skillId: "mat.u5.complejos_forma_polar", prerequisites: ["mat.u1.complejos", "mat.u5.radianes"] },
 
   { skillId: "mat.u6.dominio_imagen", prerequisites: ["mat.u1.intervalos"] },
   { skillId: "mat.u6.funcion_afin", prerequisites: ["mat.u3.recta"] },

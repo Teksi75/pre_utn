@@ -223,18 +223,6 @@ describe("Evaluator dispatcher", () => {
         wrongAnswer: "Los segmentos correspondientes son congruentes",
       },
       {
-        id: "ex.u5.identidades.1",
-        expectedType: "numerical",
-        correctAnswer: "1",
-        wrongAnswer: "0",
-      },
-      {
-        id: "ex.u5.ecuaciones_trigonometricas.1",
-        expectedType: "multiple-choice",
-        correctAnswer: "θ = 0°, 180°",
-        wrongAnswer: "θ = 90°, 270°",
-      },
-      {
         id: "ex.u6.dominio_imagen.1",
         expectedType: "multiple-choice",
         correctAnswer: "Todos los reales excepto 0",
@@ -265,15 +253,6 @@ describe("Evaluator dispatcher", () => {
         expect(evaluateAnswer(exercise!, wrongAnswer).correct).toBe(false);
       }
     );
-
-    test("ex.u5.radianes.1 evaluates as structured multiple-choice after migration", () => {
-      const exercise = loadCatalog().find((candidate) => candidate.id === "ex.u5.radianes.1");
-
-      expect(exercise).toBeDefined();
-      expect(exercise?.type).toBe("multiple-choice");
-      expect(evaluateAnswer(exercise!, "$\\pi$").correct).toBe(true);
-      expect(evaluateAnswer(exercise!, "$\\dfrac{\\pi}{2}$").correct).toBe(false);
-    });
   });
 
   describe("error-tag integration via evaluateAnswer", () => {
