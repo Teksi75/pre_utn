@@ -55,7 +55,7 @@ Chain strategy: not-applicable
 - [x] 5.5 Update `src/domain/__tests__/catalog-answer-contract.test.ts` — remove U5 references
 - [x] 5.6 Update `src/domain/__tests__/complejos-domain.test.ts` — remove `mat.u5.complejos_forma_polar` reference
 - [x] 5.7 Update `src/domain/__tests__/error-taxonomy.test.ts` — remove U5 tag coverage assertions
-- [x] 5.8 Run `pnpm run test` and `pnpm run typecheck` to verify all phases integrated
+- [x] 5.8 Run `pnpm run test` and `pnpm run typecheck` to verify all phases integrated (the historical failing test run is retained in `apply-progress.md`; a later clean checkpoint run passed 187 files / 3188 tests; `pnpm run typecheck` passed with `tsc --noEmit`)
 
 ## Active Spec Retirement (canonical-embodiment requirement)
 

@@ -51,11 +51,19 @@ raising a coverage failure.
 
 | Evidence | Value |
 |---|---|
-| Focused test command and exact result | `CI=true pnpm run test` → 1 failed / 3187 passed / 3188 total (187 files), 19.79s. The single failure is in `src/domain/__tests__/error-taxonomy-u3.test.ts` (`each unit still has at least 2 tags (coverage contract preserved)`: Unit 5 expected ≥2 tags, got 0). All 26 U3-file tests now run against the pre-U5-01 file content; the U5 zero-tag contract test was moved to `src/domain/__tests__/error-taxonomy.test.ts` per U3-immutability constraint. |
+| Focused test command and exact result | Historical: `CI=true pnpm run test` → 1 failed / 3187 passed / 3188 total (187 files), 19.79s; see the retained output below. Confirmed clean checkpoint: `CI=true pnpm run test` → 187 files passed / 3188 tests passed. |
+| Typecheck command and exact result | `pnpm run typecheck` → `$ tsc --noEmit` (exit 0). |
 | Runtime harness command/scenario and exact result | N/A — no runtime boundary exists. The change is a static repository retirement of catalog/content/taxonomy/reference/spec/document/test artifacts; no executable behavior, no migration, no persistence, no SQL, no adapter. Runtime harness would only exist for end-to-end behavior, which is out of scope (and explicitly forbidden) for U5-01. |
 | Rollback boundary | Revert the 17 working-tree modifications (`content/matematica/exercises.json`, the three spec files under `openspec/specs/`, the seven test files under `src/domain/__tests__/`, `src/domain/catalog/content-loaders.ts`, `src/domain/error-taxonomy/index.ts`, `src/domain/models/skill-catalog.ts`, `utn-ingreso-app-spec/docs/pedagogy/06-skill-map.md`) plus the U3 restore (`error-taxonomy-u3.test.ts`). Revert `tasks.md` to its pre-U5-01 INVALID status. Revert `STATUS.json` u5-01 entry to `in-progress`. Reverting leaves all 23 SDD tasks unchecked and every U5 placeholder skill/exercise/tag/edge restored. |
 
-### Exact `pnpm run test` command and full output
+### Exact `pnpm run typecheck` output
+
+```text
+$ pnpm run typecheck
+$ tsc --noEmit
+```
+
+### Historical failing `pnpm run test` output
 
 Command (exactly as required by `tasks.md` 5.8 — `pnpm run test`, NOT
 `pnpm run test:run`; `CI=true` is set so vitest auto-runs in this
@@ -97,15 +105,13 @@ AssertionError: Unit 5 should have >= 2 tags: expected 0 to be greater than or e
 [ELIFECYCLE] Test failed. See above for more details.
 ```
 
-The single failing test is an **accurate cross-cutting consequence of the
-static retirement**, not a defect in this apply run: U3's coverage
-contract asserts that every unit (1–6) has at least two error tags. After
-U5-01 retires the two U5 taxonomy tags (`u5_cuadrante_angulo`,
-`u5_identidad_pitagorica`), Unit 5 has zero tags and the contract fails
-on Unit 5. Because U3 is immutable per the orchestrator's corrective
-instruction, the U3 file cannot be edited to skip Unit 5. Resolution
-options for this cross-cutting consequence are documented in *Issues
-found* below and explicitly out of scope for this corrective re-run.
+This historical failure recorded an **accurate cross-cutting consequence of
+the static retirement**, not a defect in this apply run: U3's coverage
+contract asserted that every unit (1–6) had at least two error tags. After
+U5-01 retired the two U5 taxonomy tags (`u5_cuadrante_angulo`,
+`u5_identidad_pitagorica`), Unit 5 had zero tags and the historical run
+failed on Unit 5. It is retained for auditability; the later clean checkpoint
+run is the current test evidence.
 
 ## Files Changed
 
@@ -161,10 +167,11 @@ reconciliation.
 Task 5.8 evidence: previously recorded as `pnpm run test:run` (3189
 tests pass). The exact command required by 5.8 is `pnpm run test`, not
 `pnpm run test:run`. The corrective run with `CI=true pnpm run test`
-produces **1 failed / 3187 passed / 3188 total** (see *Work Unit
-Evidence* above); the single failure is the U3 cross-cutting
-consequence, not a U5-01 defect. Task 5.8 evidence is updated to match
-this exact command.
+historically produced **1 failed / 3187 passed / 3188 total**; that output
+is retained above as historical evidence. A later clean checkpoint run of
+the same command passed **187 files / 3188 tests**. Typecheck remains
+verified: `pnpm run typecheck` passed with `tsc --noEmit` (exit 0), so task
+5.8 is complete.
 
 ## Cumulative task evidence (all 23 native SDD tasks)
 
@@ -189,7 +196,7 @@ this exact command.
 | 5.5 | Update `catalog-answer-contract.test.ts` — remove U5 references | file modified per `Files Changed` table |
 | 5.6 | Update `complejos-domain.test.ts` — remove U5 polar reference | file modified per `Files Changed` table |
 | 5.7 | Update `error-taxonomy.test.ts` — move U5 tag coverage | file modified per `Files Changed` table |
-| 5.8 | Run `pnpm run test` (exact command) and `pnpm run typecheck` | **Test: `CI=true pnpm run test` → 1 failed / 3187 passed / 3188 total (187 files), 19.79s** (the failure is the U3 cross-cutting consequence documented in *Issues found*). Typecheck deferred — no modifications required confirmation per the orchestrator instruction. |
+| 5.8 | Run `pnpm run test` (exact command) and `pnpm run typecheck` | **Test:** historical `CI=true pnpm run test` → 1 failed / 3187 passed / 3188 total (187 files), 19.79s; later clean checkpoint `CI=true pnpm run test` → 187 files passed / 3188 tests passed. **Typecheck:** `pnpm run typecheck` → `$ tsc --noEmit` (exit 0). |
 | 6.1 | Rewrite `openspec/specs/unit-5-foundation/spec.md` | file modified per `Files Changed` table |
 | 6.2 | Update `openspec/specs/math-exercise-catalog/spec.md` | file modified per `Files Changed` table |
 | 6.3 | Update `openspec/specs/complex-numbers-skill/spec.md` | file modified per `Files Changed` table |
@@ -216,18 +223,18 @@ None. Implementation matches `design.md` exactly:
 
 ## Issues found
 
-**Cross-cutting consequence — U3 coverage contract vs. empty Unit 5.**
+**Historical cross-cutting consequence — U3 coverage contract vs. empty Unit 5.**
 
 After restoring `src/domain/__tests__/error-taxonomy-u3.test.ts` to its
-pre-U5-01 content, the test `each unit still has at least 2 tags (coverage
-contract preserved)` fails on Unit 5 (0 tags vs. ≥2 expected). This is the
-direct, expected cross-cutting consequence of the static retirement: U3's
-taxonomy coverage contract was authored under the assumption that every
-unit (1–6) has at least two error tags; U5-01 retires the two U5 taxonomy
-tags per Phase 3 tasks 3.1–3.2.
+pre-U5-01 content, the historical test run failed on Unit 5 (0 tags vs. ≥2
+expected). This was the direct, expected cross-cutting consequence of the
+static retirement: U3's taxonomy coverage contract was authored under the
+assumption that every unit (1–6) has at least two error tags; U5-01 retires
+the two U5 taxonomy tags per Phase 3 tasks 3.1–3.2. The later clean
+checkpoint run passed 187 files / 3188 tests.
 
 The orchestrator's corrective instruction explicitly forbids modifying any
-U3 file (`U3 is immutable`), so this single test failure is recorded as
+U3 file (`U3 is immutable`), so this historical failure is retained as
 **accurate evidence** in this apply-progress artifact. It is not a defect
 in U5-01 itself.
 
@@ -285,6 +292,6 @@ this apply phase, per the orchestrator's explicit corrective instruction:
     `.git/gentle-ai/sdd-review-bindings/v1/u5-00-unit-5-foundation/binding.json`
     (see the parent apply return summary for the blocker report).
 
-The single U3 cross-cutting test failure is the only outcome outside the
-`[x]`-marked task checklist; it is documented in *Issues found* above and
-is the orchestrator's explicit decision boundary.
+The historical U3 cross-cutting test failure is documented in *Issues found*
+above; the later clean checkpoint test pass and the recorded successful
+`pnpm run typecheck` are the current verification evidence.

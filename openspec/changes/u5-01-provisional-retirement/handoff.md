@@ -22,6 +22,7 @@ product behavior change. Do not modify U3, U5-02, or archived U5-00.
 `src/domain/__tests__/error-taxonomy-u3.test.ts` contains the test `each unit
 still has at least 2 tags (coverage contract preserved)`. It requires every
 unit, including Unit 5, to have at least two U5 tags. After U5-01 retires the
+two U5 taxonomy tags, the historical run fails because Unit 5 has zero tags.
 
 This is an obsolete cross-reference to provisional U5. It must be corrected
 within U5-01 without modifying U3's own behavior, content, or contracts. Do
