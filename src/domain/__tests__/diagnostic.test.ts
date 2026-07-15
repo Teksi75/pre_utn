@@ -306,19 +306,6 @@ describe("selectBalancedSet — diagnostic type safety (WU-9)", () => {
     expect(exercise.options!.length).toBeGreaterThanOrEqual(2);
     expect(exercise.options).toContain(exercise.expectedAnswer);
   });
-
-  test("ex.u5.circunferencia_trigonometrica.1 is multiple-choice with correct option in the real catalog", () => {
-    const catalog = loadCatalog();
-    const exercise = catalog.find((e) => e.id === "ex.u5.circunferencia_trigonometrica.1");
-
-    expect(exercise).toBeDefined();
-    if (!exercise) return;
-
-    expect(exercise.type).toBe("multiple-choice");
-    expect(exercise.options).toBeDefined();
-    expect(exercise.options!.length).toBeGreaterThanOrEqual(2);
-    expect(exercise.options).toContain(exercise.expectedAnswer);
-  });
 });
 
 // ── isExerciseReliable — diagnostic filtering ─────────────────────────────
@@ -391,15 +378,6 @@ describe("isExerciseReliable — excludes exercises with unreliable evaluation",
       `Unexpected unreliable exercises: ${unreliable.map((e) => `${e.id} (${e.type})`).join(", ")}`
     ).toHaveLength(0);
   });
-
-  test("ex.u5.radianes.1 is reliable after migration to structured multiple-choice", () => {
-    const catalog = loadCatalog();
-    const exercise = catalog.find((e) => e.id === "ex.u5.radianes.1");
-    expect(exercise).toBeDefined();
-    if (!exercise) return;
-    expect(exercise.type).toBe("multiple-choice");
-    expect(isExerciseReliable(exercise)).toBe(true);
-  });
 });
 
 // ── selectBalancedSet — diagnostic excludes unreliable exercises ──────────
@@ -456,7 +434,7 @@ describe("selectBalancedSet — excludes unreliable exercises from diagnostic", 
     }
   });
 
-  test("real catalog diagnostic includes exercises from unit 5 after the radianes migration", () => {
+  test("real catalog diagnostic contains no Unit 5 exercises (U5-01 static retirement)", () => {
     const catalog = loadCatalog();
     const result = selectBalancedSet(catalog);
 
@@ -466,10 +444,9 @@ describe("selectBalancedSet — excludes unreliable exercises from diagnostic", 
     const u5Exercises = result.exercises.filter((e) =>
       e.skillId.match(/^mat\.u5\./)
     );
-    // ex.u5.radianes.1 is now reliable, but deterministic difficulty/id ordering
-    // still picks earlier unit-5 exercises for the balanced diagnostic slice.
-    expect(u5Exercises.length).toBeGreaterThanOrEqual(1);
-    expect(u5Exercises.every((e) => e.id !== "ex.u5.radianes.1")).toBe(true);
+    // Unit 5 was retired by U5-01: no provisional U5 skills or exercises
+    // remain in the catalog, so the diagnostic must not include any.
+    expect(u5Exercises).toHaveLength(0);
   });
 
   test("multiple-choice with undefined options is unreliable", () => {

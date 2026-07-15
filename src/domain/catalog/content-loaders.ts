@@ -911,11 +911,17 @@ export interface UnitValidationThresholds {
  * Keys are unit keys like "unit-1", "unit-2", etc.
  * Units without explicit entries use the default minimum of 5.
  * Thresholds must reflect actual catalog content — not aspirational targets.
+ *
+ * Unit 5 is intentionally permitted to be empty after the U5-01 static
+ * retirement of the provisional catalog. Threshold `0` lets the catalog
+ * load without a coverage failure while keeping U1/U2/U3/U4/U6 at their
+ * declared minimums.
  */
 export const UNIT_THRESHOLDS: Readonly<Record<string, number>> = {
   "unit-1": 40,
   "unit-2": 20,
   "unit-3": 24,
+  "unit-5": 0,
 };
 
 const DEFAULT_UNIT_MINIMUM = 5;

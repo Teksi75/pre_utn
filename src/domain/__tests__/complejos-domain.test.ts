@@ -95,12 +95,17 @@ describe("mat.u1.complejos — catalog identity", () => {
     expect(complejosIndex).toBeGreaterThan(logIndex);
   });
 
-  test("mat.u5.complejos_forma_polar depends on mat.u1.complejos", () => {
-    const dep = SKILL_DEPENDENCIES.find(
-      (d) => d.skillId === "mat.u5.complejos_forma_polar"
+  test("no U5 skill lists mat.u1.complejos as a downstream prerequisite (U5-01 retirement)", () => {
+    // The provisional `mat.u5.complejos_forma_polar` was retired by
+    // U5-01. No active dependency in SKILL_DEPENDENCIES should reference
+    // a U5 source skill.
+    const downstreamDeps = SKILL_DEPENDENCIES.filter((d) =>
+      d.prerequisites.includes(SKILL_ID)
     );
-    expect(dep).toBeDefined();
-    expect(dep!.prerequisites).toContain(SKILL_ID);
+    const u5Downstream = downstreamDeps.filter((d) =>
+      d.skillId.startsWith("mat.u5.")
+    );
+    expect(u5Downstream).toEqual([]);
   });
 });
 

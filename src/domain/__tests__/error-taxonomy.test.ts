@@ -4,15 +4,23 @@ import type { ErrorTag } from "../models/error-tag";
 
 describe("Error Taxonomy", () => {
   describe("loadTaxonomy", () => {
-    test("loads a taxonomy with at least 2 tags per unit", () => {
+    test("loads a taxonomy with at least 2 tags per active unit", () => {
       const taxonomy = loadTaxonomy();
       expect(taxonomy).toBeInstanceOf(Array);
-      expect(taxonomy.length).toBeGreaterThanOrEqual(16); // 2 per unit × 6 units + extras
-      // Verify each unit has at least 2 tags
+      expect(taxonomy.length).toBeGreaterThanOrEqual(16); // 2 per unit × 6 units + extras (U5 is empty after U5-01 retirement)
+      // Verify each active unit has at least 2 tags. Unit 5 is
+      // intentionally empty after the U5-01 static retirement.
       for (let unit = 1; unit <= 6; unit++) {
+        if (unit === 5) continue;
         const unitTags = taxonomy.filter((t) => t.unit === unit);
         expect(unitTags.length).toBeGreaterThanOrEqual(2);
       }
+    });
+
+    test("Unit 5 has zero tags after U5-01 retirement", () => {
+      const taxonomy = loadTaxonomy();
+      const u5Tags = taxonomy.filter((t) => t.unit === 5);
+      expect(u5Tags).toEqual([]);
     });
 
     test("taxonomy contains unique tag IDs", () => {
@@ -137,10 +145,7 @@ describe("Error Taxonomy", () => {
         "u4_formula_area",
         "u4_suma_angulos",
       ]);
-      expect(tagsByUnit.get(5)?.map((tag) => tag.id)).toEqual([
-        "u5_cuadrante_angulo",
-        "u5_identidad_pitagorica",
-      ]);
+      expect(tagsByUnit.get(5)?.map((tag) => tag.id)).toEqual([]);
       expect(tagsByUnit.get(6)?.map((tag) => tag.id)).toEqual([
         "u6_dominio_funcion",
         "u6_rango_funcion",

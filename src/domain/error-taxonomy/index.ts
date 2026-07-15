@@ -983,28 +983,6 @@ const TAXONOMY: readonly ErrorTag[] = [
     ],
   },
 
-  // Unit 5: Trigonometry
-  {
-    id: "u5_cuadrante_angulo",
-    unit: 5,
-    description:
-      "Error al ubicar un ángulo en la circunferencia trigonométrica: confunde cuadrantes o sentido de giro.",
-    examples: [
-      "Ubicar 300° en el primer cuadrante en vez del cuarto",
-      "Leer 210° como si estuviera entre 0° y 90°",
-    ],
-  },
-  {
-    id: "u5_identidad_pitagorica",
-    unit: 5,
-    description:
-      "Error al aplicar identidades trigonométricas básicas: reemplaza sen²(θ)+cos²(θ) por una expresión no equivalente.",
-    examples: [
-      "Escribir sen²(θ)+cos²(θ)=2 en vez de 1",
-      "Tratar sen²(θ)+cos²(θ) como (sen(θ)+cos(θ))²",
-    ],
-  },
-
   // Unit 6: Functions
   {
     id: "u6_dominio_funcion",
@@ -1043,8 +1021,11 @@ export function loadTaxonomy(): ErrorTag[] {
     throw new Error(`Duplicate error tag IDs: ${[...new Set(duplicates)].join(", ")}`);
   }
 
-  // Validate coverage per unit
+  // Validate coverage per unit. Unit 5 is intentionally empty after the
+  // U5-01 static retirement of the provisional Unit 5 catalog; its tag
+  // coverage check is skipped.
   for (let unit = 1; unit <= 6; unit++) {
+    if (unit === 5) continue;
     const unitTags = TAXONOMY.filter((t) => t.unit === unit);
     if (unitTags.length < 2) {
       throw new Error(`Unit ${unit} has only ${unitTags.length} error tags; requires at least 2`);

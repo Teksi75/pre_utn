@@ -8,17 +8,17 @@ Defines the loadable mathematics exercise catalog for the MVP practice loop.
 
 ### Requirement: Catalog Coverage
 
-The system SHALL provide at least 30 mathematics exercises, with at least 5 exercises for each unit 1 through 6.
+The system SHALL provide at least 30 mathematics exercises, with at least 5 exercises for each active unit 1, 2, 3, 4, and 6. Unit 5 is intentionally permitted to contain zero exercises. The catalog MUST therefore enforce the 5-exercise minimum for Units 1, 2, 3, 4, and 6 only; Unit 5's coverage contract is the empty set with threshold `0`.
 
 #### Scenario: complete catalog loads
 
-- GIVEN the catalog contains at least 5 valid exercises per unit
+- GIVEN the catalog contains at least 5 valid exercises per active unit (1, 2, 3, 4, 6)
 - WHEN the catalog is loaded
-- THEN loading succeeds with all 6 units represented
+- THEN loading succeeds with Units 1, 2, 3, 4, 6 represented and Unit 5 represented as empty
 
 #### Scenario: incomplete coverage fails
 
-- GIVEN any unit has fewer than 5 valid exercises
+- GIVEN any active unit (1, 2, 3, 4, 6) has fewer than 5 valid exercises
 - WHEN the catalog is loaded
 - THEN loading fails naming the insufficient unit
 

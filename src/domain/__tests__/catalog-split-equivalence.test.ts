@@ -6,7 +6,7 @@
  * same ordering. Exact baseline assertions catch regressions that weak
  * thresholds (>= 30) would miss.
  *
-* Baseline values updated through the align-u2-practice-official-exercises change:
+ * Baseline values updated through the align-u2-practice-official-exercises change:
  *   post-PR1 baseline (184 + 5 unit-3 translation exercises) = 189
  *   +4 PR 3 polinomios_basico aligned exercises (02_ej_utn_1..5, slot .6-.9) = 193
  *   +6 PR 4 operaciones_polinomios aligned exercises (02_ej_utn_7 long div,
@@ -18,19 +18,19 @@
  *   +8 PR 7 expresiones_racionales + ecuaciones_fraccionarias aligned exercises
  *     (02_ej_utn_12a + 12c + 13a + 14a rational-expression .5-.8
  *      + 02_ej_utn_15a + 15b + 15c + 15g fractional-equation .9-.12) = 221
+ *   -5 U5-01 static retirement (ex.u5.angulos.1, ex.u5.radianes.1,
+ *     ex.u5.circunferencia_trigonometrica.1, ex.u5.identidades.1,
+ *     ex.u5.ecuaciones_trigonometricas.1) = 216
  *
- * Baseline values (current — post-PR7 rational-expression + fractional-equation):
- *   loadCatalog().length = 221        (189 + 4 PR3 + 6 PR4 + 10 PR5 + 4 PR6 + 8 PR7)
+ * Baseline values (current — post-PR7 + post-U5-01 retirement):
+ *   loadCatalog().length = 216
  *   queryByUnit(1).length = 101
- *   queryByUnit(3).length = 42        (37 + 5 new translation exercises)
+ *   queryByUnit(3).length = 42
  *   queryBySkill("mat.u1.conjuntos_numericos").length = 44
- *
- * PR 8 will keep BASELINE_TOTAL unchanged (no new exercises planned in
- * PR 8 — it is the verify/consolidation/feedback-mapping slice).
  */
 
-/** Pre-PR1 baseline counts, incremented by PR 3 (+4), PR 4 (+6), PR 5 (+10), PR 6 (+4), PR 7 (+8). */
-const BASELINE_TOTAL = 221;
+/** Pre-PR1 baseline + U2-aligned + U5-01 retirement (-5 placeholder U5 exercises). */
+const BASELINE_TOTAL = 216;
 const BASELINE_UNIT_1 = 101;
 const BASELINE_UNIT_3 = 42;
 const BASELINE_CONJUNTOS_NUMERICOS = 44;

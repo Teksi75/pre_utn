@@ -17,9 +17,11 @@ describe("Exercise Catalog", () => {
       expect(catalog.length).toBeGreaterThanOrEqual(30);
     });
 
-    test("each unit has at least 5 exercises", () => {
+    test("each active unit has at least 5 exercises", () => {
       const catalog = loadCatalog();
+      // Unit 5 is intentionally empty after the U5-01 static retirement.
       for (let unit = 1; unit <= 6; unit++) {
+        if (unit === 5) continue;
         const unitExercises = catalog.filter((e) => {
           // extract unit from skillId: mat.u{unit}.xxx
           const match = e.skillId.match(/^mat\.u(\d+)\./);
@@ -62,12 +64,6 @@ describe("Exercise Catalog", () => {
         "mat.u4.pitagoras",
         "mat.u4.razones_trigonometricas",
         "mat.u4.seno_coseno",
-        "mat.u5.angulos",
-        "mat.u5.radianes",
-        "mat.u5.circunferencia_trigonometrica",
-        "mat.u5.identidades",
-        "mat.u5.ecuaciones_trigonometricas",
-        "mat.u5.complejos_forma_polar",
         "mat.u6.funcion_concepto",
         "mat.u6.dominio_imagen",
         "mat.u6.ceros_positividad_negatividad",

@@ -5,7 +5,7 @@
  *   - U3-TAG-001: 8 u3_* tags are present, one per U3 skill
  *   - U3-TAG-002: each tag passes validation (id, unit=3, description, examples)
  *   - U3-TAG-003: no duplicate tag IDs after the additions
- *   - MODIFIED: taxonomy must still have at least 2 tags per unit
+ *   - MODIFIED: retired provisional U5 tags must not remain active
  */
 
 import { describe, test, expect } from "vitest";
@@ -88,7 +88,7 @@ describe("U3 error taxonomy — U3-TAG-002 (each tag passes validation)", () => 
   });
 });
 
-describe("U3 error taxonomy — U3-TAG-003 (no duplicates, coverage preserved)", () => {
+describe("U3 error taxonomy — U3-TAG-003 (no duplicates, U5 retirement preserved)", () => {
   test("taxonomy has no duplicate IDs after adding U3 tags", () => {
     const taxonomy = loadTaxonomy();
     const ids = taxonomy.map((t) => t.id);
@@ -96,11 +96,13 @@ describe("U3 error taxonomy — U3-TAG-003 (no duplicates, coverage preserved)",
     expect(uniqueIds.size).toBe(ids.length);
   });
 
-  test("each unit still has at least 2 tags (coverage contract preserved)", () => {
+  test("retired provisional Unit 5 tags do not remain active", () => {
     const taxonomy = loadTaxonomy();
-    for (let unit = 1; unit <= 6; unit++) {
-      const count = taxonomy.filter((t) => t.unit === unit).length;
-      expect(count, `Unit ${unit} should have >= 2 tags`).toBeGreaterThanOrEqual(2);
+    const activeIds = taxonomy.map((tag) => tag.id);
+    for (const retiredTagId of ["u5_cuadrante_angulo", "u5_identidad_pitagorica"]) {
+      expect(activeIds, `Retired provisional tag ${retiredTagId} must not remain active`).not.toContain(
+        retiredTagId
+      );
     }
   });
 });
