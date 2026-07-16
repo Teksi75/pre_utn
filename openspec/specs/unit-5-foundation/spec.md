@@ -65,7 +65,7 @@ U1–U4/U6 specs, persistence, tests, and content MUST remain semantically uncha
 
 ### Requirement: Derived Unit Availability
 
-Selector availability MUST equal active skill count (`SKILLS_BY_UNIT[unit].length > 0`), without hard-coded per-unit flags. Populated units MUST remain usable; count changes MUST apply on the next render.
+Selector availability MUST equal active skill count (`SKILLS_BY_UNIT[unit].length > 0`), without hard-coded per-unit flags. Populated units MUST remain usable; count changes MUST apply on the next render. Per-skill readiness/map state MUST recompute every render from the live `SKILLS_BY_UNIT` contents and the `accessibleSkills` prop, so a skill newly added to a previously empty unit is rendered as usable (enabled, with the `Disponible` pill) instead of being erroneously disabled by a stale memoization.
 
 #### Scenario: active-skill counts control usability
 
@@ -79,6 +79,8 @@ Selector availability MUST equal active skill count (`SKILLS_BY_UNIT[unit].lengt
 - GIVEN a disabled empty unit
 - WHEN active skills are added and the selector re-renders
 - THEN the unit automatically becomes enabled and usable
+- AND selecting the unit renders each newly-available skill as an
+  enabled listbox option that calls `onSkillSelect` on click
 
 ### Requirement: Visible and Accessible Disabled Unit 5
 
@@ -91,13 +93,13 @@ Zero-skill units MUST remain visible. Unit 5 MUST read `Unidad 5 — Próximamen
 - THEN its visible option reads `Unidad 5 — Próximamente`
 - AND it has native, ARIA, and visual disabled semantics
 
-### Requirement: Programmatic Unavailable-Unit Selection Is Rejected
+### Requirement: Programmatic Unavailable-Unit Selection Is Rejected and No Empty Skill List Is Reachable
 
-The selector MUST reject programmatic selection of any zero-skill unit, retain no unavailable selection, MUST NOT invoke `onSkillSelect`, and MUST keep an empty skill list unreachable.
+The selector MUST reject any programmatic attempt to select a zero-skill unit. `handleUnitChange` resets `selectedUnit` to `null` before the unavailable value reaches component state; the skill-list render path is gated on `selectedUnit !== null`, which under defensive selection always implies `skillsForUnit.length > 0`. `onSkillSelect` MUST NOT be invoked. No listbox (empty or otherwise) is reachable from any user-facing flow. No render-time empty-list fallback branch is required.
 
 #### Scenario: programmatic Unit 5 selection is rejected
 
 - GIVEN Unit 5 has zero active skills
 - WHEN a programmatic selector change requests Unit 5
 - THEN no unavailable unit is selected and `onSkillSelect` is not invoked
-- AND no skill list is rendered
+- AND no listbox (empty or otherwise) is rendered

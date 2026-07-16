@@ -101,19 +101,30 @@ export function FocusSelector({
     return SKILLS_BY_UNIT[selectedUnit] ?? [];
   }, [selectedUnit]);
 
-  // Derive the empty-unit render state from the same live SKILLS_BY_UNIT
-  // count used for option availability. A previously-disabled unit that
-  // gains active skills flips back to the normal skill-list on the next
-  // render without any flag mutation or persistence change.
-  const showEmptyUnitState =
-    selectedUnit !== null && skillsForUnit.length === 0;
-
-  // When the accessible-skills map is provided we treat a skill as
-  // accessible ONLY when it appears in the map AND `accessible === true`.
-  // Otherwise we fall back to the legacy `isSkillReady` (content readiness)
-  // verdict so existing call sites keep working.
-  const readinessMap = useMemo(() => {
-    const map = new Map<SkillId, { ready: boolean; missing: readonly string[] }>();
+  // Derive readiness/map state from the LIVE `SKILLS_BY_UNIT` contents
+  // and the `accessibleSkills` prop every render. The previous
+  // implementation memoized on `[accessibleSkills]` alone, which made
+  // the map stale when `SKILLS_BY_UNIT` mutated between renders (HMR
+  // or test fixtures): a skill newly added to `UNIT_5_SKILLS` would
+  // not appear in the map, and the skill button would render with the
+  // `?? false` fallback (`Próximamente` pill, disabled). Recomputing
+  // every render is O(N) over a small (~30–40) skill set; per-skill
+  // readiness resolves against the in-memory RAW_REGISTRY, so the cost
+  // is dominated by the JSX reconciliation already happening.
+  //
+  // The verdict for a skill is taken from `accessibleSkills` when the
+  // map provides an entry, otherwise from `isSkillReady` (content
+  // readiness). Both inputs are live: an upstream mutation to either
+  // is reflected on the next render with no flag, persistence seam,
+  // or component swap.
+  const readinessMap: ReadonlyMap<
+    SkillId,
+    { ready: boolean; missing: readonly string[] }
+  > = (() => {
+    const map = new Map<
+      SkillId,
+      { ready: boolean; missing: readonly string[] }
+    >();
     for (const skills of Object.values(SKILLS_BY_UNIT)) {
       for (const skillId of skills) {
         const rich = accessibleSkills?.get(skillId);
@@ -125,7 +136,7 @@ export function FocusSelector({
       }
     }
     return map;
-  }, [accessibleSkills]);
+  })();
 
   // First missing prereq label per skill, for the "Requiere: …" badge.
   // Empty when the skill is accessible or has no missing prereqs.
@@ -262,105 +273,87 @@ export function FocusSelector({
           <label className="block text-sm font-semibold text-brand-700 mb-2">
             Habilidad
           </label>
-          {showEmptyUnitState ? (
-            <div
-              className="rounded-[var(--radius-card)] border border-brand-100 bg-brand-50 p-4 text-sm text-brand-400 flex items-center justify-between gap-3"
-              data-testid="unit-empty-state"
-            >
-              <span className="text-brand-700">
-                Esta unidad todavía no expone habilidades practicables.
-              </span>
-              <StatusPill
-                variant="neutral"
-                className="shrink-0"
-                data-testid="availability-pill"
-              >
-                Próximamente
-              </StatusPill>
-            </div>
-          ) : (
-            <div className="grid gap-2" role="listbox" aria-label="Habilidades">
-              {skillsForUnit.map((skillId, index) => {
-                const readiness = readinessMap.get(skillId);
-                const isReady = readiness?.ready ?? false;
-                const missingPrereqLabel = missingPrereqLabelMap.get(skillId);
-                // Three visual states: available, blocked-by-prereq, no-content.
-                const blockedByPrereq = !isReady && Boolean(missingPrereqLabel);
-                const accessibleSkill = accessibleSkills?.get(skillId);
-                const masteryPillInfo = accessibleSkill
-                  ? getMasteryPillInfo(accessibleSkill.masteryLevel)
-                  : null;
+          <div className="grid gap-2" role="listbox" aria-label="Habilidades">
+            {skillsForUnit.map((skillId, index) => {
+              const readiness = readinessMap.get(skillId);
+              const isReady = readiness?.ready ?? false;
+              const missingPrereqLabel = missingPrereqLabelMap.get(skillId);
+              // Three visual states: available, blocked-by-prereq, no-content.
+              const blockedByPrereq = !isReady && Boolean(missingPrereqLabel);
+              const accessibleSkill = accessibleSkills?.get(skillId);
+              const masteryPillInfo = accessibleSkill
+                ? getMasteryPillInfo(accessibleSkill.masteryLevel)
+                : null;
 
-                return (
-                  <button
-                    key={skillId}
-                    ref={(el) => { skillRefs.current[index] = el; }}
-                    onClick={() => handleSkillClick(skillId)}
-                    onKeyDown={(e) => handleSkillKeyDown(e, index)}
-                    disabled={!isReady}
-                    aria-disabled={!isReady}
-                    aria-describedby={
-                      blockedByPrereq ? `skill-prereq-${index}` : undefined
-                    }
-                    title={
-                      blockedByPrereq && missingPrereqLabel
-                        ? `Necesitás dominar ${missingPrereqLabel} antes`
-                        : undefined
-                    }
-                    role="option"
-                    aria-selected={selectedSkillId === skillId}
-                    className={`w-full text-left px-4 py-3 text-sm rounded-[var(--radius-card)] border transition-colors duration-[var(--duration-fast)] min-h-[44px] ${
-                      selectedSkillId === skillId
-                        ? "bg-accent-500/10 border-accent-500 text-brand-900 font-medium shadow-[var(--shadow-card)]"
-                        : isReady
-                          ? "bg-white border-brand-200 text-brand-700 hover:border-brand-400 hover:shadow-[var(--shadow-card)]"
-                          : blockedByPrereq
-                            ? "bg-amber-50 border-amber-200 text-amber-900 cursor-not-allowed opacity-80"
-                            : "bg-brand-50 border-brand-100 text-brand-400 cursor-not-allowed"
-                    }`}
-                  >
-                    <span className="flex items-center justify-between gap-3">
-                      <span className="flex-1 min-w-0">
-                        <span className="flex items-center gap-2 flex-wrap">
-                          {masteryPillInfo !== null && (
-                            <StatusPill
-                              variant={masteryPillInfo.variant}
-                              data-testid="mastery-pill"
-                              className="shrink-0"
-                            >
-                              {masteryPillInfo.label}
-                            </StatusPill>
-                          )}
-                          <span className="min-w-0 truncate">{skillLabel(skillId)}</span>
-                        </span>
-                        {blockedByPrereq && missingPrereqLabel && (
-                          <span
-                            id={`skill-prereq-${index}`}
-                            className="block mt-0.5 text-xs text-amber-700"
+              return (
+                <button
+                  key={skillId}
+                  ref={(el) => { skillRefs.current[index] = el; }}
+                  onClick={() => handleSkillClick(skillId)}
+                  onKeyDown={(e) => handleSkillKeyDown(e, index)}
+                  disabled={!isReady}
+                  aria-disabled={!isReady}
+                  aria-describedby={
+                    blockedByPrereq ? `skill-prereq-${index}` : undefined
+                  }
+                  title={
+                    blockedByPrereq && missingPrereqLabel
+                      ? `Necesitás dominar ${missingPrereqLabel} antes`
+                      : undefined
+                  }
+                  role="option"
+                  aria-selected={selectedSkillId === skillId}
+                  className={`w-full text-left px-4 py-3 text-sm rounded-[var(--radius-card)] border transition-colors duration-[var(--duration-fast)] min-h-[44px] ${
+                    selectedSkillId === skillId
+                      ? "bg-accent-500/10 border-accent-500 text-brand-900 font-medium shadow-[var(--shadow-card)]"
+                      : isReady
+                        ? "bg-white border-brand-200 text-brand-700 hover:border-brand-400 hover:shadow-[var(--shadow-card)]"
+                        : blockedByPrereq
+                          ? "bg-amber-50 border-amber-200 text-amber-900 cursor-not-allowed opacity-80"
+                          : "bg-brand-50 border-brand-100 text-brand-400 cursor-not-allowed"
+                  }`}
+                >
+                  <span className="flex items-center justify-between gap-3">
+                    <span className="flex-1 min-w-0">
+                      <span className="flex items-center gap-2 flex-wrap">
+                        {masteryPillInfo !== null && (
+                          <StatusPill
+                            variant={masteryPillInfo.variant}
+                            data-testid="mastery-pill"
+                            className="shrink-0"
                           >
-                            Requiere: {missingPrereqLabel}
-                          </span>
+                            {masteryPillInfo.label}
+                          </StatusPill>
                         )}
+                        <span className="min-w-0 truncate">{skillLabel(skillId)}</span>
                       </span>
-                      {isReady ? (
-                        <StatusPill variant="available" className="shrink-0" data-testid="availability-pill">
-                          Disponible
-                        </StatusPill>
-                      ) : blockedByPrereq ? (
-                        <StatusPill variant="locked" className="shrink-0" data-testid="availability-pill">
-                          Bloqueada
-                        </StatusPill>
-                      ) : (
-                        <StatusPill variant="neutral" className="shrink-0" data-testid="availability-pill">
-                          Próximamente
-                        </StatusPill>
+                      {blockedByPrereq && missingPrereqLabel && (
+                        <span
+                          id={`skill-prereq-${index}`}
+                          className="block mt-0.5 text-xs text-amber-700"
+                        >
+                          Requiere: {missingPrereqLabel}
+                        </span>
                       )}
                     </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+                    {isReady ? (
+                      <StatusPill variant="available" className="shrink-0" data-testid="availability-pill">
+                        Disponible
+                      </StatusPill>
+                    ) : blockedByPrereq ? (
+                      <StatusPill variant="locked" className="shrink-0" data-testid="availability-pill">
+                        Bloqueada
+                      </StatusPill>
+                    ) : (
+                      <StatusPill variant="neutral" className="shrink-0" data-testid="availability-pill">
+                        Próximamente
+                      </StatusPill>
+                    )}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

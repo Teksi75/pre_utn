@@ -15,16 +15,17 @@
  *     treatment (text-brand-400 + cursor-not-allowed classes), and the
  *     muted/cursor classes are absent from enabled options.
  *   - Defensive handler: a programmatic `<select>` change to "5" is
- *     rejected — `onSkillSelect` is never invoked and `selectedUnit`
- *     remains in its reset state.
- *   - No reachable empty skills list: when the selector state lands on
- *     a zero-skill unit, the rendered output is the Próximamente pill
- *     (the empty-state branch), never an empty `<div role="listbox">`.
+ *     rejected — `onSkillSelect` is never invoked, `selectedUnit`
+ *     remains in its reset state, and no listbox is rendered.
  *   - Auto-re-enable on live skill count change: when active skills
  *     are pushed into the live catalog the disabled option flips to
- *     enabled on the very next render — proven by mutating the catalog
- *     mock state and re-rendering the same component instance, never
- *     by inspecting the component source.
+ *     enabled on the very next render, the student can select the unit,
+ *     and the newly-added skill renders as a usable, enabled listbox
+ *     option with a "Disponible" pill. The readiness/map state MUST
+ *     recompute from the live `SKILLS_BY_UNIT` so the new skill is not
+ *     erroneously disabled by a stale memoization.
+ *   - Pure helper: `getUnitAvailability` reflects the count-derivation
+ *     rule on a unit-by-unit basis with an injected map parameter.
  *
  * Spec: `openspec/changes/u5-01-provisional-retirement/specs/unit-5-foundation/spec.md`
  * Design: `openspec/changes/u5-01-provisional-retirement/design.md`
@@ -40,6 +41,7 @@ import { describe, expect, test, vi, beforeEach, afterEach } from "vitest";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import type { SkillId } from "@/domain/models/skill";
+import type { AccessibleSkill } from "@/domain/catalog/accessibility";
 import {
   FocusSelector,
   getUnitAvailability,
@@ -47,7 +49,7 @@ import {
 
 // ---------------------------------------------------------------------------
 // Catalog mock — exposes a mutable `UNIT_5_SKILLS` reference that the
-// auto-re-enable test can push to between renders. `vi.hoisted` runs
+// auto-re-enable tests can push to between renders. `vi.hoisted` runs
 // before the `vi.mock` factory so both the test body and the mocked
 // module share the same array reference; `SKILLS_BY_UNIT[5]` inside the
 // imported FocusSelector module points at this array, so mutating it
@@ -73,21 +75,34 @@ vi.mock("@/domain/models/skill-catalog", async () => {
 // Harness — mount/unmount the component into a fresh DOM container per test.
 // ---------------------------------------------------------------------------
 
-function mount(): { container: HTMLDivElement; root: Root } {
+interface Mounted {
+  readonly container: HTMLDivElement;
+  readonly root: Root;
+}
+
+function mount(props: {
+  readonly onSkillSelect?: (skillId: SkillId) => void;
+  readonly accessibleSkills?: ReadonlyMap<SkillId, AccessibleSkill>;
+} = {}): Mounted {
   const container = document.createElement("div");
   document.body.appendChild(container);
   const root = createRoot(container);
   act(() => {
-    root.render(<FocusSelector onSkillSelect={() => undefined} />);
+    root.render(
+      <FocusSelector
+        onSkillSelect={props.onSkillSelect ?? (() => undefined)}
+        accessibleSkills={props.accessibleSkills}
+      />
+    );
   });
   return { container, root };
 }
 
-function unmount(root: Root, container: HTMLDivElement): void {
+function unmount(mounted: Mounted): void {
   act(() => {
-    root.unmount();
+    mounted.root.unmount();
   });
-  container.remove();
+  mounted.container.remove();
 }
 
 /**
@@ -131,8 +146,10 @@ function getListbox(container: HTMLElement): HTMLElement | null {
   return container.querySelector<HTMLElement>('[role="listbox"]');
 }
 
-function getEmptyState(container: HTMLElement): HTMLElement | null {
-  return container.querySelector<HTMLElement>('[data-testid="unit-empty-state"]');
+function getSkillOptions(container: HTMLElement): readonly HTMLButtonElement[] {
+  return Array.from(
+    container.querySelectorAll<HTMLButtonElement>('[role="option"]')
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -141,8 +158,8 @@ function getEmptyState(container: HTMLElement): HTMLElement | null {
 
 describe("FocusSelector — derived availability (U5-01 reduced contract)", () => {
   // Keep the mocked UNIT_5_SKILLS empty at the start and end of every
-  // test so the file is order-independent and the auto-re-enable test
-  // does not leak state into the others.
+  // test so the file is order-independent and the auto-re-enable tests
+  // do not leak state into the others.
   beforeEach(() => {
     catalogState.unit5.length = 0;
   });
@@ -151,10 +168,10 @@ describe("FocusSelector — derived availability (U5-01 reduced contract)", () =
   });
 
   test("renders every unit option with its accessible label and disabled state", () => {
-    const { container, root } = mount();
+    const mounted = mount();
     try {
       // Unit 5 is empty in `SKILLS_BY_UNIT` → disabled + Próximamente.
-      const u5 = getOption(container, 5);
+      const u5 = getOption(mounted.container, 5);
       expect(u5.disabled).toBe(true);
       expect(u5.getAttribute("aria-disabled")).toBe("true");
       expect(u5.textContent).toBe("Unidad 5 — Próximamente");
@@ -171,7 +188,7 @@ describe("FocusSelector — derived availability (U5-01 reduced contract)", () =
       // Every populated unit is rendered enabled with the bare label
       // and no muted/cursor-not-allowed classes.
       for (const unit of [1, 2, 3, 4, 6] as const) {
-        const opt = getOption(container, unit);
+        const opt = getOption(mounted.container, unit);
         expect(opt.disabled).toBe(false);
         expect(opt.getAttribute("aria-disabled")).toBe("false");
         expect(opt.textContent).toBe(`Unidad ${unit}`);
@@ -179,87 +196,52 @@ describe("FocusSelector — derived availability (U5-01 reduced contract)", () =
         expect(opt.className || "").not.toMatch(/cursor-not-allowed/);
       }
     } finally {
-      unmount(root, container);
+      unmount(mounted);
     }
   });
 
   test("selecting a populated unit renders its non-empty skill listbox", () => {
-    const { container, root } = mount();
+    const mounted = mount();
     try {
-      const select = container.querySelector<HTMLSelectElement>("#unit-select");
+      const select = mounted.container.querySelector<HTMLSelectElement>(
+        "#unit-select"
+      );
       if (!select) throw new Error("#unit-select not found");
       changeSelectTo(select, "1");
 
-      const listbox = getListbox(container);
+      const listbox = getListbox(mounted.container);
       expect(listbox).not.toBeNull();
-      expect(listbox!.querySelectorAll('[role="option"]').length).toBeGreaterThan(0);
-      expect(getEmptyState(container)).toBeNull();
+      expect(getSkillOptions(mounted.container).length).toBeGreaterThan(0);
     } finally {
-      unmount(root, container);
+      unmount(mounted);
     }
   });
 
   test("programmatic change to Unit 5 does not invoke onSkillSelect", () => {
+    // Defensive selection: a programmatic change to the zero-skill
+    // Unit 5 must NOT call `onSkillSelect`, MUST reset `selectedUnit`
+    // to null, and MUST leave the rendered DOM with no listbox — the
+    // "no reachable empty skills list" contract, proven through real
+    // interaction rather than by inspecting an internal branch.
     const onSkillSelect = vi.fn();
-    const container = document.createElement("div");
-    document.body.appendChild(container);
-    const root = createRoot(container);
-    act(() => {
-      root.render(
-        <FocusSelector onSkillSelect={onSkillSelect} />
-      );
-    });
-
+    const mounted = mount({ onSkillSelect });
     try {
-      const select = container.querySelector<HTMLSelectElement>("#unit-select");
+      const select = mounted.container.querySelector<HTMLSelectElement>(
+        "#unit-select"
+      );
       if (!select) throw new Error("#unit-select not found");
 
       changeSelectTo(select, "5");
 
       expect(onSkillSelect).not.toHaveBeenCalled();
       // Defensive handler resets `selectedUnit` to null, so the
-      // skill-list section must NOT render at all (the wrapper is
-      // gated on `selectedUnit !== null`).
-      expect(getListbox(container)).toBeNull();
-      expect(getEmptyState(container)).toBeNull();
-      // And the underlying <select> value must reflect the reset.
+      // skill-list section (gated on `selectedUnit !== null`) does not
+      // render at all — not even an empty listbox.
+      expect(getListbox(mounted.container)).toBeNull();
+      // And the underlying <select> value reflects the reset.
       expect(select.value).toBe("");
     } finally {
-      unmount(root, container);
-    }
-  });
-
-  test("zero-skill render path shows the Próximamente pill, never an empty listbox", () => {
-    const { container, root } = mount();
-    try {
-      // Land the selector on a populated unit first, so the
-      // selectedUnit !== null branch is open. Then attempt the
-      // zero-skill value through the defensive handler — it resets
-      // selectedUnit to null and renders nothing. To observe the
-      // empty-state branch, we render Unit 5 programmatically by
-      // first selecting Unit 1 (renders the wrapper) and then
-      // proving that the empty-state branch does NOT execute for a
-      // populated unit (it shows the listbox). For the empty-state
-      // branch itself we exercise it indirectly: when Unit 5 is the
-      // only empty unit and selectedUnit stays null after the
-      // rejected change, no listbox and no empty-state appears —
-      // which is the user-mandated "no reachable empty skills list"
-      // contract.
-      const select = container.querySelector<HTMLSelectElement>("#unit-select");
-      if (!select) throw new Error("#unit-select not found");
-      changeSelectTo(select, "1");
-      expect(getListbox(container)).not.toBeNull();
-      expect(getEmptyState(container)).toBeNull();
-
-      // Now attempt Unit 5 — defensive handler resets to null and
-      // the listbox must disappear without ever showing an empty
-      // listbox state.
-      changeSelectTo(select, "5");
-      expect(getListbox(container)).toBeNull();
-      expect(getEmptyState(container)).toBeNull();
-      expect(select.value).toBe("");
-    } finally {
-      unmount(root, container);
+      unmount(mounted);
     }
   });
 
@@ -272,12 +254,12 @@ describe("FocusSelector — derived availability (U5-01 reduced contract)", () =
     // Unit 5 as an enabled option. The pure exported
     // `getUnitAvailability` helper is exercised directly below to
     // prove the same re-enable rule at the unit level.
-    const { container, root } = mount();
+    const mounted = mount();
     try {
       // 1) Initial render with the live catalog: UNIT_5_SKILLS is
       //    empty, so the option is disabled and labeled
       //    "Unidad 5 — Próximamente".
-      const u5Before = getOption(container, 5);
+      const u5Before = getOption(mounted.container, 5);
       expect(u5Before.disabled).toBe(true);
       expect(u5Before.getAttribute("aria-disabled")).toBe("true");
       expect(u5Before.textContent).toBe("Unidad 5 — Próximamente");
@@ -293,7 +275,7 @@ describe("FocusSelector — derived availability (U5-01 reduced contract)", () =
       //    `available` from `SKILLS_BY_UNIT[5].length > 0` on every
       //    render, so the next render must observe the new count.
       act(() => {
-        root.render(
+        mounted.root.render(
           <FocusSelector onSkillSelect={() => undefined} />
         );
       });
@@ -301,7 +283,7 @@ describe("FocusSelector — derived availability (U5-01 reduced contract)", () =
       // 4) Unit 5 is now enabled and labeled with the bare
       //    "Unidad 5" text — no "Próximamente" suffix, no muted /
       //    cursor-not-allowed classes.
-      const u5After = getOption(container, 5);
+      const u5After = getOption(mounted.container, 5);
       expect(u5After.disabled).toBe(false);
       expect(u5After.getAttribute("aria-disabled")).toBe("false");
       expect(u5After.textContent).toBe("Unidad 5");
@@ -309,7 +291,111 @@ describe("FocusSelector — derived availability (U5-01 reduced contract)", () =
       expect(u5After.className || "").not.toMatch(/cursor-not-allowed/);
     } finally {
       catalogState.unit5.length = 0;
-      unmount(root, container);
+      unmount(mounted);
+    }
+  });
+
+  test("auto-re-enable with usable skill: pushing a skill lets the student select U5 and pick a usable skill", () => {
+    // Audit finding: when a unit receives active skills dynamically,
+    // not only must option availability re-enable; selecting it must
+    // make those skills usable. The readiness/map state MUST recompute
+    // from the LIVE `SKILLS_BY_UNIT` contents — a stale memoization
+    // would render the new skill as disabled even though the unit is
+    // available.
+    //
+    // The accessibility verdict for the freshly-added skill is taken
+    // from the `accessibleSkills` map (the "live derived input" path)
+    // so the rendered button is enabled and carries a "Disponible"
+    // pill, instead of falling back to the content-driven
+    // `isSkillReady` verdict that returns false for any non-catalog
+    // fixture skill.
+    const fixtureSkill = "mat.u5.autoreenable-usable" as SkillId;
+    const accessibleSkills: ReadonlyMap<SkillId, AccessibleSkill> = new Map([
+      [
+        fixtureSkill,
+        {
+          skillId: fixtureSkill,
+          name: "Habilidad reactivada",
+          accessible: true,
+          missingPrerequisites: [],
+          masteryLevel: "not-started",
+          accuracy: 0,
+          contentReady: true,
+        },
+      ],
+    ]);
+
+    const onSkillSelect = vi.fn();
+    const mounted = mount({ onSkillSelect, accessibleSkills });
+    try {
+      // 1) Initial render — U5 is empty so the option is disabled.
+      const u5Before = getOption(mounted.container, 5);
+      expect(u5Before.disabled).toBe(true);
+      expect(u5Before.textContent).toBe("Unidad 5 — Próximamente");
+
+      // 2) Push the fixture skill into UNIT_5_SKILLS (the same array
+      //    reference the production `SKILLS_BY_UNIT[5]` points at).
+      catalogState.unit5.push(fixtureSkill);
+
+      // 3) Re-render the SAME mounted instance — the readiness/map
+      //    state MUST recompute so the new skill is included.
+      act(() => {
+        mounted.root.render(
+          <FocusSelector
+            onSkillSelect={onSkillSelect}
+            accessibleSkills={accessibleSkills}
+          />
+        );
+      });
+
+      // 4) U5 is now enabled with the bare label.
+      const u5After = getOption(mounted.container, 5);
+      expect(u5After.disabled).toBe(false);
+      expect(u5After.textContent).toBe("Unidad 5");
+
+      // 5) Select U5 through the change handler. The defensive
+      //    selection must let this through because U5 now has skills.
+      const select = mounted.container.querySelector<HTMLSelectElement>(
+        "#unit-select"
+      );
+      if (!select) throw new Error("#unit-select not found");
+      changeSelectTo(select, "5");
+
+      // 6) The listbox is rendered and contains exactly one option
+      //    (the fixture skill) — a non-empty, usable skill option.
+      const listbox = getListbox(mounted.container);
+      expect(listbox).not.toBeNull();
+      const skillOptions = getSkillOptions(mounted.container);
+      expect(skillOptions.length).toBe(1);
+
+      // 7) The skill option is enabled (not disabled by a stale
+      //    memoization) and the readiness verdict comes from the
+      //    live `accessibleSkills` map.
+      const skillButton = skillOptions[0]!;
+      expect(skillButton.disabled).toBe(false);
+      expect(skillButton.getAttribute("aria-disabled")).toBe("false");
+
+      // 8) The skill option carries the "Disponible" pill — the
+      //    visual contract for an accessible, ready skill.
+      const pills = skillButton.querySelectorAll<HTMLElement>(
+        '[data-testid="availability-pill"]'
+      );
+      expect(pills.length).toBeGreaterThan(0);
+      const hasDisponible = Array.from(pills).some((p) =>
+        p.textContent?.includes("Disponible")
+      );
+      expect(hasDisponible).toBe(true);
+
+      // 9) Clicking the skill invokes `onSkillSelect` with the
+      //    fixture skill ID — the end-to-end re-enable contract.
+      act(() => {
+        skillButton.click();
+      });
+      expect(onSkillSelect).toHaveBeenCalledTimes(1);
+      expect(onSkillSelect).toHaveBeenCalledWith(fixtureSkill);
+    } finally {
+      catalogState.unit5.length = 0;
+      unmount(mounted);
     }
   });
 
@@ -334,26 +420,32 @@ describe("FocusSelector — derived availability (U5-01 reduced contract)", () =
   });
 
   test("select renders with the brand-token chrome and a11y wiring (interactive DOM check)", () => {
-    const { container, root } = mount();
+    const mounted = mount();
     try {
-      const select = container.querySelector<HTMLSelectElement>("#unit-select");
+      const select = mounted.container.querySelector<HTMLSelectElement>(
+        "#unit-select"
+      );
       if (!select) throw new Error("#unit-select not found");
       // The label is wired to the control via `htmlFor`/`id`.
-      const label = container.querySelector<HTMLLabelElement>('[for="unit-select"]');
+      const label = mounted.container.querySelector<HTMLLabelElement>(
+        '[for="unit-select"]'
+      );
       expect(label).not.toBeNull();
       // Touch target + interactive cursor + visible focus ring.
       expect(select.className).toMatch(/min-h-\[44px\]/);
       expect(select.className).toMatch(/cursor-pointer/);
-      expect(select.className).toMatch(/focus-visible:shadow-\[var\(--ring-focus\)\]/);
+      expect(select.className).toMatch(
+        /focus-visible:shadow-\[var\(--ring-focus\)\]/
+      );
       // Decorative caret is present and marked aria-hidden so it does
       // not pollute the accessible name of the <select>.
-      const caret = container.querySelector<HTMLSpanElement>(
+      const caret = mounted.container.querySelector<HTMLSpanElement>(
         'span[aria-hidden="true"]'
       );
       expect(caret).not.toBeNull();
       expect(caret!.textContent).toContain("▾");
     } finally {
-      unmount(root, container);
+      unmount(mounted);
     }
   });
 });

@@ -30,7 +30,7 @@ U5-01 MUST permit Unit 5 to contain zero active provisional skills and zero plac
 
 ### Requirement: Derived Unit Availability
 
-The practice unit selector MUST derive availability solely from active skill count (`SKILLS_BY_UNIT[unit].length > 0`) and MUST NOT use hard-coded per-unit flags. Populated units MUST remain enabled and usable. Count changes MUST apply on the next render.
+The practice unit selector MUST derive availability solely from active skill count (`SKILLS_BY_UNIT[unit].length > 0`) and MUST NOT use hard-coded per-unit flags. Populated units MUST remain enabled and usable. Count changes MUST apply on the next render. Per-skill readiness/map state MUST recompute every render from the live `SKILLS_BY_UNIT` contents and the `accessibleSkills` prop, so a skill newly added to a previously empty unit is rendered as usable (enabled, with the `Disponible` pill) instead of being erroneously disabled by a stale memoization.
 
 #### Scenario: active-skill counts control usability
 
@@ -44,6 +44,8 @@ The practice unit selector MUST derive availability solely from active skill cou
 - GIVEN a unit rendered disabled because it had zero active skills
 - WHEN active skills are added and the selector re-renders
 - THEN the unit automatically becomes enabled and usable
+- AND selecting the unit renders each newly-available skill as an
+  enabled listbox option that calls `onSkillSelect` on click
 
 ### Requirement: Visible and Accessible Disabled Unit 5
 
@@ -56,13 +58,13 @@ A zero-skill unit MUST remain visible. In the current post-retirement state, Uni
 - THEN a visible option reads `Unidad 5 — Próximamente`
 - AND it has native and ARIA disabled semantics plus the required visual treatment
 
-### Requirement: Programmatic Unavailable-Unit Selection Is Rejected
+### Requirement: Programmatic Unavailable-Unit Selection Is Rejected and No Empty Skill List Is Reachable
 
-The selector MUST reject a programmatic attempt to select any zero-skill unit. It MUST retain no unavailable selection, MUST NOT invoke `onSkillSelect`, and MUST keep an empty skill list unreachable.
+The selector MUST reject any programmatic attempt to select a zero-skill unit. `handleUnitChange` resets `selectedUnit` to `null` before the unavailable value reaches component state; the skill-list render path is gated on `selectedUnit !== null`, which under defensive selection always implies `skillsForUnit.length > 0`. `onSkillSelect` MUST NOT be invoked. No listbox (empty or otherwise) is reachable from any user-facing flow. No render-time empty-list fallback branch is required.
 
 #### Scenario: programmatic Unit 5 selection is rejected
 
 - GIVEN Unit 5 has zero active skills
 - WHEN a programmatic selector change requests Unit 5
 - THEN no unavailable unit is selected and `onSkillSelect` is not invoked
-- AND no skill list is rendered
+- AND no listbox (empty or otherwise) is rendered
