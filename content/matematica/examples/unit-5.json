@@ -1,0 +1,101 @@
+[
+  {
+    "id": "example-u5-conversion",
+    "skillId": "mat.u5.medicion_angulos_y_arcos",
+    "problem": "Completar la tabla de conversión entre grados y radianes para los ángulos $\\alpha_1 = 36^{\\circ}$, $\\alpha_2 = 225^{\\circ}$, $\\alpha_3 = \\dfrac{3\\pi}{4}$ rad y $\\alpha_4 = 2{,}3456$ rad.",
+    "steps": [
+      {
+        "order": 1,
+        "explanation": "Para $\\alpha_1 = 36^{\\circ}$: multiplicamos por $\\dfrac{\\pi}{180}$: $\\alpha_1 = 36 \\cdot \\dfrac{\\pi}{180} = \\dfrac{36}{180}\\pi = \\dfrac{1}{5}\\pi$ rad. La fracción se reduce por MCD 36 entre 180."
+      },
+      {
+        "order": 2,
+        "explanation": "Para $\\alpha_2 = 225^{\\circ}$: $\\alpha_2 = 225 \\cdot \\dfrac{\\pi}{180} = \\dfrac{225}{180}\\pi = \\dfrac{5}{4}\\pi$ rad. La fracción se reduce por MCD 45."
+      },
+      {
+        "order": 3,
+        "explanation": "Para $\\alpha_3 = \\dfrac{3\\pi}{4}$ rad: convertimos a grados multiplicando por $\\dfrac{180}{\\pi}$: $\\alpha_3 = \\dfrac{3\\pi}{4} \\cdot \\dfrac{180}{\\pi} = \\dfrac{3 \\cdot 180}{4} = 135^{\\circ}$."
+      },
+      {
+        "order": 4,
+        "explanation": "Para $\\alpha_4 = 2{,}3456$ rad: convertimos a grados con $\\dfrac{180}{\\pi}$: $\\alpha_4 = 2{,}3456 \\cdot \\dfrac{180}{\\pi} \\approx 134{,}392980^{\\circ}$."
+      }
+    ],
+    "finalAnswer": "Tabla completa: $\\alpha_1 = \\dfrac{\\pi}{5}$ rad, $\\alpha_2 = \\dfrac{5\\pi}{4}$ rad, $\\alpha_3 = 135^{\\circ}$, $\\alpha_4 \\approx 134{,}392980^{\\circ}$.",
+    "pedagogicalNote": "Cada fila convierte con el factor correspondiente: grados → radianes usa $\\dfrac{\\pi}{180}$ y radianes → grados usa $\\dfrac{180}{\\pi}$. Las reducciones por MCD son parte del resultado canónico.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_practica.pdf",
+        "section": "p. 3 — Tabla de conversión grados ↔ radianes",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Tabla de conversión para los ítems 1.a–1.d del cuadernillo de práctica."
+      }
+    ]
+  },
+  {
+    "id": "example-u5-arco-dms",
+    "skillId": "mat.u5.medicion_angulos_y_arcos",
+    "problem": "Una cuerda subtiende un arco de 6 cm sobre una circunferencia de radio 30 cm. Expresar el ángulo en radianes y en DMS.",
+    "steps": [
+      {
+        "order": 1,
+        "explanation": "La fórmula del arco es $s = r \\cdot \\alpha$, donde $\\alpha$ está en radianes. Despejamos: $\\alpha = \\dfrac{s}{r} = \\dfrac{6}{30} = \\dfrac{1}{5}$ rad."
+      },
+      {
+        "order": 2,
+        "explanation": "Convertimos el radián a grados multiplicando por $\\dfrac{180}{\\pi}$: $\\alpha = \\dfrac{1}{5} \\cdot \\dfrac{180}{\\pi} = \\dfrac{36}{\\pi}^{\\circ}$."
+      },
+      {
+        "order": 3,
+        "explanation": "Calculamos la expresión numérica: $\\dfrac{36}{\\pi} \\approx 11{,}459166^{\\circ}$. La parte entera es $11^{\\circ}$. El residuo fraccionario vale $0{,}459166 \\times 60 \\approx 27{,}55'$, así que los minutos son $27'$."
+      },
+      {
+        "order": 4,
+        "explanation": "El residuo de los segundos vale $0{,}55 \\times 60 \\approx 33{,}0''$. La parte decimal es prácticamente cero, así que no se redondea hacia arriba y la respuesta canónica es $11^{\\circ}\\, 27'\\, 33''$ (redondeo al segundo más cercano)."
+      }
+    ],
+    "finalAnswer": "$\\alpha = \\dfrac{1}{5}$ rad $= 0{,}2$ rad $\\approx 11^{\\circ}\\, 27'\\, 33''$.",
+    "pedagogicalNote": "La cadena es: arco → $\\alpha = s/r$ (radianes) → grados decimales → DMS con redondeo al segundo. La respuesta canónica para U5-02 ítem 2 es exactamente $11°\\,27'\\,33''$.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_practica.pdf",
+        "section": "p. 3 — Ítem 2 (cuerda, arco a DMS)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Demostrar el uso de $s = r\\alpha$ para convertir un arco en ángulo, y la conversión de radianes a DMS con redondeo."
+      }
+    ]
+  },
+  {
+    "id": "example-u5-reloj",
+    "skillId": "mat.u5.medicion_angulos_y_arcos",
+    "problem": "El minutero de un reloj de pulsera mide 12 cm. ¿Qué arco recorre en 20 minutos?",
+    "steps": [
+      {
+        "order": 1,
+        "explanation": "El periodo del minutero es $T = 60$ min. La fracción de revolución que recorre en 20 min es $\\dfrac{\\Delta t}{T} = \\dfrac{20}{60} = \\dfrac{1}{3}$."
+      },
+      {
+        "order": 2,
+        "explanation": "El ángulo barrido es $\\alpha = \\dfrac{\\Delta t}{T} \\cdot 2\\pi = \\dfrac{1}{3} \\cdot 2\\pi = \\dfrac{2\\pi}{3}$ radianes."
+      },
+      {
+        "order": 3,
+        "explanation": "La longitud de arco sobre el minutero (radio $r = 12$ cm) es $s = r \\cdot \\alpha = 12 \\cdot \\dfrac{2\\pi}{3} = \\dfrac{24\\pi}{3} = 8\\pi$ cm."
+      },
+      {
+        "order": 4,
+        "explanation": "Numéricamente: $8\\pi \\approx 25{,}132741$ cm. La respuesta canónica para U5-02 ítem 3 es $8\\pi$ cm."
+      }
+    ],
+    "finalAnswer": "$s = 8\\pi$ cm $\\approx 25{,}13$ cm.",
+    "pedagogicalNote": "La fórmula $s = r \\cdot \\dfrac{\\Delta t}{T} \\cdot 2\\pi$ combina arco, ángulo y fracción de revolución. Es la pieza clave para resolver problemas de manecillas y poleas.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_practica.pdf",
+        "section": "p. 3 — Ítem 3 (manecilla de reloj, arco en cm)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ilustrar la fórmula del arco a partir de una fracción de revolución completa."
+      }
+    ]
+  }
+]

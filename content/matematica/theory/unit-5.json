@@ -1,0 +1,80 @@
+[
+  {
+    "id": "theory-medicion-angulos-y-arcos",
+    "skillId": "mat.u5.medicion_angulos_y_arcos",
+    "concepts": [
+      {
+        "id": "concept-u5-dms",
+        "title": "1. Sistema sexagesimal y cotas DMS",
+        "bodyParagraphs": [
+          "Idea principal: un ángulo sexagesimal se escribe como $\\alpha = g^{\\circ}\\, m'\\, s''$ con la convención $0 \\leq \\alpha < 360^{\\circ}$. Los minutos cumplen $0 \\leq m < 60$ y los segundos cumplen $0 \\leq s < 60$. Si un cálculo te da $m \\geq 60$ o $s \\geq 60$, hay que hacer acarreo antes de aceptar la respuesta.",
+          "Acarreo hacia adelante: cuando los segundos superan 59, se suma 1 a los minutos y se restan 60 a los segundos. Cuando los minutos superan 59, se suma 1 a los grados y se restan 60 a los minutos. La operación inversa — redondeo o truncamiento hacia grados — solo se justifica si el enunciado pide una cota entera.",
+          "Ejemplo: $11^{\\circ}\\, 27'\\, 73''$ no es una forma canónica. Se acarréa: $73'' = 1'\\, 13''$, así que el ángulo se reescribe como $11^{\\circ}\\, 28'\\, 13''$. Lo mismo aplica a minutos y grados. Memorizar el orden de conversión (segundos → minutos → grados) evita errores de acarreo."
+        ]
+      },
+      {
+        "id": "concept-u5-grado-radian",
+        "title": "2. Equivalencia $180^{\\circ} = \\pi$ rad",
+        "bodyParagraphs": [
+          "Idea principal: un radián es el ángulo cuyo arco subtendido en la circunferencia unitaria mide exactamente 1. De esa definición sale la equivalencia $180^{\\circ} = \\pi$ rad. Para convertir grados a radianes se multiplica por $\\dfrac{\\pi}{180}$ y para convertir radianes a grados se multiplica por $\\dfrac{180}{\\pi}$. La conversión usa la MISMA constante en ambas direcciones, no su inversa al azar.",
+          "Tabla rápida para los múltiplos más comunes: $30^{\\circ} = \\dfrac{\\pi}{6}$, $45^{\\circ} = \\dfrac{\\pi}{4}$, $60^{\\circ} = \\dfrac{\\pi}{3}$, $90^{\\circ} = \\dfrac{\\pi}{2}$, $180^{\\circ} = \\pi$, $360^{\\circ} = 2\\pi$. Estos valores aparecen repetidas veces en la práctica; conviene reconocerlos de memoria.",
+          "Error frecuente: invertir el factor y multiplicar por $\\dfrac{180}{\\pi}$ cuando se quiere pasar de grados a radianes. La regla nemotécnica es \"los grados son más grandes que los radianes (salvo para $\\pi$)\", entonces al convertir de grados a radianes el número debe ACHICARSE. Si el resultado se agranda, hay que revisar el factor."
+        ]
+      },
+      {
+        "id": "concept-u5-decimal-dms",
+        "title": "3. Grados decimales ↔ DMS (redondeo al segundo)",
+        "bodyParagraphs": [
+          "Idea principal: para convertir grados decimales a DMS se toma la parte entera como grados, se multiplica la parte fraccionaria por 60 para obtener los minutos, y la parte fraccionaria de los minutos por 60 para obtener los segundos. La política de redondeo al segundo más cercano es la que usa esta unidad: si la parte decimal de los segundos es $\\geq 0{,}5$, se redondea hacia arriba; en caso contrario, se trunca.",
+          "Ejemplo: $11{,}459166\\ldots^{\\circ}$ se separa como $11^{\\circ}$ + $0{,}459166\\ldots \\times 60 = 27{,}55'$ = $27'\\, 33''$. La parte decimal de los segundos ($0{,}55$) supera el $0{,}5$? No: ya está consumida en los minutos. El criterio aplica a la parte residual de los segundos después de tomar los minutos enteros.",
+          "Error frecuente: olvidar el redondeo del segundo y reportar $11^{\\circ}\\, 27'\\, 32{,}999''$ en vez del $11^{\\circ}\\, 27'\\, 33''$ canónico. La diferencia es de menos de un segundo pero cambia el grado de tolerancia que aplica el corrector automático. La regla práctica: redondear ANTES de comparar con la respuesta esperada."
+        ]
+      },
+      {
+        "id": "concept-u5-radian-arco",
+        "title": "4. Definición de radián y fórmula del arco",
+        "bodyParagraphs": [
+          "Idea principal: un ángulo central de $\\alpha$ radianes subtiende un arco de longitud $s = r \\cdot \\alpha$ en una circunferencia de radio $r$. La relación es DIRECTA: a mayor ángulo, mayor arco; a mayor radio, mayor arco. Esta fórmula sale directamente de la definición del radián como el arco igual al radio.",
+          "Si el ángulo está en grados, se convierte primero a radianes: $s = r \\cdot \\alpha_{\\text{rad}}$. Recordá que $\\alpha_{\\text{rad}} = \\alpha^{\\circ} \\cdot \\dfrac{\\pi}{180}$. El producto $r \\cdot \\alpha_{\\text{rad}}$ SIEMPRE se evalúa en radianes; usar grados en la fórmula produce un resultado incorrecto en un factor de $\\dfrac{\\pi}{180}$.",
+          "Ejemplo: minutero de 12 cm que recorre 20 minutos ($= \\dfrac{20}{60} = \\dfrac{1}{3}$ de revolución). El ángulo es $\\dfrac{1}{3} \\cdot 2\\pi = \\dfrac{2\\pi}{3}$ rad, y el arco vale $12 \\cdot \\dfrac{2\\pi}{3} = 8\\pi \\approx 25{,}13$ cm."
+        ]
+      },
+      {
+        "id": "concept-u5-fraccion-tiempo",
+        "title": "5. Fracción de revolución y arco a partir del tiempo",
+        "bodyParagraphs": [
+          "Idea principal: si un objeto gira con periodo $T$ y recorre una fracción $\\dfrac{\\Delta t}{T}$ de la revolución completa, el ángulo barrido es $\\alpha = \\dfrac{\\Delta t}{T} \\cdot 2\\pi$ radianes. La longitud de arco sobre una circunferencia de radio $r$ es entonces $s = r \\cdot \\alpha = r \\cdot \\dfrac{\\Delta t}{T} \\cdot 2\\pi$.",
+          "Ejemplo: aguja de un reloj con $T = 60$ min y $r = 12$ cm. Si recorre 20 min, $\\alpha = \\dfrac{20}{60} \\cdot 2\\pi = \\dfrac{2\\pi}{3}$ rad, $s = 8\\pi$ cm. Si recorre 10 min (la mitad del tiempo), $\\alpha = \\dfrac{\\pi}{3}$ rad, $s = 4\\pi$ cm. La fórmula escala linealmente con el tiempo recorrido.",
+          "Error frecuente: usar la fracción de tiempo al revés ($\\dfrac{T}{\\Delta t}$) o no convertir la fracción de revolución a radianes antes de multiplicar por el radio. La cadena correcta es siempre: tiempo → fracción de revolución → radianes → arco."
+        ]
+      }
+    ],
+    "notation": [
+      "$g^{\\circ}\\, m'\\, s''$ — ángulo en grados, minutos y segundos con $0 \\leq m, s < 60$",
+      "$\\alpha_{\\text{rad}}$ — ángulo medido en radianes",
+      "$180^{\\circ} = \\pi$ rad — equivalencia fundamental entre ambos sistemas",
+      "$s = r \\cdot \\alpha$ — longitud de arco (con $\\alpha$ en radianes)",
+      "$\\alpha = \\dfrac{\\Delta t}{T} \\cdot 2\\pi$ — ángulo barrido en una fracción de revolución"
+    ],
+    "commonMistakes": [
+      "Invertir el factor de conversión entre grados y radianes (multiplicar por $\\dfrac{180}{\\pi}$ en vez de $\\dfrac{\\pi}{180}$).",
+      "Olvidar el acarreo cuando los minutos o segundos superan 59.",
+      "Redondear al grado entero cuando el problema pide precisión al segundo.",
+      "Usar grados en la fórmula del arco ($s = r \\cdot \\alpha$) sin convertir a radianes.",
+      "Confundir la fracción de revolución con su recíproco ($\\dfrac{T}{\\Delta t}$)."
+    ],
+    "practicePrompts": [
+      "Convertir $36^{\\circ}$ a radianes.",
+      "Convertir $\\dfrac{6}{30}$ rad a DMS (redondeo al segundo más cercano).",
+      "Calcular el arco recorrido por el minutero de un reloj de 12 cm en 20 minutos."
+    ],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_matematica.pdf",
+        "section": "Capítulo 5 — Medición de ángulos y arcos",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Marco conceptual canónico: equivalencia $180° = \\pi$ rad, definición de radián, longitud de arco, fracción de revolución. Las páginas 7–9 cubren los cinco conceptos de esta unidad."
+      }
+    ]
+  }
+]
