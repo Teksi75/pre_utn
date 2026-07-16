@@ -23,6 +23,13 @@ Content and behavioral contract for making `mat.u1.complejos` traversable: theor
 - THEN none of those entries is a Unit 5 skill
 - AND the U1 prerequisite for `mat.u1.complejos` remains `mat.u1.propiedades_operaciones_reales`
 
+#### Scenario: active prerequisite graph resolves without the polar skill
+
+- GIVEN the active catalog after U5-01
+- WHEN `mat.u1.complejos` prerequisites are resolved
+- THEN no active edge references `mat.u5.complejos_forma_polar`
+- AND the U1 prerequisite remains unchanged
+
 ### Requirement: Transitive Availability
 
 The skill MUST be navigable in pilot learn/practice modes. Content loaders MUST return non-empty theory, examples, and exercises.

@@ -8,7 +8,7 @@ Defines the loadable mathematics exercise catalog for the MVP practice loop.
 
 ### Requirement: Catalog Coverage
 
-The system SHALL provide at least 30 mathematics exercises, with at least 5 exercises for each active unit 1, 2, 3, 4, and 6. Unit 5 is intentionally permitted to contain zero exercises. The catalog MUST therefore enforce the 5-exercise minimum for Units 1, 2, 3, 4, and 6 only; Unit 5's coverage contract is the empty set with threshold `0`.
+The system SHALL provide at least 30 mathematics exercises, with at least 5 exercises for each active unit 1, 2, 3, 4, and 6. Unit 5 is intentionally permitted to contain zero exercises. The catalog MUST therefore enforce the 5-exercise minimum for Units 1, 2, 3, 4, and 6 only; Unit 5's coverage contract is the empty set with threshold `0`. The five exact placeholder IDs `ex.u5.angulos.1`, `ex.u5.radianes.1`, `ex.u5.circunferencia_trigonometrica.1`, `ex.u5.identidades.1`, and `ex.u5.ecuaciones_trigonometricas.1` MUST be removed from active catalog content using exact string equality. No migration, persistence, sidecar, marker, SQL, or write-gate behavior is introduced.
 
 #### Scenario: complete catalog loads
 
