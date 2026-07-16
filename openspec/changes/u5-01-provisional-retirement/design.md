@@ -1,36 +1,38 @@
-# Design: Provisional Unit 5 Static Retirement
+# Design: U5-01 Provisional Retirement and Selector Availability
 
 ## Decision
 
-U5-01 is a static repository retirement. The provisional Unit 5 catalog was never practicable for users, so there is no persisted user state to migrate or protect.
+Keep the completed static retirement and make its empty Unit 5 state safe in `FocusSelector`. The provisional catalog was never practicable for users, so no stored state needs migration or protection.
 
-## Retirement Boundary
+## Decisions
 
 | Topic | Decision |
 |---|---|
-| Matching | Use the verified exact 6-skill/5-exercise inventory when removing static references. Do not use prefixes or broad Unit 5 matching. |
-| Catalog | Remove the six provisional skills and related active edges; retain an intentionally empty Unit 5 state. |
-| Content | Remove the five placeholder exercise objects and obsolete provisional taxonomy/reference material. |
-| Contracts | Update active specifications and tests to describe the static empty-state contract. |
-| Persistence | No local or remote data migration, sidecar, marker, SQL, write gate, adapter change, or blocking behavior. |
+| Static retirement | The verified exact 6-skill/5-exercise inventory was removed; `UNIT_5_SKILLS` remains an empty export and the Unit 5 threshold is `0`. |
+| Availability | `FocusSelector` derives availability from each unit's live skill count. No per-unit flag exists. |
+| Empty unit | Keep it visible as disabled `Unidad N — Próximamente`, with native, ARIA, muted, and cursor semantics. |
+| Defensive selection | The change handler clears an unavailable value. |
+| Live changes | Per-render catalog, readiness, and effective-selection derivations prevent an empty listbox; a repopulated unit is enabled again. |
+| Excluded recovery | No unit URL, stored unit selection, persistence behavior, banner, or external recovery contract. |
 
-## Retained Inventory
+## Selector Flow
 
-The source-grounded inventory in `exploration.md` is the review reference for the exact six skills, five exercises, active-reference locations, synthetic near-misses, and excluded areas. It is not a migration design.
+```text
+live UNIT_*_SKILLS -> availability and readiness
+selected unit + live count -> effective selection -> listbox gate
+unavailable change -> no selection
+```
 
-## Explicitly Discarded Designs
+`FocusSelector` owns unit state and only emits a selected skill. Its per-render derivations use the current catalog, so a unit emptied between renders is displayed as unselected without mutating state; when skills return, normal selection works again.
 
-The following earlier proposals are invalid and must not be revived by U5-01 work:
+## Completed Evidence
 
-- Per-student local sidecars or completion markers.
-- Local write gates, pending/failed states, visible persistence blocking, or persistence return-type changes.
-- Remote version columns, SQL migrations, JSONB transforms, adapter marker checks, or upsert changes.
-- Retry, crash, parity, backup, restoration, or reused-ID protection contracts tied to data migration.
+PR #107 (`f9e667f`) implemented the selector correction in three files:
 
-## Verification Strategy
+- `FocusSelector.tsx`: live availability, readiness, defensive selection, and effective-selection derivations.
+- `FocusSelector.test.tsx`: five rendered cases for disabled U5, ordinary selection, live removal, re-enable with a usable skill, and the pure availability helper.
+- `FocusSelector.test.ts`: removed source-inspection assertions superseded by rendered behavior coverage.
 
-Verify only static repository retirement: exact inventory removal, intended Unit 5 empty-state behavior, active specification consistency, documentation/reference cleanup, and affected test retirement or replacement. Product persistence behavior is outside this change.
+## Boundaries
 
-## Exclusions
-
-Do not modify U3, U5-02, archived U5-00, canonical U5 content, SQL, persistence, or product behavior.
+Do not modify U3, U4, U5-02, archived U5-00, canonical U5 content, SQL, persistence, or the existing `?skill=` flow. The historical static-retirement record remains valid; this slice adds only the selector behavior required by its intentionally empty catalog.

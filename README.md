@@ -8,14 +8,16 @@ App publicada: https://pre-utn.vercel.app/
 
 Matemática es el módulo activo. Física queda para una segunda fase.
 
-La experiencia transitable actual cubre las Unidades 1, 2 y 3 de Matemática. Las Unidades 4, 5 y 6 existen en el mapa general de skills, pero todavía no se presentan como curso completo para el alumno.
+La experiencia transitable actual cubre las Unidades 1, 2 y 3 de Matemática. Las Unidades 4, 5 y 6 todavía no se presentan como curso completo para el alumno.
 
 | Unidad | Skills | Estado |
 |--------|--------|--------|
 | Unidad 1 — Conjuntos, Reales, Intervalos, Potencias, Racionalización, Valor absoluto, Logaritmos, Complejos | 8 | Completa / activa |
 | Unidad 2 — Polinomios, Operaciones, Ruffini, Factorización, Gauss, MCM/MCD, Ecuaciones | 7 | Completa / activa |
 | Unidad 3 — Ecuaciones lineales, Cuadráticas, Inecuaciones, Recta, Sistemas, Exponenciales, Logarítmicas | 8 | Implementada / activa |
-| Unidades 4, 5 y 6 — Geometría, Trigonometría y Funciones | 22 | Roadmap / no transitables todavía |
+| Unidad 4 — Geometría | 6 | Roadmap / no transitable todavía |
+| Unidad 5 — Trigonometría | 0 | Visible, no disponible hasta contar con contenido canónico |
+| Unidad 6 — Funciones | 10 | Roadmap / no transitable todavía |
 
 **Unidad 1 — Skills transitables hoy:**
 
