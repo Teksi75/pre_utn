@@ -29,7 +29,7 @@ export function getExerciseOptionValue(option: ExerciseOption): string {
   return typeof option === "string" ? option : option.value;
 }
 
-/** The 7 supported exercise types. free-response and symbolic are prohibited by AGENTS.md (no free-text for math). */
+/** The supported exercise types. free-response and symbolic are prohibited by AGENTS.md (no free-text for math). */
 export type ExerciseType =
   | "multiple-choice"
   | "true-false"
@@ -37,7 +37,57 @@ export type ExerciseType =
   | "fill-blank"
   | "matching"
   | "ordering"
-  | "graphical";
+  | "graphical"
+  | "structured";
+
+/**
+ * Expected answer for an `angle-dms` structured exercise.
+ * degrees is a non-negative integer; minutes and seconds satisfy 0 ≤ minutes < 60,
+ * 0 ≤ seconds < 60 (signed DMS is explicitly out of scope for this slice).
+ */
+export interface AngleDmsExpected {
+  readonly degrees: number;
+  readonly minutes: number;
+  readonly seconds: number;
+}
+
+/**
+ * Expected answer for a `pi-rational` structured exercise.
+ * Sign lives on the numerator; denominator is positive.
+ */
+export interface PiRationalExpected {
+  readonly numerator: number;
+  readonly denominator: number;
+}
+
+/**
+ * Discriminated union of structured-answer specs.
+ * Only `pi-rational` and `angle-dms` are supported in this slice.
+ */
+export type StructuredAnswerSpec =
+  | {
+      readonly kind: "pi-rational";
+      readonly expected: PiRationalExpected;
+      readonly decimal: number;
+      readonly tolerance: number;
+    }
+  | {
+      readonly kind: "angle-dms";
+      readonly expected: AngleDmsExpected;
+      readonly tolerance: number;
+    };
+
+/** Public, exported set of supported ExerciseType literals. */
+export const SUPPORTED_EXERCISE_TYPES: ReadonlySet<ExerciseType> = new Set<ExerciseType>([
+  "multiple-choice",
+  "true-false",
+  "numerical",
+  "fill-blank",
+  "matching",
+  "ordering",
+  "graphical",
+  "structured",
+]);
 
 /** Difficulty level: 1 (easiest) to 5 (hardest). */
 export type Difficulty = 1 | 2 | 3 | 4 | 5;
@@ -97,6 +147,11 @@ export interface ExerciseBaseShape {
   readonly category?: string;
   /** Semantic tags for filtering and pedagogical tracing. */
   readonly tags?: readonly string[];
+  /**
+   * Structured-answer discriminator. Required when type === "structured";
+   * ignored for every other exercise type.
+   */
+  readonly answerSpec?: StructuredAnswerSpec;
 }
 
 /**
@@ -116,12 +171,12 @@ export interface Exercise extends ExerciseBaseShape {
  * Structural input contract for the domain evaluator.
  *
  * Carries ONLY the fields the evaluator actually reads: `type`,
- * `expectedAnswer`, `prompt`, `commonErrorTags`, `skillId`, and
- * `options`. Both `Exercise` and `ChallengeExercise` extend
- * `ExerciseBaseShape` (which declares these six fields), so they are
- * assignable to `EvaluableExercise` without being mutually assignable
- * to each other — the general trace and the challenge trace remain
- * independent.
+ * `expectedAnswer`, `prompt`, `commonErrorTags`, `skillId`, `options`,
+ * and (for `structured` exercises) `answerSpec`. Both `Exercise` and
+ * `ChallengeExercise` extend `ExerciseBaseShape` (which declares these
+ * fields), so they are assignable to `EvaluableExercise` without being
+ * mutually assignable to each other — the general trace and the
+ * challenge trace remain independent.
  *
  * Reusable across any surface that satisfies this minimal shape; never
  * carries the `trace`, `challengeSection`, `category`, or `tags`
@@ -134,6 +189,7 @@ export interface EvaluableExercise {
   readonly commonErrorTags: readonly string[];
   readonly skillId: SkillId;
   readonly options?: readonly ExerciseOption[];
+  readonly answerSpec?: StructuredAnswerSpec;
 }
 
 /** Validation error with field and message. */
@@ -152,6 +208,7 @@ const SUPPORTED_TYPES: ReadonlySet<string> = new Set<ExerciseType>([
   "matching",
   "ordering",
   "graphical",
+  "structured",
 ]);
 
 function hasStructuredNumericalAnswer(value: string): boolean {
@@ -173,8 +230,12 @@ function hasStructuredNumericalAnswer(value: string): boolean {
  * Detect structured math expressions that are prohibited for fill-blank answers.
  * Extends `hasStructuredNumericalAnswer` with symbolic pattern detection.
  * Catches: complex numbers (a+bi), roots (√, sqrt), logarithms (log, ln).
+ *
+ * Exported for unit testing and for cross-type checks (the function must NOT
+ * false-positive on legitimate values such as the literal word "structured"
+ * that exercise-type tokens might appear in).
  */
-function hasStructuredMathAnswer(value: string): boolean {
+export function hasStructuredMathAnswer(value: string): boolean {
   if (hasStructuredNumericalAnswer(value)) return true;
   const normalized = value.trim();
   // Symbolic math: letter(s) followed by operator and letter(s) (e.g. "a + bi", "x - y")
@@ -266,6 +327,70 @@ export function validateExercise(
       field: "expectedAnswer",
       message: `fill-blank exercise must have a simple expected answer, got structured value: "${input.expectedAnswer}"`,
     });
+  }
+
+  // Validate structured answerSpec when type === "structured".
+  if (input.type === "structured") {
+    if (!input.answerSpec) {
+      return err({
+        field: "answerSpec",
+        message: `structured exercise must declare an answerSpec`,
+      });
+    }
+    const spec = input.answerSpec;
+    if (spec.kind === "pi-rational") {
+      if (!Number.isInteger(spec.expected.numerator)) {
+        return err({
+          field: "answerSpec.expected.numerator",
+          message: `pi-rational numerator must be an integer, got ${spec.expected.numerator}`,
+        });
+      }
+      if (
+        !Number.isInteger(spec.expected.denominator) ||
+        spec.expected.denominator <= 0
+      ) {
+        return err({
+          field: "answerSpec.expected.denominator",
+          message: `pi-rational denominator must be a positive integer, got ${spec.expected.denominator}`,
+        });
+      }
+      if (!Number.isFinite(spec.decimal)) {
+        return err({
+          field: "answerSpec.decimal",
+          message: `pi-rational decimal must be finite, got ${spec.decimal}`,
+        });
+      }
+      if (!Number.isFinite(spec.tolerance) || spec.tolerance <= 0) {
+        return err({
+          field: "answerSpec.tolerance",
+          message: `pi-rational tolerance must be a positive finite number, got ${spec.tolerance}`,
+        });
+      }
+    } else if (spec.kind === "angle-dms") {
+      if (!Number.isInteger(spec.expected.minutes) || spec.expected.minutes < 0 || spec.expected.minutes >= 60) {
+        return err({
+          field: "answerSpec.expected.minutes",
+          message: `angle-dms minutes must be an integer in [0, 60), got ${spec.expected.minutes}`,
+        });
+      }
+      if (!Number.isFinite(spec.expected.seconds) || spec.expected.seconds < 0 || spec.expected.seconds >= 60) {
+        return err({
+          field: "answerSpec.expected.seconds",
+          message: `angle-dms seconds must be a finite number in [0, 60), got ${spec.expected.seconds}`,
+        });
+      }
+      if (!Number.isFinite(spec.tolerance) || spec.tolerance <= 0) {
+        return err({
+          field: "answerSpec.tolerance",
+          message: `angle-dms tolerance must be a positive finite number, got ${spec.tolerance}`,
+        });
+      }
+    } else {
+      return err({
+        field: "answerSpec.kind",
+        message: `unsupported structured answerSpec.kind: ${(spec as { kind: string }).kind}`,
+      });
+    }
   }
 
   // Validate options for multiple-choice exercises
