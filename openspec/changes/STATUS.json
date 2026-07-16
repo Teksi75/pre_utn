@@ -888,13 +888,19 @@
       "summary": "U5-00 exploration only: canonical source receipts, exact provisional retirement inventory, full Unit 5 practice traceability, migration and structured-answer architecture, and ordered U5-00 through U5-11 vertical slices. No application/content/test/migration implementation and no U3 changes."
     },
     "u5-01-provisional-retirement": {
-      "status": "in-progress",
-      "branch": "docs/u5-availability-contract",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-07-14",
+      "completedAt": "2026-07-16",
       "issue": 108,
+      "pr": 104,
       "archiveIssue": 105,
-      "delivery": "static retirement completed; PR #107 merged selector availability behavior; documentation reconciliation before independent verification and archive",
-      "summary": "Provisional U5 was never exposed as practicable content. The exact retirement leaves an intentionally empty catalog; FocusSelector now derives live availability, retains empty U5 as disabled Próximamente, prevents an empty listbox, and re-enables a repopulated unit. No persistence, URL, banner, U3/U4, U5-02, or archived U5-00 work is included."
+      "mergedTo": "main",
+      "mergeCommit": "19112e89466223df9db73e9003797db108c1ff7f",
+      "delivery": "static retirement completed in PR #104; selector availability behavior merged via PR #107; independent verification and reconciliation in PR #109; archive PR opens issue #105",
+      "archive": "openspec/changes/archive/2026-07-16-u5-01-provisional-retirement/",
+      "verify": "PASS WITH WARNINGS — 0 CRITICAL, 1 WARNING (test count delta −3 vs orchestrator expectation, below tolerance, no regression), 11/11 requirements, 9/9 scenarios, typecheck+build+3176/3176 tests",
+      "summary": "Provisional U5 was never exposed as practicable content. The exact retirement leaves an intentionally empty catalog; FocusSelector now derives live availability, retains empty U5 as disabled Próximamente, prevents an empty listbox, and re-enables a repopulated unit. No persistence, URL, banner, U3/U4, U5-02, or archived U5-00 work is included. Canonical specs synced: unit-5-foundation (post-retirement already reflected), math-skill-model (+Provisional U5 Skill and Edge Retirement), math-exercise-catalog (Catalog Coverage extended with exact placeholder IDs), complex-numbers-skill (+delta scenario). Delta specs for unit-5-foundation are canonical (already reflected in source). Archive issue #105 left open for archive PR."
     }
   },
   "activeBranches": [],

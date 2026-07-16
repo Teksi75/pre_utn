@@ -13,7 +13,8 @@ content, reference, specification, documentation, and test surfaces.
 
 No migration or persistence work is permitted: no sidecar, marker, SQL, write
 gate, blocking, adapter change, remote schema change, compatibility layer, or
-product behavior change. Do not modify U3, U5-02, or archived U5-00.
+product behavior change. Do not modify U3 product behavior, content, or
+contracts, U5-02, or archived U5-00.
 
 ## Blockers
 
@@ -24,9 +25,9 @@ still has at least 2 tags (coverage contract preserved)`. It requires every
 unit, including Unit 5, to have at least two U5 tags. After U5-01 retires the
 two U5 taxonomy tags, the historical run fails because Unit 5 has zero tags.
 
-This is an obsolete cross-reference to provisional U5. It must be corrected
-within U5-01 without modifying U3's own behavior, content, or contracts. Do
-not edit the U3 test file as part of that correction.
+This was an obsolete cross-reference to provisional U5. U5-01 corrected the
+test file only to replace that cross-U5 assertion with the retired-tag absence
+assertion; U3's own behavior, content, and contracts remain untouched.
 
 ### Blocker 2: Foreign Local Authority
 
@@ -39,8 +40,9 @@ rebuild SDD authority from the versioned U5-01 artifacts only.
 Start from the published U5-01 checkpoint commit on
 `docs/u5-01-static-retirement-checkpoint`. Read `apply-progress.md` for the
 exact retired inventory, reconstructed task evidence, and retained failing
-test evidence. Address Blocker 1 only through U5-01-owned surfaces while
-preserving U3 unchanged. Do not resolve Blocker 2 by touching `.git`.
+test evidence. The resolved Blocker 1 change is limited to the obsolete
+cross-U5 assertion in the U3-named test; preserve U3 behavior, content, and
+contracts. Do not resolve Blocker 2 by touching `.git`.
 
 No approval, merge, final verification, archive, PR creation, issue creation,
 review start, new review budget, U5-02 work, or persistence/migration work may

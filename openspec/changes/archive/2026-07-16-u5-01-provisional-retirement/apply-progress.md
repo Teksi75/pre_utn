@@ -8,7 +8,7 @@ U5-01 completed the static retirement of unused provisional Unit 5 artifacts. PR
 
 - Retired the exact six provisional skills, five placeholder exercises, two dependency edges, two taxonomy tags, and U5 pedagogy references.
 - Preserved `UNIT_5_SKILLS` as an empty export, set the Unit 5 threshold to `0`, and updated affected canonical specs and tests.
-- Kept synthetic diagnostic fixtures test-only; did not modify persistence, SQL, U3/U4, U5-02, or archived U5-00.
+- Kept synthetic diagnostic fixtures test-only; did not modify persistence, SQL, U5-02, or archived U5-00. `error-taxonomy-u3.test.ts` changed only to replace its obsolete cross-U5 assertion; U3 product behavior, content, and contracts remain untouched.
 
 ## Selector Correction
 
