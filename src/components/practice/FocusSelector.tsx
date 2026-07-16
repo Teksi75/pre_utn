@@ -240,11 +240,6 @@ export function FocusSelector({
           <label className="block text-sm font-semibold text-brand-700 mb-2">
             Habilidad
           </label>
-          <UnavailableUnitBanner
-            unit={selectedUnit}
-            visible={showEmptyUnitState}
-            onReset={() => setSelectedUnit(null)}
-          />
           {showEmptyUnitState ? (
             <div
               className="rounded-[var(--radius-card)] border border-brand-100 bg-brand-50 p-4 text-sm text-brand-400 flex items-center justify-between gap-3"
@@ -346,59 +341,6 @@ export function FocusSelector({
           )}
         </div>
       )}
-    </div>
-  );
-}
-
-interface UnavailableUnitBannerProps {
-  readonly unit: number;
-  readonly visible: boolean;
-  readonly onReset: () => void;
-}
-
-/**
- * U5-01 contract: this is the literal, character-exact string that the
- * banner MUST render to the DOM whenever it is shown for Unit 5. The
- * wording is fixed by user mandate; the selector level intentionally
- * does not interpolate the unit number, so a future slice that re-opens
- * Unit 5 (or changes the unavailable unit) MUST adopt a new banner copy
- * via a different gate rather than softening this string.
- */
-const UNAVAILABLE_UNIT_MESSAGE =
-  "Unidad 5 todavía no está disponible. Estamos preparando sus contenidos.";
-
-/**
- * Banner shown when the selector's React state lands on an unavailable
- * unit — the user-mandated exact Spanish message plus a recovery hook
- * that drops the user back at the unit dropdown. This covers the
- * persisted/state/direct-attempt paths without introducing any
- * persistence, URL, or localStorage contract: the trigger is the
- * selector's own state, no URL parsing is added.
- */
-function UnavailableUnitBanner({
-  unit,
-  visible,
-  onReset,
-}: UnavailableUnitBannerProps) {
-  if (!visible) return null;
-  return (
-    <div
-      role="status"
-      aria-live="polite"
-      className="rounded-[var(--radius-card)] border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 shadow-[var(--shadow-card)]"
-      data-testid="unavailable-unit-banner"
-    >
-      <p className="font-semibold mb-1">
-        Unidad {unit} — Esta unidad todavía no está disponible
-      </p>
-      <p className="mb-3">{UNAVAILABLE_UNIT_MESSAGE}</p>
-      <button
-        type="button"
-        onClick={onReset}
-        className="text-xs font-semibold text-amber-900 underline hover:no-underline min-h-[44px] inline-flex items-center"
-      >
-        Volver al selector
-      </button>
     </div>
   );
 }

@@ -2,122 +2,102 @@
 
 ## Purpose
 
-Establish the static-retirement contract for Unit 5 (trigonometry and complex numbers): the catalog is intentionally empty at this stage, no provisional skills or exercises remain in active repository surfaces, and no migration, sidecar, marker, SQL change, remote-schema change, or persistence behavior is introduced. This document is the canonical specification for the post-retirement Unit 5 state.
+Define Unit 5's retirement and selector contract: students avoid dead ends; teachers see honest availability.
 
 ## Requirements
 
 ### Requirement: Empty Unit 5 Catalog State
 
-The system MUST permit Unit 5 to contain zero active skills and zero placeholder exercises. `UNIT_5_SKILLS` MUST be the empty array. `UNIT_THRESHOLDS["unit-5"]` MUST equal `0`. The static retirement applies to exactly the six provisional skill IDs `mat.u5.angulos`, `mat.u5.radianes`, `mat.u5.circunferencia_trigonometrica`, `mat.u5.identidades`, `mat.u5.ecuaciones_trigonometricas`, `mat.u5.complejos_forma_polar` and exactly the five placeholder exercise IDs `ex.u5.angulos.1`, `ex.u5.radianes.1`, `ex.u5.circunferencia_trigonometrica.1`, `ex.u5.identidades.1`, `ex.u5.ecuaciones_trigonometricas.1`, matched by exact string equality.
+The system MUST permit zero active Unit 5 skills and zero placeholder exercises. `UNIT_5_SKILLS` MUST equal `[]`; `UNIT_THRESHOLDS["unit-5"]` MUST equal `0`. Retirement MUST match by exact equality only skills `mat.u5.angulos`, `mat.u5.radianes`, `mat.u5.circunferencia_trigonometrica`, `mat.u5.identidades`, `mat.u5.ecuaciones_trigonometricas`, `mat.u5.complejos_forma_polar` and exercises `ex.u5.angulos.1`, `ex.u5.radianes.1`, `ex.u5.circunferencia_trigonometrica.1`, `ex.u5.identidades.1`, `ex.u5.ecuaciones_trigonometricas.1`.
 
 #### Scenario: Unit 5 loads with zero threshold
 
-- GIVEN the catalog after the retirement
+- GIVEN the post-retirement catalog
 - WHEN Unit 5 is queried
 - THEN it is intentionally empty without a threshold failure
 
-#### Scenario: six provisional skill IDs are absent from active catalog surfaces
+#### Scenario: provisional inventory is absent from active surfaces
 
-- GIVEN the active skill catalog after the retirement
-- WHEN `UNIT_5_SKILLS`, `ALL_SKILLS`, and `KNOWN_SKILL_IDS` are enumerated
-- THEN none of the six IDs is present
-- AND `UNIT_5_SKILLS` is the empty array
+- GIVEN the active catalogs after retirement
+- WHEN `UNIT_5_SKILLS`, `ALL_SKILLS`, `KNOWN_SKILL_IDS`, and active exercise references are enumerated
+- THEN none of the six skill or five exercise IDs is active
+- AND `UNIT_5_SKILLS` is empty
 
 ### Requirement: No Persistence or Migration Surface
 
-The system MUST NOT introduce any local or remote persistence change as part of the retirement. There is no migration contract, no sidecar map, no per-student marker, no per-row column, no SQL artifact, no remote schema change, no write gate, no blocking behavior, no adapter change, and no stored-data transform. The retirement is a static repository operation only.
+Retirement MUST be static-only: no local/remote migration, sidecar map, per-student marker/per-row column, write gate/blocking, persistence adapter/behavior, SQL/remote-schema artifact, or stored-data transform.
 
 #### Scenario: static retirement does not change persistence
 
-- GIVEN the repository before and after the retirement
+- GIVEN the repository before and after retirement
 - WHEN persistence and SQL surfaces are inspected
-- THEN no migration, sidecar, marker, write gate, blocking behavior, adapter change, or SQL artifact is added
+- THEN no prohibited mechanism or artifact exists
 
 ### Requirement: Synthetic Diagnostic Fixtures Are Retained
 
-Synthetic diagnostic fixtures `mat.u5.trigonometria_basica`, `ex.u5.bad.1`, and `ex.u5.good.1` are NOT retirement keys. They exist only inside test code as diagnostic fixtures for `selectBalancedSet` behavior. They MUST NOT be promoted to live catalog entries.
+Fixtures `mat.u5.trigonometria_basica`, `ex.u5.bad.1`, and `ex.u5.good.1` MUST remain test-only diagnostic inputs for `selectBalancedSet`, never retirement keys or live catalog entries.
 
 #### Scenario: synthetic fixtures remain only in test code
 
-- GIVEN the active catalog and the diagnostic test fixtures
-- WHEN the catalog is loaded
-- THEN `mat.u5.trigonometria_basica`, `ex.u5.bad.1`, and `ex.u5.good.1` are absent from the live catalog
+- GIVEN the diagnostic fixtures
+- WHEN the live catalog loads
+- THEN all three IDs are absent
 
 ### Requirement: Unencumbered Future Reuse
 
-The retired ID `mat.u5.ecuaciones_trigonometricas` is unencumbered for future reuse. No alias, no compatibility layer, and no migration contract is reserved against it. Any future slice that re-introduces a skill with this ID MUST do so via a new SDD change with its own spec, design, and review budget. The retirement does not block that future work and does not constrain its naming.
+`mat.u5.ecuaciones_trigonometricas` MUST remain reusable without alias, compatibility, or migration. Reintroduction MUST use a new SDD change with its own spec, design, and review budget; retirement MUST NOT constrain naming.
 
-#### Scenario: future slice can reuse the ID without aliasing
+#### Scenario: future reuse needs no retirement compatibility
 
-- GIVEN a future change that introduces a new `mat.u5.ecuaciones_trigonometricas`
-- WHEN its catalog entry is loaded alongside the retired state
-- THEN no alias or compatibility code from this retirement is consulted
+- GIVEN a future SDD reintroduces the ID
+- WHEN its catalog entry loads
+- THEN no retirement compatibility is consulted
 
 ### Requirement: Scope Boundaries Preserved
 
-Units 1, 2, 3, 4, and 6, the active specifications that reference them, and the existing persistence, test, and content surfaces for those units MUST remain unchanged in byte-for-byte semantic terms except where the retirement removes a Unit 5 reference. Unit 3, the active complex-numbers spec, the unit-5-foundation archive, and any U5-02 work are out of scope.
+U1–U4/U6 specs, persistence, tests, and content MUST remain semantically unchanged except for removed U5 references. U3 work, the active complex-numbers spec, archived U5-00 artifacts, and U5-02 MUST remain untouched.
 
 #### Scenario: non-U5 units are preserved
 
-- GIVEN the repository after the retirement
-- WHEN U1, U2, U3, U4, and U6 surfaces are inspected
-- THEN their content, dependencies, error taxonomy, and tests match the pre-retirement state
+- GIVEN the repository after retirement
+- WHEN U1–U4/U6 surfaces are inspected
+- THEN their content, dependencies, error taxonomy, and tests match the prior state
 
-### Requirement: Derived Unit Availability in Practice Selector
+### Requirement: Derived Unit Availability
 
-The practice unit selector MUST derive each unit's availability from `SKILLS_BY_UNIT[unit].length > 0`. Hard-coded per-unit unavailability flags (including a U5-specific exception) MUST NOT be used; the value MUST update on the next render after `SKILLS_BY_UNIT` changes.
+Selector availability MUST equal active skill count (`SKILLS_BY_UNIT[unit].length > 0`), without hard-coded per-unit flags. Populated units MUST remain usable; count changes MUST apply on the next render.
 
-#### Scenario: availability follows active-skill count
+#### Scenario: active-skill counts control usability
 
-- GIVEN any unit with `SKILLS_BY_UNIT[unit].length === 0` (currently Unit 5 after U5-01) or `>= 1`
-- WHEN the selector renders
-- THEN zero-skill units are unavailable and others are selectable
+- GIVEN one empty unit and one populated unit
+- WHEN the selector renders and the populated unit is selected
+- THEN the empty unit is unavailable
+- AND the populated unit exposes its skill list and permits skill selection
 
-### Requirement: Visible Disabled Unit 5 with Próximamente
+#### Scenario: content arrival automatically re-enables a unit
 
-An unavailable unit (currently Unit 5) MUST remain visible in the selector as `Unidad 5` (or `Unidad 5 — Próximamente`). Selecting it — by mouse, keyboard, form submit, or assistive activation — MUST NOT invoke `onSkillSelect` and MUST NOT render a zero-skill list. The listbox availability pill for any zero-skill list render path MUST read exactly `Próximamente`.
-
-#### Scenario: Unit 5 stays visible and rejects selection
-
-- GIVEN the post-retirement `SKILLS_BY_UNIT` table
-- WHEN the selector renders and processes an empty-unit selection
-- THEN `Unidad 5` is rendered as a visible option
-- AND `onSkillSelect` is not invoked and no zero-skill list is rendered
-
-### Requirement: Disabled Option Accessibility Semantics
-
-Each unavailable unit option MUST carry native `disabled` AND `aria-disabled="true"`. The visual treatment MUST include a muted text style and `cursor-not-allowed`.
-
-#### Scenario: native and ARIA disabled semantics with Próximamente label
-
-- GIVEN an empty unit
-- WHEN rendered as an `<option>` and pill in the listbox path
-- THEN the option carries `disabled` and `aria-disabled="true"`
-- AND any availability pill in the same path reads exactly `Próximamente`
-
-### Requirement: Stale or Direct Unavailable-Unit Selection Fallback
-
-When a persisted, in-memory, or direct unit selection reaches an unavailable unit, the practice flow MUST return to the selector phase and display exactly `Unidad 5 todavía no está disponible. Estamos preparando sus contenidos.` The fallback MUST NOT transition to theory or example, MUST NOT render a zero-skill list, and MUST NOT introduce or change any persistence, URL format, localStorage schema, SQL, sidecar, marker, write gate, adapter, remote schema, or stored-data transform.
-
-#### Scenario: direct or stale selection returns to selector with exact banner
-
-- GIVEN an unavailable unit reached via direct selection, in-memory state, or any persisted surface
-- WHEN the practice flow evaluates the request
-- THEN the selector phase is rendered
-- AND the banner reads exactly `Unidad 5 todavía no está disponible. Estamos preparando sus contenidos.`
-
-#### Scenario: fallback adds no persistence or URL contract
-
-- GIVEN the fallback path is active
-- WHEN persistence, URL, and localStorage are inspected
-- THEN no new key, parameter, route, or schema is introduced or mutated
-
-### Requirement: Automatic Re-enable on Content Arrival
-
-The selector MUST re-enable a previously-empty unit on the next render after active skills are added to `SKILLS_BY_UNIT`. No flag mutation, persistence change, new component, or routing change is required.
-
-#### Scenario: re-enable happens on next render
-
-- GIVEN the selector previously rendered an empty unit as disabled
+- GIVEN a disabled empty unit
 - WHEN active skills are added and the selector re-renders
-- THEN the unit becomes selectable without code or contract change
+- THEN the unit automatically becomes enabled and usable
+
+### Requirement: Visible and Accessible Disabled Unit 5
+
+Zero-skill units MUST remain visible. Unit 5 MUST read `Unidad 5 — Próximamente` and carry native `disabled`, `aria-disabled="true"`, muted text, and `cursor-not-allowed` treatment.
+
+#### Scenario: Unit 5 remains visible with disabled semantics
+
+- GIVEN Unit 5 has zero active skills
+- WHEN the selector renders
+- THEN its visible option reads `Unidad 5 — Próximamente`
+- AND it has native, ARIA, and visual disabled semantics
+
+### Requirement: Programmatic Unavailable-Unit Selection Is Rejected
+
+The selector MUST reject programmatic selection of any zero-skill unit, retain no unavailable selection, MUST NOT invoke `onSkillSelect`, and MUST keep an empty skill list unreachable.
+
+#### Scenario: programmatic Unit 5 selection is rejected
+
+- GIVEN Unit 5 has zero active skills
+- WHEN a programmatic selector change requests Unit 5
+- THEN no unavailable unit is selected and `onSkillSelect` is not invoked
+- AND no skill list is rendered

@@ -1,12 +1,12 @@
-# U5-01 Apply Progress — FocusSelector Availability Correction
+# U5-01 Apply Progress — FocusSelector Availability Correction (Reduced Contract)
 
-**Change**: `u5-01-provisional-retirement` · **Branch**: `fix/u5-availability-state` · **Mode**: Standard (Strict TDD disabled) · **Strategy**: single PR (~150–200 net additions, low-budget).
+**Change**: `u5-01-provisional-retirement` · **Branch**: `fix/u5-availability-state` · **Mode**: Standard (Strict TDD disabled) · **Strategy**: single PR (~80–120 net additions, low-budget).
 
 > This artifact is the cumulative apply-progress for U5-01 across both
-> the prior static-retirement pass and this FocusSelector availability
-> correction. The static-retirement segment is preserved verbatim above
-> so the cross-cutting U3 evidence and the foreign-authority blocker
-> remain auditable; this addendum describes the corrected
+> the prior static-retirement pass and this reduced FocusSelector
+> availability correction. The static-retirement segment is preserved
+> verbatim so the cross-cutting U3 evidence and the foreign-authority
+> blocker remain auditable; this addendum describes the reduced
 > FocusSelector presentation layer on top of the retired `SKILLS_BY_UNIT`
 > state.
 
@@ -19,18 +19,20 @@
 - Derive unit availability from `SKILLS_BY_UNIT[unit].length > 0`; do
   NOT hardcode any per-unit (including U5) toggle.
 - Keep the (currently empty) Unit 5 visible as `Unidad 5 — Próximamente`,
-  with native `disabled` + `aria-disabled="true"` + muted/cursor-not-allowed
+  with native `disabled` + `aria-disabled="true"` + muted
   visual treatment.
-- Prevent selecting it (UI disabled, plus defence-in-depth state guard)
-  and never render a zero-skill listbox.
-- For a persisted / state / direct attempt, display the exact Spanish
-  message `Unidad 5 todavía no está disponible. Estamos preparando sus
-  contenidos.` — without adding any persistence, URL, localStorage,
-  SQL, sidecar, marker, write-gate, adapter, remote-schema, or
-  stored-data transform contract.
+- Prevent selecting it through the native `<select>` disabled attribute;
+  add a defensive handler that rejects any programmatic attempt to
+  select a zero-skill unit.
+- Never render an empty skill listbox — show the Próximamente pill in
+  that branch instead.
 - Auto re-enable any unit on the next render after active skills are
   added to `SKILLS_BY_UNIT` — no flag mutation, persistence change, new
   component, or routing change is required.
+- **No banner, no URL contract, no localStorage contract, no
+  persistence seam, no new domain type, no analyzeRequestedUnit
+  helper.** The selector owns its own state and is the only consumer
+  of the derived availability.
 - Out of scope: U3, U4, U5-02, archived U5-00, canonical U5 content,
   SQL, persistence, migration, general navigation redesign, content /
   skills / exercises / aliases.
@@ -39,54 +41,70 @@
 
 | File | Action | What was done |
 |---|---|---|
-| `src/components/practice/FocusSelector.tsx` | Modified | Added `getUnitAvailability(unit)` helper; applied `disabled` + `aria-disabled` + Próximamente label to zero-skill `<option>` elements; guarded `handleUnitChange` against zero-skill values; guarded the listbox render path with `showEmptyUnitState` and render the inline `UnavailableUnitBanner` + a Próximamente pill instead of an empty list. The banner carries the literal `UNAVAILABLE_UNIT_MESSAGE` constant. |
-| `src/components/practice/__tests__/FocusSelector.test.ts` | Modified | Added 7 RED/GREEN tests: derived-availability contract (no hardcoded U5), native+ARIA `disabled`, Próximamente label split, `handleUnitChange` defensive guard, no `availableUnits`/`disabledUnits` flag, exact `UNAVAILABLE_UNIT_MESSAGE` text in source + recovery button, empty-listbox guard. |
-| `src/app/practice/start-skill.ts` | Modified | Added local `SKILLS_BY_UNIT` mirror + `UnitRequestAnalysis` discriminated union + `analyzeRequestedUnit(unitParam)` pure function. Pure derivation; no URL parsing, no persistence writes, no `?unit=` route param. |
-| `src/app/practice/__tests__/start-skill.test.ts` | Modified | Added 5 RED/GREEN tests: `null`/empty → `none`; Unit 5 → `unavailable-unit`; populated units → not-unavailable; pure function (no URL/localStorage mutation); derives from `SKILLS_BY_UNIT`, no hardcoded `unit === "5"` toggle. |
+| `src/components/practice/FocusSelector.tsx` | Modified | Removed `UnavailableUnitBanner` component, `UNAVAILABLE_UNIT_MESSAGE` constant, `UnavailableUnitBannerProps` interface, and the inline `<UnavailableUnitBanner>` JSX. Kept the count-derived `getUnitAvailability(unit)` helper, the native `disabled` + `aria-disabled` + Próximamente label on zero-skill `<option>` elements, the defensive `handleUnitChange` guard against zero-skill values, the `showEmptyUnitState` derivation, and the Próximamente pill rendered in the empty-unit branch. No new contract. |
+| `src/components/practice/__tests__/FocusSelector.test.ts` | Deleted | All 24 source-string / regex assertions superseded by rendered behaviour tests (per the reduced contract: "keep only pure executed behavior tests, no source-string assertions"). |
+| `src/components/practice/__tests__/FocusSelector.test.tsx` | Created | 6 rendered interactive behaviour tests in happy-dom using `createRoot` + `act`: (1) every option's accessible label + `disabled` + `aria-disabled` matches the live `SKILLS_BY_UNIT` derivation; (2) selecting a populated unit renders its non-empty skill listbox; (3) programmatic change to Unit 5 does NOT invoke `onSkillSelect`; (4) zero-skill render path shows the Próximamente pill, never an empty listbox; (5) auto-re-enable: no per-unit flag is held in component state; (6) select has the brand-token chrome and a11y wiring (interactive DOM check). |
+| `src/app/practice/start-skill.ts` | Modified | Removed `UnitRequestAnalysis` type, `analyzeRequestedUnit` function, the local `SKILLS_BY_UNIT` mirror map, and the dead `UNIT_*_SKILLS` imports that only the removed function consumed. No replacement contract added. |
+| `src/app/practice/__tests__/start-skill.test.ts` | Modified | Removed the `analyzeRequestedUnit` import and the entire `describe("analyzeRequestedUnit (...)")` block (5 tests) that exercised the now-removed helper. Kept every `resolveInitialPracticeSkill` / `analyzeRequestedSkill` / `buildAccessibleSkillMap` / `isContentQaModeEnabled` test untouched. |
 
 ### Work Unit Evidence
 
 | Evidence | Value |
 |---|---|
-| Focused test command and exact result | `CI=true pnpm run test -- --grep "FocusSelector\|start-skill\|unavailable\|blocked.*unit" --run` → 187 files, 3200 tests, 0 failures (22.41s). |
-| Runtime harness command/scenario and exact result | `CI=true pnpm run test` → 187 files / 3200 tests pass (additions: 12 new U5-01 tests on top of the prior 3188 baseline). Next.js `pnpm run build` deferred to post-push full check (the user mandate explicitly says stop and report after the remote checkpoint if functional check fails). |
-| Rollback boundary | Revert the 4 working-tree modifications in `src/components/practice/FocusSelector.tsx`, `src/components/practice/__tests__/FocusSelector.test.ts`, `src/app/practice/start-skill.ts`, and `src/app/practice/__tests__/start-skill.test.ts`. Revert `tasks.md` checkboxes from `[x]` back to `[ ]` for the 17 U5-01 additions. Reverting leaves `SKILLS_BY_UNIT` unchanged and every prior static-retirement artifact intact. |
+| Focused test command and exact result | `pnpm exec vitest run --reporter=verbose "FocusSelector"` → 1 file, 6 rendered tests pass (1.28s, exit 0). Full pre-commit suite `pnpm exec vitest run` → 187 files, 3177 tests pass (all exit 0). |
+| Runtime harness command/scenario and exact result | `pnpm run typecheck` (`tsc --noEmit`) → exit 0; `pnpm run build` (`next build`) → exit 0. Browser-equivalent: `<FocusSelector>` rendered through React 19 `createRoot` in happy-dom; `select#unit-select` value changes dispatched via `HTMLSelectElement.prototype.value` setter + bubbling `change` event — the React 19 synthetic-event system receives the event and runs the defensive guard. |
+| Rollback boundary | Revert the 5 working-tree modifications in `src/components/practice/FocusSelector.tsx`, delete `src/components/practice/__tests__/FocusSelector.test.tsx`, restore `src/components/practice/__tests__/FocusSelector.test.ts` (git checkout), revert `src/app/practice/start-skill.ts` and `src/app/practice/__tests__/start-skill.test.ts`. Reverting leaves `SKILLS_BY_UNIT` and every prior static-retirement artifact intact. The 5 test files outside the FocusSelector/start-skill pair are not touched by this change. |
 
 ### Deviations from design
 
-- **Banner placement**: the design.md file-changes table lists
-  `src/app/practice/page.tsx` as the render site for the
-  `UnavailableUnitBanner`. This implementation places the banner
-  inline inside `FocusSelector.tsx`, gated on the selector's own
-  React state (`selectedUnit !== null && skillsForUnit.length === 0`).
-  Rationale: the user's mandate forbids new URL contracts, and a state
-  trigger sourced from the selector is contract-free; the existing
-  `BlockedSkillBanner` pattern at the page level applies to the
-  `?skill=` direct-attempt path, which is already wired in
-  `usePracticeFlow.ts` and does NOT need a new banner. The banner's
-  exact copy (`UNAVAILABLE_UNIT_MESSAGE`) is unchanged.
-- **`?unit=` URL parsing is intentionally not wired**: task 2.4's
-  effect description ("checks `?unit=` param") is replaced by the
-  state-driven trigger in `FocusSelector`. This satisfies the user
-  mandate's explicit "without adding persistence/URL contracts"
-  clause. `analyzeRequestedUnit` exists as a pure helper for any
-  future selector that wants to consult it without URL side effects.
+None. The reduced design (`design.md`) explicitly states:
+
+> "Unsupported fallback | Invent direct/stale/persisted/URL recovery,
+> analysis types, or a banner. | Do not add or retain them. They
+> describe no production entry point and would create an unimplemented
+> contract."
+
+and
+
+> "Consequently, direct, stale, persisted, and URL unit-selection
+> fallbacks are not part of this design. `analyzeRequestedUnit`,
+> `UnitRequestAnalysis`, an unavailable-unit banner, and an empty-unit
+> placeholder are removed rather than replaced by a new external
+> contract."
+
+The implementation matches the design exactly:
+
+- The `getUnitAvailability` helper derives availability from
+  `SKILLS_BY_UNIT[unit].length > 0` — no hardcoded U5 toggle.
+- The `<option>` carries native `disabled`, `aria-disabled`, and the
+  `Unidad {n} — Próximamente` label — no banner, no extra copy.
+- The defensive `handleUnitChange` early-returns and clears
+  `selectedUnit` to `null` when the picked unit is unavailable — no
+  `onSkillSelect` call.
+- The `showEmptyUnitState` branch renders the Próximamente pill (the
+  same visual treatment that the disabled option uses), not an empty
+  listbox — no banner.
+- No `?unit=` URL parameter, no `localStorage` key, no persistence
+  seam, no SQL artifact, no `analyzeRequestedUnit` helper, no
+  `UnitRequestAnalysis` type, no `UnavailableUnitBanner` component,
+  no `UNAVAILABLE_UNIT_MESSAGE` constant.
 
 ### Issues found
 
 None. The native `disabled` attribute on the zero-skill `<option>` is
 sufficient to prevent user selection through the UI; the
-`handleUnitChange` early-return guard is a defence-in-depth measure for
-stale or programmatic state. No silent fallback, no skipped tests, no
-scope creep.
+`handleUnitChange` early-return guard is defence-in-depth against
+programmatic events. The Próximamente pill in the empty-list branch
+keeps the visual treatment consistent with the disabled option so the
+student sees the same signal in both places.
 
 ### TDD applicability
 
-Strict TDD is not active for this change. RED/GREEN evidence is
-captured in the test files themselves: the 12 new tests
-(7 in `FocusSelector.test.ts`, 5 in `start-skill.test.ts`) were each
-written first, observed to fail against the prior implementation, and
-then made green by the corresponding code change.
+Strict TDD is not active for this change. The user mandate states "no
+strict TDD directive." The rendered tests were authored alongside the
+implementation and pass against the live component via `createRoot` +
+`act`; no silent fallback, no source-string assertions, no skipped
+tests.
 
 ---
 
@@ -126,15 +144,17 @@ no alias for `mat.u5.ecuaciones_trigonometricas`. Synthetic
 diagnostic fixtures `mat.u5.trigonometria_basica`, `ex.u5.bad.1`,
 `ex.u5.good.1` remain test-only and are not retirement keys.
 
-The FocusSelector availability correction addendum on top of the
+The reduced FocusSelector availability correction on top of the
 static-retirement surface adds: count-derived unit availability,
 native + ARIA disabled options for zero-skill units, a
-`Próximamente` label, a guarded empty listbox render path, an inline
-`UnavailableUnitBanner` carrying the exact user-mandated Spanish
-message, and a pure `analyzeRequestedUnit` helper. No persistence,
-URL, localStorage, SQL, sidecar, marker, write-gate, adapter,
-remote-schema, or stored-data transform contract is added or
-mutated.
+`Próximamente` label, a guarded empty listbox render path with the
+same Próximamente pill, a defensive `handleUnitChange` guard that
+rejects programmatic selection of zero-skill units, and 6 rendered
+behaviour tests proving each contract case. **No** banner, **no**
+`analyzeRequestedUnit`, **no** `UnitRequestAnalysis`, **no**
+`UNAVAILABLE_UNIT_MESSAGE`, **no** persistence, URL, localStorage,
+SQL, sidecar, marker, write-gate, adapter, remote-schema, or
+stored-data transform contract is added or mutated.
 
 ## Summary (full U5-01)
 
@@ -151,9 +171,11 @@ permits the intentionally empty Unit 5 state without raising a
 coverage failure. The `FocusSelector` now derives every unit's
 availability from `SKILLS_BY_UNIT[unit].length > 0`, disables empty
 options with native + ARIA semantics and a `Próximamente` suffix, and
-shows an `UnavailableUnitBanner` carrying the exact
-`Unidad 5 todavía no está disponible. Estamos preparando sus contenidos.`
-message when its internal React state lands on an unavailable unit.
+guards the skill-list render path with a Próximamente pill so no
+empty listbox is reachable. The defensive `handleUnitChange` rejects
+any programmatic attempt to select a zero-skill unit. There is no
+banner, no `?unit=` URL contract, no `localStorage` key, no
+persistence seam, and no `analyzeRequestedUnit` helper.
 
 ## Cumulative U5-01 task evidence (all 26 native SDD tasks across both runs)
 
@@ -189,55 +211,41 @@ message when its internal React state lands on an unavailable unit.
 
 | # | Task | Evidence |
 |---|------|----------|
-| 1.1 | Unit 5 `<option>` carries native `disabled` + `aria-disabled="true"` | `src/components/practice/FocusSelector.tsx` lines 222–230 (`<option disabled={!available} aria-disabled={!available}>` driven by `getUnitAvailability(unit).available`) |
-| 1.2 | Label is `Unidad {n} — Próximamente` for unavailable, `Unidad {n}` otherwise | same file, line 232: `available ? \`Unidad ${unit}\` : \`Unidad ${unit} — Próximamente\`` |
-| 1.3 | Selecting a zero-skill unit does not invoke `onSkillSelect` | native `disabled` blocks UI selection; `handleUnitChange` early-returns on zero-skill value before setState |
-| 1.4 | `getUnitAvailability(unit)` helper | `src/components/practice/FocusSelector.tsx` lines 64–68 |
-| 1.5 | `disabled` + `aria-disabled` + Próximamente label on `<option>` | same file, lines 224–232 |
-| 1.6 | `skillsForUnit.length === 0` guard with Próximamente pill | `showEmptyUnitState` derivation on lines 99–100 + render branch on lines 207–222 |
-| 2.1 | `analyzeRequestedUnit("5")` returns `unavailable-unit` | `src/app/practice/start-skill.ts` lines 168–178; `start-skill.test.ts` "returns 'unavailable-unit' for Unit 5" passes |
-| 2.2 | Direct/stale unit banner has exact Spanish text | `UNAVAILABLE_UNIT_MESSAGE` constant in `FocusSelector.tsx` line 351–353 |
-| 2.3 | `UnitRequestAnalysis` discriminated union + `analyzeRequestedUnit` | `src/app/practice/start-skill.ts` lines 138–181 |
-| 2.4 | `FocusSelector` internal state triggers the banner | no new URL/localStorage contract added — guard + render inlines |
-| 3.1 | `UnavailableUnitBanner` component with exact Spanish text + "Volver al selector" | `src/components/practice/FocusSelector.tsx` lines 359–388 |
-| 3.2 | Banner renders when `selectedUnit !== null && skillsForUnit.length === 0` | same file, lines 207–215 |
-| 4.1 | `handleUnitChange` does not set unavailable value | `src/components/practice/FocusSelector.tsx` lines 130–146 |
-| 4.2 | No `availableUnits` / `disabledUnits` flag | same file — `getUnitAvailability` is a pure derivation, no state hook |
-| 4.3 | All existing FocusSelector assertions pass | 187 / 3200 tests green |
-| 5.1 | `analyzeRequestedUnit("5")` returns unavailable-unit | covered by start-skill.test.ts |
-| 5.2 | All `start-skill.test.ts` assertions pass | 187 / 3200 tests green |
-| 6.1 | `pnpm run test -- --grep "FocusSelector\|start-skill\|unavailable\|blocked.*unit" --run` green | 3200 / 3200 tests pass (187 files, 22.41s) |
-| 6.2 | `pnpm run test` green | 3200 / 3200 tests pass (187 files; +12 tests on the 3188 baseline) |
-| 6.3 | `pnpm run typecheck` green | `tsc --noEmit` exit 0 |
-| 6.4 | `pnpm run build` | deferred to post-push full check per user mandate |
+| 1.1 | Unit 5 `<option>` carries native `disabled` + `aria-disabled="true"` | `src/components/practice/FocusSelector.tsx` line 222 (`disabled={!available}`) and line 223 (`aria-disabled={!available}`) driven by `getUnitAvailability(unit).available`. Rendered test "renders every unit option with its accessible label and disabled state" verifies this through DOM inspection. |
+| 1.2 | Label is `Unidad {n} — Próximamente` for unavailable, `Unidad {n}` otherwise | `src/components/practice/FocusSelector.tsx` line 225: `available ? \`Unidad ${unit}\` : \`Unidad ${unit} — Próximamente\``. Rendered test verifies `option.textContent === "Unidad 5 — Próximamente"` for U5 and `Unidad 1`/`Unidad 2`/... for populated units. |
+| 1.3 | Selecting a zero-skill unit does not invoke `onSkillSelect` | Rendered test "programmatic change to Unit 5 does not invoke onSkillSelect" dispatches a `change` event with `value="5"` against `select#unit-select` and asserts the `vi.fn()` callback is never called. |
+| 1.4 | `getUnitAvailability(unit)` helper | `src/components/practice/FocusSelector.tsx` lines 63–68. |
+| 1.5 | `disabled` + `aria-disabled` + Próximamente label on `<option>` | `src/components/practice/FocusSelector.tsx` lines 222–225. |
+| 1.6 | `skillsForUnit.length === 0` guard with Próximamente pill | `showEmptyUnitState` derivation on lines 100–101 + render branch on lines 243–258 (no banner, just the pill). |
+| 2.1 | `handleUnitChange` does not set unavailable value | `src/components/practice/FocusSelector.tsx` lines 151–154: defensive early-return on `!getUnitAvailability(candidateUnit).available`. Rendered test "programmatic change to Unit 5 does not invoke onSkillSelect" verifies the selector resets to `value=""`. |
+| 2.2 | No `availableUnits` / `disabledUnits` flag | Rendered test "auto-re-enable: availability is derived live — no per-unit flag is held in component state" verifies Unit 5 stays disabled across multiple `change` events without any flag mutation. |
+| 2.3 | `handleUnitChange` validates target has skills before calling `setSelectedUnit` | covered by 2.1 |
+| 2.4 | All `FocusSelector.test.tsx` rendered assertions pass | 6/6 rendered tests green. |
+| 3.1 | Render `<FocusSelector>` and verify all four properties | covered by 1.1–1.6 above. |
+| 3.2 | All FocusSelector rendered tests pass | 6/6 rendered tests green. |
+| 4.1 | Focused test command passes | `pnpm exec vitest run --reporter=verbose "FocusSelector"` → 6/6 pass. Full suite: `pnpm exec vitest run` → 187 files, 3177 tests pass. |
+| 4.2 | `pnpm run typecheck` | `tsc --noEmit` exit 0. |
+| 4.3 | `pnpm run build` | `next build` exit 0. |
 
 ## Deviations from design (full U5-01)
 
-None for the static-retirement segment. For the FocusSelector
-availability segment:
-
-- The design.md file-changes table lists `src/app/practice/page.tsx`
-  as the render site for the `UnavailableUnitBanner`. The actual
-  implementation places the banner inline inside
-  `src/components/practice/FocusSelector.tsx`, gated on the
-  selector's own React state. Rationale documented above (no new
-  URL contract permitted; trigger lives in the selector's internal
-  state).
-- The design.md task 2.4 describes a `usePracticeFlow.ts` effect
-  that checks `?unit=`. The actual implementation does not wire
-  `?unit=` URL parsing because the user mandate explicitly forbids
-  new URL contracts; the React-state trigger inside `FocusSelector`
-  is contract-free and still satisfies the user-mandated
-  persisted/state/direct attempt cases.
-
-Both deviations are documented because they are intentional, not
-silent. They preserve all spec invariants and the user-mandated
-exact Spanish copy.
+None for the static-retirement segment. For the reduced FocusSelector
+availability segment, the implementation matches the reduced
+`design.md` exactly — no banner, no `analyzeRequestedUnit`, no
+`UnitRequestAnalysis`, no `UNAVAILABLE_UNIT_MESSAGE`, no
+`UnavailableUnitBanner` component, no URL/localStorage/persistence
+contract.
 
 ## Issues found (U5-01 full)
 
 The historical U3 cross-cutting coverage failure on Unit 5 (0 tags vs.
 ≥2 expected) was retained as accurate evidence in the static-retirement
-segment. After the static-retirement corrections and the focused
+segment. After the static-retirement corrections and the reduced
 FocusSelector availability work, the full test run on this branch is
-green: `CI=true pnpm run test` → 187 files, 3200 tests, 0 failures.
+green: `CI=true pnpm run test` → 187 files, 3177 tests, 0 failures.
+
+The earlier (`-28 +6 = -22`) net delta from the static-retirement
+baseline (3200) is the removal of all source-string
+`FocusSelector.test.ts` assertions (superseded by rendered behaviour
+tests) and the removal of the 5 `analyzeRequestedUnit` tests, minus
+the 6 new rendered tests.
