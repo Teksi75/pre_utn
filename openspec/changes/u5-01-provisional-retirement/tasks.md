@@ -4,7 +4,7 @@
 
 | Field | Value |
 |-------|-------|
-| Estimated changed lines | ~50–90 (net additions, this corrective batch) |
+| Estimated changed lines | ~120–160 across Phases 4 + 5 + 7 (FocusSelector-only) |
 | 400-line budget risk | Low |
 | Chained PRs recommended | No |
 | Suggested split | Single PR — FocusSelector-only changes |
@@ -19,8 +19,8 @@ Chain strategy: not-applicable
 ### Suggested Work Units
 
 | Unit | Goal | Likely PR | Focused test command | Runtime harness | Rollback boundary |
-|------|------|-----------|----------------------|-----------------|-------------------|
-| 1 | FocusSelector count-derived availability + unavailable-unit option + live readiness recompute + dead-branch removal | PR 1 | `pnpm exec vitest run --reporter=verbose "FocusSelector"` | `pnpm run typecheck && pnpm run build` | `src/components/practice/FocusSelector.tsx` revert + test file revert |
+|------|------|-----------|----------------------|-----------------|--------------------|
+| 1 | FocusSelector count-derived availability + unavailable-unit option + live readiness recompute + dead-branch removal + live-removal invariant (Phase 7) | PR 1 | `pnpm exec vitest run --reporter=verbose "FocusSelector"` | `pnpm run typecheck && pnpm run build` | `src/components/practice/FocusSelector.tsx` revert + test file revert |
 
 ## Phase 1: FocusSelector — Derived Availability
 
@@ -62,6 +62,12 @@ Chain strategy: not-applicable
 - [x] 6.3 Run `pnpm run typecheck` — no errors
 - [x] 6.4 Run `pnpm run build` — clean build (11/11 static pages)
 
+## Phase 7: FocusSelector — Live-Removal Invariant (audit-finding fix)
+
+- [x] 7.1 RED: Add test — selecting a populated unit, emptying its live skill array between renders, and re-rendering MUST (a) render no listbox, (b) reset `select.value` to `""`, (c) flip the selected unit's option to the disabled/Próximamente state, and (d) recover automatically when the live skills return; the same mounted instance MUST still let a different contentful (unaffected) unit be selected and render its real skill list
+- [x] 7.2 GREEN: Replace the module-level `SKILLS_BY_UNIT` capture with a per-render frozen object whose properties are `get` accessors that read the live `UNIT_*_SKILLS` exports each time, so closures (including `handleUnitChange`) always see the current catalog length when they consult `getUnitAvailability`; derive an `effectiveSelectedUnit` from `SKILLS_BY_UNIT[selectedUnit].length > 0` on every render and use it for the `<select value=…>`, the `skillsForUnit` derivation, and the listbox render gate. No `useState` setter, no URL parameter, no localStorage key, no component swap is introduced
+- [x] 7.3 GREEN: All FocusSelector rendered tests pass (8/8 after Phase 7)
+
 ## Superseded by Reduced Contract
 
 The following tasks are **superseded** (removed from this plan — not implemented):
@@ -82,3 +88,4 @@ These were part of the original scope but are out of scope for the reduced contr
 - Do NOT hardcode U5 unavailability — use `SKILLS_BY_UNIT[unit].length > 0` derivation
 - Do NOT restore provisional IDs, canonical U5 content, aliases, or mappings
 - Do NOT add a render-time empty-list fallback — defensive selection is the contract; the empty-list branch is dead code under it
+- Do NOT add `useState` setters, URL parameters, or localStorage keys to clear the selection — the live-removal invariant is enforced by per-render derivation, not by mutating component state on the down-render path

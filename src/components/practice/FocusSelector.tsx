@@ -44,15 +44,6 @@ function getMasteryPillInfo(
 
 const UNITS = [1, 2, 3, 4, 5, 6] as const;
 
-const SKILLS_BY_UNIT: Record<number, readonly SkillId[]> = {
-  1: UNIT_1_SKILLS,
-  2: UNIT_2_SKILLS,
-  3: UNIT_3_SKILLS,
-  4: UNIT_4_SKILLS,
-  5: UNIT_5_SKILLS,
-  6: UNIT_6_SKILLS,
-};
-
 /**
  * Derive a unit's availability from its active skill count.
  * U5-01 contract: the selector MUST NOT hardcode per-unit (e.g., U5)
@@ -96,17 +87,76 @@ export function FocusSelector({
   const [selectedUnit, setSelectedUnit] = useState<number | null>(null);
   const skillRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const skillsForUnit = useMemo(() => {
-    if (selectedUnit === null) return [];
-    return SKILLS_BY_UNIT[selectedUnit] ?? [];
-  }, [selectedUnit]);
+  // Per-render live catalog lookup. The previous module-level
+  // `SKILLS_BY_UNIT` captured the `UNIT_*_SKILLS` exports once at
+  // module-load time, which made the selector miss catalog mutations
+  // between renders (HMR or test fixtures). Re-derive the map here on
+  // every render so availability, the empty-list invariant, and the
+  // readiness IIFE all observe the current contents. Each property is
+  // a `get` accessor so that closures captured by `handleUnitChange`
+  // and the readiness IIFE read the LIVE array each time — a plain
+  // object would freeze the references at the moment the render
+  // closure is built. `Object.values` still iterates the getters, so
+  // the readiness IIFE observes the same live contents.
+  const skillsByUnit: Readonly<Record<number, readonly SkillId[]>> =
+    Object.freeze({
+      get 1(): readonly SkillId[] {
+        return UNIT_1_SKILLS;
+      },
+      get 2(): readonly SkillId[] {
+        return UNIT_2_SKILLS;
+      },
+      get 3(): readonly SkillId[] {
+        return UNIT_3_SKILLS;
+      },
+      get 4(): readonly SkillId[] {
+        return UNIT_4_SKILLS;
+      },
+      get 5(): readonly SkillId[] {
+        return UNIT_5_SKILLS;
+      },
+      get 6(): readonly SkillId[] {
+        return UNIT_6_SKILLS;
+      },
+    });
 
-  // Derive readiness/map state from the LIVE `SKILLS_BY_UNIT` contents
+  // Derive an effective selectable-unit state on every render from the
+  // CURRENT live `skillsByUnit[unit].length` count. The `selectedUnit`
+  // React state can outlive the live catalog contents (HMR or test
+  // fixtures mutate the array between renders); without this guard the
+  // previously-selected unit would render an empty listbox when its
+  // live skill array becomes empty after the selection was made. The
+  // guard turns that scenario into "treated as if no unit had been
+  // picked" — no listbox is rendered and the `<select>` value
+  // reflects the null state. Defensive selection (`handleUnitChange`)
+  // rejects zero-skill values going IN; this derivation rejects the
+  // same condition going OUT on every render. No URL parameter, no
+  // localStorage key, no extra `useState` setter, no component swap
+  // is introduced; if the live catalog is re-populated on a later
+  // render, the original selection is restored automatically.
+  const effectiveSelectedUnit: number | null =
+    selectedUnit !== null &&
+    (skillsByUnit[selectedUnit]?.length ?? 0) > 0
+      ? selectedUnit
+      : null;
+
+  // Skill list for the effective selection. Derived inline on every
+  // render so it reflects any mutation to `skillsByUnit`. The empty
+  // fallback is unreachable from any user-facing flow (defensive
+  // selection + the `effectiveSelectedUnit` guard above both reject
+  // zero-skill values), but it keeps the type honest if a future
+  // render ever lands in that state.
+  const skillsForUnit: readonly SkillId[] =
+    effectiveSelectedUnit === null
+      ? []
+      : (skillsByUnit[effectiveSelectedUnit] ?? []);
+
+  // Derive readiness/map state from the LIVE `skillsByUnit` contents
   // and the `accessibleSkills` prop every render. The previous
   // implementation memoized on `[accessibleSkills]` alone, which made
-  // the map stale when `SKILLS_BY_UNIT` mutated between renders (HMR
-  // or test fixtures): a skill newly added to `UNIT_5_SKILLS` would
-  // not appear in the map, and the skill button would render with the
+  // the map stale when `skillsByUnit` mutated between renders (HMR or
+  // test fixtures): a skill newly added to `UNIT_5_SKILLS` would not
+  // appear in the map, and the skill button would render with the
   // `?? false` fallback (`Próximamente` pill, disabled). Recomputing
   // every render is O(N) over a small (~30–40) skill set; per-skill
   // readiness resolves against the in-memory RAW_REGISTRY, so the cost
@@ -125,7 +175,7 @@ export function FocusSelector({
       SkillId,
       { ready: boolean; missing: readonly string[] }
     >();
-    for (const skills of Object.values(SKILLS_BY_UNIT)) {
+    for (const skills of Object.values(skillsByUnit)) {
       for (const skillId of skills) {
         const rich = accessibleSkills?.get(skillId);
         if (rich) {
@@ -167,7 +217,7 @@ export function FocusSelector({
     // the user from picking one through the UI, but stale state from
     // back/forward navigation or programmatic events could still
     // surface an unavailable value here.
-    if (!getUnitAvailability(candidateUnit, SKILLS_BY_UNIT).available) {
+    if (!getUnitAvailability(candidateUnit, skillsByUnit).available) {
       setSelectedUnit(null);
       return;
     }
@@ -226,13 +276,13 @@ export function FocusSelector({
         <div className="relative">
           <select
             id="unit-select"
-            value={selectedUnit ?? ""}
+            value={effectiveSelectedUnit ?? ""}
             onChange={handleUnitChange}
             className="w-full appearance-none border border-brand-300 rounded-[var(--radius-button)] pl-3 pr-9 py-2.5 text-sm bg-white text-brand-900 min-h-[44px] cursor-pointer transition-colors duration-[var(--duration-fast)] hover:border-brand-400 focus-visible:shadow-[var(--ring-focus)]"
           >
             <option value="">Seleccionar unidad...</option>
             {UNITS.map((unit) => {
-              const { available } = getUnitAvailability(unit, SKILLS_BY_UNIT);
+              const { available } = getUnitAvailability(unit, skillsByUnit);
               // Native `<select>` controls render most option-level CSS
               // (background, color, padding) inside the open dropdown,
               // but the option element still carries the classes in the
@@ -268,7 +318,7 @@ export function FocusSelector({
         </div>
       </div>
 
-      {selectedUnit !== null && (
+      {effectiveSelectedUnit !== null && (
         <div>
           <label className="block text-sm font-semibold text-brand-700 mb-2">
             Habilidad

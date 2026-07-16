@@ -893,7 +893,7 @@
       "startedAt": "2026-07-14",
       "issue": 106,
       "delivery": "single PR; static repository retirement + FocusSelector availability correction; ~150–200 net additions; no migration, sidecar, SQL, write gate, blocking, persistence, URL, localStorage, or remote-schema contract added or mutated; no U3, U4, U5-02, or archived U5-00 edits.",
-      "summary": "Binding decision: provisional U5 was never exposed as a practicable user unit. Retire the exact six provisional skills, five placeholder exercises, and active catalog/content/reference/spec/document/test artifacts without migration, sidecars, SQL, write gates, blocking, persistence changes, U3, U5-02, or archived U5-00 edits. Then derive the practice unit selector's availability per-unit from SKILLS_BY_UNIT[unit].length > 0, keep Unit 5 visible-but-disabled with Próximamente label, and render the exact unavailable-unit fallback when the selector's state lands on a zero-skill unit."
+      "summary": "Binding decision: provisional U5 was never exposed as a practicable user unit. Retire the exact six provisional skills, five placeholder exercises, and active catalog/content/reference/spec/document/test artifacts without migration, sidecars, SQL, write gates, blocking, persistence changes, U3, U5-02, or archived U5-00 edits. Then derive the practice unit selector's availability per-unit from SKILLS_BY_UNIT[unit].length > 0, keep Unit 5 visible-but-disabled with Próximamente label, enforce defensive selection rejection in handleUnitChange, and derive an effective selectable-unit state per render from the CURRENT live skill count so no empty listbox is reachable even when an already-selected unit's live skill array is emptied between renders."
     }
   },
   "activeBranches": [],

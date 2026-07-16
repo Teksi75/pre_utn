@@ -103,3 +103,23 @@ The selector MUST reject any programmatic attempt to select a zero-skill unit. `
 - WHEN a programmatic selector change requests Unit 5
 - THEN no unavailable unit is selected and `onSkillSelect` is not invoked
 - AND no listbox (empty or otherwise) is rendered
+
+### Requirement: Live-Removal Invariant for Selected Units
+
+The selector MUST derive an `effectiveSelectedUnit` on every render from the CURRENT live `SKILLS_BY_UNIT[unit].length > 0` count. If a previously-selected populated unit's live skill array is emptied between renders (HMR or test fixtures mutating the catalog), the rendered `<select>` value MUST reset to `""`, the skill-list render gate MUST collapse (no listbox rendered), the affected unit's option MUST flip to disabled with `Próximamente` / muted / `cursor-not-allowed` treatment, and `onSkillSelect` MUST NOT be invoked. A different contentful (unaffected) unit MUST remain selectable through the same catalog mutation. If the live catalog repopulates on a later render, the original selection MUST be observable again without any user action. The invariant MUST be enforced by per-render derivation; no new URL parameter, localStorage key, persistence seam, or component-state setter is introduced.
+
+#### Scenario: empty-ing a selected populated unit removes its listbox without touching component state
+
+- GIVEN a populated unit (U1) is selected through the change handler and its listbox is rendered with its enabled skill options
+- WHEN the live `SKILLS_BY_UNIT[1]` array is emptied and the selector re-renders the same instance
+- THEN no listbox is rendered
+- AND the `<select>` value reflects the null state
+- AND the U1 option flips to disabled + `Próximamente` + muted/cursor-not-allowed
+- AND a different contentful unit (U2) can still be selected and renders its listbox through the same rendered instance
+
+#### Scenario: repopulating the live skills restores the original selection
+
+- GIVEN the U1 selection was lost via the live-removal invariant
+- WHEN `SKILLS_BY_UNIT[1]` is repopulated and the student re-selects U1 through the change handler
+- THEN the listbox returns with the freshly-added skills as enabled listbox options carrying the `Disponible` pill
+- AND clicking a restored skill invokes `onSkillSelect` with the skill id

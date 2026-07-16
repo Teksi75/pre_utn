@@ -48,17 +48,28 @@ import {
 } from "@/components/practice/FocusSelector";
 
 // ---------------------------------------------------------------------------
-// Catalog mock — exposes a mutable `UNIT_5_SKILLS` reference that the
-// auto-re-enable tests can push to between renders. `vi.hoisted` runs
+// Catalog mock — exposes mutable references the auto-re-enable and
+// live-removal tests can mutate between renders. `vi.hoisted` runs
 // before the `vi.mock` factory so both the test body and the mocked
-// module share the same array reference; `SKILLS_BY_UNIT[5]` inside the
-// imported FocusSelector module points at this array, so mutating it
-// here is equivalent to adding skills to the live catalog and the next
-// render observes the change without any flag or persistence seam.
+// module share the same array references; mutating them here is
+// equivalent to mutating the live catalog and the next render observes
+// the change without any flag or persistence seam.
+//
+// Two slots are exposed:
+//   - `unit5: SkillId[]` — U5 is empty post U5-01; the mock always
+//     returns this array so pushes/removes between renders re-derive
+//     U5's availability and list on the next render.
+//   - `unit1Override: SkillId[] | null` — when non-null, replaces the
+//     production UNIT_1_SKILLS with a controlled array. When null, the
+//     real production array is used. This lets the live-removal
+//     invariant test collapse U1 down to a single fixture without
+//     permanently shrinking the unit-1 catalog used by every other
+//     test.
 // ---------------------------------------------------------------------------
 
 const catalogState = vi.hoisted(() => ({
   unit5: [] as SkillId[],
+  unit1Override: null as readonly SkillId[] | null,
 }));
 
 vi.mock("@/domain/models/skill-catalog", async () => {
@@ -68,6 +79,9 @@ vi.mock("@/domain/models/skill-catalog", async () => {
   return {
     ...actual,
     UNIT_5_SKILLS: catalogState.unit5,
+    get UNIT_1_SKILLS() {
+      return catalogState.unit1Override ?? actual.UNIT_1_SKILLS;
+    },
   };
 });
 
@@ -157,14 +171,17 @@ function getSkillOptions(container: HTMLElement): readonly HTMLButtonElement[] {
 // ---------------------------------------------------------------------------
 
 describe("FocusSelector — derived availability (U5-01 reduced contract)", () => {
-  // Keep the mocked UNIT_5_SKILLS empty at the start and end of every
-  // test so the file is order-independent and the auto-re-enable tests
-  // do not leak state into the others.
+  // Keep the mocked catalog slots in their default state at the start
+  // and end of every test so the file is order-independent and the
+  // auto-re-enable / live-removal tests do not leak state into the
+  // others.
   beforeEach(() => {
     catalogState.unit5.length = 0;
+    catalogState.unit1Override = null;
   });
   afterEach(() => {
     catalogState.unit5.length = 0;
+    catalogState.unit1Override = null;
   });
 
   test("renders every unit option with its accessible label and disabled state", () => {
@@ -417,6 +434,163 @@ describe("FocusSelector — derived availability (U5-01 reduced contract)", () =
     const populatedResult = getUnitAvailability(5, populatedMap);
     expect(populatedResult.available).toBe(true);
     expect(populatedResult.activeSkillCount).toBe(1);
+  });
+
+  test("live-removal invariant: emptying a populated selected unit's skills removes the listbox and recovers when the skills return", () => {
+    // Audit finding: when the live catalog array of a currently
+    // selected populated unit becomes empty between renders (HMR or a
+    // test fixture mutating the catalog), the selector MUST NOT render
+    // an empty listbox. The selector derives an effective selectable
+    // unit from `SKILLS_BY_UNIT[unit].length > 0` on every render so
+    // that scenario renders as if no unit had been picked — the
+    // `<select>` value resets to "", no listbox appears, and the
+    // selected unit's option flips to the disabled state with the
+    // muted/cursor-not-allowed classes. If the catalog re-populates
+    // on a later render, the original selection is restored. The
+    // test also proves a contentful (unaffected) unit keeps working
+    // through the same catalog mutation, so the invariant is the
+    // SKILL-count re-derivation, not a global lockout.
+    const fixtureSkill = "mat.u1.live-removal-fixture" as SkillId;
+    const accessibleSkills: ReadonlyMap<SkillId, AccessibleSkill> = new Map([
+      [
+        fixtureSkill,
+        {
+          skillId: fixtureSkill,
+          name: "Habilidad en vivo",
+          accessible: true,
+          missingPrerequisites: [],
+          masteryLevel: "not-started",
+          accuracy: 0,
+          contentReady: true,
+        },
+      ],
+    ]);
+
+    const onSkillSelect = vi.fn();
+    const mounted = mount({ onSkillSelect, accessibleSkills });
+    try {
+      const select = mounted.container.querySelector<HTMLSelectElement>(
+        "#unit-select"
+      );
+      if (!select) throw new Error("#unit-select not found");
+
+      // Pin UNIT_1_SKILLS to exactly the fixture so every listbox
+      // length assertion below is exact. Without the override, the
+      // production UNIT_1_SKILLS would expose 8 catalog skills.
+      catalogState.unit1Override = [fixtureSkill];
+
+      // 1) Select U1 through the change handler. The listbox renders
+      //    exactly one enabled listbox option carrying the
+      //    "Disponible" pill.
+      act(() => {
+        mounted.root.render(
+          <FocusSelector
+            onSkillSelect={onSkillSelect}
+            accessibleSkills={accessibleSkills}
+          />
+        );
+      });
+      changeSelectTo(select, "1");
+
+      expect(select.value).toBe("1");
+      expect(getListbox(mounted.container)).not.toBeNull();
+      let skillOptions = getSkillOptions(mounted.container);
+      expect(skillOptions.length).toBe(1);
+      expect(skillOptions[0]!.disabled).toBe(false);
+      expect(skillOptions[0]!.getAttribute("aria-disabled")).toBe("false");
+      const initialPills = skillOptions[0]!.querySelectorAll<HTMLElement>(
+        '[data-testid="availability-pill"]'
+      );
+      expect(
+        Array.from(initialPills).some((p) => p.textContent?.includes("Disponible"))
+      ).toBe(true);
+
+      // 2) Mutate the LIVE catalog: empty UNIT_1_SKILLS between
+      //    renders. SKILLS_BY_UNIT[1] inside the component module
+      //    resolves to the same array reference (the module export
+      //    goes through the mock's getter that reads `unit1Override`).
+      catalogState.unit1Override = [];
+
+      // 3) Re-render the SAME mounted instance. The listbox MUST NOT
+      //    render at all (no empty listbox reachable), the <select>
+      //    value MUST reset to "", and option U1 MUST flip to the
+      //    disabled/Próximamente state because the unit itself is now
+      //    empty.
+      act(() => {
+        mounted.root.render(
+          <FocusSelector
+            onSkillSelect={onSkillSelect}
+            accessibleSkills={accessibleSkills}
+          />
+        );
+      });
+
+      expect(getListbox(mounted.container)).toBeNull();
+      expect(select.value).toBe("");
+      const u1AfterRemoval = getOption(mounted.container, 1);
+      expect(u1AfterRemoval.disabled).toBe(true);
+      expect(u1AfterRemoval.getAttribute("aria-disabled")).toBe("true");
+      expect(u1AfterRemoval.textContent).toBe("Unidad 1 — Próximamente");
+      expect(u1AfterRemoval.className).toMatch(/text-brand-400/);
+      expect(u1AfterRemoval.className).toMatch(/cursor-not-allowed/);
+
+      // 4) The other contentful units MUST still work the same way —
+      //    their options stay enabled with the bare "Unidad N" label
+      //    and the catalog mutation only affects U1/U5.
+      for (const unit of [2, 3, 4, 6] as const) {
+        const opt = getOption(mounted.container, unit);
+        expect(opt.disabled).toBe(false);
+        expect(opt.getAttribute("aria-disabled")).toBe("false");
+        expect(opt.textContent).toBe(`Unidad ${unit}`);
+      }
+
+      // 5) Proving contentful units still actually work end-to-end:
+      //    select U2 and assert its listbox renders with the real U2
+      //    skill buttons (no fixture involved).
+      changeSelectTo(select, "2");
+      expect(select.value).toBe("2");
+      expect(getListbox(mounted.container)).not.toBeNull();
+      const u2Options = getSkillOptions(mounted.container);
+      expect(u2Options.length).toBeGreaterThan(0);
+      // Real U2 skills have no entry in `accessibleSkills`, so they
+      // resolve via the catalog's content-readiness verdict; at least
+      // one of them is unblocked and clickable.
+      const clickableU2 = u2Options.find((b) => !b.disabled);
+      expect(clickableU2).toBeDefined();
+
+      // 6) Re-populate UNIT_1_SKILLS, then re-select U1 through the
+      //    change handler so `selectedUnit` returns to 1 (the React
+      //    state was last written to 2 in step 5). With the catalog
+      //    repopulated, the selector MUST derive an enabled U1 option
+      //    and a listbox containing the fixture skill with the
+      //    "Disponible" pill — no empty listbox.
+      catalogState.unit1Override = [fixtureSkill];
+      changeSelectTo(select, "1");
+
+      expect(select.value).toBe("1");
+      expect(getListbox(mounted.container)).not.toBeNull();
+      skillOptions = getSkillOptions(mounted.container);
+      expect(skillOptions.length).toBe(1);
+      expect(skillOptions[0]!.disabled).toBe(false);
+      const restoredPills = skillOptions[0]!.querySelectorAll<HTMLElement>(
+        '[data-testid="availability-pill"]'
+      );
+      expect(
+        Array.from(restoredPills).some((p) =>
+          p.textContent?.includes("Disponible")
+        )
+      ).toBe(true);
+
+      // 7) Clicking the restored skill invokes `onSkillSelect` with
+      //    the fixture skill id — the end-to-end contract.
+      act(() => {
+        skillOptions[0]!.click();
+      });
+      expect(onSkillSelect).toHaveBeenCalledWith(fixtureSkill);
+    } finally {
+      catalogState.unit1Override = null;
+      unmount(mounted);
+    }
   });
 
   test("select renders with the brand-token chrome and a11y wiring (interactive DOM check)", () => {
