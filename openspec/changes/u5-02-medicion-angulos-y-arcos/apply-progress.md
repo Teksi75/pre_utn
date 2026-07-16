@@ -12,8 +12,8 @@
 
 | Unit | Goal | Status | Commit |
 |------|------|--------|--------|
-| 1 | Domain/evaluator (model, codecs, structured evaluator, detectors, dispatcher) | ⏳ In progress | pending |
-| 2 | Controls/display + state (PiRationalInput, AngleDmsInput, state, display) | pending | pending |
+| 1 | Domain/evaluator (model, codecs, structured evaluator, detectors, dispatcher) | ✅ Done | `950e3f2` |
+| 2 | Controls/display + state (PiRationalInput, AngleDmsInput, state, display) | ⏳ In progress | pending |
 | 3 | Content (4 × unit-5.json) | pending | pending |
 | 4 | Wiring (UNIT_5_SKILLS, PILOT_SKILLS, RAW_REGISTRY, UNIT_EXERCISE_FILES[5], catalog, UNIT_THRESHOLDS, learn page) | pending | pending |
 | 5 | Flow/regression + FocusSelector + brand voice scan | pending | pending |
