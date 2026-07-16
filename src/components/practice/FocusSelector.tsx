@@ -59,11 +59,19 @@ const SKILLS_BY_UNIT: Record<number, readonly SkillId[]> = {
  * unavailability flags — availability follows the live
  * `SKILLS_BY_UNIT` table, so a unit that gains active skills in a
  * future slice is automatically selectable again.
+ *
+ * Exported as a pure helper: the unit map is taken as a parameter
+ * (rather than closed over the module-level `SKILLS_BY_UNIT`) so the
+ * count-derivation rule can be exercised independently and so the
+ * production component always re-derives on every render from the
+ * live catalog — no per-unit flag is ever retained in component or
+ * module state.
  */
-function getUnitAvailability(
-  unit: number
+export function getUnitAvailability(
+  unit: number,
+  skillsByUnit: Readonly<Record<number, readonly SkillId[]>>
 ): { readonly available: boolean; readonly activeSkillCount: number } {
-  const activeSkillCount = SKILLS_BY_UNIT[unit]?.length ?? 0;
+  const activeSkillCount = skillsByUnit[unit]?.length ?? 0;
   return { available: activeSkillCount > 0, activeSkillCount };
 }
 
@@ -148,7 +156,7 @@ export function FocusSelector({
     // the user from picking one through the UI, but stale state from
     // back/forward navigation or programmatic events could still
     // surface an unavailable value here.
-    if (!getUnitAvailability(candidateUnit).available) {
+    if (!getUnitAvailability(candidateUnit, SKILLS_BY_UNIT).available) {
       setSelectedUnit(null);
       return;
     }
@@ -213,13 +221,27 @@ export function FocusSelector({
           >
             <option value="">Seleccionar unidad...</option>
             {UNITS.map((unit) => {
-              const { available } = getUnitAvailability(unit);
+              const { available } = getUnitAvailability(unit, SKILLS_BY_UNIT);
+              // Native `<select>` controls render most option-level CSS
+              // (background, color, padding) inside the open dropdown,
+              // but the option element still carries the classes in the
+              // DOM. We attach `text-brand-400` (the muted foreground
+              // the project already uses on locked/blocked surfaces) and
+              // `cursor-not-allowed` so the unavailable option state is
+              // both inspectable and consistent with the project's
+              // existing muted/disabled vocabulary. Native `disabled`
+              // and `aria-disabled` semantics remain the authoritative
+              // signal — the classes only reinforce the visual cue.
+              const unavailableClass = available
+                ? undefined
+                : "text-brand-400 cursor-not-allowed";
               return (
                 <option
                   key={unit}
                   value={unit}
                   disabled={!available}
                   aria-disabled={!available}
+                  className={unavailableClass}
                 >
                   {available ? `Unidad ${unit}` : `Unidad ${unit} — Próximamente`}
                 </option>

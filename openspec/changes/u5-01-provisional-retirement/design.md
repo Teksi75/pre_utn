@@ -40,9 +40,9 @@ Consequently, direct, stale, persisted, and URL unit-selection fallbacks are not
 | File | Action | Description |
 |---|---|---|
 | `src/components/practice/FocusSelector.tsx` | Modify | Keep count-derived availability; render disabled `Próximamente` options with native, ARIA, muted, and `cursor-not-allowed` semantics; reject unavailable programmatic values; remove banner and empty-list branches. |
-| `src/app/practice/start-skill.ts` | Modify | Remove the unused unit-request analysis and its duplicate unit availability map. |
-| `src/components/practice/__tests__/FocusSelector.test.tsx` | Create | Rendered, interactive availability tests using the repository's React/Vitest harness. |
-| `src/components/practice/__tests__/FocusSelector.test.ts` | Modify | Remove source-inspection assertions superseded by rendered behavior coverage. |
+| `src/app/practice/start-skill.ts` | **No net diff** | The corrective candidate briefly introduced `analyzeRequestedUnit` + a `SKILLS_BY_UNIT` mirror + extra `UNIT_*_SKILLS` imports here in commit `3a111c3`, then removed all of it in commit `57ef9bd`. The net candidate diff against `main` is empty — `git diff main..HEAD -- src/app/practice/start-skill.ts` returns no output. No replacement contract ships in the reduced surface. |
+| `src/components/practice/__tests__/FocusSelector.test.tsx` | Create | Rendered, interactive availability tests using the repository's React/Vitest harness; one of them mutates the catalog mock to prove live auto-re-enable without source-string inspection. |
+| `src/components/practice/__tests__/FocusSelector.test.ts` | Modify → Delete | Remove source-inspection assertions superseded by rendered behavior coverage. |
 
 ## Interfaces / Contracts
 
