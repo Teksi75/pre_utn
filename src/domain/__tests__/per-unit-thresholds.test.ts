@@ -29,12 +29,11 @@ describe("UnitValidationThresholds", () => {
     expect(getUnitThreshold("unit-3")).toBe(24);
   });
 
-  test("unit-5 threshold is 0 (U5-01 static retirement — empty catalog permitted)", () => {
-    // U5-01 retires the six provisional U5 skills and five placeholder
-    // exercises. Unit 5 is intentionally permitted to be empty so the
-    // catalog loader does not raise a coverage failure for unit-5.
-    expect(UNIT_THRESHOLDS["unit-5"]).toBe(0);
-    expect(getUnitThreshold("unit-5")).toBe(0);
+  test("unit-5 threshold is 7 after U5-02 (first live U5 packet)", () => {
+    // U5-02 adds mat.u5.medicion_angulos_y_arcos with 7 traced exercises.
+    // The threshold tracks the implemented exercise count exactly.
+    expect(UNIT_THRESHOLDS["unit-5"]).toBe(7);
+    expect(getUnitThreshold("unit-5")).toBe(7);
   });
 
   test("units 4 and 6 remain without explicit thresholds (default 5)", () => {

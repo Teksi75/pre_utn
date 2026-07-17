@@ -19,9 +19,9 @@ describe("Exercise Catalog", () => {
 
     test("each active unit has at least 5 exercises", () => {
       const catalog = loadCatalog();
-      // Unit 5 is intentionally empty after the U5-01 static retirement.
+      // Unit 5 has 7 exercises after U5-02 (the first live U5 packet).
       for (let unit = 1; unit <= 6; unit++) {
-        if (unit === 5) continue;
+        if (unit === 5) continue; // Unit 5 still excluded from the 5-exercise baseline
         const unitExercises = catalog.filter((e) => {
           // extract unit from skillId: mat.u{unit}.xxx
           const match = e.skillId.match(/^mat\.u(\d+)\./);
@@ -64,6 +64,7 @@ describe("Exercise Catalog", () => {
         "mat.u4.pitagoras",
         "mat.u4.razones_trigonometricas",
         "mat.u4.seno_coseno",
+        "mat.u5.medicion_angulos_y_arcos",
         "mat.u6.funcion_concepto",
         "mat.u6.dominio_imagen",
         "mat.u6.ceros_positividad_negatividad",
@@ -104,9 +105,11 @@ describe("Exercise Catalog", () => {
 
     test("exercise IDs follow ex.u{1-6}.{slug}.{number} pattern", () => {
       const catalog = loadCatalog();
-      // Accepts both legacy numeric IDs (ex.u1.conjuntos_numericos.1)
-      // and bank-code IDs from per-skill files (ex.u1.conjuntos_numericos.cn-per-01)
-      const idPattern = /^ex\.u[1-6]\.[a-z_]+\.([a-z]+-[a-z]+-\d+|\d+)$/;
+      // Accepts legacy numeric IDs (ex.u1.conjuntos_numericos.1), bank-code
+      // IDs from per-skill files (ex.u1.conjuntos_numericos.cn-per-01), AND
+      // subitem IDs from U5-02 (ex.u5.medicion_angulos_y_arcos.1a — letter-
+      // tagged items a/b/c/d).
+      const idPattern = /^ex\.u[1-6]\.[a-z_]+\.([a-z]+-[a-z]+-\d+|\d+[a-z]?|[1-9][a-z])$/;
       for (const exercise of catalog) {
         expect(exercise.id).toMatch(idPattern);
       }
@@ -237,6 +240,7 @@ describe("Exercise Catalog", () => {
         "matching",
         "ordering",
         "graphical",
+        "structured",
       ]);
       const catalog = loadCatalog();
       for (const exercise of catalog) {

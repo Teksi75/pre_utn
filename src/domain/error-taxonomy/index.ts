@@ -983,6 +983,41 @@ const TAXONOMY: readonly ErrorTag[] = [
     ],
   },
 
+  // Unit 5: Medición de ángulos y arcos — first live U5 packet (U5-02).
+  // Three misconception tags backed by the U5-02 spec and the dedicated
+  // detectors in src/domain/evaluator/error-tagging.ts. None reveals
+  // the final answer; recovery targets point at the matching concept.
+  {
+    id: "u5_degree_radian_factor",
+    unit: 5,
+    description:
+      "Error al convertir entre grados y radianes: invierte el factor $180^{\\circ} = \\pi$ rad. La conversión grados → radianes usa $\\dfrac{\\pi}{180}$ y radianes → grados usa $\\dfrac{180}{\\pi}$. Aplica a los ítems 1.a y 1.b.",
+    examples: [
+      "Convertir $36^{\\circ}$ como $36 \\cdot \\dfrac{180}{\\pi}$ radianes en vez de $36 \\cdot \\dfrac{\\pi}{180}$",
+      "Convertir $225^{\\circ}$ como $\\dfrac{225}{180}\\pi$ invertido en signo o numerador",
+    ],
+  },
+  {
+    id: "u5_dms_conversion",
+    unit: 5,
+    description:
+      "Error en la conversión DMS: acarreo mal hecho (segundos o minutos ≥ 60), redondeo al segundo mal aplicado, o tolerancia excedida. Aplica al ítem 2.d.",
+    examples: [
+      "Reportar $11^{\\circ}\\, 27'\\, 32''$ sin verificar que la tolerancia $0{,}5''$ lo acepte",
+      "Olvidar el acarreo y reportar minutos $\\geq 60$ o segundos $\\geq 60$",
+    ],
+  },
+  {
+    id: "u5_arc_time_fraction",
+    unit: 5,
+    description:
+      "Error en la fracción de revolución al calcular el arco: usa la mitad del intervalo de tiempo (o invierte numerador y denominador) y produce la mitad del valor esperado. Aplica al ítem 3.",
+    examples: [
+      "Reportar $4\\pi$ cm cuando el minutero recorrió 20 min en lugar de $8\\pi$ cm (mitad del tiempo)",
+      "Usar $\\dfrac{T}{\\Delta t}$ en vez de $\\dfrac{\\Delta t}{T}$ en la fórmula del arco",
+    ],
+  },
+
   // Unit 6: Functions
   {
     id: "u6_dominio_funcion",

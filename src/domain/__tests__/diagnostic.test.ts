@@ -370,13 +370,21 @@ describe("isExerciseReliable — excludes exercises with unreliable evaluation",
     expect(isExerciseReliable(exercise)).toBe(true);
   });
 
-  test("real catalog exercises are all reliable", () => {
+  test("real catalog has no unreliable exercises (numerical/MC are reliable; structured is intentionally excluded from placement)", () => {
     const catalog = loadCatalog();
-    const unreliable = catalog.filter((e) => !isExerciseReliable(e));
+    const unreliable = catalog.filter(
+      (e) => !isExerciseReliable(e) && e.type !== "structured",
+    );
     expect(
       unreliable,
       `Unexpected unreliable exercises: ${unreliable.map((e) => `${e.id} (${e.type})`).join(", ")}`
     ).toHaveLength(0);
+    // Structured exercises are intentionally excluded from placement
+    // (placement is placement-only flow; structured controls require
+    // multi-field input placement does not exercise). The diagnostic set
+    // must never include them.
+    const structured = catalog.filter((e) => e.type === "structured");
+    expect(structured.length).toBeGreaterThan(0); // confirms the U5-02 packet is present
   });
 });
 
@@ -434,19 +442,24 @@ describe("selectBalancedSet — excludes unreliable exercises from diagnostic", 
     }
   });
 
-  test("real catalog diagnostic contains no Unit 5 exercises (U5-01 static retirement)", () => {
+  test("real catalog diagnostic contains no STRUCTURED Unit 5 exercises (diagnostic excludes unreliable types)", () => {
+    // Unit 5 (medición de ángulos y arcos) shipped in U5-02 with both
+    // structured and numerical exercises. The diagnostic set explicitly
+    // excludes structured exercises (SAFE_DIAGNOSTIC_TYPES = MC / TF /
+    // numerical). Numerical U5 items (1c, 1d, 2r) are eligible IF the
+    // balanced-selection algorithm picks them; in this catalog the
+    // diagnostic only contains exercises from units 1–3 so the assertion
+    // is "no U5 item slipped through" (matches the existing shape).
     const catalog = loadCatalog();
     const result = selectBalancedSet(catalog);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    const u5Exercises = result.exercises.filter((e) =>
-      e.skillId.match(/^mat\.u5\./)
+    const u5Structured = result.exercises.filter(
+      (e) => e.skillId.match(/^mat\.u5\./) && e.type === "structured",
     );
-    // Unit 5 was retired by U5-01: no provisional U5 skills or exercises
-    // remain in the catalog, so the diagnostic must not include any.
-    expect(u5Exercises).toHaveLength(0);
+    expect(u5Structured).toHaveLength(0);
   });
 
   test("multiple-choice with undefined options is unreliable", () => {

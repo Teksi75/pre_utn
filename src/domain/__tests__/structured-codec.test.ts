@@ -44,14 +44,14 @@ describe("parseStructuredSubmissionV1 + serializeStructuredSubmissionV1 round-tr
   test("serialize then parse round-trips a pi-rational submission (parsing normalizes the fraction)", () => {
     // The parser canonicalizes — 2/10 reduces to 1/5 after parse. The
     // envelope (v=1, kind, decimal) is preserved verbatim.
-    const obj = { v: 1, kind: "pi-rational", numerator: 2, denominator: 10, decimal: 0.6283 };
+    const obj = { v: 1 as const, kind: "pi-rational" as const, numerator: 2, denominator: 10, decimal: 0.6283 };
     const serialized = serializeStructuredSubmissionV1(obj);
     const parsed = parseStructuredSubmissionV1(serialized);
     expect(parsed).toEqual({ v: 1, kind: "pi-rational", numerator: 1, denominator: 5, decimal: 0.6283 });
   });
 
   test("serialize then parse round-trips an angle-dms submission", () => {
-    const obj = { v: 1, kind: "angle-dms", degrees: 11, minutes: 27, seconds: 33 };
+    const obj = { v: 1 as const, kind: "angle-dms" as const, degrees: 11, minutes: 27, seconds: 33 };
     const serialized = serializeStructuredSubmissionV1(obj);
     const parsed = parseStructuredSubmissionV1(serialized);
     expect(parsed).toEqual(obj);

@@ -56,7 +56,6 @@ describe("EvaluableExercise accepts StructuredAnswerSpec", () => {
 
   test("EvaluableExercise accepts a pi-rational answerSpec", () => {
     const ex: EvaluableExercise = {
-      id: "ex.u5.medicion_angulos_y_arcos.1a" as never,
       type: "structured",
       skillId: KNOWN_SKILL_ID as never,
       expectedAnswer: "1/5",
@@ -76,7 +75,6 @@ describe("EvaluableExercise accepts StructuredAnswerSpec", () => {
       tolerance: 0.5,
     };
     const ex: EvaluableExercise = {
-      id: "ex.u5.medicion_angulos_y_arcos.2d" as never,
       type: "structured",
       skillId: KNOWN_SKILL_ID as never,
       expectedAnswer: "11° 27' 33\"",

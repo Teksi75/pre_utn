@@ -28,17 +28,21 @@ import { parseOptionalVisualExamples } from "../visuals/parse";
 import theoryUnit1 from "../../../content/matematica/theory/unit-1.json";
 import theoryUnit2 from "../../../content/matematica/theory/unit-2.json";
 import theoryUnit3 from "../../../content/matematica/theory/unit-3.json";
+import theoryUnit5 from "../../../content/matematica/theory/unit-5.json";
 import examplesUnit1 from "../../../content/matematica/examples/unit-1.json";
 import examplesUnit2 from "../../../content/matematica/examples/unit-2.json";
 import examplesUnit3 from "../../../content/matematica/examples/unit-3.json";
+import examplesUnit5 from "../../../content/matematica/examples/unit-5.json";
 import feedbackUnit1 from "../../../content/matematica/feedback/unit-1.json";
 import feedbackUnit2 from "../../../content/matematica/feedback/unit-2.json";
 import feedbackUnit3 from "../../../content/matematica/feedback/unit-3.json";
+import feedbackUnit5 from "../../../content/matematica/feedback/unit-5.json";
 import feedbackUnit1ConjuntosNumericos from "../../../content/matematica/feedback/unit-1-conjuntos-numericos.json";
 import exercisesJson from "../../../content/matematica/exercises.json";
 import unit1Exercises from "../../../content/matematica/exercises/unit-1.json";
 import unit2Exercises from "../../../content/matematica/exercises/unit-2.json";
 import unit3Exercises from "../../../content/matematica/exercises/unit-3.json";
+import unit5Exercises from "../../../content/matematica/exercises/unit-5.json";
 import conjuntosNumericosExercises from "../../../content/matematica/exercises/conjuntos-numericos.json";
 
 // ---------------------------------------------------------------------------
@@ -502,17 +506,20 @@ const RAW_REGISTRY: RawRegistry = {
     "unit-1": theoryUnit1 as unknown,
     "unit-2": theoryUnit2 as unknown,
     "unit-3": theoryUnit3 as unknown,
+    "unit-5": theoryUnit5 as unknown,
   },
   examples: {
     "unit-1": examplesUnit1 as unknown,
     "unit-2": examplesUnit2 as unknown,
     "unit-3": examplesUnit3 as unknown,
+    "unit-5": examplesUnit5 as unknown,
   },
   feedback: {
     "unit-1": feedbackUnit1 as unknown,
     "unit-1-conjuntos-numericos": feedbackUnit1ConjuntosNumericos as unknown,
     "unit-2": feedbackUnit2 as unknown,
     "unit-3": feedbackUnit3 as unknown,
+    "unit-5": feedbackUnit5 as unknown,
   },
 };
 
@@ -768,6 +775,7 @@ export const UNIT_EXERCISE_FILES: Readonly<Record<number, unknown>> = {
   1: unit1Exercises as unknown,
   2: unit2Exercises as unknown,
   3: unit3Exercises as unknown,
+  5: unit5Exercises as unknown,
 };
 
 /**
@@ -1010,7 +1018,7 @@ export const UNIT_THRESHOLDS: Readonly<Record<string, number>> = {
   "unit-1": 40,
   "unit-2": 20,
   "unit-3": 24,
-  "unit-5": 0,
+  "unit-5": 7,
 };
 
 const DEFAULT_UNIT_MINIMUM = 5;
