@@ -15,8 +15,48 @@
 | 1 | Domain/evaluator (model, codecs, structured evaluator, detectors, dispatcher) | ✅ Done | `950e3f2` |
 | 2 | Controls/display + state (PiRationalInput, AngleDmsInput, state, display) | ✅ Done | `7dba8f5` |
 | 3 | Content (4 × unit-5.json) | ✅ Done | `9d88a84` |
-| 4 | Wiring (UNIT_5_SKILLS, PILOT_SKILLS, RAW_REGISTRY, UNIT_EXERCISE_FILES[5], catalog, UNIT_THRESHOLDS, learn page) | ⏳ In progress | pending |
-| 5 | Flow/regression + FocusSelector + brand voice scan | pending | pending |
+| 4 | Wiring (UNIT_5_SKILLS, PILOT_SKILLS, RAW_REGISTRY, UNIT_EXERCISE_FILES[5], catalog, UNIT_THRESHOLDS, learn page) | ✅ Done | `48649f0` |
+| 5 | Flow/regression + FocusSelector + brand voice scan | ✅ Done | `c8a0eb6` |
+
+---
+
+## Work Unit 5 — Flow, Regression, Final Gates (Tasks 5.1–5.10)
+
+### TDD Cycle Evidence
+
+| Task | Test File | Layer | RED | GREEN | TRIANGULATE | REFACTOR |
+|------|-----------|-------|-----|-------|-------------|----------|
+| 5.1-5.2 | `src/domain/__tests__/catalog-readiness-u5.test.ts` | Unit | ✅ | ✅ | ✅ 6 cases | ✅ Clean |
+| 5.3 | `tests/e2e/specs/medicion_angulos_y_arcos.spec.ts` | E2E | ✅ (manual) | ✅ (manual) | ➖ Single | ✅ Clean |
+| 5.4 | (no new test — FocusSelector re-enable verified via existing readiness + diagnostic suite) | — | ➖ | ➖ | ➖ | ➖ |
+| 5.5 | (covered by existing `evaluator-*.test.ts`, `catalog-split-equivalence`, and `error-taxonomy.test.ts`) | Unit | ✅ | ✅ | ➖ | ✅ Clean |
+| 5.6 | `src/domain/__tests__/evaluator-numeric-u5-scalar.test.ts` | Unit | ✅ | ✅ | ✅ 8 cases | ✅ Clean |
+| 5.7 | `pnpm run test:run` final gate | Unit | ✅ | ✅ 3336/3336 | ➖ | ✅ Clean |
+| 5.8 | `pnpm run typecheck` final gate | — | ✅ | ✅ Clean | ➖ | ✅ Clean |
+| 5.9 | `pnpm run build` final gate | — | ✅ | ✅ Clean | ➖ | ✅ Clean |
+| 5.10 | (orchestrator-owned — STATUS.json entry updated post-merge) | — | ➖ | ➖ | ➖ | ➖ |
+
+### Final Gate Results
+
+| Gate | Command | Result |
+|------|---------|--------|
+| Vitest full suite | `pnpm run test:run` | **3336 tests passing** across **199 files** (baseline 3176 → 3336 = +160 new tests) |
+| TypeScript strict | `pnpm run typecheck` | Clean (no errors) |
+| Next.js production build | `pnpm run build` | Clean (no errors, all routes pre-rendered) |
+
+### Line-Budget Snapshot
+
+| Category | Lines |
+|----------|-------|
+| Production code (TS/TSX non-test, non-JSON) | **~1489 authored** (target 800, design's "single PR" tolerance noted) |
+| Test files | ~2205 (excluded from budget per work-unit-commits convention) |
+| JSON content (theory/examples/feedback/exercises) | ~394 (excluded; data not code) |
+| apply-progress.md | ~95 (excluded) |
+
+### Rollback boundary
+- Revert: `src/components/exercises/{AngleDmsInput,PiRationalInput,ExerciseAnswerInput,exercise-answer-state,exercise-labels,submitted-answer-display}.{ts,tsx}`, `src/domain/{models/exercise,catalog/*,evaluator/*,diagnostic/index,error-taxonomy/index,models/skill-catalog}.ts`.
+- Delete: `src/domain/__tests__/{structured-*,evaluator-purity,evaluator-error-tagging-u5,content-loaders-structured,catalog-readiness-u5,evaluator-numeric-u5-scalar}.test.ts(x)`, `tests/e2e/specs/medicion_angulos_y_arcos.spec.ts`.
+- Delete: `content/matematica/{theory,examples,feedback,exercises}/unit-5.json`.
 
 ---
 
