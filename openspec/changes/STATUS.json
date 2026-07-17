@@ -834,27 +834,54 @@
       "summary": "Read-only review of the immediately previous practice exercise. Session-scoped in-memory snapshot via createPreviousExerciseSnapshot pure module + SubmittedAnswerDisplay component + mapSubmittedAnswer display mapper. `Ver anterior` button shown only when previous submission exists; `Volver al ejercicio actual` restores active exercise. No domain/persistence changes. 14 new tests (11 + 3), 961/961 tests pass, typecheck + build green. Pre-dates STATUS.json — backfilled on housekeeping cleanup."
     },
     "recuperar-u3-traza-canonica-ejercicios": {
-      "status": "in-progress",
+      "status": "done",
       "branch": null,
       "startedAt": "2026-07-12",
+      "completedAt": "2026-07-12",
+      "mergedTo": "main",
+      "mergeCommit": "e553648079cd7b6f9864683d4ab4d694b4f6a8e7",
       "cleanBase": "02d29680e3336e1237e99ec9932ea8c28bb5c87c",
       "readOnlySourceCommit": "0f79d634843651366eb0ee8b0cb1467fb77f73de",
       "parentRoadmap": "recuperar-u3-practica-canonica",
-      "delivery": "mandatory chained-prs-stacked-to-main (2 PRs; each <=400 changed lines; no size:exception)",
+      "delivery": "chained-prs-stacked-to-main (2 PRs; each <=400 changed lines; no size:exception)",
       "pr1": {
         "branch": "feat/u3-traza-canonica-contracts",
-        "status": "planned",
-        "target": "main",
-        "summary": "Compilable/autonomous contracts: base and exercise trace types, domain exports, challenge base composition, structural consumer prop widening, and contract tests."
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "d03010ef8f1b5a27d72e3c4c74cef894682085ff",
+        "pr": 97,
+        "summary": "PR #97 — Canonical trace contracts: ExerciseBaseShape, ExerciseCanonicalTrace, ExerciseSourceUse (adapted|reinforcement|reference|alignment), ChallengeCanonicalTrace/ChallengeSourceUse, domain exports, structural consumer prop widening, contract tests."
       },
       "pr2": {
         "branch": "feat/u3-traza-canonica-parser",
-        "status": "planned",
-        "target": "feat/u3-traza-canonica-contracts",
-        "dependsOn": "pr1",
-        "summary": "Optional parser/defaulting and parser/legacy behavior tests; must follow PR1."
+        "status": "merged",
+        "mergedTo": "main",
+        "mergeCommit": "e553648079cd7b6f9864683d4ab4d694b4f6a8e7",
+        "pr": 98,
+        "summary": "PR #98 — Canonical trace parser + audit: optional parser/defaulting, parser/legacy behavior tests, U3-only audit (rejects alignment for Unit 3), 262 additions / 15 deletions."
       },
-      "summary": "Corrective proposal/design only; branches are planned, not created. General optional Exercise.canonicalTrace compatibility uses ExerciseBaseShape plus ExerciseCanonicalTrace/ExerciseSourceUse (adapted|reinforcement|reference|alignment), preserving U2. ChallengeExercise remains independent: it extends ExerciseBaseShape and retains ChallengeCanonicalTrace/ChallengeSourceUse. The general parser accepts alignment and rejects challenge-only/unknown literals; a separate U3-only audit may reject alignment only for Unit 3 inputs and never inspects or migrates U2. Consumer prop widening has no UI behavior change. PR1/PR2 each include behavior, tests, and artifacts within the hard 400-line budget. Out: validateTracePath (merged 0cf2c51), theory/worked-example schema, topic content, U2 migration, persistence, loaders wholesale, useChallengeFlow, challenge loader/store/flow/readiness, and runtime provenance."
+      "summary": "Canonical trace contracts + parser/audit complete. PR #97 (d03010ef) merged contracts; PR #98 (e553648) merged parser + U3 audit. Both stacked to main. Verified and archived administratively."
+    },
+    "recuperar-u3-ecuaciones-lineales": {
+      "status": "in-progress",
+      "branch": "sdd/u3-linear-equations-planning-checkpoint",
+      "startedAt": "2026-07-12",
+      "parentRoadmap": "recuperar-u3-practica-canonica",
+      "delivery": "chained-prs-stacked-to-main (2 PRs; each <=400 changed lines; no size:exception)",
+      "pr1": {
+        "branch": "feat/u3-ecuaciones-lineales-base",
+        "status": "planned",
+        "target": "main",
+        "summary": "Base practice honesty: add MC exercises that activate u3_aislamiento_incorrecto, update shape/catalog tests, assert readiness."
+      },
+      "pr2": {
+        "branch": "feat/u3-ecuaciones-lineales-p1l",
+        "status": "planned",
+        "target": "feat/u3-ecuaciones-lineales-base",
+        "dependsOn": "pr1",
+        "summary": "Canonical maximum: add P1l exercise + challenge, u3_racionalizacion_irracional taxonomy/feedback/detector, and detector tests."
+      },
+      "summary": "Make mat.u3.ecuaciones_lineales a complete, preview-deployable topic. Recover valid P1l content from read-only source 0f79d634. Add honest MC practice for the existing isolation-error detector and a new rationalization-error detector for irrational-coefficient linear equations. Preserve trace-contract ownership; no U2 migration; support-material voice only."
     }
   },
   "activeBranches": [],
