@@ -149,6 +149,26 @@ describe("applyExerciseDefaults — structured answerSpec validation", () => {
     ).toThrow(/seconds/);
   });
 
+  test("rejects an angle-dms with negative or non-integer expected degrees", () => {
+    // normalizeAngleDms rejects these at submission time; the expected
+    // spec must reject at load too so the exercise is answerable.
+    for (const degrees of [-11, 11.5]) {
+      expect(() =>
+        applyExerciseDefaults(
+          baseStructured({
+            id: "ex.u5.medicion_angulos_y_arcos.2d",
+            expectedAnswer: "11° 27' 33\"",
+            answerSpec: {
+              kind: "angle-dms",
+              expected: { degrees, minutes: 27, seconds: 33 },
+              tolerance: 0.5,
+            },
+          }),
+        ),
+      ).toThrow(/degrees/);
+    }
+  });
+
   test("rejects a structured exercise missing the answerSpec field", () => {
     expect(() => applyExerciseDefaults(baseStructured({}))).toThrow(
       /answerSpec/,

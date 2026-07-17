@@ -8,14 +8,10 @@ import {
 
 /**
  * PiRationalInput — structured control for `pi-rational` answers.
- *
- * Renders four numeric fields (numerator, denominator, decimal, tolerance)
- * and emits the canonical JSON v1 submission via `onComplete` once every
- * field is non-empty AND the denominator is positive (otherwise an inline
- * validation message is shown).
- *
- * Pure presentational component: state lives locally. The parent page
- * (practice flow) owns the persistence of the submission string.
+ * Renders three numeric fields (numerator, denominator, decimal) and
+ * emits the canonical JSON v1 submission via `onComplete` once every
+ * field is non-empty AND the denominator is positive. Tolerance is
+ * content-side config and is NOT a student-facing input.
  */
 
 interface PiRationalInputProps {
@@ -26,7 +22,6 @@ interface PiRationalInputProps {
     readonly numerator: number;
     readonly denominator: number;
     readonly decimal: number;
-    readonly tolerance: number;
   };
 }
 
@@ -44,31 +39,22 @@ export function PiRationalInput({
   const [decimal, setDecimal] = useState<string>(
     initial ? String(initial.decimal) : "",
   );
-  const [tolerance, setTolerance] = useState<string>(
-    initial ? String(initial.tolerance) : "",
-  );
   const [error, setError] = useState<string | null>(null);
 
   function handleComplete() {
     const numN = Number(numerator);
     const numD = Number(denominator);
     const numDec = Number(decimal);
-    const numTol = Number(tolerance);
     if (
       !Number.isInteger(numN) ||
       !Number.isInteger(numD) ||
-      !Number.isFinite(numDec) ||
-      !Number.isFinite(numTol)
+      !Number.isFinite(numDec)
     ) {
-      setError("Completá numerador, denominador, decimal y tolerancia con números válidos.");
+      setError("Completá numerador, denominador y decimal con números válidos.");
       return;
     }
     if (numD <= 0) {
       setError("El denominador debe ser un entero positivo.");
-      return;
-    }
-    if (numTol <= 0) {
-      setError("La tolerancia debe ser un número positivo.");
       return;
     }
     setError(null);
@@ -143,26 +129,6 @@ export function PiRationalInput({
             className="w-full border border-brand-300 rounded-[var(--radius-button)] px-3 py-2.5 text-sm bg-white/90 text-brand-900 min-h-[44px] focus-visible:shadow-[var(--ring-focus)]"
           />
         </div>
-        <div>
-          <label
-            htmlFor="pi-rational-tolerance"
-            className="block text-sm font-semibold text-brand-700 mb-1"
-          >
-            Tolerancia
-          </label>
-          <input
-            id="pi-rational-tolerance"
-            type="number"
-            step="any"
-            min={0}
-            inputMode="decimal"
-            aria-label="Tolerancia del múltiplo de π"
-            value={tolerance}
-            onChange={(e) => setTolerance(e.target.value)}
-            disabled={disabled}
-            className="w-full border border-brand-300 rounded-[var(--radius-button)] px-3 py-2.5 text-sm bg-white/90 text-brand-900 min-h-[44px] focus-visible:shadow-[var(--ring-focus)]"
-          />
-        </div>
       </div>
       {error && (
         <p
@@ -175,7 +141,7 @@ export function PiRationalInput({
       <button
         type="button"
         onClick={handleComplete}
-        disabled={disabled || !numerator || !denominator || !decimal || !tolerance}
+        disabled={disabled || !numerator || !denominator || !decimal}
         className="w-full bg-[var(--color-brand-900)] text-white px-4 py-2.5 text-sm font-medium rounded-[var(--radius-button)] hover:bg-[var(--color-brand-800)] disabled:bg-[var(--color-brand-200)] disabled:text-[var(--color-brand-500)] min-h-[44px] transition-colors duration-[var(--duration-fast)] focus-visible:shadow-[var(--ring-focus)]"
       >
         Enviar respuesta

@@ -252,3 +252,60 @@ describe("evaluateAnswer dispatcher integration", () => {
     expect(result.correct).toBe(true);
   });
 });
+
+describe("evaluateAnswer — U5 misconception tagger integration", () => {
+  // The tagger receives the raw userAnswer string (not the normalized
+  // parsed object), so a student who typed the unreduced degree fraction
+  // as {36, 180} still trips the detector after normalization.
+
+  const baseSkill = { type: "structured" as const, skillId: "mat.u5.medicion_angulos_y_arcos" as never };
+  const piRationalExercise = {
+    ...baseSkill,
+    expectedAnswer: "1/5",
+    commonErrorTags: ["u5_degree_radian_factor"],
+    prompt: "Convertir 36° a radianes",
+    answerSpec: { kind: "pi-rational" as const, expected: { numerator: 1, denominator: 5 }, decimal: 0.6283, tolerance: 0.0001 },
+  };
+  const dmsExercise = {
+    ...baseSkill,
+    expectedAnswer: "11° 27' 33\"",
+    commonErrorTags: ["u5_dms_conversion"],
+    prompt: "Expresá el ángulo en DMS",
+    answerSpec: { kind: "angle-dms" as const, expected: { degrees: 11, minutes: 27, seconds: 33 }, tolerance: 0.5 },
+  };
+  const arcExercise = {
+    ...baseSkill,
+    expectedAnswer: "8π cm",
+    commonErrorTags: ["u5_arc_time_fraction"],
+    prompt: "Calculá el arco en cm",
+    answerSpec: { kind: "pi-rational" as const, expected: { numerator: 8, denominator: 1 }, decimal: 25.1327, tolerance: 0.001 },
+  };
+
+  test.each([
+    { name: "raw {36, 180} + wrong decimal", num: 36, den: 180, dec: 0.2, correct: false, tag: "u5_degree_radian_factor" },
+    { name: "raw {36, 180} + correct decimal", num: 36, den: 180, dec: 0.6283, correct: true, tag: undefined },
+    { name: "reduced {1, 5} + correct decimal", num: 1, den: 5, dec: 0.6283, correct: true, tag: undefined },
+  ])("u5_degree_radian_factor integration: $name", async (c) => {
+    const { evaluateAnswer } = await import("../evaluator/index");
+    const submission = JSON.stringify({ v: 1, kind: "pi-rational", numerator: c.num, denominator: c.den, decimal: c.dec });
+    const result = evaluateAnswer(piRationalExercise, submission);
+    expect(result.correct).toBe(c.correct);
+    expect(result.errorTag).toBe(c.tag);
+  });
+
+  test("u5_dms_conversion fires through evaluateAnswer on {11,27,32}", async () => {
+    const { evaluateAnswer } = await import("../evaluator/index");
+    const submission = JSON.stringify({ v: 1, kind: "angle-dms", degrees: 11, minutes: 27, seconds: 32 });
+    const result = evaluateAnswer(dmsExercise, submission);
+    expect(result.correct).toBe(false);
+    expect(result.errorTag).toBe("u5_dms_conversion");
+  });
+
+  test("u5_arc_time_fraction fires through evaluateAnswer on half-coefficient", async () => {
+    const { evaluateAnswer } = await import("../evaluator/index");
+    const submission = JSON.stringify({ v: 1, kind: "pi-rational", numerator: 4, denominator: 1, decimal: 12.5663 });
+    const result = evaluateAnswer(arcExercise, submission);
+    expect(result.correct).toBe(false);
+    expect(result.errorTag).toBe("u5_arc_time_fraction");
+  });
+});

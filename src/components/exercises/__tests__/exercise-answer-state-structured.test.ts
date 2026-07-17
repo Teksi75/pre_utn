@@ -42,12 +42,15 @@ describe("exercise-answer-state — structured completeness", () => {
     expect(mod).toMatch(/export\s+(?:function|const)\s+\w*[Ss]erializeStructured\w*/);
   });
 
-  test("module exports structured completeness for pi-rational (numerator/denominator/decimal/tolerance)", () => {
+  test("module exports structured completeness for pi-rational (no tolerance field)", () => {
     const mod = source(modulePath);
     expect(mod).toMatch(/pi-rational/);
     expect(mod).toMatch(/numerator/);
     expect(mod).toMatch(/denominator/);
     expect(mod).toMatch(/decimal/);
+    // Tolerance is content-side config; it must NOT be part of the draft
+    // completeness gate the student sees.
+    expect(mod).not.toMatch(/tolerance\s*:\s*string/);
   });
 
   test("module exports structured completeness for angle-dms (degrees/minutes/seconds)", () => {

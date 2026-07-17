@@ -367,6 +367,12 @@ export function validateExercise(
         });
       }
     } else if (spec.kind === "angle-dms") {
+      if (!Number.isInteger(spec.expected.degrees) || spec.expected.degrees < 0) {
+        return err({
+          field: "answerSpec.expected.degrees",
+          message: `angle-dms degrees must be a non-negative integer, got ${spec.expected.degrees}`,
+        });
+      }
       if (!Number.isInteger(spec.expected.minutes) || spec.expected.minutes < 0 || spec.expected.minutes >= 60) {
         return err({
           field: "answerSpec.expected.minutes",

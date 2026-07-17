@@ -44,7 +44,6 @@ export interface PiRationalDraft {
   readonly numerator: string;
   readonly denominator: string;
   readonly decimal: string;
-  readonly tolerance: string;
 }
 
 export interface AngleDmsDraft {
@@ -55,15 +54,13 @@ export interface AngleDmsDraft {
 
 /**
  * True when every required pi-rational field is a non-empty numeric
- * string. Bound validation (denominator > 0, tolerance > 0) is delegated
- * to the structured evaluator and the input component.
+ * string. Tolerance is content-side config and does NOT gate completeness.
  */
 export function isPiRationalDraftComplete(draft: PiRationalDraft): boolean {
   return (
     draft.numerator.trim().length > 0 &&
     draft.denominator.trim().length > 0 &&
-    draft.decimal.trim().length > 0 &&
-    draft.tolerance.trim().length > 0
+    draft.decimal.trim().length > 0
   );
 }
 
