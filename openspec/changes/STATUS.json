@@ -909,6 +909,13 @@
       "issue": 111,
       "cleanBase": "47258aba4d7f8b2f72a47025fb5596d65c2906b0",
       "delivery": "single-pr-default; review budget 800 significant lines; reduce scope rather than chain if forecast exceeds budget",
+      "sizeException": {
+        "approved": true,
+        "approvedBy": "user",
+        "approvedAt": "2026-07-16",
+        "scope": "U5-02 only; does NOT carry to U5-03+",
+        "reason": "Tasks forecast (~750-800 lines) underestimated strict-TDD real cost ~4x. Actual diff ~3984 insertions: production code ~1518 (structured.ts 378, error-tagging 203, exercise.ts 143, controls 346, loaders/wiring ~300), content JSON 394 (4 unit-5 files), vitest ~2068 (160 new tests), e2e 87, SDD docs 102. The minimum complete canonical journey (items 1.a-1.d, 2r, 2d, 3 + two structured answer kinds + visible-flow behavior tests) cannot fit in 800 lines without violating explicit maintainer constraints (all canonical items 1-3, structured answers instead of multiple-choice, strict TDD, real behavior tests). Maintainer approved keeping full functionality and coverage."
+      },
       "summary": "First canonical visible Unit 5 slice: mat.u5.medicion_angulos_y_arcos. Student finds content in Unit 5, studies theory/examples, practices canonical items 1-3, submits required answers, receives correction and pedagogical feedback via the existing practice flow. Unit auto-enables on active content (no manual availability flags). Minimal exact/DMS answer support only as required by items 1-3; canonical π-rational encoding only if consumed (structured, normalized, evaluator-compatible; no aliases or retired-U5 compatibility). Out: other U5 content, U5-03+, U3/U4, migrations/SQL, provisional-ID compatibility, navigation changes, PDF versioning, mate-explorer as mandatory dependency."
     }
   },
