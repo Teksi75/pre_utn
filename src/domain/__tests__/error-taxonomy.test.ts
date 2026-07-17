@@ -7,20 +7,23 @@ describe("Error Taxonomy", () => {
     test("loads a taxonomy with at least 2 tags per active unit", () => {
       const taxonomy = loadTaxonomy();
       expect(taxonomy).toBeInstanceOf(Array);
-      expect(taxonomy.length).toBeGreaterThanOrEqual(16); // 2 per unit × 6 units + extras (U5 is empty after U5-01 retirement)
-      // Verify each active unit has at least 2 tags. Unit 5 is
-      // intentionally empty after the U5-01 static retirement.
+      // After U5-02, every unit has ≥ 2 tags (including U5 with its 3
+      // new misconception detectors).
       for (let unit = 1; unit <= 6; unit++) {
-        if (unit === 5) continue;
         const unitTags = taxonomy.filter((t) => t.unit === unit);
         expect(unitTags.length).toBeGreaterThanOrEqual(2);
       }
     });
 
-    test("Unit 5 has zero tags after U5-01 retirement", () => {
+    test("Unit 5 has three declared tags (u5_degree_radian_factor, u5_dms_conversion, u5_arc_time_fraction)", () => {
       const taxonomy = loadTaxonomy();
       const u5Tags = taxonomy.filter((t) => t.unit === 5);
-      expect(u5Tags).toEqual([]);
+      const ids = u5Tags.map((t) => t.id).sort();
+      expect(ids).toEqual([
+        "u5_arc_time_fraction",
+        "u5_degree_radian_factor",
+        "u5_dms_conversion",
+      ]);
     });
 
     test("taxonomy contains unique tag IDs", () => {
@@ -145,7 +148,11 @@ describe("Error Taxonomy", () => {
         "u4_formula_area",
         "u4_suma_angulos",
       ]);
-      expect(tagsByUnit.get(5)?.map((tag) => tag.id)).toEqual([]);
+      expect(tagsByUnit.get(5)?.map((tag) => tag.id)).toEqual([
+        "u5_degree_radian_factor",
+        "u5_dms_conversion",
+        "u5_arc_time_fraction",
+      ]);
       expect(tagsByUnit.get(6)?.map((tag) => tag.id)).toEqual([
         "u6_dominio_funcion",
         "u6_rango_funcion",

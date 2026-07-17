@@ -21,22 +21,29 @@
  *   -5 U5-01 static retirement (ex.u5.angulos.1, ex.u5.radianes.1,
  *     ex.u5.circunferencia_trigonometrica.1, ex.u5.identidades.1,
  *     ex.u5.ecuaciones_trigonometricas.1) = 216
+ *   +7 U5-02 first live Unit 5 packet (medicion_angulos_y_arcos:
+ *     1a, 1b, 1c, 1d, 2r, 2d, 3) = 223
  *
- * Baseline values (current — post-PR7 + post-U5-01 retirement):
- *   loadCatalog().length = 216
+ * Baseline values (current — post-PR7 + post-U5-01 retirement + U5-02):
+ *   loadCatalog().length = 223
  *   queryByUnit(1).length = 101
  *   queryByUnit(3).length = 42
+ *   queryByUnit(5).length = 7
  *   queryBySkill("mat.u1.conjuntos_numericos").length = 44
+ *   queryBySkill("mat.u5.medicion_angulos_y_arcos").length = 7
  */
 
-/** Pre-PR1 baseline + U2-aligned + U5-01 retirement (-5 placeholder U5 exercises). */
-const BASELINE_TOTAL = 216;
+/** Pre-PR1 baseline + U2-aligned + U5-01 retirement + U5-02 (+7). */
+const BASELINE_TOTAL = 223;
 const BASELINE_UNIT_1 = 101;
 const BASELINE_UNIT_3 = 42;
+const BASELINE_UNIT_5 = 7;
 const BASELINE_CONJUNTOS_NUMERICOS = 44;
+const BASELINE_U5_SKILL = 7;
 
 import { describe, test, expect } from "vitest";
 import { loadCatalog, queryBySkill, queryByUnit } from "../catalog/index";
+import { loadExercisesForSkill } from "../catalog/content-loaders";
 
 describe("catalog split equivalence — baseline snapshot", () => {
   test("loadCatalog returns exactly the baseline count (no leaked per-skill exercises)", () => {
@@ -54,6 +61,29 @@ describe("catalog split equivalence — baseline snapshot", () => {
   test("queryByUnit(3) returns exactly the post-PR2 unit-3 count (new + legacy)", () => {
     const results = queryByUnit(3);
     expect(results.length).toBe(BASELINE_UNIT_3);
+  });
+
+  test("queryByUnit(5) returns exactly 7 U5-02 exercises (first live U5 packet)", () => {
+    const results = queryByUnit(5);
+    expect(results.length).toBe(BASELINE_UNIT_5);
+  });
+
+  test('queryBySkill("mat.u5.medicion_angulos_y_arcos") returns all 7 traced interactions', () => {
+    const results = queryBySkill("mat.u5.medicion_angulos_y_arcos");
+    expect(results.length).toBe(BASELINE_U5_SKILL);
+  });
+
+  test('dual-registration guard: content-loaders and catalog/index both expose U5', () => {
+    // Per spec unit-5-foundation: "Wiring only one path leaves the skill
+    // in an inconsistent state and MUST be guarded by an automated test
+    // that loads both paths and asserts equal skill + exercise counts."
+    const viaIndex = queryBySkill("mat.u5.medicion_angulos_y_arcos");
+    const viaLoaders = loadExercisesForSkill("mat.u5.medicion_angulos_y_arcos");
+    expect(viaIndex.length).toBe(viaLoaders.length);
+    expect(viaIndex.length).toBe(BASELINE_U5_SKILL);
+    const viaIndexIds = viaIndex.map((e) => e.id).sort();
+    const viaLoadersIds = viaLoaders.map((e) => e.id).sort();
+    expect(viaLoadersIds).toEqual(viaIndexIds);
   });
 
   test('queryBySkill("mat.u1.conjuntos_numericos") returns exactly the baseline count', () => {

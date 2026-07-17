@@ -57,15 +57,15 @@ export const UNIT_4_SKILLS: readonly SkillId[] = [
   "mat.u4.seno_coseno",
 ] as const;
 
-// ── Unit 5: Trigonometría (intentionally empty after U5-01 retirement) ──
+// ── Unit 5: Medición de ángulos y arcos ─────────────────────────────────────
 
-// The six provisional IDs (mat.u5.angulos, radianes,
-// circunferencia_trigonometrica, identidades, ecuaciones_trigonometricas,
-// complejos_forma_polar) and their dependency edges are retired. Unit 5
-// may be re-populated by a future slice without alias or migration
-// guarantees from this change. `mat.u5.ecuaciones_trigonometricas` is
-// unencumbered for future reuse.
-export const UNIT_5_SKILLS: readonly SkillId[] = [] as const;
+// After U5-02 lands, the first live Unit 5 root skill is
+// mat.u5.medicion_angulos_y_arcos. The six retired provisional IDs from
+// U5-01 remain retired (no alias, no migration back to them); this entry
+// is purely additive.
+export const UNIT_5_SKILLS: readonly SkillId[] = [
+  "mat.u5.medicion_angulos_y_arcos",
+] as const;
 
 // ── Unit 6: Funciones ─────────────────────────────────────────────────────
 

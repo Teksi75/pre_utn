@@ -15,7 +15,7 @@
 import type { TheoryNode, ConceptBlock, CanonicalTrace, IntervalVisualExample, SourceUse } from "../models/theory";
 import type { WorkedExample, SolutionStep } from "../models/worked-example";
 import type { FeedbackMapping } from "../feedback/index";
-import type { Difficulty, Exercise, ExerciseCanonicalTrace, ExerciseId, ExerciseOption, ExerciseSourceUse, ExerciseType } from "../models/exercise";
+import type { Difficulty, Exercise, ExerciseCanonicalTrace, ExerciseId, ExerciseOption, ExerciseSourceUse, ExerciseType, StructuredAnswerSpec } from "../models/exercise";
 import type { SkillId } from "../models/skill";
 import { parseSkillUnit } from "../shared/skill-id";
 import type { IntervalModel, IntervalEndpoint } from "../intervals/index";
@@ -28,17 +28,21 @@ import { parseOptionalVisualExamples } from "../visuals/parse";
 import theoryUnit1 from "../../../content/matematica/theory/unit-1.json";
 import theoryUnit2 from "../../../content/matematica/theory/unit-2.json";
 import theoryUnit3 from "../../../content/matematica/theory/unit-3.json";
+import theoryUnit5 from "../../../content/matematica/theory/unit-5.json";
 import examplesUnit1 from "../../../content/matematica/examples/unit-1.json";
 import examplesUnit2 from "../../../content/matematica/examples/unit-2.json";
 import examplesUnit3 from "../../../content/matematica/examples/unit-3.json";
+import examplesUnit5 from "../../../content/matematica/examples/unit-5.json";
 import feedbackUnit1 from "../../../content/matematica/feedback/unit-1.json";
 import feedbackUnit2 from "../../../content/matematica/feedback/unit-2.json";
 import feedbackUnit3 from "../../../content/matematica/feedback/unit-3.json";
+import feedbackUnit5 from "../../../content/matematica/feedback/unit-5.json";
 import feedbackUnit1ConjuntosNumericos from "../../../content/matematica/feedback/unit-1-conjuntos-numericos.json";
 import exercisesJson from "../../../content/matematica/exercises.json";
 import unit1Exercises from "../../../content/matematica/exercises/unit-1.json";
 import unit2Exercises from "../../../content/matematica/exercises/unit-2.json";
 import unit3Exercises from "../../../content/matematica/exercises/unit-3.json";
+import unit5Exercises from "../../../content/matematica/exercises/unit-5.json";
 import conjuntosNumericosExercises from "../../../content/matematica/exercises/conjuntos-numericos.json";
 
 // ---------------------------------------------------------------------------
@@ -104,7 +108,8 @@ function parseExerciseType(raw: Record<string, unknown>, field: string, id: stri
     value !== "fill-blank" &&
     value !== "matching" &&
     value !== "ordering" &&
-    value !== "graphical"
+    value !== "graphical" &&
+    value !== "structured"
   ) {
     failParse(field, id, `unsupported exercise type: "${value}"`);
   }
@@ -501,17 +506,20 @@ const RAW_REGISTRY: RawRegistry = {
     "unit-1": theoryUnit1 as unknown,
     "unit-2": theoryUnit2 as unknown,
     "unit-3": theoryUnit3 as unknown,
+    "unit-5": theoryUnit5 as unknown,
   },
   examples: {
     "unit-1": examplesUnit1 as unknown,
     "unit-2": examplesUnit2 as unknown,
     "unit-3": examplesUnit3 as unknown,
+    "unit-5": examplesUnit5 as unknown,
   },
   feedback: {
     "unit-1": feedbackUnit1 as unknown,
     "unit-1-conjuntos-numericos": feedbackUnit1ConjuntosNumericos as unknown,
     "unit-2": feedbackUnit2 as unknown,
     "unit-3": feedbackUnit3 as unknown,
+    "unit-5": feedbackUnit5 as unknown,
   },
 };
 
@@ -609,6 +617,81 @@ export function pilotExercisesWithLinks(unitKey: string): readonly ExerciseLinka
 }
 
 /**
+ * Runtime-validate a `StructuredAnswerSpec` at the JSON boundary. Throws
+ * with the exercise id in the error message when the spec is malformed.
+ * Validation rules mirror `validateExercise` so loader-time and
+ * post-load checks agree.
+ */
+export function parseStructuredAnswerSpec(
+  raw: unknown,
+  exerciseId: string,
+): StructuredAnswerSpec {
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) {
+    failParse("answerSpec", exerciseId, "expected a non-null, non-array object");
+  }
+  const obj = raw as Record<string, unknown>;
+  const kind = obj.kind;
+  if (kind === "pi-rational") {
+    const expected = obj.expected;
+    if (typeof expected !== "object" || expected === null || Array.isArray(expected)) {
+      failParse("answerSpec.expected", exerciseId, "expected an object");
+    }
+    const exp = expected as Record<string, unknown>;
+    const num = exp.numerator;
+    const den = exp.denominator;
+    const dec = obj.decimal;
+    const tol = obj.tolerance;
+    if (!Number.isInteger(num)) {
+      failParse("answerSpec.expected.numerator", exerciseId, `expected integer, got ${String(num)}`);
+    }
+    if (!Number.isInteger(den) || (den as number) <= 0) {
+      failParse("answerSpec.expected.denominator", exerciseId, `expected positive integer, got ${String(den)}`);
+    }
+    if (typeof dec !== "number" || !Number.isFinite(dec)) {
+      failParse("answerSpec.decimal", exerciseId, `expected finite number, got ${String(dec)}`);
+    }
+    if (typeof tol !== "number" || !Number.isFinite(tol) || (tol as number) <= 0) {
+      failParse("answerSpec.tolerance", exerciseId, `expected positive finite number, got ${String(tol)}`);
+    }
+    return {
+      kind: "pi-rational",
+      expected: { numerator: num as number, denominator: den as number },
+      decimal: dec as number,
+      tolerance: tol as number,
+    };
+  }
+  if (kind === "angle-dms") {
+    const expected = obj.expected;
+    if (typeof expected !== "object" || expected === null || Array.isArray(expected)) {
+      failParse("answerSpec.expected", exerciseId, "expected an object");
+    }
+    const exp = expected as Record<string, unknown>;
+    const d = exp.degrees;
+    const m = exp.minutes;
+    const s = exp.seconds;
+    const tol = obj.tolerance;
+    if (!Number.isInteger(d) || (d as number) < 0) {
+      failParse("answerSpec.expected.degrees", exerciseId, `expected non-negative integer, got ${String(d)}`);
+    }
+    if (!Number.isInteger(m) || (m as number) < 0 || (m as number) >= 60) {
+      failParse("answerSpec.expected.minutes", exerciseId, `expected integer in [0, 60), got ${String(m)}`);
+    }
+    if (typeof s !== "number" || !Number.isFinite(s) || (s as number) < 0 || (s as number) >= 60) {
+      failParse("answerSpec.expected.seconds", exerciseId, `expected finite number in [0, 60), got ${String(s)}`);
+    }
+    if (typeof tol !== "number" || !Number.isFinite(tol) || (tol as number) <= 0) {
+      failParse("answerSpec.tolerance", exerciseId, `expected positive finite number, got ${String(tol)}`);
+    }
+    return {
+      kind: "angle-dms",
+      expected: { degrees: d as number, minutes: m as number, seconds: s as number },
+      tolerance: tol as number,
+    };
+  }
+  failParse("answerSpec.kind", exerciseId, `unknown kind: ${String(kind)}`);
+}
+
+/**
  * Apply backward-compat defaults to a raw exercise object.
  *
  * Each declared Exercise field is individually validated or defaulted
@@ -644,13 +727,25 @@ export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
     : undefined;
   const canonicalTrace = parseOptionalCanonicalTrace(raw.canonicalTrace, id);
 
+  // Structured answerSpec is REQUIRED when type === "structured".
+  // Malformed specs throw here so the loader surfaces a configuration
+  // error rather than letting the catalog see a half-validated exercise.
+  let answerSpec: StructuredAnswerSpec | undefined;
+  if (type === "structured") {
+    answerSpec = parseStructuredAnswerSpec(raw.answerSpec, id);
+  } else if (raw.answerSpec !== undefined) {
+    // Non-structured exercises ignore the field. Preserve it as an extra
+    // for backward compatibility (already passed through `extra` below).
+    answerSpec = undefined;
+  }
+
   // Preserve extra fields from raw that aren't part of the Exercise
   // interface (e.g. relatedTheoryIds, relatedExampleIds) so that
   // downstream consumers accessing them via narrow casts keep working.
   const KNOWN_FIELDS = new Set([
     "id", "skillId", "type", "difficulty", "prompt", "expectedAnswer",
     "commonErrorTags", "pedagogicalNote", "category", "tags", "options", "unit",
-    "canonicalTrace",
+    "canonicalTrace", "answerSpec",
   ]);
   const extra: Record<string, unknown> = {};
   for (const key of Object.keys(raw)) {
@@ -666,7 +761,8 @@ export function applyExerciseDefaults(raw: Record<string, unknown>): Exercise {
     unit: parseSkillUnit(skillId),
   };
   const withOptions = options ? { ...base, options } : base;
-  return (canonicalTrace ? { ...withOptions, canonicalTrace } : withOptions) as Exercise;
+  const withSpec = answerSpec ? { ...withOptions, answerSpec } : withOptions;
+  return (canonicalTrace ? { ...withSpec, canonicalTrace } : withSpec) as Exercise;
 }
 
 /** Per-skill exercise file registry (raw JSON, validated lazily). */
@@ -679,6 +775,7 @@ export const UNIT_EXERCISE_FILES: Readonly<Record<number, unknown>> = {
   1: unit1Exercises as unknown,
   2: unit2Exercises as unknown,
   3: unit3Exercises as unknown,
+  5: unit5Exercises as unknown,
 };
 
 /**
@@ -921,7 +1018,7 @@ export const UNIT_THRESHOLDS: Readonly<Record<string, number>> = {
   "unit-1": 40,
   "unit-2": 20,
   "unit-3": 24,
-  "unit-5": 0,
+  "unit-5": 7,
 };
 
 const DEFAULT_UNIT_MINIMUM = 5;

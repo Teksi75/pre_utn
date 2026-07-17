@@ -20,6 +20,8 @@ import {
   getOptionValue,
   getOptionLabel,
 } from "./exercise-option-shuffle";
+import { PiRationalInput } from "./PiRationalInput";
+import { AngleDmsInput } from "./AngleDmsInput";
 
 interface ExerciseAnswerInputProps {
   readonly exercise: ExerciseBaseShape;
@@ -242,6 +244,39 @@ export function ExerciseAnswerInput({
           {disabled ? "Evaluando..." : "Enviar respuesta"}
         </button>
       </form>
+    );
+  }
+
+  if (exercise.type === "structured") {
+    // Structured controls emit their own canonical JSON v1 submission
+    // string; the parent already wires them to onSubmit. The kind is
+    // inferred from the exercise's answerSpec discriminator at load time.
+    const spec = exercise.answerSpec;
+    if (!spec) {
+      return (
+        <div className="rounded-[var(--radius-card)] border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+          Este ejercicio estructurado no tiene answerSpec cargado todavía.
+        </div>
+      );
+    }
+    if (spec.kind === "pi-rational") {
+      return (
+        <div data-testid="answer-form-structured-pi-rational">
+          <PiRationalInput
+            disabled={disabled}
+            onComplete={onSubmit}
+          />
+        </div>
+      );
+    }
+    // angle-dms
+    return (
+      <div data-testid="answer-form-structured-angle-dms">
+        <AngleDmsInput
+          disabled={disabled}
+          onComplete={onSubmit}
+        />
+      </div>
     );
   }
 

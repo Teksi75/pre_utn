@@ -12,9 +12,10 @@ const UNIT_LABELS: Readonly<Record<string, string>> = {
   "unit-1": "Unidad 1 — Aritmética y números",
   "unit-2": "Unidad 2 — Polinomios y álgebra",
   "unit-3": "Unidad 3 — Ecuaciones y sistemas",
+  "unit-5": "Unidad 5 — Medición de ángulos y arcos",
 };
 
-const UNIT_KEYS = ["unit-1", "unit-2", "unit-3"] as const;
+const UNIT_KEYS = ["unit-1", "unit-2", "unit-3", "unit-5"] as const;
 
 export default function LearnMatematicaPage() {
   const theoryByUnit = UNIT_KEYS.map((key) => ({

@@ -99,6 +99,17 @@ const U3_PROPIEDAD_LOGARITMO_TAGS = new Set(["u3_propiedad_logaritmo"]);
 /** Tags for incorrect translation from verbal language to algebraic language. */
 const U3_TRADUCCION_INCORRECTA_TAGS = new Set(["u3_traduccion_incorrecta"]);
 
+// ── U5 (Medición de ángulos y arcos) error tag sets ────────────────────────
+
+/** Tags for the inverted 180°/π factor in items 1.a / 1.b. */
+const U5_DEGREE_RADIAN_FACTOR_TAGS = new Set(["u5_degree_radian_factor"]);
+
+/** Tags for carry/bounds/rounding mistakes in DMS conversion (item 2.d). */
+const U5_DMS_CONVERSION_TAGS = new Set(["u5_dms_conversion"]);
+
+/** Tags for wrong elapsed-time fraction in item 3 (arc length on clock). */
+const U5_ARC_TIME_FRACTION_TAGS = new Set(["u5_arc_time_fraction"]);
+
 const SUPERSCRIPT_DIGITS: Readonly<Record<string, string>> = {
   "⁰": "0",
   "¹": "1",
@@ -1474,5 +1485,197 @@ export function tagError(
     }
   }
 
+  // ── U5 (Medición de ángulos y arcos) error patterns ──────────
+
+  if (isU5DegreeRadianFactorError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U5_DEGREE_RADIAN_FACTOR_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isU5DmsConversionError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U5_DMS_CONVERSION_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isU5ArcTimeFractionError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U5_ARC_TIME_FRACTION_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
   return undefined;
+}
+
+// ── U5 detector implementations ──────────────────────────────────────────
+
+/** Parse the canonical v1 structured JSON submission, returning `undefined`
+ * for any non-structured or malformed input. Detector functions all share
+ * this defensive parse so a malformed submission cannot crash the tagger.
+ */
+function parseStructuredSafely(userAnswer: string): unknown {
+  try {
+    return JSON.parse(userAnswer);
+  } catch {
+    return undefined;
+  }
+}
+
+function isStructuredPiRational(value: unknown): value is {
+  v: unknown;
+  kind: unknown;
+  numerator: unknown;
+  denominator: unknown;
+  decimal: unknown;
+} {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  const obj = value as Record<string, unknown>;
+  return obj.kind === "pi-rational";
+}
+
+function isStructuredAngleDms(value: unknown): value is {
+  v: unknown;
+  kind: unknown;
+  degrees: unknown;
+  minutes: unknown;
+  seconds: unknown;
+} {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  const obj = value as Record<string, unknown>;
+  return obj.kind === "angle-dms";
+}
+
+/**
+ * Detect the inverted `π/180` vs `180/π` factor in items 1.a and 1.b.
+ * The detector compares the RAW submitted `{numerator, denominator}` against
+ * the UNREDUCED degree fraction the prompt asks about, i.e. for 36° it
+ * checks `{36, 180}` (which reduces to expected `{1, 5}`). This is the
+ * canonical pattern for "the student wrote the degree fraction as the
+ * π-multiple without applying 180/π".
+ *
+ * Advisory note 2: compare RAW submitted pair against the unreduced
+ * degree fraction from the prompt, NOT the reduced form.
+ *
+ * Only fires when the exercise declares `u5_degree_radian_factor` in
+ * `commonErrorTags`.
+ */
+export function isU5DegreeRadianFactorError(
+  exercise: EvaluableExercise,
+  userAnswer: string,
+): boolean {
+  if (!exercise.commonErrorTags.includes("u5_degree_radian_factor")) return false;
+  const parsed = parseStructuredSafely(userAnswer);
+  if (!isStructuredPiRational(parsed)) return false;
+  if (
+    typeof parsed.numerator !== "number" ||
+    typeof parsed.denominator !== "number"
+  ) {
+    return false;
+  }
+  const submittedNum = parsed.numerator;
+  const submittedDen = parsed.denominator;
+
+  // Extract a degree measure from the prompt. The patterns used in U5
+  // content are "36°", "225°", and similar (number followed by °).
+  const degreeMatch = exercise.prompt.match(/(-?\d+(?:\.\d+)?)\s*°/);
+  if (!degreeMatch) return false;
+  const degree = Number(degreeMatch[1]);
+  if (!Number.isFinite(degree)) return false;
+
+  // The "raw" unreduced degree fraction is degree/180 (since 180° = π rad).
+  // The student wrote that fraction without converting the numerator to
+  // a coefficient of π. We compare the submitted RAW pair against this
+  // unreduced form, NOT the reduced form (advisory note 2).
+  const rawDegreeNum = degree;
+  const rawDegreeDen = 180;
+  // Reduce the expected-to-be-submitted fraction so we don't false-fire
+  // when the student actually wrote a properly-reduced equivalent.
+  // We DO NOT reduce the submitted pair — we compare raw-vs-raw.
+  return submittedNum === rawDegreeNum && submittedDen === rawDegreeDen;
+}
+
+/**
+ * Detect a DMS carry/bounds/rounding mistake against the declared
+ * tolerance. Fires on:
+ *   - In-range total-second miss ≤ 1.0 arc-sec (inclusive per advisory note 1)
+ *   - Out-of-bounds minutes (≥ 60) or seconds (≥ 60)
+ *   - Degree-carry misses (Δ ≥ 3600 arc-sec)
+ *
+ * Only fires when the exercise declares `u5_dms_conversion` in
+ * `commonErrorTags`.
+ */
+export function isU5DmsConversionError(
+  exercise: EvaluableExercise,
+  userAnswer: string,
+): boolean {
+  if (!exercise.commonErrorTags.includes("u5_dms_conversion")) return false;
+  const parsed = parseStructuredSafely(userAnswer);
+  if (!isStructuredAngleDms(parsed)) return false;
+  // Read raw fields without strict normalization — the detector handles
+  // both in-range misses AND out-of-bounds values that would be rejected
+  // by normalizeAngleDms.
+  const d = parsed.degrees;
+  const m = parsed.minutes;
+  const s = parsed.seconds;
+  if (typeof d !== "number" || typeof m !== "number" || typeof s !== "number") {
+    return false;
+  }
+  // Out-of-bounds: minutes or seconds ≥ 60
+  if (m >= 60 || s >= 60) return true;
+  // The expected triple lives on the exercise answerSpec when structured;
+  // for the spec-detector we read it directly.
+  if (exercise.type !== "structured" || !exercise.answerSpec) return false;
+  if (exercise.answerSpec.kind !== "angle-dms") return false;
+  const exp = exercise.answerSpec.expected;
+  // Compute total arc-seconds difference.
+  const submittedArc = d * 3600 + m * 60 + s;
+  const expectedArc = exp.degrees * 3600 + exp.minutes * 60 + exp.seconds;
+  const delta = Math.abs(submittedArc - expectedArc);
+  // The correct answer is delta === 0 — never fire for it.
+  if (delta === 0) return false;
+  // In-range miss within 1.0 arc-sec (inclusive boundary per advisory note 1)
+  if (delta <= 1.0) return true;
+  // Degree-carry miss (off-by-one degree produces Δ=3600 arc-seconds).
+  if (delta % 3600 === 0) return true;
+  return false;
+}
+
+/**
+ * Detect a wrong elapsed-time fraction in item 3 (arc length on clock).
+ * The expected fraction is 20 minutes out of 60 (≈ 1/3 of revolution).
+ * A common mistake computes 10 minutes (½ of the expected) and produces
+ * `{4, 1, 12.5663}` instead of `{8, 1, 25.1327}`.
+ *
+ * Only fires when the exercise declares `u5_arc_time_fraction` in
+ * `commonErrorTags`.
+ */
+export function isU5ArcTimeFractionError(
+  exercise: EvaluableExercise,
+  userAnswer: string,
+): boolean {
+  if (!exercise.commonErrorTags.includes("u5_arc_time_fraction")) return false;
+  const parsed = parseStructuredSafely(userAnswer);
+  if (!isStructuredPiRational(parsed)) return false;
+  if (typeof parsed.numerator !== "number" || typeof parsed.decimal !== "number") {
+    return false;
+  }
+  if (exercise.type !== "structured" || !exercise.answerSpec) return false;
+  if (exercise.answerSpec.kind !== "pi-rational") return false;
+  // The expected fraction lives at the TOP level of the spec (not inside expected).
+  const expected = exercise.answerSpec.expected;
+  const expectedDecimal = exercise.answerSpec.decimal;
+  // The half-time signal: submitted coefficient equals half of expected
+  // coefficient AND submitted decimal is within tolerance of half of
+  // expected decimal. For expected {8, 1, 25.1327}, half is {4, 1, 12.56635}.
+  const expectedNum = expected.numerator;
+  const submittedNum = parsed.numerator;
+  const decimalCloseToHalf = Math.abs(parsed.decimal - expectedDecimal / 2) <= 0.001;
+  return submittedNum === expectedNum / 2 && decimalCloseToHalf;
 }

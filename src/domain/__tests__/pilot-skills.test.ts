@@ -6,8 +6,11 @@ import {
 import { SKILL_DEPENDENCIES } from "../models/skill-catalog";
 
 describe("PILOT_SKILLS", () => {
-  test("contains 24 pilot skills (8 unit-1 + 7 unit-2 + 9 unit-3)", () => {
-    expect(PILOT_SKILLS).toHaveLength(24);
+  test("contains 25 pilot skills (8 unit-1 + 7 unit-2 + 9 unit-3 + 1 unit-5)", () => {
+    // After U5-02, the Unit 5 packet adds mat.u5.medicion_angulos_y_arcos
+    // as the first live U5 root skill. The U5-01 retired IDs are NOT
+    // re-introduced; the count grows by exactly one.
+    expect(PILOT_SKILLS).toHaveLength(25);
   });
 
   test("contains the 8 unit-1 pilot skills", () => {

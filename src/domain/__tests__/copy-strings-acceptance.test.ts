@@ -194,6 +194,55 @@ describe("Copy strings — FORBIDDEN content strings (Ingenium voice gate) must 
   }
 });
 
+describe("Copy strings — U5 voice gate (u5-02-medicion-angulos-y-arcos)", () => {
+  // Brand voice must extend to the U5 content files. None of them may
+  // personify the app as a tutor or claim personalized plans. The check
+  // also scans for the literal answer 11°27′33″ (DMS) — the feedback
+  // messages must NOT leak the final answer into the recovery message.
+  const u5Files = [
+    "content/matematica/theory/unit-5.json",
+    "content/matematica/examples/unit-5.json",
+    "content/matematica/feedback/unit-5.json",
+    "content/matematica/exercises/unit-5.json",
+  ];
+
+  for (const forbidden of FORBIDDEN_CONTENT_STRINGS) {
+    for (const file of u5Files) {
+      test(`${file} must NOT contain "${forbidden}"`, () => {
+        const content = source(file);
+        expect(content).not.toContain(forbidden);
+      });
+    }
+  }
+
+  test("feedback/unit-5.json must NOT leak the literal '11° 27′ 33″' answer", () => {
+    // Per spec angle-arc-measurement: "feedback names the misconception,
+    // not the answer" + "MUST NOT include the literal 11° 27′ 33″".
+    const content = source("content/matematica/feedback/unit-5.json");
+    expect(content).not.toContain("11° 27′ 33″");
+    expect(content).not.toContain("11°27′33″");
+  });
+
+  test("U5 exercise prompts do not ask the student to type a math expression in free text", () => {
+    // No-free-text rule: DMS uses separate D/M/S controls; pi-rational
+    // uses separate N/D/Decimal controls; scalar items use a single input.
+    // Forbidden patterns: "\\sqrt{}", complex a+bi, sets, equations.
+    const content = source("content/matematica/exercises/unit-5.json");
+    // The prompts MAY contain math expressions inside LaTeX blocks, but
+    // they must NOT ask the student to type an expression in a single
+    // free-text input.
+    const freeTextPatterns = [
+      /escrib[ií]\s+la\s+expresi[oó]n/i,
+      /escrib[ií]\s+en\s+texto\s+plano/i,
+      /escrib[ií]\s+libre/i,
+      /escrib[ií]\s+el\s+resultado\s+completo/i,
+    ];
+    for (const pattern of freeTextPatterns) {
+      expect(content).not.toMatch(pattern);
+    }
+  });
+});
+
 describe("Copy strings — Caso 6 feedback mapping reuses u2_ruffini_signo_a", () => {
   // issue-42-powers-same-degree: the new feedback entry must key to the
   // existing errorTag and target the Ruffini worked example as recovery.
