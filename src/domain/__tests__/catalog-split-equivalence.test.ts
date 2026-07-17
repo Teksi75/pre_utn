@@ -23,20 +23,22 @@
  *     ex.u5.ecuaciones_trigonometricas.1) = 216
  *   +7 U5-02 first live Unit 5 packet (medicion_angulos_y_arcos:
  *     1a, 1b, 1c, 1d, 2r, 2d, 3) = 223
+ *   +2 PR1 of recuperar-u3-ecuaciones-lineales (MC isolation items
+ *     ex.u3.ecuaciones_lineales.7 + .8 declaring u3_aislamiento_incorrecto) = 225
  *
- * Baseline values (current — post-PR7 + post-U5-01 retirement + U5-02):
- *   loadCatalog().length = 223
+ * Baseline values (current — post-PR7 + post-U5-01 retirement + U5-02 + U3LIN-PR1):
+ *   loadCatalog().length = 225
  *   queryByUnit(1).length = 101
- *   queryByUnit(3).length = 42
+ *   queryByUnit(3).length = 44
  *   queryByUnit(5).length = 7
  *   queryBySkill("mat.u1.conjuntos_numericos").length = 44
  *   queryBySkill("mat.u5.medicion_angulos_y_arcos").length = 7
  */
 
-/** Pre-PR1 baseline + U2-aligned + U5-01 retirement + U5-02 (+7). */
-const BASELINE_TOTAL = 223;
+/** Pre-PR1 baseline + U2-aligned + U5-01 retirement + U5-02 (+7) + U3LIN-PR1 (+2). */
+const BASELINE_TOTAL = 225;
 const BASELINE_UNIT_1 = 101;
-const BASELINE_UNIT_3 = 42;
+const BASELINE_UNIT_3 = 44;
 const BASELINE_UNIT_5 = 7;
 const BASELINE_CONJUNTOS_NUMERICOS = 44;
 const BASELINE_U5_SKILL = 7;

@@ -120,6 +120,38 @@
     "pedagogicalNote": "Pasa el -6 sumando (4 + 6 = 10) y divide entre -2: x = 10 / -2 = -5. Distractor común: olvidar el cambio de signo del -2."
   },
   {
+    "id": "ex.u3.ecuaciones_lineales.7",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "type": "multiple-choice",
+    "difficulty": 2,
+    "prompt": "Resuelve 3x + 4 = 19",
+    "expectedAnswer": "x = 5",
+    "options": [
+      "x = 5",
+      "x = 15",
+      "x = 23",
+      "x = 8"
+    ],
+    "commonErrorTags": ["u3_aislamiento_incorrecto"],
+    "pedagogicalNote": "Para aislar x, resta 4 en ambos miembros (3x = 15) y después divide por 3. Distractor frecuente: detenerse en el paso intermedio y dar x = 15 sin dividir por 3; el detector existente (u3_aislamiento_incorrecto) marca exactamente esa omisión."
+  },
+  {
+    "id": "ex.u3.ecuaciones_lineales.8",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "type": "multiple-choice",
+    "difficulty": 3,
+    "prompt": "Resuelve -2x + 7 = 1",
+    "expectedAnswer": "x = 3",
+    "options": [
+      "x = 3",
+      "x = -6",
+      "x = 4",
+      "x = -3"
+    ],
+    "commonErrorTags": ["u3_aislamiento_incorrecto"],
+    "pedagogicalNote": "Resta 7 en ambos miembros (-2x = -6) y divide por -2 prestando atención al signo: x = 3. Distractor frecuente: quedarse en el paso intermedio y dar x = -6 sin dividir por -2; el detector existente (u3_aislamiento_incorrecto) marca la omisión del coeficiente."
+  },
+  {
     "id": "ex.u3.ecuaciones_cuadraticas.2",
     "skillId": "mat.u3.ecuaciones_cuadraticas",
     "type": "multiple-choice",

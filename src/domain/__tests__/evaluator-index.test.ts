@@ -349,4 +349,64 @@ describe("Evaluator dispatcher", () => {
       expect(exercise!.options!.length).toBeGreaterThanOrEqual(3);
     });
   });
+
+  describe("U3 aislamiento_incorrecto integration via evaluateAnswer (PR1)", () => {
+    // Spec anchor: recuperar-u3-ecuaciones-lineales/PR1.
+    // The detector is already implemented (isU3AislamientoIncorrectoError)
+    // and is MC-only. Before PR1, no catalog entry declared the tag, so the
+    // detector was unreachable from real content. PR1 wires a catalog item
+    // to the detector through evaluateAnswer.
+    test("evaluateAnswer on an MC isolation catalog item returns u3_aislamiento_incorrecto for the post-subtraction distractor", () => {
+      const catalog = loadCatalog();
+      const exercise = catalog.find(
+        (e) =>
+          e.skillId === "mat.u3.ecuaciones_lineales" &&
+          e.type === "multiple-choice" &&
+          (e.commonErrorTags ?? []).includes("u3_aislamiento_incorrecto"),
+      );
+      expect(
+        exercise,
+        "catalog must contain an MC ecuaciones_lineales item declaring u3_aislamiento_incorrecto",
+      ).toBeDefined();
+      // The exercise's expected answer must produce a correct evaluation
+      // (no tag, correct: true).
+      const correct = evaluateAnswer(exercise!, exercise!.expectedAnswer);
+      expect(correct.correct, "expectedAnswer must evaluate as correct").toBe(true);
+      expect(correct.errorTag, "expectedAnswer must not surface an error tag").toBeUndefined();
+
+      // A wrong option that matches the post-subtraction intermediate
+      // (c - b for "ax + b = c", c + b for "ax - b = c") must fire the
+      // u3_aislamiento_incorrecto tag. We pick it by parsing the prompt.
+      const prompt = exercise!.prompt.replace(/−/g, "-");
+      const linearMatch = prompt.match(
+        /(-?\d+)\s*[xX]\s*([+-])\s*(\d+)\s*=\s*(-?\d+)/,
+      );
+      expect(linearMatch, `${exercise!.id} prompt must match the ax ± b = c detector pattern`).not.toBeNull();
+      const a = Number(linearMatch![1]);
+      const op = linearMatch![2];
+      const b = Number(linearMatch![3]);
+      const c = Number(linearMatch![4]);
+      const intermediate = op === "+" ? c - b : c + b;
+      expect(
+        intermediate,
+        `${exercise!.id} intermediate must not be 0 (else detector skips it)`,
+      ).not.toBe(0);
+      const wrongOption = `x = ${intermediate}`;
+      // The wrong distractor must be one of the catalog options.
+      const optionValues = exercise!.options!.map((opt) =>
+        typeof opt === "string" ? opt : opt.value,
+      );
+      expect(
+        optionValues,
+        `${exercise!.id} must include the post-subtraction distractor "${wrongOption}" among its options`,
+      ).toContain(wrongOption);
+
+      const wrong = evaluateAnswer(exercise!, wrongOption);
+      expect(wrong.correct, "post-subtraction distractor must be incorrect").toBe(false);
+      expect(
+        wrong.errorTag,
+        "post-subtraction distractor must surface the u3_aislamiento_incorrecto tag",
+      ).toBe("u3_aislamiento_incorrecto");
+    });
+  });
 });
