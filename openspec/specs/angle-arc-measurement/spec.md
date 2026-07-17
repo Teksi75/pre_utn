@@ -72,7 +72,7 @@ The catalog MUST register exactly seven `exercises` entries for this skill, mapp
 | 1.a (36° → π/5 rad) | `ex.u5.medicion_angulos_y_arcos.1a` | `structured` / `pi-rational` | numerator 1, denominator 5, decimal 0.6283, tolerance 0.0001 |
 | 1.b (225° → 5π/4 rad) | `ex.u5.medicion_angulos_y_arcos.1b` | `structured` / `pi-rational` | numerator 5, denominator 4, decimal 3.9269, tolerance 0.0001 |
 | 1.c (3π/4 → 135°) | `ex.u5.medicion_angulos_y_arcos.1c` | `numerical` | 135 |
-| 1.d (2.3456 rad → 134.392980…°) | `ex.u5.medicion_angulos_y_arcos.1d` | `numerical` | 134.392980 (tolerance 0.0001) |
+| 1.d (2.3456 rad → 134.392980…°) | `ex.u5.medicion_angulos_y_arcos.1d` | `numerical` | 134.392980 (tolerance 0.01) |
 | 2 rad (α = 1/5 rad) | `ex.u5.medicion_angulos_y_arcos.2r` | `numerical` | 0.2 |
 | 2 DMS (11° 27′ 33″) | `ex.u5.medicion_angulos_y_arcos.2d` | `structured` / `angle-dms` | degrees 11, minutes 27, seconds 33, tolerance 0.5 |
 | 3 (s = 8π cm) | `ex.u5.medicion_angulos_y_arcos.3` | `structured` / `pi-rational` | numerator 8, denominator 1, decimal 25.1327, tolerance 0.001 |
@@ -209,7 +209,7 @@ The exercise for item 2's radian part (`ex.u5.medicion_angulos_y_arcos.2r`) MUST
 
 ### Requirement: Nearest-Second DMS Behavior Is Pinned
 
-The DMS exercise for item 2 MUST declare an explicit nearest-second policy: the expected display string is `11° 27′ 33″`, and grading compares total arc-seconds with tolerance `0.5` seconds. The decimal degrees equivalent `134.392980…°` (item 1.d) is graded with decimal tolerance `0.0001` on the existing numerical path.
+The DMS exercise for item 2 MUST declare an explicit nearest-second policy: the expected display string is `11° 27′ 33″`, and grading compares total arc-seconds with tolerance `0.5` seconds. The decimal degrees equivalent `134.392980…°` (item 1.d) is graded on the existing numerical path with the standard numerical tolerance (0.01 absolute). Per-exercise tolerance metadata is a future enhancement tracked as a follow-up; see `evaluator-numeric-u5-scalar.test.ts` for the explicit pinning of current behavior.
 
 #### Scenario: 11° 27′ 32.7″ is within tolerance
 
