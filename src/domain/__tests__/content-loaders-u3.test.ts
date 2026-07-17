@@ -1426,3 +1426,58 @@ test("1.8b each of .2/.3/.4 covers the FULL modeling chain (not only collectivel
     }
   });
 });
+
+describe("U3LIN-CAT-001 — u3_aislamiento_incorrecto reachability (PR1)", () => {
+  // Spec anchor: recuperar-u3-ecuaciones-lineales/specs/math-exercise-catalog/spec.md
+  // PR1 makes the existing MC-only isU3AislamientoIncorrectoError detector
+  // reachable by adding MC isolation items to mat.u3.ecuaciones_lineales.
+  // This test reads the live catalog and proves the wiring.
+  test("U3LIN-CAT-001: mat.u3.ecuaciones_lineales loads at least one MC exercise that declares u3_aislamiento_incorrecto", () => {
+    const exercises = loadExercisesForSkill("mat.u3.ecuaciones_lineales");
+    const isoMc = exercises.filter(
+      (e) =>
+        e.type === "multiple-choice" &&
+        (e.commonErrorTags ?? []).includes("u3_aislamiento_incorrecto"),
+    );
+    expect(
+      isoMc.length,
+      `expected ≥1 MC isolation exercise in mat.u3.ecuaciones_lineales, got ${isoMc.length}`,
+    ).toBeGreaterThanOrEqual(1);
+    // The new MC items must carry 4 options so the post-subtraction distractor
+    // is one of four choices (not 2-3 ambiguous options).
+    for (const ex of isoMc) {
+      expect(ex.options, `${ex.id} must carry options`).toBeDefined();
+      expect(
+        ex.options!.length,
+        `${ex.id} needs ≥4 options for the isolation distractor to be unambiguous`,
+      ).toBeGreaterThanOrEqual(4);
+      expect(
+        ex.options!.map((opt) => (typeof opt === "string" ? opt : opt.value)),
+        `${ex.id} expectedAnswer must be in options`,
+      ).toContain(ex.expectedAnswer);
+    }
+  });
+
+  test("U3LIN-CAT-001: unit-3.json source declares u3_aislamiento_incorrecto on at least one MC item (no alias on numerical items)", () => {
+    const source = UNIT_EXERCISE_FILES[3] as readonly Record<string, unknown>[];
+    const isoMc = source.filter(
+      (e) =>
+        e.skillId === "mat.u3.ecuaciones_lineales" &&
+        e.type === "multiple-choice" &&
+        Array.isArray(e.commonErrorTags) &&
+        (e.commonErrorTags as unknown[]).includes("u3_aislamiento_incorrecto"),
+    );
+    expect(
+      isoMc.length,
+      "unit-3.json must carry an MC isolation item for mat.u3.ecuaciones_lineales",
+    ).toBeGreaterThanOrEqual(1);
+    // .6 is reserved for PR2 (P1l canonical exercise) — PR1 must NOT occupy it.
+    const ids = isoMc.map((e) => e.id as string);
+    for (const id of ids) {
+      expect(
+        id,
+        `PR1 must reserve ex.u3.ecuaciones_lineales.6 for PR2 (P1l)`,
+      ).not.toBe("ex.u3.ecuaciones_lineales.6");
+    }
+  });
+});

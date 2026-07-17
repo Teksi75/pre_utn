@@ -227,6 +227,40 @@ describe("U3 exercise shape — commonErrorTags only for declared u3_* tags", ()
   });
 });
 
+describe("U3 exercise shape — isolation detector reachability (PR1)", () => {
+  // Spec anchor: recuperar-u3-ecuaciones-lineales/PR1.
+  // The existing isU3AislamientoIncorrectoError detector is MC-only.
+  // Before PR1, every ecuaciones_lineales exercise is numerical, so the
+  // declared u3_aislamiento_incorrecto tag was never reachable from real
+  // content. PR1 adds MC isolation items so the detector is honest.
+  test("mat.u3.ecuaciones_lineales catalog contains an MC exercise that declares u3_aislamiento_incorrecto", () => {
+    const exercises = loadExercisesForSkill("mat.u3.ecuaciones_lineales");
+    const isoMc = exercises.filter(
+      (e) =>
+        e.type === "multiple-choice" &&
+        (e.commonErrorTags ?? []).includes("u3_aislamiento_incorrecto"),
+    );
+    expect(
+      isoMc.length,
+      `mat.u3.ecuaciones_lineales must have ≥1 MC exercise with commonErrorTags containing u3_aislamiento_incorrecto (got ${isoMc.length})`,
+    ).toBeGreaterThanOrEqual(1);
+  });
+
+  test("u3_aislamiento_incorrecto is declared only on MC items (numerical items stay untagged so the MC-only detector fires cleanly)", () => {
+    // Regression guard: a numerical exercise that declares the tag would
+    // never trigger (detector is MC-only), defeating the reachability goal.
+    const exercises = loadExercisesForSkill("mat.u3.ecuaciones_lineales");
+    for (const ex of exercises) {
+      if ((ex.commonErrorTags ?? []).includes("u3_aislamiento_incorrecto")) {
+        expect(
+          ex.type,
+          `${ex.id} declares u3_aislamiento_incorrecto but is ${ex.type} (must be multiple-choice so the detector can fire)`,
+        ).toBe("multiple-choice");
+      }
+    }
+  });
+});
+
 describe("U3 exercise shape — loadSkillBank diagnostics", () => {
   test("loadSkillBank for each U3 skill returns a non-empty exercise list and tolerates unknown tags", () => {
     for (const skillId of U3_SKILL_IDS) {

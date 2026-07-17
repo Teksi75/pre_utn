@@ -862,6 +862,36 @@
       },
       "summary": "PR1 merged (#97, d03010e). PR2 implementation candidate is on feat/u3-traza-canonica-parser targeting main. General optional Exercise.canonicalTrace compatibility uses ExerciseBaseShape plus ExerciseCanonicalTrace/ExerciseSourceUse (adapted|reinforcement|reference|alignment), preserving U2. ChallengeExercise remains independent: it extends ExerciseBaseShape and retains ChallengeCanonicalTrace/ChallengeSourceUse. The general parser accepts alignment and rejects challenge-only/unknown literals; a separate U3-only audit rejects alignment only for Unit 3 inputs and never inspects or migrates U2. Consumer prop widening has no UI behavior change. PR1/PR2 each include behavior, tests, and artifacts within the hard 400-line budget. Out: validateTracePath (merged 0cf2c51), theory/worked-example schema, topic content, U2 migration, persistence, loaders wholesale, useChallengeFlow, challenge loader/store/flow/readiness, and runtime provenance."
     },
+    "recuperar-u3-ecuaciones-lineales": {
+      "status": "in-progress",
+      "branch": "feat/u3-ecuaciones-lineales-pr1",
+      "startedAt": "2026-07-17",
+      "parentRoadmap": "recuperar-u3-practica-canonica",
+      "delivery": "chained-prs-stacked-to-main (PR1 implementation slice followed by PR2)",
+      "planning": {
+        "status": "approved",
+        "checkpoint": "5bc5df7285289062a4c3b0231eecb0237f861be8",
+        "reviewLineage": "review-465197662e993db6",
+        "ref": "origin/sdd/u3-linear-equations-planning-checkpoint"
+      },
+      "pr1": {
+        "branch": "feat/u3-ecuaciones-lineales-pr1",
+        "status": "implemented",
+        "target": "main",
+        "base": "e81af3f54b1bfb9d833c1a9d00a55d086f6ea60b",
+        "review": "not-started",
+        "publication": "not-started",
+        "summary": "Two multiple-choice linear-equation isolation exercises plus focused catalog, loader, evaluator, and baseline tests are complete in the worktree. Required validation is green; no review receipt, commit, push, or PR exists yet."
+      },
+      "pr2": {
+        "status": "pending",
+        "branch": null,
+        "plannedBranch": "feat/u3-ecuaciones-lineales-p1l",
+        "dependsOn": "pr1",
+        "summary": "Canonical P1l exercise, U3 challenge, rationalization taxonomy/detector/feedback, and their tests remain pending outside PR1."
+      },
+      "summary": "Approved planning checkpoint is frozen at 5bc5df7 under review lineage review-465197662e993db6. PR1 implementation is complete but not reviewed or published. PR2 remains pending."
+    },
     "u5-00-unit-5-foundation": {
       "status": "done",
       "branch": null,
