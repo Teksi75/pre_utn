@@ -903,12 +903,18 @@
       "summary": "Provisional U5 was never exposed as practicable content. The exact retirement leaves an intentionally empty catalog; FocusSelector now derives live availability, retains empty U5 as disabled Próximamente, prevents an empty listbox, and re-enables a repopulated unit. No persistence, URL, banner, U3/U4, U5-02, or archived U5-00 work is included. Canonical specs synced: unit-5-foundation (post-retirement already reflected), math-skill-model (+Provisional U5 Skill and Edge Retirement), math-exercise-catalog (Catalog Coverage extended with exact placeholder IDs), complex-numbers-skill (+delta scenario). Delta specs for unit-5-foundation are canonical (already reflected in source). Archive issue #105 left open for archive PR."
     },
     "u5-02-medicion-angulos-y-arcos": {
-      "status": "in-progress",
-      "branch": "sdd/u5-02-medicion-angulos-y-arcos",
+      "status": "done",
+      "branch": null,
       "startedAt": "2026-07-16",
+      "completedAt": "2026-07-16",
       "issue": 111,
+      "pr": 112,
+      "mergedTo": "main",
+      "mergeCommit": "c60fc8e",
       "cleanBase": "47258aba4d7f8b2f72a47025fb5596d65c2906b0",
-      "delivery": "single-pr-default; review budget 800 significant lines; reduce scope rather than chain if forecast exceeds budget",
+      "delivery": "single-pr; maintainer-approved size:exception; native bounded review (4R) + bounded correction + SDD verify",
+      "review": "lineage review-9de3ba0190e11fec approved; 4R lenses; 1 CRITICAL (raw-pair tagger reachability — resolved by integration-proof tests) + 3 WARNING (student tolerance input removed, angle-dms degrees load validation added) corrected in af80afc; pre-commit/pre-push/pre-pr gates validated",
+      "verify": "PASS WITH WARNINGS — 0 blocking CRITICAL, 30/30 requirements, 65/65 scenarios, 3341/3341 tests, typecheck+build green",
       "sizeException": {
         "approved": true,
         "approvedBy": "user",
@@ -916,7 +922,13 @@
         "scope": "U5-02 only; does NOT carry to U5-03+",
         "reason": "Tasks forecast (~750-800 lines) underestimated strict-TDD real cost ~4x. Actual diff ~3984 insertions: production code ~1518 (structured.ts 378, error-tagging 203, exercise.ts 143, controls 346, loaders/wiring ~300), content JSON 394 (4 unit-5 files), vitest ~2068 (160 new tests), e2e 87, SDD docs 102. The minimum complete canonical journey (items 1.a-1.d, 2r, 2d, 3 + two structured answer kinds + visible-flow behavior tests) cannot fit in 800 lines without violating explicit maintainer constraints (all canonical items 1-3, structured answers instead of multiple-choice, strict TDD, real behavior tests). Maintainer approved keeping full functionality and coverage."
       },
-      "summary": "First canonical visible Unit 5 slice: mat.u5.medicion_angulos_y_arcos. Student finds content in Unit 5, studies theory/examples, practices canonical items 1-3, submits required answers, receives correction and pedagogical feedback via the existing practice flow. Unit auto-enables on active content (no manual availability flags). Minimal exact/DMS answer support only as required by items 1-3; canonical π-rational encoding only if consumed (structured, normalized, evaluator-compatible; no aliases or retired-U5 compatibility). Out: other U5 content, U5-03+, U3/U4, migrations/SQL, provisional-ID compatibility, navigation changes, PDF versioning, mate-explorer as mandatory dependency."
+      "followUps": [
+        "Archive-time spec amendment: item 1.d graded with platform-fixed 0.01 numeric tolerance (spec text said 0.0001); pedagogically equivalent at entry level, avoids evaluator redesign. Amend angle-arc-measurement + math-answer-evaluator spec text when archiving U5-02.",
+        "e2e helper practice-flow.ts needs pi-rational + angle-dms structured-control drivers; new Playwright spec fails when run manually until then (visible flow covered by rendered vitest behavior tests).",
+        "tasks.md checkbox housekeeping at archive (completion authoritative in apply-progress.md + git log).",
+        "U5-02 archive is a separate operation per maintainer instruction; do not archive in the implementation delivery."
+      ],
+      "summary": "First canonical visible Unit 5 slice: mat.u5.medicion_angulos_y_arcos. Student finds Unit 5 content, studies 1 theory node (5 concepts) + 3 worked examples, practices 7 traced interactions from canonical items 1-3 (1.a-1.d, 2r, 2d, 3) with per-subitem canonicalTrace to mat.u5.practice/mat.u5.theory receipts, submits pi-rational (canonical JSON v1, normalized reduced coefficient + decimal + tolerance) and angle-dms (bounded D/M/S, total arc-seconds ±0.5) structured answers plus scalar numerical items, receives grading + feedback via 3 u5_* misconception tags through the existing practice flow. Unit 5 auto-enables from live skills + readiness (no flags). Item 2 corrected from U5-00 wording: exact 1/5 rad, not a π multiple. Merged via PR #112."
     }
   },
   "activeBranches": [],
