@@ -15,7 +15,7 @@
  */
 
 import { describe, test, expect } from "vitest";
-import { loadExercisesForSkill, loadFeedbackContent } from "../catalog/content-loaders";
+import { loadExercisesForSkill, loadFeedbackContent, loadExampleContent } from "../catalog/content-loaders";
 import { tagError } from "../evaluator/error-tagging";
 import { evaluateAnswer } from "../evaluator/index";
 import { loadTaxonomy } from "../error-taxonomy/index";
@@ -545,5 +545,42 @@ describe("U3 error-tagging — taxonomy-tag wiring", () => {
     for (const id of specIds) {
       expect(ids.has(id), `Tag ${id} should be in taxonomy`).toBe(true);
     }
+  });
+});
+
+describe("u3_racionalizacion_irracional — detector + P1l integration (PR2)", () => {
+  const P1L = (overrides: Partial<Exercise> = {}): Exercise => makeExercise({
+    id: "ex.u3.ecuaciones_lineales.6", skillId: "mat.u3.ecuaciones_lineales",
+    prompt: "Resuelve para x: (3 + √5)·x = 14 + 6√5",
+    expectedAnswer: "x = 3 + √5",
+    commonErrorTags: ["u3_racionalizacion_irracional"],
+    options: [{ value: "x = (14 + 6√5) / (3 + √5)", label: "A" }, { value: "x = 3 + √5", label: "B" }, { value: "x = 3 − √5", label: "C" }, { value: "x = 14 + 6√5", label: "D" }],
+    ...overrides,
+  });
+
+  test("fires on every option retaining √5; declared-only guard prevents firing when tag absent", () => {
+    const ex = P1L();
+    expect(tagError(ex, "x = (14 + 6√5) / (3 + √5)")).toBe("u3_racionalizacion_irracional");
+    expect(tagError(ex, "x = 3 − √5")).toBe("u3_racionalizacion_irracional");
+    expect(tagError(ex, "x = 14 + 6√5")).toBe("u3_racionalizacion_irracional");
+    expect(tagError(ex, "x = 3 + √5")).toBeUndefined();
+    expect(tagError(P1L({ commonErrorTags: [] }), "x = (14 + 6√5) / (3 + √5)")).toBeUndefined();
+  });
+
+  test("MC-only: never fires on a numerical item", () => {
+    expect(tagError(P1L({ type: "numerical", options: undefined }), "(14 + 6√5) / (3 + √5)")).toBeUndefined();
+  });
+
+  test("evaluateAnswer fires the tag end-to-end on the loaded P1l exercise", () => {
+    const p1l = loadExercisesForSkill("mat.u3.ecuaciones_lineales").find((e) => e.id === "ex.u3.ecuaciones_lineales.6")!;
+    expect(evaluateAnswer(p1l, p1l.expectedAnswer).errorTag).toBeUndefined();
+    expect(evaluateAnswer(p1l, "x = (14 + 6√5) / (3 + √5)").errorTag).toBe("u3_racionalizacion_irracional");
+  });
+
+  test("feedback mapping is wired to a real example id and surfaces through generateFeedback", () => {
+    const feedback = loadFeedbackContent("unit-3");
+    const mapping = feedback.find((f) => f.errorTag === "u3_racionalizacion_irracional")!;
+    expect(new Set(loadExampleContent("unit-3").map((ex) => ex.id)).has(mapping.recoveryTarget!)).toBe(true);
+    expect(generateFeedback(false, "u3_racionalizacion_irracional", feedback).message).toBe(mapping.message);
   });
 });

@@ -168,3 +168,26 @@ describe("U3 error taxonomy — PR 1 modeling tags", () => {
     });
   }
 });
+
+describe("U3 error taxonomy — PR2 u3_racionalizacion_irracional (additive, 12 → 13)", () => {
+  test("u3_racionalizacion_irracional has the canonical ErrorTag contract", () => {
+    const tag = lookupTag("u3_racionalizacion_irracional")!;
+    expect([tag.id, tag.unit, tag.description.trim().length > 10, tag.examples.length >= 2]).toEqual(["u3_racionalizacion_irracional", 3, true, true]);
+  });
+
+  test("U3 taxonomy contains exactly 13 declared u3_* tags after PR2 (12 baseline + 1 new)", () => {
+    expect(filterByUnit(3).map((t) => t.id).sort()).toEqual([
+      "u3_aislamiento_incorrecto", "u3_direccion_desigualdad", "u3_dos_valores_absoluto", "u3_factorizacion_cuadratica",
+      "u3_igualdad_exponenciales", "u3_interpretacion_contextual_incorrecta", "u3_pendiente_o_ordenada",
+      "u3_propiedad_logaritmo", "u3_racionalizacion_irracional", "u3_signo_desigualdad",
+      "u3_sustitucion_o_eliminacion", "u3_traduccion_incorrecta", "u3_verificacion_omitida",
+    ]);
+  });
+
+  test("ErrorTag contract preserved (U3-TAG-002): NO 'label' property on any declared U3 tag", () => {
+    const all = [...SPEC_U3_TAGS, ...PR1_MODELING_TAGS, "u3_racionalizacion_irracional", "u3_direccion_desigualdad"];
+    for (const tagId of all) {
+      expect(Object.prototype.hasOwnProperty.call(lookupTag(tagId) as unknown as Record<string, unknown>, "label"), `${tagId} must NOT have 'label'`).toBe(false);
+    }
+  });
+});

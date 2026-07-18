@@ -961,6 +961,17 @@ const TAXONOMY: readonly ErrorTag[] = [
     ],
   },
 
+  // PR2 (recuperar-u3-ecuaciones-lineales): 13th U3 tag, additive to 12-tag baseline.
+  {
+    id: "u3_racionalizacion_irracional",
+    unit: 3,
+    description: "No racionalizar el coeficiente irracional de una ecuación lineal antes de aislar la variable.",
+    examples: [
+      "(3 + √5)·x = 14 + 6√5 → x = (14 + 6√5) / (3 + √5) sin racionalizar primero",
+      "x = (2 + √3) / (2 − √3) → 7 − 4√3 (signo invertido al multiplicar por el conjugado)",
+    ],
+  },
+
   // Unit 4: Geometry and measures
   {
     id: "u4_formula_area",
