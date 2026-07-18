@@ -209,6 +209,7 @@ describe("U3 exercise shape — commonErrorTags only for declared u3_* tags", ()
       "u3_interpretacion_contextual_incorrecta",
       "u3_pendiente_o_ordenada",
       "u3_propiedad_logaritmo",
+      "u3_racionalizacion_irracional",
       "u3_signo_desigualdad",
       "u3_sustitucion_o_eliminacion",
       "u3_traduccion_incorrecta",
@@ -228,11 +229,9 @@ describe("U3 exercise shape — commonErrorTags only for declared u3_* tags", ()
 });
 
 describe("U3 exercise shape — isolation detector reachability (PR1)", () => {
-  // Spec anchor: recuperar-u3-ecuaciones-lineales/PR1.
-  // The existing isU3AislamientoIncorrectoError detector is MC-only.
-  // Before PR1, every ecuaciones_lineales exercise is numerical, so the
-  // declared u3_aislamiento_incorrecto tag was never reachable from real
-  // content. PR1 adds MC isolation items so the detector is honest.
+  // The existing isU3AislamientoIncorrectoError is MC-only; before PR1 every
+  // ecuaciones_lineales exercise was numerical, so u3_aislamiento_incorrecto
+  // was unreachable. PR1 adds MC isolation items so the detector is honest.
   test("mat.u3.ecuaciones_lineales catalog contains an MC exercise that declares u3_aislamiento_incorrecto", () => {
     const exercises = loadExercisesForSkill("mat.u3.ecuaciones_lineales");
     const isoMc = exercises.filter(

@@ -1,44 +1,7 @@
-/**
- * Safety-net test for catalog split equivalence.
- *
- * Captures the pre-split loadCatalog output as a baseline so that
- * content-split work (Phase 3) can prove no regression: same count, same IDs,
- * same ordering. Exact baseline assertions catch regressions that weak
- * thresholds (>= 30) would miss.
- *
- * Baseline values updated through the align-u2-practice-official-exercises change:
- *   post-PR1 baseline (184 + 5 unit-3 translation exercises) = 189
- *   +4 PR 3 polinomios_basico aligned exercises (02_ej_utn_1..5, slot .6-.9) = 193
- *   +6 PR 4 operaciones_polinomios aligned exercises (02_ej_utn_7 long div,
- *     02_ej_utn_9 productos notables, slots .6-.11) = 199
- *   +10 PR 5 factorizacion aligned exercises (02_ej_utn_10_* covering all 7 cases,
- *     slots .5-.14) = 209
- *   +4 PR 6 ruffini_resto + mcm_mcd_polinomios aligned exercises
- *     (02_ej_utn_8 Ruffini cociente .6-.7 + 02_ej_utn_11 3-poly/param .5-.6) = 213
- *   +8 PR 7 expresiones_racionales + ecuaciones_fraccionarias aligned exercises
- *     (02_ej_utn_12a + 12c + 13a + 14a rational-expression .5-.8
- *      + 02_ej_utn_15a + 15b + 15c + 15g fractional-equation .9-.12) = 221
- *   -5 U5-01 static retirement (ex.u5.angulos.1, ex.u5.radianes.1,
- *     ex.u5.circunferencia_trigonometrica.1, ex.u5.identidades.1,
- *     ex.u5.ecuaciones_trigonometricas.1) = 216
- *   +7 U5-02 first live Unit 5 packet (medicion_angulos_y_arcos:
- *     1a, 1b, 1c, 1d, 2r, 2d, 3) = 223
- *   +2 PR1 of recuperar-u3-ecuaciones-lineales (MC isolation items
- *     ex.u3.ecuaciones_lineales.7 + .8 declaring u3_aislamiento_incorrecto) = 225
- *
- * Baseline values (current — post-PR7 + post-U5-01 retirement + U5-02 + U3LIN-PR1):
- *   loadCatalog().length = 225
- *   queryByUnit(1).length = 101
- *   queryByUnit(3).length = 44
- *   queryByUnit(5).length = 7
- *   queryBySkill("mat.u1.conjuntos_numericos").length = 44
- *   queryBySkill("mat.u5.medicion_angulos_y_arcos").length = 7
- */
-
-/** Pre-PR1 baseline + U2-aligned + U5-01 retirement + U5-02 (+7) + U3LIN-PR1 (+2). */
-const BASELINE_TOTAL = 225;
+/** Safety-net: loadCatalog baseline 226 (Pre-PR1 189 + U2 + U5-01 retirement + U5-02 +7 + U3LIN-PR1 +2 + U3LIN-PR2 +1). Unit-3=45. */
+const BASELINE_TOTAL = 226;
 const BASELINE_UNIT_1 = 101;
-const BASELINE_UNIT_3 = 44;
+const BASELINE_UNIT_3 = 45;
 const BASELINE_UNIT_5 = 7;
 const BASELINE_CONJUNTOS_NUMERICOS = 44;
 const BASELINE_U5_SKILL = 7;

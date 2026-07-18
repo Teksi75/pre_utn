@@ -99,6 +99,9 @@ const U3_PROPIEDAD_LOGARITMO_TAGS = new Set(["u3_propiedad_logaritmo"]);
 /** Tags for incorrect translation from verbal language to algebraic language. */
 const U3_TRADUCCION_INCORRECTA_TAGS = new Set(["u3_traduccion_incorrecta"]);
 
+/** Tags for failing to rationalize an irrational linear-equation coefficient. */
+const U3_RACIONALIZACION_IRRACIONAL_TAGS = new Set(["u3_racionalizacion_irracional"]);
+
 // ── U5 (Medición de ángulos y arcos) error tag sets ────────────────────────
 
 /** Tags for the inverted 180°/π factor in items 1.a / 1.b. */
@@ -1237,6 +1240,19 @@ function isU3TraduccionIncorrectaError(
   return true;
 }
 
+/** Detect P1l MC items where the picked option retains the radicand (skipped/wrong conjugate). */
+function isU3RacionalizacionIrracionalError(
+  exercise: EvaluableExercise,
+  userAnswer: string,
+): boolean {
+  if (exercise.type !== "multiple-choice") return false;
+  if (!exercise.commonErrorTags.includes("u3_racionalizacion_irracional")) return false;
+  const radicand = exercise.prompt.match(/√\s*\d+|\$begin:math:display\$\\sqrt\s*\{?\s*\d+\s*\}?\$end:math:display$/)?.[0];
+  if (radicand === undefined) return false;
+  if (userAnswer.trim() === exercise.expectedAnswer.trim()) return false;
+  return userAnswer.includes(radicand);
+}
+
 /**
  * Match the user's answer against known error patterns and return a
  * declared commonErrorTag if one fits, or undefined.
@@ -1480,6 +1496,14 @@ export function tagError(
   if (isU3TraduccionIncorrectaError(exercise, userAnswer)) {
     for (const tag of tags) {
       if (U3_TRADUCCION_INCORRECTA_TAGS.has(tag)) {
+        return tag;
+      }
+    }
+  }
+
+  if (isU3RacionalizacionIrracionalError(exercise, userAnswer)) {
+    for (const tag of tags) {
+      if (U3_RACIONALIZACION_IRRACIONAL_TAGS.has(tag)) {
         return tag;
       }
     }

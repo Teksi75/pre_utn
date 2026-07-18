@@ -1,5 +1,34 @@
 [
   {
+    "id": "ex.u3.ecuaciones_lineales.desafio-01",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "type": "multiple-choice",
+    "difficulty": 5,
+    "prompt": "Resuelve para x: (5 + √7)·x = 18 + 5√7. ¿Cuál opción racionaliza el coeficiente, aísla x y verifica algebraicamente?",
+    "expectedAnswer": "Racionalizo (5 + √7) multiplicando por (5 − √7): x = (18 + 5√7)(5 − √7) / ((5 + √7)(5 − √7)) = (90 − 18√7 + 25√7 − 35) / (25 − 7) = (55 + 7√7) / 18; verifico reemplazando: (5 + √7)·((55 + 7√7)/18) = 18 + 5√7 ✓",
+    "options": [
+      "Racionalizo (5 + √7) multiplicando por (5 − √7): x = (18 + 5√7)(5 − √7) / ((5 + √7)(5 − √7)) = (90 − 18√7 + 25√7 − 35) / (25 − 7) = (55 + 7√7) / 18; verifico reemplazando: (5 + √7)·((55 + 7√7)/18) = 18 + 5√7 ✓",
+      "Divido directo sin racionalizar: x = (18 + 5√7) / (5 + √7); dejo el radical en el denominador (no racionalizaste).",
+      "Aplico el conjugado con el signo equivocado: multiplico por (5 + √7) en vez de (5 − √7); obtengo x = (55 − 7√7) / 18 (signo del √7 invertido).",
+      "Resuelvo solo el lado derecho y nunca divido por (5 + √7): x = 18 + 5√7 (olvidé aislar la variable)."
+    ],
+    "commonErrorTags": [
+      "u3_racionalizacion_irracional"
+    ],
+    "pedagogicalNote": "Resolver una ecuación lineal con coeficiente irracional exige dos pasos en orden: (1) racionalizar el coeficiente, multiplicando numerador y denominador por el conjugado; (2) aislar x dividiendo por el coeficiente ya racionalizado. Distractor 1 (correcto): racionaliza con (5 − √7), distribuye, simplifica denominador (25 − 7 = 18), verifica. Distractor 2: divide sin racionalizar — el √7 sigue en el denominador, lo que vuelve a la forma inicial del ítem canónico. Distractor 3: aplica el conjugado con el mismo signo (no es diferencia de cuadrados, el √7 no se cancela). Distractor 4: nunca divide por el coeficiente, queda solo el lado derecho. La verificación algebraica (reemplazar x en la ecuación original) distingue el camino correcto de los tres distractores: solo el primer camino cierra exactamente con 18 + 5√7. La verificación desmiente los caminos parciales.",
+    "challengeSection": true,
+    "category": "desafio",
+    "tags": ["desafio", "integrador"],
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "Capítulo 1: Ecuaciones lineales con coeficiente irracional — adaptación del ítem canónico P1l para difficulty 5",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Adaptar el ítem canónico P1l del PDF 03_ej_utn.pdf al nivel difficulty 5 de la app: coeficientes más grandes (5 + √7 en lugar del original del PDF), cuatro distractores que conservan el √7 del planteo para que el detector u3_racionalizacion_irracional los agrupe como una sola familia de error, y verificación algebraica explícita en la opción correcta. La adaptación preserva la estructura matemática (resolver + racionalizar + verificar) y la intención pedagógica (mostrar que racionalizar es un paso previo al aislamiento), pero NO copia literalmente el ítem canónico."
+      }
+    ]
+  },
+  {
     "id": "ex.u3.traduccion_lenguaje_verbal.desafio-01",
     "skillId": "mat.u3.traduccion_lenguaje_verbal",
     "type": "multiple-choice",

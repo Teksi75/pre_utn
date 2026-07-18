@@ -10,6 +10,7 @@
  */
 
 import type { ChallengeCanonicalTrace, ChallengeExercise, ChallengeSourceUse } from "@/domain/catalog/challenges/types";
+import { loadTaxonomy } from "@/domain/error-taxonomy";
 
 // ---------------------------------------------------------------------------
 // Static JSON imports — loaded once at module initialization
@@ -80,6 +81,10 @@ const VALID_SOURCE_USES: ReadonlySet<ChallengeSourceUse> = new Set([
 
 const CHALLENGE_ID_PATTERN = /^ex\.u([1-6])\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+$/;
 
+// Canonical P1l PDF path — sourceUse must NOT be "canonical-source" here (Autonomous P1l Decision: verbatim reproduction forbidden).
+const CANONICAL_P1L_PATH = "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf";
+const SPANISH_MARKER = /[áéíóúñü¿¡]|racionaliz|resuelv|verific|aislad|distractor|correcto/i;
+
 /**
  * Validate a single challenge entry at runtime.
  * Throws a descriptive Error if the entry is invalid.
@@ -115,6 +120,10 @@ export function validateChallengeEntry(raw: unknown): ChallengeExercise {
   // --- category ===
   if (entry["category"] !== "desafio") {
     throw new Error(`category must be "desafio"; got: ${JSON.stringify(entry["category"])}`);
+  }
+
+  if (entry["type"] !== "multiple-choice") {
+    throw new Error(`type must be "multiple-choice" (AGENTS.md forbids free-text roots); got: ${JSON.stringify(entry["type"])}`);
   }
 
   // --- difficulty ---
@@ -212,11 +221,30 @@ export function validateChallengeEntry(raw: unknown): ChallengeExercise {
       );
     }
 
-    if (typeof t["pedagogicalIntent"] !== "string") {
-      throw new Error(
-        `canonicalTrace[${i}].pedagogicalIntent must be a string; got: ${JSON.stringify(t["pedagogicalIntent"])}`
-      );
+    if (sourceUse === "canonical-source" && t["path"] === CANONICAL_P1L_PATH) {
+      throw new Error(`canonicalTrace[${i}].sourceUse must not be 'canonical-source' on canonical P1l path ${CANONICAL_P1L_PATH} (verbatim reproduction forbidden — adapt per Autonomous P1l Decision)`);
     }
+
+    const pedagogicalIntent = t["pedagogicalIntent"];
+    if (typeof pedagogicalIntent !== "string") {
+      throw new Error(`canonicalTrace[${i}].pedagogicalIntent must be a string; got: ${JSON.stringify(pedagogicalIntent)}`);
+    }
+    if (!SPANISH_MARKER.test(pedagogicalIntent)) {
+      throw new Error(`canonicalTrace[${i}].pedagogicalIntent must carry Spanish markers (AGENTS.md voice); got: ${JSON.stringify(pedagogicalIntent)}`);
+    }
+  }
+
+  // U3-scoped: commonErrorTags must resolve in the taxonomy (preserves U1/U2/U5 content).
+  if (entry["skillId"] === "mat.u3.ecuaciones_lineales") {
+    const taxonomyIds = new Set(loadTaxonomy().map((t) => t.id as string));
+    const tags = entry["commonErrorTags"];
+    if (tags !== undefined && tags !== null) {
+      if (!Array.isArray(tags)) throw new Error(`commonErrorTags must be an array; got: ${JSON.stringify(tags)}`);
+      for (const tag of tags) if (typeof tag !== "string" || !taxonomyIds.has(tag)) throw new Error(`commonErrorTag '${String(tag)}' is not declared in the error taxonomy (unknown error tag)`);
+    }
+  }
+  if (typeof entry["pedagogicalNote"] === "string" && !SPANISH_MARKER.test(entry["pedagogicalNote"] as string)) {
+    throw new Error(`pedagogicalNote must carry Spanish markers (AGENTS.md voice); got: ${JSON.stringify(entry["pedagogicalNote"])}`);
   }
 
   // All validations passed — return the entry as ChallengeExercise

@@ -152,6 +152,30 @@
     "pedagogicalNote": "Resta 7 en ambos miembros (-2x = -6) y divide por -2 prestando atención al signo: x = 3. Distractor frecuente: quedarse en el paso intermedio y dar x = -6 sin dividir por -2; el detector existente (u3_aislamiento_incorrecto) marca la omisión del coeficiente."
   },
   {
+    "id": "ex.u3.ecuaciones_lineales.6",
+    "skillId": "mat.u3.ecuaciones_lineales",
+    "type": "multiple-choice",
+    "difficulty": 4,
+    "prompt": "Resuelve para x: (3 + √5)·x = 14 + 6√5",
+    "expectedAnswer": "x = 3 + √5",
+    "options": [
+      "x = (14 + 6√5) / (3 + √5)",
+      "x = 3 + √5",
+      "x = 3 − √5",
+      "x = 14 + 6√5"
+    ],
+    "commonErrorTags": ["u3_racionalizacion_irracional"],
+    "pedagogicalNote": "Antes de aislar x, racionalizá el coeficiente irracional (3 + √5). Multiplicá numerador y denominador por el conjugado (3 − √5): x = (14 + 6√5)(3 − √5) / ((3 + √5)(3 − √5)) = (42 − 14√5 + 18√5 − 30) / (9 − 5) = (12 + 4√5) / 4 = 3 + √5. Distractor A: dejás el radical en el denominador (no racionalizaste). Distractor C: conjugado con el signo equivocado (invertiste el signo del √5). Distractor D: resolviste solo el lado derecho y nunca dividiste por (3 + √5). Los tres son variantes de 'no racionalizaste el coeficiente irracional antes de aislar x', que el nuevo detector u3_racionalizacion_irracional agrupa como una sola familia de error.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
+        "section": "Capítulo 1: Ecuaciones lineales con coeficiente irracional — racionalización del coeficiente antes de aislar la variable",
+        "sourceUse": "adapted",
+        "pedagogicalIntent": "Recuperar el ítem canónico P1l del PDF 03_ej_utn.pdf y adaptarlo a la app: coeficientes pequeños (3 + √5, 14 + 6√5) para que el racionalizado cierre en una forma simple, distractores que conservan el √5 del planteo (rationalization skipped / wrong conjugate / divide skipped), y respuesta en forma canónica x = a + b√c. La adaptación preserva la estructura matemática (resolver y racionalizar) y la intención pedagógica (mostrar que la racionalización es un paso previo al aislamiento), pero NO copia literalmente el ítem canónico (lo que sería rechazado por CHAL-002)."
+      }
+    ]
+  },
+  {
     "id": "ex.u3.ecuaciones_cuadraticas.2",
     "skillId": "mat.u3.ecuaciones_cuadraticas",
     "type": "multiple-choice",

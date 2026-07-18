@@ -17,6 +17,7 @@ import {
   loadChallengesForSkill,
   loadChallengesForUnit,
 } from "../loader";
+import { loadTaxonomy } from "@/domain/error-taxonomy";
 
 // loadChallengesForSkill/Unit are thin wrappers in the domain index;
 // test loadChallengesForSkill/Unit directly (same implementation).
@@ -382,9 +383,10 @@ describe("loadChallengesForUnit", () => {
     }
   });
 
-  test("returns unit 3 modeling-transfer challenges (PR 2)", () => {
+  test("returns unit 3 modeling-transfer challenges (PR 2) + canonical-max P1l (PR 2 recuperar-u3-ecuaciones-lineales)", () => {
     const challenges = loadChallengesForUnit(3);
-    expect(challenges.length).toBe(2);
+    // 2 modeling-transfer (fortalecer-u3) + 1 P1l (recuperar-u3-ecuaciones-lineales) = 3.
+    expect(challenges.length).toBe(3);
     for (const c of challenges) {
       expect(c.skillId).toMatch(/^mat\.u3\./);
       expect(c.challengeSection).toBe(true);
@@ -451,8 +453,8 @@ describe("loadChallengesForSkill — mat.u3.traduccion_lenguaje_verbal", () => {
       .find((c) => c.id === "ex.u3.traduccion_lenguaje_verbal.desafio-02");
     expect(desafio).toBeDefined();
     const prompt = desafio!.prompt;
-    expect(prompt).toMatch(/per[ií]metro/i);
-    expect(prompt).toMatch(/triple|doble|raz[oó]n|proporci[oó]n/i);
+    expect(prompt).toMatch(/per[í]metro/i);
+    expect(prompt).toMatch(/triple|doble|raz[ó]n|proporci[ó]n/i);
     const correct = desafio!.options!.find(
       (o) => (typeof o === "string" ? o : o.value) === desafio!.expectedAnswer,
     )!;
@@ -460,5 +462,66 @@ describe("loadChallengesForSkill — mat.u3.traduccion_lenguaje_verbal", () => {
     expect(correctText).toMatch(/verifico/i);
     expect(correctText).toMatch(/4 cm/);
     expect(correctText).toMatch(/12 cm/);
+  });
+});
+
+describe("loadChallengesForSkill — mat.u3.ecuaciones_lineales (PR2 P1l challenge)", () => {
+  test("U3LIN-CHAL-001..003: challenge at d=5, 4 options, adapted sourceUse, new tag, profe-digital-free", () => {
+    const d = loadChallengesForSkill("mat.u3.ecuaciones_lineales")[0];
+    expect([d?.difficulty, d?.options!.length, d?.challengeSection, d?.category, d?.canonicalTrace.length > 0, d?.canonicalTrace.some((t) => t.sourceUse === "adapted"), d?.commonErrorTags.includes("u3_racionalizacion_irracional")]).toEqual([5, 4, true, "desafio", true, true, true]);
+    expect(d?.canonicalTrace[0].pedagogicalIntent.toLowerCase()).not.toMatch(/profe digital|tu profe|soy tu/i);
+    expect(d?.tags).toEqual(expect.arrayContaining(["desafio", "integrador"]));
+  });
+
+  test("U3LIN-CHAL-005: mat.u3.traduccion_lenguaje_verbal keeps its 2 challenges", () => {
+    expect(loadChallengesForSkill("mat.u3.traduccion_lenguaje_verbal").map((c) => c.id).sort()).toEqual([
+      "ex.u3.traduccion_lenguaje_verbal.desafio-01",
+      "ex.u3.traduccion_lenguaje_verbal.desafio-02",
+    ]);
+  });
+
+  test("U3LIN-CHAL-006: Unit 3 challenge total grows from 2 to 3 (additive)", () => {
+    const counts = Object.fromEntries(["mat.u3.ecuaciones_lineales", "mat.u3.traduccion_lenguaje_verbal"].map((s) => [s, loadChallengesForUnit(3).filter((c) => c.skillId === s).length]));
+    expect(counts).toEqual({ "mat.u3.ecuaciones_lineales": 1, "mat.u3.traduccion_lenguaje_verbal": 2 });
+  });
+});
+describe("U3 LIN-CHAL spec scenario coverage (PR2)", () => {
+  test("U3LIN-CHAL-002 (positive): P1l challenge sourceUse is NOT 'canonical-source'", () => {
+    expect(loadChallengesForSkill("mat.u3.ecuaciones_lineales")[0].canonicalTrace.map((t) => t.sourceUse)).toEqual(["adapted"]);
+  });
+
+  test("Free-text root (positive): every loaded U3 challenge is MC", () => {
+    expect(loadChallengesForUnit(3).every((c) => c.type === "multiple-choice")).toBe(true);
+  });
+
+  test("Unknown tag (positive): every loaded U3 challenge's commonErrorTags resolves in taxonomy", () => {
+    const taxonomyIds = new Set((loadTaxonomy() as unknown as Array<{ id: string }>).map((t) => t.id));
+    expect(loadChallengesForUnit(3).flatMap((c) => c.commonErrorTags ?? []).every((tag) => taxonomyIds.has(tag))).toBe(true);
+  });
+
+  test("Non-Spanish fragment (positive): P1l pedagogical fields carry Spanish markers", () => {
+    const d = loadChallengesForSkill("mat.u3.ecuaciones_lineales")[0];
+    const SPANISH = /[áéíóúñü¿¡]|racionaliz|resuelv|verific|aislad|distractor|correcto/i;
+    expect(SPANISH.test(d.pedagogicalNote) && SPANISH.test(d.canonicalTrace[0].pedagogicalIntent)).toBe(true);
+  });
+});
+
+describe("validateChallengeEntry — strict loader rejection on invalid fixtures (PR2 remediation)", () => {
+  test("U3LIN-CHAL-002: canonical-source on canonical P1l PDF path is REJECTED", () => {
+    // CANONICAL_P1L_PROMPT is the literal/verbatim P1l prompt from PDF 03_ej_utn.pdf (bare equation form); Autonomous P1l Decision: verbatim reproduction forbidden.
+    const CANONICAL_P1L_PROMPT = "Resolver (3+√5)·x = 14 + 6√5, hallar x.";
+    const verbatim = { ...VALID_BASE, id: "ex.u3.ecuaciones_lineales.desafio-01", skillId: "mat.u3.ecuaciones_lineales", prompt: CANONICAL_P1L_PROMPT,
+      canonicalTrace: [{ ...VALID_CAHNNEL_TRACE_ENTRY, path: "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf", sourceUse: "canonical-source" as const, pedagogicalIntent: "Adaptar ítem canónico P1l a la app." }] };
+    expect(() => validateChallengeEntry(verbatim)).toThrow(/canonical-source|verbatim|adapt/i);
+  });
+  test("free-text root rejected: type='numerical' is REJECTED (AGENTS.md)", () => {
+    expect(() => validateChallengeEntry({ ...VALID_BASE, type: "numerical" as any })).toThrow(/multiple-choice|type/i);
+  });
+  test("unknown error tag rejected: undeclared commonErrorTag for U3 is REJECTED by taxonomy", () => {
+    expect(() => validateChallengeEntry({ ...VALID_BASE, id: "ex.u3.ecuaciones_lineales.desafio-01", skillId: "mat.u3.ecuaciones_lineales", commonErrorTags: ["u3_esta_tag_no_existe_en_taxonomy"] })).toThrow(/taxonomy|undeclared|commonErrorTag/i);
+  });
+  test("non-Spanish fragment rejected: pedagogical fields without Spanish markers are REJECTED", () => {
+    expect(() => validateChallengeEntry({ ...VALID_BASE, pedagogicalNote: "Rationalize the coefficient.",
+      canonicalTrace: [{ ...VALID_CAHNNEL_TRACE_ENTRY, pedagogicalIntent: "Adapt P1l PDF item for app." }] })).toThrow(/spanish|non-spanish|marker/i);
   });
 });
