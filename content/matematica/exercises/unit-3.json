@@ -159,13 +159,13 @@
     "prompt": "Resuelve para x: (3 + √5)·x = 14 + 6√5",
     "expectedAnswer": "x = 3 + √5",
     "options": [
-      "x = (14 + 6√5) / (3 + √5)",
+      "x = (14 + 6√5) / (3 − √5)",
       "x = 3 + √5",
       "x = 3 − √5",
       "x = 14 + 6√5"
     ],
     "commonErrorTags": ["u3_racionalizacion_irracional"],
-    "pedagogicalNote": "Antes de aislar x, racionalizá el coeficiente irracional (3 + √5). Multiplicá numerador y denominador por el conjugado (3 − √5): x = (14 + 6√5)(3 − √5) / ((3 + √5)(3 − √5)) = (42 − 14√5 + 18√5 − 30) / (9 − 5) = (12 + 4√5) / 4 = 3 + √5. Distractor A: dejás el radical en el denominador (no racionalizaste). Distractor C: conjugado con el signo equivocado (invertiste el signo del √5). Distractor D: resolviste solo el lado derecho y nunca dividiste por (3 + √5). Los tres son variantes de 'no racionalizaste el coeficiente irracional antes de aislar x', que el nuevo detector u3_racionalizacion_irracional agrupa como una sola familia de error.",
+    "pedagogicalNote": "Antes de aislar x, racionalizá el coeficiente irracional (3 + √5). Multiplicá numerador y denominador por el conjugado (3 − √5): x = (14 + 6√5)(3 − √5) / ((3 + √5)(3 − √5)) = (42 − 14√5 + 18√5 − 30) / (9 − 5) = (12 + 4√5) / 4 = 3 + √5. Distractor A: reemplazás el divisor original (3 + √5) por su conjugado (3 − √5) en vez de multiplicar numerador y denominador por ese conjugado — el denominador sigue teniendo √5 y la respuesta queda con un radical que se puede eliminar. Distractor C: conjugado con el signo equivocado en el √ final (invertiste solo el signo del √5). Distractor D: resolviste solo el lado derecho y nunca dividiste por (3 + √5). Los tres son variantes de 'racionalización mal cerrada', que el detector u3_racionalizacion_irracional agrupa como una sola familia de error.",
     "canonicalTrace": [
       {
         "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",

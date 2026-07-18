@@ -574,7 +574,9 @@ describe("u3_racionalizacion_irracional — detector + P1l integration (PR2)", (
   test("evaluateAnswer fires the tag end-to-end on the loaded P1l exercise", () => {
     const p1l = loadExercisesForSkill("mat.u3.ecuaciones_lineales").find((e) => e.id === "ex.u3.ecuaciones_lineales.6")!;
     expect(evaluateAnswer(p1l, p1l.expectedAnswer).errorTag).toBeUndefined();
-    expect(evaluateAnswer(p1l, "x = (14 + 6√5) / (3 + √5)").errorTag).toBe("u3_racionalizacion_irracional");
+    expect(evaluateAnswer(p1l, "x = (14 + 6√5) / (3 − √5)").errorTag).toBe("u3_racionalizacion_irracional");
+    expect(evaluateAnswer(p1l, "x = 3 − √5").errorTag).toBe("u3_racionalizacion_irracional");
+    expect(evaluateAnswer(p1l, "x = 14 + 6√5").errorTag).toBe("u3_racionalizacion_irracional");
   });
 
   test("feedback mapping is wired to a real example id and surfaces through generateFeedback", () => {
@@ -582,5 +584,119 @@ describe("u3_racionalizacion_irracional — detector + P1l integration (PR2)", (
     const mapping = feedback.find((f) => f.errorTag === "u3_racionalizacion_irracional")!;
     expect(new Set(loadExampleContent("unit-3").map((ex) => ex.id)).has(mapping.recoveryTarget!)).toBe(true);
     expect(generateFeedback(false, "u3_racionalizacion_irracional", feedback).message).toBe(mapping.message);
+  });
+});
+
+/**
+ * R3-001 (post-validation) regression proof — focused remediation for the
+ * equivalent-option bug on ex.u3.ecuaciones_lineales.6 (canonical P1l).
+ *
+ * History:
+ *   - R1 (origin): option A "x = (14 + 6√5) / (3 + √5)" was algebraically
+ *     equivalent to expected "x = 3 + √5" → false-positive rationalization error.
+ *   - R2 (interim): "x = 12 + 4√5" — non-equivalent, but rationale ("forgot to
+ *     divide by 4") did not match the approved feedback taxonomy.
+ *   - R3-001 (first try): "x = 18 + 8√5" — non-equivalent, but the feedback clause
+ *     "invertir el signo del conjugado cambia el signo del término con √" claimed a
+ *     radical-sign effect the expression doesn't visibly show. Rejected by scoped
+ *     validator.
+ *   - R3-001 (this): "x = (14 + 6√5) / (3 − √5)" — direct conjugate-procedure error.
+ *     The student replaces the original divisor (3 + √5) by its conjugate (3 − √5)
+ *     instead of multiplying numerator AND denominator by the conjugate. The result
+ *     still contains √5 in the denominator — observable, not a claim — and maps
+ *     literally to feedback pattern (1): "dejás el radical en el denominador y
+ *     dividís sin racionalizar — la respuesta queda con un √ que se puede eliminar".
+ */
+describe("R3-001 regression proof — P1l option A is a direct conjugate-replacement error (radical retained)", () => {
+  const P1L_ID = "ex.u3.ecuaciones_lineales.6";
+  const NEW_DISTRACTOR = "x = (14 + 6√5) / (3 − √5)";
+  const BUG_DISTRACTOR = "x = (14 + 6√5) / (3 + √5)";
+
+  function loadP1L() {
+    return loadExercisesForSkill("mat.u3.ecuaciones_lineales").find((e) => e.id === P1L_ID)!;
+  }
+
+  function optionValues(p1l: { options?: ReadonlyArray<string | { value: string; label?: string }> }) {
+    return p1l!.options!.map((o) => (typeof o === "string" ? o : o.value));
+  }
+
+  // (a) correct answer is valid in the loaded catalog
+  test("P1l expectedAnswer 'x = 3 + √5' is present and graded correct with no error tag", () => {
+    const p1l = loadP1L();
+    const opts = optionValues(p1l);
+    expect(opts).toContain(p1l.expectedAnswer);
+    expect(p1l.expectedAnswer.trim()).toBe("x = 3 + √5");
+    const result = evaluateAnswer(p1l, p1l.expectedAnswer);
+    expect(result.correct).toBe(true);
+    expect(result.errorTag).toBeUndefined();
+  });
+
+  // (b) chosen distractor is numerically AND algebraically non-equivalent to expectedAnswer
+  test("new distractor 'x = (14 + 6√5) / (3 − √5)' is numerically and algebraically non-equivalent to 'x = 3 + √5'", () => {
+    const p1l = loadP1L();
+    const opts = optionValues(p1l);
+    expect(opts).toContain(NEW_DISTRACTOR);
+    expect(opts).not.toContain(BUG_DISTRACTOR);
+    const sqrt5 = Math.sqrt(5);
+    const distractorNum = (14 + 6 * sqrt5) / (3 - sqrt5);
+    const expectedNum = 3 + sqrt5;
+    // Numerically non-equivalent at 5 decimal places (~35.889 vs ~5.236)
+    expect(distractorNum).not.toBeCloseTo(expectedNum, 5);
+    // Algebraic check: rationalising the distractor still yields a √5-bearing value
+    // (18 + 8√5), NOT 3 + √5 — the radical is NOT cancelled.
+    const rationalised = ((14 + 6 * sqrt5) * (3 + sqrt5)) / ((3 - sqrt5) * (3 + sqrt5));
+    expect(rationalised).toBeCloseTo(18 + 8 * sqrt5, 10);
+    expect(rationalised).not.toBeCloseTo(expectedNum, 5);
+    // Only expectedAnswer resolves to 3 + √5 among the four options
+    const optionNumerics: Record<string, number> = {
+      "x = 3 + √5": 3 + sqrt5,
+      "x = 3 − √5": 3 - sqrt5,
+      "x = 14 + 6√5": 14 + 6 * sqrt5,
+      "x = (14 + 6√5) / (3 + √5)": (14 + 6 * sqrt5) / (3 + sqrt5),
+      "x = (14 + 6√5) / (3 − √5)": (14 + 6 * sqrt5) / (3 - sqrt5),
+    };
+    const equivalentOptions = opts.filter((opt) => optionNumerics[opt] === expectedNum);
+    expect(equivalentOptions).toEqual([p1l.expectedAnswer]);
+  });
+
+  // (c) derivation is exactly the specified replacement-by-conjugate procedure and the
+  //     pedagogicalNote reflects that mistake (not the rejected wrong-sign claim)
+  test("new distractor is exactly the result of replacing the divisor (3 + √5) with its conjugate (3 − √5), and pedagogicalNote names that direct conjugate-procedure error", () => {
+    const p1l = loadP1L();
+    // The student error: take the original divisor (3 + √5) and *replace* it with its
+    // conjugate (3 − √5) — instead of multiplying numerator AND denominator by it.
+    const sqrt5 = Math.sqrt(5);
+    const replacedDivisor = 3 - sqrt5;          // student's mistaken divisor
+    const result = (14 + 6 * sqrt5) / replacedDivisor;
+    expect(result).toBeCloseTo((14 + 6 * sqrt5) / (3 - sqrt5), 12);
+    // The new distractor still contains √5 in the denominator (observable fact).
+    expect(NEW_DISTRACTOR).toMatch(/3\s*−\s*√5/);
+    // pedagogicalNote must describe the conjugate-procedure / retained-denominator error,
+    // not the rejected "invertir el signo" sign-flip claim that this fix replaces.
+    expect(p1l.pedagogicalNote).toBeDefined();
+    expect(p1l.pedagogicalNote).toMatch(/conjugado/i);
+    expect(p1l.pedagogicalNote).toMatch(/denominador/i); // names the retained denominator radical
+    expect(p1l.pedagogicalNote).not.toMatch(/invertir\s*el\s*signo\s*del\s*conjugado/i);
+  });
+
+  // (d) generateFeedback/mapping text explicitly corresponds to retained-radical-denominator
+  //     guidance — not merely that a tag fires
+  test("generateFeedback for u3_racionalizacion_irracional surfaces the retained-radical-denominator guidance and the mapping is wired to a real example id", () => {
+    const p1l = loadP1L();
+    const result = evaluateAnswer(p1l, NEW_DISTRACTOR);
+    expect(result.correct).toBe(false);
+    expect(result.errorTag).toBe("u3_racionalizacion_irracional");
+    const feedback = loadFeedbackContent("unit-3");
+    const message = generateFeedback(result.correct, result.errorTag!, feedback).message;
+    // Approved feedback pattern (1) — literal retained-radical-denominator guidance,
+    // which maps directly to the new distractor (denominator still contains √5).
+    expect(message).toMatch(/radical\s*en\s*el\s*denominador/i);
+    // Mapping wired to a real example id (proves the recovery target exists)
+    const mapping = feedback.find((f) => f.errorTag === "u3_racionalizacion_irracional")!;
+    expect(new Set(loadExampleContent("unit-3").map((ex) => ex.id)).has(mapping.recoveryTarget!)).toBe(true);
+    // pedagogicalNote references the same √ / denominador / conjugado vocabulary
+    expect(p1l.pedagogicalNote).toMatch(/√|denominador|conjugado/i);
+    // pedagogicalNote describes the *direct* conjugate-replacement error (not "forgot to divide")
+    expect(p1l.pedagogicalNote).toMatch(/reemplaz|reemplazo/i);
   });
 });
