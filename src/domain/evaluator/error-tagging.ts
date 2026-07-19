@@ -1240,17 +1240,65 @@ function isU3TraduccionIncorrectaError(
   return true;
 }
 
-/** Detect P1l MC items where the picked option retains the radicand (skipped/wrong conjugate). */
+/** Detect P1l MC items where the picked option retains the radicand (skipped/wrong conjugate).
+ *
+ * fix/u3-release-contract-alignment: only fire when the selected option shows that
+ * the student ATTEMPTED rationalization. The previous implementation used
+ * `userAnswer.includes(radicand)` and tagged any non-correct answer containing
+ * √5 — including the "forgot to divide" distractor `x = 14 + 6√5` (the prompt's
+ * RHS verbatim). That is an ISOLATION failure (u3_aislamiento_incorrecto
+ * family), NOT a rationalization mistake. The approved spec only tags when the
+ * picked option (a) keeps the irrational in a denominator (rationalization
+ * skipped, with or without wrong-conjugate substitution) OR (b) carries the
+ * opposite-sign radical of the expected answer (wrong-conjugate in non-fraction
+ * form). Anything else with the original radicand (e.g. a flat copy of the
+ * RHS) is not a rationalization mistake and is NOT tagged here.
+ */
 function isU3RacionalizacionIrracionalError(
   exercise: EvaluableExercise,
   userAnswer: string,
 ): boolean {
   if (exercise.type !== "multiple-choice") return false;
   if (!exercise.commonErrorTags.includes("u3_racionalizacion_irracional")) return false;
+  if (userAnswer.trim() === exercise.expectedAnswer.trim()) return false;
   const radicand = exercise.prompt.match(/√\s*\d+|\$begin:math:display\$\\sqrt\s*\{?\s*\d+\s*\}?\$end:math:display$/)?.[0];
   if (radicand === undefined) return false;
-  if (userAnswer.trim() === exercise.expectedAnswer.trim()) return false;
-  return userAnswer.includes(radicand);
+  if (!userAnswer.includes(radicand)) return false;
+
+  // Pattern A — retained irrational denominator: the answer is expressed as a
+  // fraction (it contains '/'), so the student tried to write a quotient but
+  // did not rationalize. E.g. "x = (14 + 6√5) / (3 + √5)" or the wrong-conjugate
+  // variant "x = (14 + 6√5) / (3 − √5)".
+  if (userAnswer.includes("/")) return true;
+
+  // Pattern B — non-matching conjugate in non-fraction form: the answer does
+  // not write a quotient but the sign on the radicand differs from the
+  // expected answer's radicand sign. E.g. expected "x = 3 + √5", picked
+  // "x = 3 − √5" — the student used the conjugate (or flopped the radical's
+  // sign) without multiplying through.
+  const expectedSign = extractRadicalSign(exercise.expectedAnswer, radicand);
+  const answerSign = extractRadicalSign(userAnswer, radicand);
+  if (expectedSign !== null && answerSign !== null && expectedSign !== answerSign) {
+    return true;
+  }
+
+  // Anything else with the prompt's radicand (e.g. a flat copy of the RHS like
+  // "x = 14 + 6√5") is not a rationalization mistake — it is an isolation
+  // failure surfaced by u3_aislamiento_incorrecto, not this tag.
+  return false;
+}
+
+/**
+ * Extract the sign immediately preceding the first occurrence of `radicand` in
+ * `text`. Returns "+", "-", or null if no signed occurrence is present.
+ * Recognises ASCII '-' and U+2212 '−' as the negative sign.
+ */
+function extractRadicalSign(text: string, radicand: string): "+" | "-" | null {
+  const escaped = radicand.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`([+\\-−])\\s*${escaped}`);
+  const m = re.exec(text);
+  if (!m) return null;
+  return m[1] === "+" ? "+" : "-";
 }
 
 /**

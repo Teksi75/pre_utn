@@ -16,6 +16,7 @@ import {
   validateChallengeEntry,
   loadChallengesForSkill,
   loadChallengesForUnit,
+  isSpanishPedagogicalText,
 } from "../loader";
 import { loadTaxonomy } from "@/domain/error-taxonomy";
 
@@ -523,5 +524,108 @@ describe("validateChallengeEntry — strict loader rejection on invalid fixtures
   test("non-Spanish fragment rejected: pedagogical fields without Spanish markers are REJECTED", () => {
     expect(() => validateChallengeEntry({ ...VALID_BASE, pedagogicalNote: "Rationalize the coefficient.",
       canonicalTrace: [{ ...VALID_CAHNNEL_TRACE_ENTRY, pedagogicalIntent: "Adapt P1l PDF item for app." }] })).toThrow(/spanish|non-spanish|marker/i);
+  });
+});
+
+/**
+ * fix/u3-release-contract-alignment — Finding 3: the brittle SPANISH_MARKER regex
+ *  - failed to accept valid unaccented Spanish (e.g. "La suma de dos lados es igual al tercero")
+ *  - falsely accepted English sentences that happened to share a token ("This distractor is wrong.")
+ *
+ * Replacement: `isSpanishPedagogicalText` is a narrowly scoped deterministic
+ * helper that (a) accepts text with accented Spanish characters OR at least one
+ * high-confidence Spanish content word, AND (b) rejects text containing
+ * English-only whole-word markers (the, this, that, wrong, coefficient, ...).
+ *
+ * Scoped to pedagogicalNote / pedagogicalIntent boundaries exactly as the
+ * previous SPANISH_MARKER was — no widening to other fields or modules.
+ */
+describe("fix-u3-release-contract-alignment: isSpanishPedagogicalText — narrowly scoped deterministic validation", () => {
+  describe("(a) accepts valid Spanish", () => {
+    test("(a1) unaccented Spanish sentence from the integrated release finding", () => {
+      expect(isSpanishPedagogicalText("La suma de dos lados es igual al tercero")).toBe(true);
+    });
+
+    test("(a2) accented Spanish (paradigm case the old marker handled)", () => {
+      expect(isSpanishPedagogicalText("Módulo de complejo")).toBe(true);
+    });
+
+    test("(a3) accented Spanish with 'distractor' (paradigm case)", () => {
+      expect(isSpanishPedagogicalText("La distractor típica es olvidar el conjugado del denominador")).toBe(true);
+    });
+
+    test("(a4) existing U3 desafio-01 pedagogicalIntent still passes", () => {
+      expect(isSpanishPedagogicalText(
+        "Adaptar el ítem canónico P1l del PDF 03_ej_utn.pdf al nivel difficulty 5 de la app: coeficientes más grandes (5 + √7 en lugar del original del PDF), cuatro distractores que conservan el √7 del planteo para que el detector u3_racionalizacion_irracional los agrupe como una sola familia de error, y verificación algebraica explícita en la opción correcta. La adaptación preserva la estructura matemática (resolver + racionalizar + verificar) y la intención pedagógica (mostrar que racionalizar es un paso previo al aislamiento), pero NO copia literalmente el ítem canónico.",
+      )).toBe(true);
+    });
+  });
+
+  describe("(b) rejects English", () => {
+    test("(b1) English containing the previously-accepted 'distractor' token", () => {
+      expect(isSpanishPedagogicalText("This distractor is wrong.")).toBe(false);
+    });
+
+    test("(b2) English pedagogical rationale that the old marker rejected", () => {
+      expect(isSpanishPedagogicalText("Rationalize the coefficient.")).toBe(false);
+    });
+
+    test("(b3) English with 'app' abbreviation that the old marker rejected", () => {
+      expect(isSpanishPedagogicalText("Adapt P1l PDF item for app.")).toBe(false);
+    });
+
+    test("(b4) pure English with no Spanish markers at all", () => {
+      expect(isSpanishPedagogicalText("Sum of two sides equals the third.")).toBe(false);
+    });
+  });
+
+  describe("(c) loader integration — same pedagogicalNote/pedagogicalIntent boundaries", () => {
+    test("(c1) pedagogicalNote = unaccented valid Spanish now passes loader", () => {
+      const entry = { ...VALID_BASE, pedagogicalNote: "La suma de dos lados es igual al tercero" };
+      expect(() => validateChallengeEntry(entry)).not.toThrow();
+    });
+
+    test("(c2) pedagogicalNote = English-with-shared-token now throws", () => {
+      const entry = { ...VALID_BASE, pedagogicalNote: "This distractor is wrong." };
+      expect(() => validateChallengeEntry(entry)).toThrow(/spanish|non-spanish|marker/i);
+    });
+
+    test("(c3) canonicalTrace[0].pedagogicalIntent = English-now-throws", () => {
+      const entry = {
+        ...VALID_BASE,
+        canonicalTrace: [{ ...VALID_CAHNNEL_TRACE_ENTRY, pedagogicalIntent: "This distractor is wrong." }],
+      };
+      expect(() => validateChallengeEntry(entry)).toThrow(/spanish|non-spanish|marker/i);
+    });
+  });
+});
+
+/**
+ * fix/u3-release-contract-alignment — focused remediation of two confirmed
+ * validator defects after native review re-checked the previous batch.
+ *
+ * (A) Mixed-language boundary: "Denominator remains irrational after
+ *     división." pairs English math vocabulary ("Denominator", "irrational")
+ *     with one accented Spanish token ("división"). The accent alone wrongly
+ *     trips Tier 1 (Spanish presence). Fix: extend the English-only reject
+ *     list with `remains` and `after` so the English gate fires BEFORE the
+ *     accent gate. Test below locks the requirement in.
+ *
+ * (B) Spanish-specific stem acceptance: the unaccented Spanish sentence
+ *     "Racionalizar el radical evita errores" carries the stem `racionaliz`.
+ *     The previous helper dropped this stem from the curated list, falling
+ *     to Tier-3 with only "el" (count=1) → false. Test locks that the
+ *     stem proves Spanish (Tier 2a).
+ *
+ * Rule: shared English/math tokens must NOT independently prove Spanish;
+ *       Spanish-specific stems (racionaliz) MAY prove Spanish.
+ */
+describe("fix-u3-release-contract-alignment (R1/R2 re-check): isSpanishPedagogicalText — shared-vocab reject + racionaliz stem accept", () => {
+  test("(A) English math vocab + accented shared term must NOT prove Spanish — 'Denominator remains irrational after división.' is REJECTED", () => {
+    expect(isSpanishPedagogicalText("Denominator remains irrational after división.")).toBe(false);
+  });
+
+  test("(B) Spanish-specific stem 'racionaliz' MUST prove Spanish — 'Racionalizar el radical evita errores' is ACCEPTED", () => {
+    expect(isSpanishPedagogicalText("Racionalizar el radical evita errores")).toBe(true);
   });
 });

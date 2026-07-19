@@ -967,8 +967,10 @@ const TAXONOMY: readonly ErrorTag[] = [
     unit: 3,
     description: "No racionalizar el coeficiente irracional de una ecuación lineal antes de aislar la variable.",
     examples: [
+      // Wrong example: student skipped rationalization (retained irrational denominator).
       "(3 + √5)·x = 14 + 6√5 → x = (14 + 6√5) / (3 + √5) sin racionalizar primero",
-      "x = (2 + √3) / (2 − √3) → 7 − 4√3 (signo invertido al multiplicar por el conjugado)",
+      // Correct example: rationalized result of (2 + √3) / (2 − √3) by the conjugate (2 + √3).
+      "x = (2 + √3) / (2 − √3) → 7 + 4√3 después de multiplicar numerador y denominador por el conjugado (2 + √3)",
     ],
   },
 
