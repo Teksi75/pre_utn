@@ -83,7 +83,90 @@ const CHALLENGE_ID_PATTERN = /^ex\.u([1-6])\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+$/;
 
 // Canonical P1l PDF path — sourceUse must NOT be "canonical-source" here (Autonomous P1l Decision: verbatim reproduction forbidden).
 const CANONICAL_P1L_PATH = "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf";
-const SPANISH_MARKER = /[áéíóúñü¿¡]|racionaliz|resuelv|verific|aislad|distractor|correcto/i;
+
+// fix/u3-release-contract-alignment: replaced the brittle SPANISH_MARKER regex with
+// a narrowly scoped deterministic helper. The previous marker (a) failed to
+// accept valid unaccented Spanish such as "La suma de dos lados es igual al
+// tercero", because it only fired on accented chars OR a tiny list of
+// substrings; and (b) falsely accepted English sentences containing shared
+// tokens like "distractor" / "correcto" simply because those substrings
+// appeared. The new helper gates both ways:
+//   - Spanish presence: an accented Spanish char OR at least one high-confidence
+//     Spanish content word OR a sufficient count of Spanish function words.
+//   - English absence: no English-only whole-word markers (the, this, that,
+//     wrong, coefficient, rationalize, item, adapt, fragment, verify, isolate,
+//     remains, after).
+// Behavioural boundary is unchanged: only used for `pedagogicalNote` and
+// `canonicalTrace[].pedagogicalIntent` (the previous SPANISH_MARKER scope).
+const SPANISH_ACCENT = /[áéíóúñü¿¡]/;
+const SPANISH_CONTENT_WORDS = /\b(?:suma|sumar|restar?|multiplicaci[oó]n|multiplicar|dividir|resoluci[oó]n|resolver|verificaci[oó]n|verificar|aislamiento|aislar|denominador|numerador|conjugado|inc[oó]gnita|inecuaci[oó]n|fracci[oó]n|tercero|cuarto|quinto|primer|segundo|resultado|ejercicio|expresi[oó]n|incorrecto|correcto|can[oó]nico|adaptaci[oó]n|alumno|docente|m[oó]dulo|pr[áa]ctica|teor[íi]a|trabajo|tarea|pregunta|respuesta|casi|siempre|nunca|tambi[ée]n|nosotros|vosotros|aquell[oa]s?|lados?|opciones?|cuadr[aá]tico|exponente|sumando|componente|denominar?|numerar?|equivalen|cancelaci[oó]n|cancelar|conserva|conservar|identid[ao]d?|artificio)\b/i;
+// Spanish function words — narrow list, all of these are Spanish-only or
+// near-Spanish-only in math pedagogical context. Used as a Tier-3 fallback
+// when neither an accent nor a curated content word is present: ≥3 distinct
+// function-word hits indicates Spanish with high confidence.
+const SPANISH_FUNCTION_WORDS = /\b(?:de|del|la|los|las|el|al|con|sin|para|sobre|entre|pero|que|porque|si|como|cuando|donde|nosotros|vosotros|se|les|son|sea|fueran|equivoc|simular|simula|separar|separa|examen|exigir|exige|incluye|incluir|requerir|requiere|presentar|indepen[dt]s?|indepen[dt]|traducc|exced|cancelar|coheren|conserv|asignad|denominar|denomina|numerar|numerad?|simplifi|algebraic|lenguaje|enunciado|cumpl|control|cancelar|invalidar?|dominio|representa|representar|indepen[dt]s?)\b/i;
+// English-only full-word markers that, when present in pedagogical text,
+// identify a non-Spanish sentence. Deliberately excludes tokens that are
+// borrowed into pedagogical Spanish in this app's domain (e.g. "item", as used
+// in "ningún item del examen"); see the loader tests for the documented
+// boundary cases.
+// fix/u3-release-contract-alignment (R1 re-check): `remains` and `after` added
+// to close the mixed-language boundary. The previous list missed these two
+// high-frequency English function words, so the attack sentence
+// "Denominator remains irrational after división." passed the English gate
+// and then wrongly tripped Tier 1 on the accent in "división". Adding them
+// here — BEFORE the accent gate fires — locks the boundary while preserving
+// every other valid-Spanish path (no real Spanish pedagogical text in this
+// app uses `remains` or `after` as whole-word markers).
+const SPANISH_ENGLISH_REJECT = /\b(?:the|this|that|wrong|coefficient|rationalize|adapt|fragment|verify|isolate|isolated|isolating|isolation|remains|after)\b/i;
+// Spanish-specific stems — substring match (no word boundaries) because these
+// stems appear at the head of longer Spanish tokens ("racionalizar",
+// "racionalización"). Safe from English contamination: the English counterpart
+// "rationalize" uses a "t" not a "c", so no English word contains "racionaliz".
+// Restored from the previous `SPANISH_MARKER` regex, which the new helper
+// accidentally dropped (R2 re-check).
+const SPANISH_SPECIFIC_STEMS = /racionaliz/i;
+const SPANISH_FUNCTION_WORD_THRESHOLD = 3;
+
+/**
+ * Validate that a short pedagogical text (`pedagogicalNote` or
+ * `canonicalTrace[].pedagogicalIntent`) is in Spanish — not English.
+ *
+ * Returns `false` for non-strings and empty / whitespace input. Replaces the
+ * previous brittle `SPANISH_MARKER` regex with deterministic three-tier
+ * Spanish presence + a single English-absence gate:
+ *
+ *   Tier 1 (strongest): at least one accented Spanish character
+ *     (á é í ó ú ñ ü ¿ ¡).
+ *   Tier 2a (Spanish stems, substring): at least one Spanish-specific stem
+ *     (currently only `racionaliz`) — substring match because the stem
+ *     appears at the head of longer Spanish tokens.
+ *   Tier 2b (curated): at least one Spanish content word drawn from a
+ *     narrow hand-curated list (suma, denominador, conjugado, ...).
+ *   Tier 3 (function-word count): ≥ SPANISH_FUNCTION_WORD_THRESHOLD
+ *     distinct Spanish function words (de, del, el, que, como, ...).
+ *   English gate (any tier): text must NOT contain any English-only
+ *     whole-word marker (the, this, that, wrong, coefficient, rationalize,
+ *     adapt, fragment, verify, isolate, remains, after).
+ *
+ * Narrowly scoped: deliberately narrow word lists. Does NOT widen the
+ * semantic contract beyond the previous pedagogicalNote / pedagogicalIntent
+ * boundary.
+ */
+export function isSpanishPedagogicalText(text: unknown): boolean {
+  if (typeof text !== "string") return false;
+  if (text.trim() === "") return false;
+  if (SPANISH_ENGLISH_REJECT.test(text)) return false;
+  if (SPANISH_ACCENT.test(text)) return true;
+  if (SPANISH_SPECIFIC_STEMS.test(text)) return true;
+  if (SPANISH_CONTENT_WORDS.test(text)) return true;
+  // Tier 3 fallback — count distinct Spanish function words.
+  const hits = new Set<string>();
+  const re = new RegExp(SPANISH_FUNCTION_WORDS.source, "gi");
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(text)) !== null) hits.add(match[0].toLowerCase());
+  return hits.size >= SPANISH_FUNCTION_WORD_THRESHOLD;
+}
 
 /**
  * Validate a single challenge entry at runtime.
@@ -229,7 +312,7 @@ export function validateChallengeEntry(raw: unknown): ChallengeExercise {
     if (typeof pedagogicalIntent !== "string") {
       throw new Error(`canonicalTrace[${i}].pedagogicalIntent must be a string; got: ${JSON.stringify(pedagogicalIntent)}`);
     }
-    if (!SPANISH_MARKER.test(pedagogicalIntent)) {
+    if (!isSpanishPedagogicalText(pedagogicalIntent)) {
       throw new Error(`canonicalTrace[${i}].pedagogicalIntent must carry Spanish markers (AGENTS.md voice); got: ${JSON.stringify(pedagogicalIntent)}`);
     }
   }
@@ -243,7 +326,7 @@ export function validateChallengeEntry(raw: unknown): ChallengeExercise {
       for (const tag of tags) if (typeof tag !== "string" || !taxonomyIds.has(tag)) throw new Error(`commonErrorTag '${String(tag)}' is not declared in the error taxonomy (unknown error tag)`);
     }
   }
-  if (typeof entry["pedagogicalNote"] === "string" && !SPANISH_MARKER.test(entry["pedagogicalNote"] as string)) {
+  if (typeof entry["pedagogicalNote"] === "string" && !isSpanishPedagogicalText(entry["pedagogicalNote"])) {
     throw new Error(`pedagogicalNote must carry Spanish markers (AGENTS.md voice); got: ${JSON.stringify(entry["pedagogicalNote"])}`);
   }
 

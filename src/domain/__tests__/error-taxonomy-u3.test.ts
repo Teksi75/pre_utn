@@ -191,3 +191,44 @@ describe("U3 error taxonomy — PR2 u3_racionalizacion_irracional (additive, 12 
     }
   });
 });
+
+/**
+ * fix/u3-release-contract-alignment — Finding 2: the `u3_racionalizacion_irracional`
+ * taxonomy examples BOTH showed wrong answers (skipped / sign-flipped). The approved
+ * spec (math-error-taxonomy/spec.md, scenario U3LIN-TAG-001) requires
+ * `examples` to "contain at least one wrong and one correct answer".
+ *
+ * Red test asserts the corrected contract: at least one example demonstrates an
+ * INCORRECT student resolution AND at least one example demonstrates a CORRECT
+ * rationalized result. The ErrorTag shape is preserved (no `label` widening).
+ */
+describe("fix-u3-release-contract-alignment: u3_racionalizacion_irracional examples split (wrong + correct)", () => {
+  const tag = lookupTag("u3_racionalizacion_irracional")!;
+
+  test("(a) ErrorTag shape preserved: { id, unit, description, examples } — no `label` widening", () => {
+    expect(Object.keys(tag).sort()).toEqual(["description", "examples", "id", "unit"]);
+    expect(tag.id).toBe("u3_racionalizacion_irracional");
+    expect(tag.unit).toBe(3);
+  });
+
+  test("(b) at least one example demonstrates an incorrect student resolution", () => {
+    const wrong = tag.examples.find(
+      (ex) => /sin\s+racionalizar|racionalizaci[oó]n\s+mal|signo\s+invertido|equivocad|retene|deja\s*el\s*radical/i.test(ex),
+    );
+    expect(wrong, "must have at least one example showing a wrong rationalization").toBeDefined();
+  });
+
+  test("(c) at least one example demonstrates a CORRECT rationalized resolution", () => {
+    // Correct example must show the actual rationalized form (no retained radical
+    // in the denominator), not just a meta-comment about rationalization.
+    // The correct rationalization of (2 + √3) / (2 − √3) is 7 + 4√3.
+    const correct = tag.examples.find(
+      (ex) => /7\s*\+\s*4\s*√\s*3|7\s*\+\s*4\s*√\s*3$/.test(ex),
+    );
+    expect(correct, "must have at least one example showing the correct rationalized form 7 + 4√3").toBeDefined();
+  });
+
+  test("(d) spec contract: examples.length is >= 2", () => {
+    expect(tag.examples.length).toBeGreaterThanOrEqual(2);
+  });
+});

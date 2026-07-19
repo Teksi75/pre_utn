@@ -558,12 +558,18 @@ describe("u3_racionalizacion_irracional — detector + P1l integration (PR2)", (
     ...overrides,
   });
 
-  test("fires on every option retaining √5; declared-only guard prevents firing when tag absent", () => {
+  test("fires on retained-denominator and non-matching-conjugate distractors; declared-only guard prevents firing when tag absent; 'forgot to divide' is NOT tagged (rationalization did not even start)", () => {
     const ex = P1L();
+    // Retained irrational denominator — rationalization was skipped.
     expect(tagError(ex, "x = (14 + 6√5) / (3 + √5)")).toBe("u3_racionalizacion_irracional");
+    // Non-matching conjugate — student used the conjugate without multiplying through.
     expect(tagError(ex, "x = 3 − √5")).toBe("u3_racionalizacion_irracional");
-    expect(tagError(ex, "x = 14 + 6√5")).toBe("u3_racionalizacion_irracional");
+    // "Forgot to divide" — answer is just the RHS of the prompt. This is an isolation failure
+    // (u3_aislamiento_incorrecto), NOT a rationalization mistake. Must NOT be tagged.
+    expect(tagError(ex, "x = 14 + 6√5")).toBeUndefined();
+    // Correct answer is never tagged.
     expect(tagError(ex, "x = 3 + √5")).toBeUndefined();
+    // Declared-only guard: the tag may NOT fire unless the exercise declares it.
     expect(tagError(P1L({ commonErrorTags: [] }), "x = (14 + 6√5) / (3 + √5)")).toBeUndefined();
   });
 
@@ -576,7 +582,9 @@ describe("u3_racionalizacion_irracional — detector + P1l integration (PR2)", (
     expect(evaluateAnswer(p1l, p1l.expectedAnswer).errorTag).toBeUndefined();
     expect(evaluateAnswer(p1l, "x = (14 + 6√5) / (3 − √5)").errorTag).toBe("u3_racionalizacion_irracional");
     expect(evaluateAnswer(p1l, "x = 3 − √5").errorTag).toBe("u3_racionalizacion_irracional");
-    expect(evaluateAnswer(p1l, "x = 14 + 6√5").errorTag).toBe("u3_racionalizacion_irracional");
+    // 'forgot to divide' distractor (x = 14 + 6√5) is an ISOLATION failure, NOT a
+    // rationalization failure — must not be tagged with u3_racionalizacion_irracional.
+    expect(evaluateAnswer(p1l, "x = 14 + 6√5").errorTag).toBeUndefined();
   });
 
   test("feedback mapping is wired to a real example id and surfaces through generateFeedback", () => {
@@ -584,6 +592,78 @@ describe("u3_racionalizacion_irracional — detector + P1l integration (PR2)", (
     const mapping = feedback.find((f) => f.errorTag === "u3_racionalizacion_irracional")!;
     expect(new Set(loadExampleContent("unit-3").map((ex) => ex.id)).has(mapping.recoveryTarget!)).toBe(true);
     expect(generateFeedback(false, "u3_racionalizacion_irracional", feedback).message).toBe(mapping.message);
+  });
+});
+
+/**
+ * fix/u3-release-contract-alignment — focused remediation of three integrated-release
+ * findings under existing approved `recuperar-u3-ecuaciones-lineales` specs.
+ *
+ * Finding 1: the P1l detector fired `u3_racionalizacion_irracional` on the
+ * "forgot to divide" distractor `x = 14 + 6√5`. That answer is the prompt's
+ * RHS verbatim — the student never divided. That is an isolation failure
+ * (u3_aislamiento_incorrecto family), not a rationalization mistake; the
+ * approved spec only tags when the student ATTEMPTED rationalization and the
+ * radicand-bearing structure survives (retained denominator) OR they applied
+ * the wrong-conjugate (sign-flipped but no denominator fix).
+ *
+ * Red tests assert the corrected contract. Production fix in
+ * `src/domain/evaluator/error-tagging.ts :: isU3RacionalizacionIrracionalError`.
+ */
+describe("fix-u3-release-contract-alignment: u3_racionalizacion_irracional — 'forgot to divide' must NOT be tagged", () => {
+  const P1L_PROMPT = "Resuelve para x: (3 + √5)·x = 14 + 6√5";
+  const EXPECTED = "x = 3 + √5";
+
+  function makeP1L(overrides: Partial<Exercise> = {}): Exercise {
+    return makeExercise({
+      id: "ex.u3.ecuaciones_lineales.6",
+      skillId: "mat.u3.ecuaciones_lineales",
+      prompt: P1L_PROMPT,
+      expectedAnswer: EXPECTED,
+      commonErrorTags: ["u3_racionalizacion_irracional"],
+      options: [
+        { value: "x = (14 + 6√5) / (3 + √5)", label: "A" },
+        { value: "x = 3 + √5", label: "B" },
+        { value: "x = 3 − √5", label: "C" },
+        { value: "x = 14 + 6√5", label: "D" },
+      ],
+      ...overrides,
+    });
+  }
+
+  test("(a) 'forgot to divide' distractor is NOT tagged as rationalization", () => {
+    // Answer is just the RHS of the prompt. No division performed; not a rationalization
+    // mistake at all.
+    expect(tagError(makeP1L(), "x = 14 + 6√5")).toBeUndefined();
+  });
+
+  test("(b) evaluateAnswer end-to-end on the loaded P1l: 'forgot to divide' returns no rationalization tag", () => {
+    const p1l = loadExercisesForSkill("mat.u3.ecuaciones_lineales").find((e) => e.id === "ex.u3.ecuaciones_lineales.6")!;
+    expect(p1l).toBeDefined();
+    const result = evaluateAnswer(p1l, "x = 14 + 6√5");
+    expect(result.correct).toBe(false);
+    expect(result.errorTag).toBeUndefined();
+  });
+
+  test("(c) KEPT — retained-denominator pattern still tags", () => {
+    // Option A: student wrote a quotient but did not rationalize — denominator still has √5.
+    expect(tagError(makeP1L(), "x = (14 + 6√5) / (3 + √5)")).toBe("u3_racionalizacion_irracional");
+  });
+
+  test("(d) KEPT — wrong-conjugate with retained-denominator pattern still tags", () => {
+    // Option A-equivalent: student replaced (3 + √5) with (3 − √5) without multiplying through.
+    // The denominator still has the irrational.
+    expect(tagError(makeP1L(), "x = (14 + 6√5) / (3 − √5)")).toBe("u3_racionalizacion_irracional");
+  });
+
+  test("(e) KEPT — non-matching-conjugate in non-fraction form still tags", () => {
+    // Option C: student pivoted from (3 + √5) to (3 − √5) but never wrote a fraction.
+    // The flipped radical sign vs. expected indicates a wrong-conjugate rationalization attempt.
+    expect(tagError(makeP1L(), "x = 3 − √5")).toBe("u3_racionalizacion_irracional");
+  });
+
+  test("(f) KEPT — correct answer is never tagged", () => {
+    expect(tagError(makeP1L(), "x = 3 + √5")).toBeUndefined();
   });
 });
 
