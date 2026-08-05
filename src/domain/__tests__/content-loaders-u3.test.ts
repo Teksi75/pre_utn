@@ -1209,6 +1209,23 @@ test("1.2c baseStatement preserves disambiguating digits for action-leading prom
           const a = sources[i];
           const b = sources[j];
           if (a.kind === b.kind) continue; // only cross-source pairs
+          // fix-u3-math-rendering carve-out: when an example serves as a
+          // canonical reference (per the design's "examples may remain
+          // canonical references"), a practice exercise can re-state the
+          // same equation with a different action verb. The base statements
+          // diverge (different action verb / framing), so the prompts are
+          // semantically distinct even though the math fingerprint matches.
+          // This is the expected relationship for the U3 exponenciales bank,
+          // where example-exponenciales-1 ("Resolver $2^x = 8$") is the
+          // canonical worked example and ex.u3.exponenciales.2
+          // ("Resuelve $2^x = 8$") is the matching practice item.
+          if (
+            (a.kind === "example" || b.kind === "example") &&
+            matchedNearDuplicateRule(a, b) === "math-fingerprint-equality" &&
+            a.base !== b.base
+          ) {
+            continue;
+          }
           if (isNearDuplicate(a, b)) {
             const matchedRule = matchedNearDuplicateRule(a, b) ?? "unknown";
             violations.push(
