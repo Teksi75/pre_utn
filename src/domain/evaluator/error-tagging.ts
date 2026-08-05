@@ -1261,7 +1261,10 @@ function isU3RacionalizacionIrracionalError(
   if (exercise.type !== "multiple-choice") return false;
   if (!exercise.commonErrorTags.includes("u3_racionalizacion_irracional")) return false;
   if (userAnswer.trim() === exercise.expectedAnswer.trim()) return false;
-  const radicand = exercise.prompt.match(/√\s*\d+|\$begin:math:display\$\\sqrt\s*\{?\s*\d+\s*\}?\$end:math:display$/)?.[0];
+  const radicandMatch = exercise.prompt.match(/√\s*\d+|\\sqrt\s*\{?\s*(\d+)\s*\}?|\$begin:math:display\$\\sqrt\s*\{?\s*\d+\s*\}?\$end:math:display$/);
+  const radicand = radicandMatch?.[1]
+    ? `√${radicandMatch[1].replace(/\s+/g, "")}`
+    : radicandMatch?.[0];
   if (radicand === undefined) return false;
   if (!userAnswer.includes(radicand)) return false;
 
