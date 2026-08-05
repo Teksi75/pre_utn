@@ -102,6 +102,16 @@ describe("applyExerciseDefaults", () => {
       "unsupported exercise type"
     );
   });
+
+  // parseExerciseId boundary contract — characterization only (no regex inspection).
+  describe("parseExerciseId boundary contract", () => {
+    test.each(["ex.u3.operaciones_polinomios.4", "ex.u2.mcm-mcd-polinomios.1"])(
+      "accepts valid id: %s", (id) =>
+        expect(applyExerciseDefaults({ ...baseRaw, id }).id).toBe(id));
+    test.each(["exx.u3.polinomios.1", "ex.u7.polinomios.1", "ex.u3..1", "ex.u3.polinomios."])(
+      "rejects malformed: %s", (id) =>
+        expect(() => applyExerciseDefaults({ ...baseRaw, id })).toThrow(/invalid ExerciseId format/));
+  });
 });
 
 describe("loadSkillBank — wiring bank validator into catalog load path", () => {
