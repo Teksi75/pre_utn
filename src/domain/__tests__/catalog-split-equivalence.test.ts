@@ -19,20 +19,23 @@
  *     (02_ej_utn_12a + 12c + 13a + 14a rational-expression .5-.8
  *      + 02_ej_utn_15a + 15b + 15c + 15g fractional-equation .9-.12) = 221
  *
- * Baseline values (current — post-PR7 rational-expression + fractional-equation):
- *   loadCatalog().length = 221        (189 + 4 PR3 + 6 PR4 + 10 PR5 + 4 PR6 + 8 PR7)
+ * Baseline values (current — post-PR7 rational-expression + fractional-equation,
+ *                                  +PR 8 expand-u3-exponentials WU 1+2+3 FINAL):
+ *   loadCatalog().length = 234        (221 + 4 WU1 + 4 WU2 + 5 WU3 exponenciales: .03, .6–.8, .9–.12, .13–.17)
  *   queryByUnit(1).length = 101
- *   queryByUnit(3).length = 42        (37 + 5 new translation exercises)
+ *   queryByUnit(3).length = 55        (42 + 4 WU1 + 4 WU2 + 5 WU3)
  *   queryBySkill("mat.u1.conjuntos_numericos").length = 44
  *
- * PR 8 will keep BASELINE_TOTAL unchanged (no new exercises planned in
- * PR 8 — it is the verify/consolidation/feedback-mapping slice).
+ * PR 8 cumulative slices:
+ *   WU 1 (+4) → totals reached 225 / 46 in PR 1.
+ *   WU 2 (+4) → totals reached 229 / 50 in PR 2.
+ *   WU 3 (+5) → totals reach 234 / 55 here (FINAL).
  */
 
-/** Pre-PR1 baseline counts, incremented by PR 3 (+4), PR 4 (+6), PR 5 (+10), PR 6 (+4), PR 7 (+8). */
-const BASELINE_TOTAL = 221;
+/** Pre-PR1 baseline counts, incremented by PR 3 (+4), PR 4 (+6), PR 5 (+10), PR 6 (+4), PR 7 (+8), PR 8 WU 1 (+4), PR 8 WU 2 (+4), PR 8 WU 3 (+5). */
+const BASELINE_TOTAL = 234;
 const BASELINE_UNIT_1 = 101;
-const BASELINE_UNIT_3 = 42;
+const BASELINE_UNIT_3 = 55;
 const BASELINE_CONJUNTOS_NUMERICOS = 44;
 
 import { describe, test, expect } from "vitest";
