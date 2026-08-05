@@ -13,6 +13,7 @@ import { describe, test, expect } from "vitest";
 import {
   loadExercisesForSkill,
   loadSkillBank,
+  loadFeedbackContent,
   UNIT_EXERCISE_FILES,
 } from "../catalog/content-loaders";
 import type { Exercise } from "../models/exercise";
@@ -267,5 +268,53 @@ describe("U3 exercise shape — loadSkillBank diagnostics", () => {
       expect(bank.exercises.length, `${skillId} bank should be non-empty`).toBeGreaterThan(0);
       expect(Array.isArray(bank.diagnostics)).toBe(true);
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// WU 3 evidence (expand-u3-exponentials): shape contract for the FINAL
+// 17-item bank. See openspec/changes/expand-u3-exponentials/specs/math-error-taxonomy
+// for the answer-shape and tag-resolution contracts.
+// ---------------------------------------------------------------------------
+describe("u3-exponenciales — FINAL 17-item shape evidence (WU 3)", () => {
+  const expo = loadExercisesForSkill("mat.u3.exponenciales");
+
+  test("numerical and fill-blank entries use a single scalar expected answer (no ',;= {}')", () => {
+    const textInput = expo.filter(
+      (e) => e.type === "numerical" || e.type === "fill-blank",
+    );
+    expect(textInput.length).toBeGreaterThan(0);
+    for (const ex of textInput) {
+      const trimmed = ex.expectedAnswer.trim();
+      expect(trimmed.includes(","), `${ex.id} scalar, got "${trimmed}"`).toBe(false);
+      expect(trimmed.includes(";"), `${ex.id} scalar, got "${trimmed}"`).toBe(false);
+      expect(trimmed.includes("="), `${ex.id} scalar, got "${trimmed}"`).toBe(false);
+      expect(trimmed.includes("{"), `${ex.id} scalar, got "${trimmed}"`).toBe(false);
+      expect(trimmed.includes("}"), `${ex.id} scalar, got "${trimmed}"`).toBe(false);
+    }
+  });
+
+  test("multiple-choice entries have expectedAnswer present in their options", () => {
+    const mc = expo.filter((e) => e.type === "multiple-choice");
+    expect(mc.length).toBeGreaterThan(0);
+    for (const ex of mc) {
+      const values = (ex.options ?? []).map((opt) =>
+        typeof opt === "string" ? opt : opt.value,
+      );
+      expect(
+        values,
+        `${ex.id} expectedAnswer="${ex.expectedAnswer}" not in options ${JSON.stringify(values)}`,
+      ).toContain(ex.expectedAnswer);
+    }
+  });
+
+  test("every u3_igualdad_exponenciales tag resolves to a feedback entry in loadFeedbackContent('unit-3')", () => {
+    const feedback = loadFeedbackContent("unit-3");
+    const tagIds = new Set(feedback.map((m) => m.errorTag));
+    expect(tagIds.has("u3_igualdad_exponenciales")).toBe(true);
+    // The feedback entry must be useful (non-empty message).
+    const entry = feedback.find((m) => m.errorTag === "u3_igualdad_exponenciales");
+    expect(entry, "u3_igualdad_exponenciales feedback entry must exist").toBeDefined();
+    expect(entry!.message.length).toBeGreaterThan(0);
   });
 });

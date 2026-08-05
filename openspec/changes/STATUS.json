@@ -25,6 +25,13 @@
       "companionIssues": [82, 83],
       "summary": "Align Unit 3 symbolic/core practice with canonical exercises using explicit difficulty progression, structured inputs, and optional challenges at or above canonical maximum."
     },
+"expand-u3-exponentials": {
+      "status": "in-progress",
+      "branch": "sdd/expand-u3-exponentials",
+      "startedAt": "2026-07-13",
+      "cleanBase": "e553648079cd7b6f9864683d4ab4d694b4f6a8e7",
+      "summary": "Expand mat.u3.exponenciales practice bank toward parity with the canonical UTN 2025 P39 benchmark (17 exponential equations a-q). Measured baseline: 4 exercises (difficulty 1,1,3,3; all same-base equalization; types MC + numerical; no commonErrorTags). Target: ~17 exercises covering ≥8 of the 10 P39 techniques (substitution t = a^x, different bases, identity-based, quadratic exponent, sum factoring, radical-base, etc.), difficulty ramp 1..5, commonErrorTags wired through the u3_igualdad_exponenciales taxonomy. Append-only on unit-3.json for mat.u3.exponenciales; no edits to other skills, no absorb of blocked align-u3 / recuperar-u3 work; proof of reachability + rendering required (not just JSON presence)."
+    },
     "apply-math-watermark-globally": {
       "status": "done",
       "branch": null,

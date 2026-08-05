@@ -249,6 +249,68 @@ describe("Unit-3 catalog composition", () => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// WU 3 evidence (expand-u3-exponentials): loader surface for the FINAL
+// 17-item bank. See openspec/changes/expand-u3-exponentials/specs/practice-coverage
+// for the bank-size and threshold contracts.
+// ---------------------------------------------------------------------------
+describe("u3-exponenciales — FINAL 17-item loader evidence (WU 3)", () => {
+  test("loadExercisesForSkill returns exactly 17 items for mat.u3.exponenciales", () => {
+    const bank = loadExercisesForSkill("mat.u3.exponenciales");
+    expect(bank).toHaveLength(17);
+  });
+
+  test("loadSkillBank returns a non-empty bank with no WU 3-specific diagnostics for mat.u3.exponenciales", () => {
+    const bank = loadSkillBank("mat.u3.exponenciales");
+    expect(bank.exercises.length).toBeGreaterThan(0);
+    expect(bank.exercises.length).toBe(17);
+    expect(Array.isArray(bank.diagnostics)).toBe(true);
+    // No NEW diagnostics introduced by the WU 1 + WU 2 + WU 3 expansion.
+    // Pre-existing U1 category-coverage diagnostics are not relevant to
+    // the U3 exponenciales bank. The WU 3 expansion must not add
+    // diagnostics that mention the U3 exponenciales skill or any of
+    // the 13 new entry IDs.
+    const wu3Relevant = bank.diagnostics.filter(
+      (d) =>
+        d.includes("mat.u3.exponenciales") ||
+        d.includes("ex.u3.exponenciales.0") ||
+        d.includes("ex.u3.exponenciales.1") ||
+        /ex\.u3\.exponenciales\.(03|6|7|8|9|1[0-7])/.test(d),
+    );
+    expect(
+      wu3Relevant,
+      `WU 3 introduced diagnostics: ${JSON.stringify(wu3Relevant)}`,
+    ).toEqual([]);
+  });
+
+  test("UNIT_THRESHOLDS['unit-3'] is still 24 (U3 unit-threshold non-regression)", () => {
+    expect(UNIT_THRESHOLDS["unit-3"]).toBe(24);
+    expect(getUnitThreshold("unit-3")).toBe(24);
+  });
+
+  test("loadCatalog still satisfies the U3 unit threshold after the expansion", () => {
+    const catalog = loadCatalog();
+    const u3 = catalog.filter((e) => e.unit === 3);
+    expect(u3.length).toBeGreaterThanOrEqual(24);
+  });
+
+  test("queryByUnit(3) returns the full U3 bank including the 13 new exponenciales entries", () => {
+    const u3 = queryByUnit(3);
+    const expo = u3.filter((e) => e.skillId === "mat.u3.exponenciales");
+    expect(expo.length).toBe(17);
+    // Spot-check that all 5 WU 3 entries are present.
+    for (const id of [
+      "ex.u3.exponenciales.13",
+      "ex.u3.exponenciales.14",
+      "ex.u3.exponenciales.15",
+      "ex.u3.exponenciales.16",
+      "ex.u3.exponenciales.17",
+    ]) {
+      expect(expo.find((e) => e.id === id), id).toBeDefined();
+    }
+  });
+});
+
 describe("u3-visualizaciones-pedagogicas — content shape", () => {
   const TARGET_SKILLS: readonly string[] = [
     "mat.u3.inecuaciones_lineales",
