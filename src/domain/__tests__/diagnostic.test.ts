@@ -306,19 +306,6 @@ describe("selectBalancedSet — diagnostic type safety (WU-9)", () => {
     expect(exercise.options!.length).toBeGreaterThanOrEqual(2);
     expect(exercise.options).toContain(exercise.expectedAnswer);
   });
-
-  test("ex.u5.circunferencia_trigonometrica.1 is multiple-choice with correct option in the real catalog", () => {
-    const catalog = loadCatalog();
-    const exercise = catalog.find((e) => e.id === "ex.u5.circunferencia_trigonometrica.1");
-
-    expect(exercise).toBeDefined();
-    if (!exercise) return;
-
-    expect(exercise.type).toBe("multiple-choice");
-    expect(exercise.options).toBeDefined();
-    expect(exercise.options!.length).toBeGreaterThanOrEqual(2);
-    expect(exercise.options).toContain(exercise.expectedAnswer);
-  });
 });
 
 // ── isExerciseReliable — diagnostic filtering ─────────────────────────────
@@ -383,22 +370,21 @@ describe("isExerciseReliable — excludes exercises with unreliable evaluation",
     expect(isExerciseReliable(exercise)).toBe(true);
   });
 
-  test("real catalog exercises are all reliable", () => {
+  test("real catalog has no unreliable exercises (numerical/MC are reliable; structured is intentionally excluded from placement)", () => {
     const catalog = loadCatalog();
-    const unreliable = catalog.filter((e) => !isExerciseReliable(e));
+    const unreliable = catalog.filter(
+      (e) => !isExerciseReliable(e) && e.type !== "structured",
+    );
     expect(
       unreliable,
       `Unexpected unreliable exercises: ${unreliable.map((e) => `${e.id} (${e.type})`).join(", ")}`
     ).toHaveLength(0);
-  });
-
-  test("ex.u5.radianes.1 is reliable after migration to structured multiple-choice", () => {
-    const catalog = loadCatalog();
-    const exercise = catalog.find((e) => e.id === "ex.u5.radianes.1");
-    expect(exercise).toBeDefined();
-    if (!exercise) return;
-    expect(exercise.type).toBe("multiple-choice");
-    expect(isExerciseReliable(exercise)).toBe(true);
+    // Structured exercises are intentionally excluded from placement
+    // (placement is placement-only flow; structured controls require
+    // multi-field input placement does not exercise). The diagnostic set
+    // must never include them.
+    const structured = catalog.filter((e) => e.type === "structured");
+    expect(structured.length).toBeGreaterThan(0); // confirms the U5-02 packet is present
   });
 });
 
@@ -456,20 +442,24 @@ describe("selectBalancedSet — excludes unreliable exercises from diagnostic", 
     }
   });
 
-  test("real catalog diagnostic includes exercises from unit 5 after the radianes migration", () => {
+  test("real catalog diagnostic contains no STRUCTURED Unit 5 exercises (diagnostic excludes unreliable types)", () => {
+    // Unit 5 (medición de ángulos y arcos) shipped in U5-02 with both
+    // structured and numerical exercises. The diagnostic set explicitly
+    // excludes structured exercises (SAFE_DIAGNOSTIC_TYPES = MC / TF /
+    // numerical). Numerical U5 items (1c, 1d, 2r) are eligible IF the
+    // balanced-selection algorithm picks them; in this catalog the
+    // diagnostic only contains exercises from units 1–3 so the assertion
+    // is "no U5 item slipped through" (matches the existing shape).
     const catalog = loadCatalog();
     const result = selectBalancedSet(catalog);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
-    const u5Exercises = result.exercises.filter((e) =>
-      e.skillId.match(/^mat\.u5\./)
+    const u5Structured = result.exercises.filter(
+      (e) => e.skillId.match(/^mat\.u5\./) && e.type === "structured",
     );
-    // ex.u5.radianes.1 is now reliable, but deterministic difficulty/id ordering
-    // still picks earlier unit-5 exercises for the balanced diagnostic slice.
-    expect(u5Exercises.length).toBeGreaterThanOrEqual(1);
-    expect(u5Exercises.every((e) => e.id !== "ex.u5.radianes.1")).toBe(true);
+    expect(u5Structured).toHaveLength(0);
   });
 
   test("multiple-choice with undefined options is unreliable", () => {

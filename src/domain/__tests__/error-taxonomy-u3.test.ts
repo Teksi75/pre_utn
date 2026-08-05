@@ -5,7 +5,7 @@
  *   - U3-TAG-001: 8 u3_* tags are present, one per U3 skill
  *   - U3-TAG-002: each tag passes validation (id, unit=3, description, examples)
  *   - U3-TAG-003: no duplicate tag IDs after the additions
- *   - MODIFIED: taxonomy must still have at least 2 tags per unit
+ *   - MODIFIED: retired provisional U5 tags must not remain active
  */
 
 import { describe, test, expect } from "vitest";
@@ -88,7 +88,7 @@ describe("U3 error taxonomy — U3-TAG-002 (each tag passes validation)", () => 
   });
 });
 
-describe("U3 error taxonomy — U3-TAG-003 (no duplicates, coverage preserved)", () => {
+describe("U3 error taxonomy — U3-TAG-003 (no duplicates, U5 retirement preserved)", () => {
   test("taxonomy has no duplicate IDs after adding U3 tags", () => {
     const taxonomy = loadTaxonomy();
     const ids = taxonomy.map((t) => t.id);
@@ -96,11 +96,13 @@ describe("U3 error taxonomy — U3-TAG-003 (no duplicates, coverage preserved)",
     expect(uniqueIds.size).toBe(ids.length);
   });
 
-  test("each unit still has at least 2 tags (coverage contract preserved)", () => {
+  test("retired provisional Unit 5 tags do not remain active", () => {
     const taxonomy = loadTaxonomy();
-    for (let unit = 1; unit <= 6; unit++) {
-      const count = taxonomy.filter((t) => t.unit === unit).length;
-      expect(count, `Unit ${unit} should have >= 2 tags`).toBeGreaterThanOrEqual(2);
+    const activeIds = taxonomy.map((tag) => tag.id);
+    for (const retiredTagId of ["u5_cuadrante_angulo", "u5_identidad_pitagorica"]) {
+      expect(activeIds, `Retired provisional tag ${retiredTagId} must not remain active`).not.toContain(
+        retiredTagId
+      );
     }
   });
 });
@@ -165,4 +167,68 @@ describe("U3 error taxonomy — PR 1 modeling tags", () => {
       expect(tag!.examples.length).toBeGreaterThan(0);
     });
   }
+});
+
+describe("U3 error taxonomy — PR2 u3_racionalizacion_irracional (additive, 12 → 13)", () => {
+  test("u3_racionalizacion_irracional has the canonical ErrorTag contract", () => {
+    const tag = lookupTag("u3_racionalizacion_irracional")!;
+    expect([tag.id, tag.unit, tag.description.trim().length > 10, tag.examples.length >= 2]).toEqual(["u3_racionalizacion_irracional", 3, true, true]);
+  });
+
+  test("U3 taxonomy contains exactly 13 declared u3_* tags after PR2 (12 baseline + 1 new)", () => {
+    expect(filterByUnit(3).map((t) => t.id).sort()).toEqual([
+      "u3_aislamiento_incorrecto", "u3_direccion_desigualdad", "u3_dos_valores_absoluto", "u3_factorizacion_cuadratica",
+      "u3_igualdad_exponenciales", "u3_interpretacion_contextual_incorrecta", "u3_pendiente_o_ordenada",
+      "u3_propiedad_logaritmo", "u3_racionalizacion_irracional", "u3_signo_desigualdad",
+      "u3_sustitucion_o_eliminacion", "u3_traduccion_incorrecta", "u3_verificacion_omitida",
+    ]);
+  });
+
+  test("ErrorTag contract preserved (U3-TAG-002): NO 'label' property on any declared U3 tag", () => {
+    const all = [...SPEC_U3_TAGS, ...PR1_MODELING_TAGS, "u3_racionalizacion_irracional", "u3_direccion_desigualdad"];
+    for (const tagId of all) {
+      expect(Object.prototype.hasOwnProperty.call(lookupTag(tagId) as unknown as Record<string, unknown>, "label"), `${tagId} must NOT have 'label'`).toBe(false);
+    }
+  });
+});
+
+/**
+ * fix/u3-release-contract-alignment — Finding 2: the `u3_racionalizacion_irracional`
+ * taxonomy examples BOTH showed wrong answers (skipped / sign-flipped). The approved
+ * spec (math-error-taxonomy/spec.md, scenario U3LIN-TAG-001) requires
+ * `examples` to "contain at least one wrong and one correct answer".
+ *
+ * Red test asserts the corrected contract: at least one example demonstrates an
+ * INCORRECT student resolution AND at least one example demonstrates a CORRECT
+ * rationalized result. The ErrorTag shape is preserved (no `label` widening).
+ */
+describe("fix-u3-release-contract-alignment: u3_racionalizacion_irracional examples split (wrong + correct)", () => {
+  const tag = lookupTag("u3_racionalizacion_irracional")!;
+
+  test("(a) ErrorTag shape preserved: { id, unit, description, examples } — no `label` widening", () => {
+    expect(Object.keys(tag).sort()).toEqual(["description", "examples", "id", "unit"]);
+    expect(tag.id).toBe("u3_racionalizacion_irracional");
+    expect(tag.unit).toBe(3);
+  });
+
+  test("(b) at least one example demonstrates an incorrect student resolution", () => {
+    const wrong = tag.examples.find(
+      (ex) => /sin\s+racionalizar|racionalizaci[oó]n\s+mal|signo\s+invertido|equivocad|retene|deja\s*el\s*radical/i.test(ex),
+    );
+    expect(wrong, "must have at least one example showing a wrong rationalization").toBeDefined();
+  });
+
+  test("(c) at least one example demonstrates a CORRECT rationalized resolution", () => {
+    // Correct example must show the actual rationalized form (no retained radical
+    // in the denominator), not just a meta-comment about rationalization.
+    // The correct rationalization of (2 + √3) / (2 − √3) is 7 + 4√3.
+    const correct = tag.examples.find(
+      (ex) => /7\s*\+\s*4\s*√\s*3|7\s*\+\s*4\s*√\s*3$/.test(ex),
+    );
+    expect(correct, "must have at least one example showing the correct rationalized form 7 + 4√3").toBeDefined();
+  });
+
+  test("(d) spec contract: examples.length is >= 2", () => {
+    expect(tag.examples.length).toBeGreaterThanOrEqual(2);
+  });
 });

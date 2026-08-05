@@ -8,6 +8,7 @@ const EXERCISE_TYPE_LABELS: Record<ExerciseType, string> = {
   matching: "Relacionar conceptos",
   ordering: "Ordenar pasos",
   graphical: "Respuesta gráfica",
+  structured: "Respuesta estructurada",
 };
 
 export function getExerciseTypeLabel(type: ExerciseType): string {

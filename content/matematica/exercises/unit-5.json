@@ -1,0 +1,193 @@
+[
+  {
+    "id": "ex.u5.medicion_angulos_y_arcos.1a",
+    "skillId": "mat.u5.medicion_angulos_y_arcos",
+    "type": "structured",
+    "difficulty": 1,
+    "prompt": "Convertir $36^{\\circ}$ a radianes. Indicá el múltiplo de $\\pi$ (numerador y denominador) y el valor decimal, con tolerancia $0{,}0001$.",
+    "expectedAnswer": "$\\dfrac{\\pi}{5}$ rad $\\approx 0{,}6283$",
+    "commonErrorTags": ["u5_degree_radian_factor"],
+    "pedagogicalNote": "Conversión de grados a radianes con factor $\\dfrac{\\pi}{180}$: $36 \\cdot \\dfrac{\\pi}{180} = \\dfrac{\\pi}{5}$. La fracción se reduce por MCD 36 entre 180.",
+    "answerSpec": {
+      "kind": "pi-rational",
+      "expected": { "numerator": 1, "denominator": 5 },
+      "decimal": 0.6283,
+      "tolerance": 0.0001
+    },
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_practica.pdf",
+        "section": "p. 3 — Ítem 1.a (36° → π/5 rad)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Ejercicio individual de conversión directa: aplica factor π/180 sin paso intermedio."
+      },
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_matematica.pdf",
+        "section": "pp. 7–9 — Equivalencia $180° = π$ rad",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Citado por la teoría: equivalencia canónica entre ambos sistemas."
+      }
+    ]
+  },
+  {
+    "id": "ex.u5.medicion_angulos_y_arcos.1b",
+    "skillId": "mat.u5.medicion_angulos_y_arcos",
+    "type": "structured",
+    "difficulty": 1,
+    "prompt": "Convertir $225^{\\circ}$ a radianes. Indicá el múltiplo de $\\pi$ (numerador y denominador) y el valor decimal, con tolerancia $0{,}0001$.",
+    "expectedAnswer": "$\\dfrac{5\\pi}{4}$ rad $\\approx 3{,}9269$",
+    "commonErrorTags": ["u5_degree_radian_factor"],
+    "pedagogicalNote": "Conversión de grados a radianes: $225 \\cdot \\dfrac{\\pi}{180} = \\dfrac{5\\pi}{4}$. Reducción por MCD 45 entre 180.",
+    "answerSpec": {
+      "kind": "pi-rational",
+      "expected": { "numerator": 5, "denominator": 4 },
+      "decimal": 3.9269,
+      "tolerance": 0.0001
+    },
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_practica.pdf",
+        "section": "p. 3 — Ítem 1.b (225° → 5π/4 rad)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Variante de 1.a con numerador mayor que denominador: reduce por MCD 45 entre 180."
+      },
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_matematica.pdf",
+        "section": "pp. 7–9 — Equivalencia $180° = π$ rad",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Misma equivalencia canónica que en 1.a."
+      }
+    ]
+  },
+  {
+    "id": "ex.u5.medicion_angulos_y_arcos.1c",
+    "skillId": "mat.u5.medicion_angulos_y_arcos",
+    "type": "numerical",
+    "difficulty": 2,
+    "prompt": "Convertir $\\dfrac{3\\pi}{4}$ rad a grados.",
+    "expectedAnswer": "135",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Conversión de radianes a grados: $\\dfrac{3\\pi}{4} \\cdot \\dfrac{180}{\\pi} = 135^{\\circ}$. El factor $\\dfrac{180}{\\pi}$ deshace la conversión anterior. Se mantiene como ejercicio numérico escalar porque su forma de respuesta es un único grado entero.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_practica.pdf",
+        "section": "p. 3 — Ítem 1.c (3π/4 → 135°)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Variante numérica de la tabla: la respuesta es un escalar entero, no un múltiplo de π."
+      },
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_matematica.pdf",
+        "section": "pp. 7–9 — Equivalencia $180° = π$ rad",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Mismo anclaje teórico que 1.a/1.b."
+      }
+    ]
+  },
+  {
+    "id": "ex.u5.medicion_angulos_y_arcos.1d",
+    "skillId": "mat.u5.medicion_angulos_y_arcos",
+    "type": "numerical",
+    "difficulty": 3,
+    "prompt": "Convertir $2{,}3456$ rad a grados (con precisión de $0{,}0001^{\\circ}$).",
+    "expectedAnswer": "134.392980",
+    "commonErrorTags": [],
+    "pedagogicalNote": "Conversión numérica: $2{,}3456 \\cdot \\dfrac{180}{\\pi} \\approx 134{,}392980^{\\circ}$. La tolerancia $0{,}0001$ exige precisión hasta el sexto decimal.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_practica.pdf",
+        "section": "p. 3 — Ítem 1.d (2.3456 rad → 134.392980°)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Caso no canónico (no múltiplo racional de π): demuestra que la conversión funciona para cualquier radian."
+      },
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_matematica.pdf",
+        "section": "pp. 7–9 — Equivalencia $180° = π$ rad",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Mismo anclaje teórico que 1.a–1.c."
+      }
+    ]
+  },
+  {
+    "id": "ex.u5.medicion_angulos_y_arcos.2r",
+    "skillId": "mat.u5.medicion_angulos_y_arcos",
+    "type": "numerical",
+    "difficulty": 3,
+    "prompt": "Una cuerda subtiende un arco de 6 cm sobre una circunferencia de radio 30 cm. Expresá el ángulo en radianes (valor numérico escalar).",
+    "expectedAnswer": "0.2",
+    "commonErrorTags": [],
+    "pedagogicalNote": "$\\alpha = s/r = 6/30 = 1/5 = 0{,}2$ rad. La parte radianes del ítem 2 se modela como ejercicio numérico escalar: $1/5$ rad NO es un múltiplo racional de $\\pi$, así que NO se modela como pi-rational. Esto corrige el error de U5-00 que rotulaba el ítem como múltiplo de π.",
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_practica.pdf",
+        "section": "p. 3 — Ítem 2 (parte radianes: 0.2 rad)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Parte numérica escalar del ítem 2 (no múltiplo racional de π)."
+      },
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_matematica.pdf",
+        "section": "pp. 7–9 — Fórmula del arco $s = r\\alpha$",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Citado por la teoría: el ángulo en radianes sale de la fórmula del arco."
+      }
+    ]
+  },
+  {
+    "id": "ex.u5.medicion_angulos_y_arcos.2d",
+    "skillId": "mat.u5.medicion_angulos_y_arcos",
+    "type": "structured",
+    "difficulty": 4,
+    "prompt": "Expresá el ángulo del ítem anterior en grados, minutos y segundos (redondeo al segundo más cercano, tolerancia $0{,}5''$).",
+    "expectedAnswer": "$11^{\\circ}\\, 27'\\, 33''$",
+    "commonErrorTags": ["u5_dms_conversion"],
+    "pedagogicalNote": "Conversión a DMS: $0{,}2 \\cdot \\dfrac{180}{\\pi} \\approx 11{,}459166^{\\circ}$. Separando grados, minutos y segundos con redondeo al segundo más cercano, se obtiene $11^{\\circ}\\, 27'\\, 33''$. La tolerancia $0{,}5$ arc-sec es la holgura del corrector automático.",
+    "answerSpec": {
+      "kind": "angle-dms",
+      "expected": { "degrees": 11, "minutes": 27, "seconds": 33 },
+      "tolerance": 0.5
+    },
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_practica.pdf",
+        "section": "p. 3 — Ítem 2 (parte DMS: 11° 27′ 33″)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Parte DMS del ítem 2: modela el redondeo al segundo más cercano."
+      },
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_matematica.pdf",
+        "section": "pp. 7–9 — Conversión DMS y redondeo",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Citado por la teoría: cota de segundos y política de redondeo."
+      }
+    ]
+  },
+  {
+    "id": "ex.u5.medicion_angulos_y_arcos.3",
+    "skillId": "mat.u5.medicion_angulos_y_arcos",
+    "type": "structured",
+    "difficulty": 4,
+    "prompt": "El minutero de un reloj mide 12 cm. ¿Qué arco recorre en 20 minutos? Indicá el múltiplo de $\\pi$ y el valor decimal, con tolerancia $0{,}001$.",
+    "expectedAnswer": "$8\\pi$ cm $\\approx 25{,}1327$ cm",
+    "commonErrorTags": ["u5_arc_time_fraction"],
+    "pedagogicalNote": "Fracción de revolución: $20/60 = 1/3$. Ángulo barrido: $\\dfrac{1}{3} \\cdot 2\\pi = \\dfrac{2\\pi}{3}$ rad. Arco: $s = 12 \\cdot \\dfrac{2\\pi}{3} = 8\\pi$ cm $\\approx 25{,}1327$ cm. Error frecuente: usar 10 minutos en lugar de 20, lo que da $4\\pi$ cm.",
+    "answerSpec": {
+      "kind": "pi-rational",
+      "expected": { "numerator": 8, "denominator": 1 },
+      "decimal": 25.1327,
+      "tolerance": 0.001
+    },
+    "canonicalTrace": [
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_practica.pdf",
+        "section": "p. 3 — Ítem 3 (manecilla de reloj, 8π cm)",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Caso de aplicación: arco a partir de fracción de revolución."
+      },
+      {
+        "path": "material_canonico/Matematica/UNIDAD5_matematica.pdf",
+        "section": "pp. 7–9 — Fórmula del arco + fracción de revolución",
+        "sourceUse": "reference",
+        "pedagogicalIntent": "Citado por la teoría: combinación de $s = r\\alpha$ con $\\alpha = \\frac{\\Delta t}{T} \\cdot 2\\pi$."
+      }
+    ]
+  }
+]

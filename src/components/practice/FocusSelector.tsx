@@ -44,14 +44,13 @@ function getMasteryPillInfo(
 
 const UNITS = [1, 2, 3, 4, 5, 6] as const;
 
-const SKILLS_BY_UNIT: Record<number, readonly SkillId[]> = {
-  1: UNIT_1_SKILLS,
-  2: UNIT_2_SKILLS,
-  3: UNIT_3_SKILLS,
-  4: UNIT_4_SKILLS,
-  5: UNIT_5_SKILLS,
-  6: UNIT_6_SKILLS,
-};
+export function getUnitAvailability(
+  unit: number,
+  skillsByUnit: Readonly<Record<number, readonly SkillId[]>>
+): { readonly available: boolean; readonly activeSkillCount: number } {
+  const activeSkillCount = skillsByUnit[unit]?.length ?? 0;
+  return { available: activeSkillCount > 0, activeSkillCount };
+}
 
 interface FocusSelectorProps {
   readonly onSkillSelect: (skillId: SkillId) => void;
@@ -74,18 +73,30 @@ export function FocusSelector({
   const [selectedUnit, setSelectedUnit] = useState<number | null>(null);
   const skillRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const skillsForUnit = useMemo(() => {
-    if (selectedUnit === null) return [];
-    return SKILLS_BY_UNIT[selectedUnit] ?? [];
-  }, [selectedUnit]);
+  // Build this map on every render so catalog changes made between renders
+  // cannot leave a selected unit showing an empty skill list.
+  const skillsByUnit: Readonly<Record<number, readonly SkillId[]>> = {
+    1: UNIT_1_SKILLS,
+    2: UNIT_2_SKILLS,
+    3: UNIT_3_SKILLS,
+    4: UNIT_4_SKILLS,
+    5: UNIT_5_SKILLS,
+    6: UNIT_6_SKILLS,
+  };
+  const effectiveSelectedUnit =
+    selectedUnit !== null && getUnitAvailability(selectedUnit, skillsByUnit).available
+      ? selectedUnit
+      : null;
+  const skillsForUnit =
+    effectiveSelectedUnit === null ? [] : skillsByUnit[effectiveSelectedUnit] ?? [];
 
   // When the accessible-skills map is provided we treat a skill as
   // accessible ONLY when it appears in the map AND `accessible === true`.
   // Otherwise we fall back to the legacy `isSkillReady` (content readiness)
   // verdict so existing call sites keep working.
-  const readinessMap = useMemo(() => {
+  const readinessMap = (() => {
     const map = new Map<SkillId, { ready: boolean; missing: readonly string[] }>();
-    for (const skills of Object.values(SKILLS_BY_UNIT)) {
+    for (const skills of Object.values(skillsByUnit)) {
       for (const skillId of skills) {
         const rich = accessibleSkills?.get(skillId);
         if (rich) {
@@ -96,7 +107,7 @@ export function FocusSelector({
       }
     }
     return map;
-  }, [accessibleSkills]);
+  })();
 
   // First missing prereq label per skill, for the "Requiere: …" badge.
   // Empty when the skill is accessible or has no missing prereqs.
@@ -117,7 +128,12 @@ export function FocusSelector({
 
   function handleUnitChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const value = e.target.value;
-    setSelectedUnit(value === "" ? null : Number(value));
+    if (value === "") {
+      setSelectedUnit(null);
+      return;
+    }
+    const unit = Number(value);
+    setSelectedUnit(getUnitAvailability(unit, skillsByUnit).available ? unit : null);
   }
 
   function handleSkillClick(skillId: SkillId) {
@@ -172,16 +188,25 @@ export function FocusSelector({
         <div className="relative">
           <select
             id="unit-select"
-            value={selectedUnit ?? ""}
+            value={effectiveSelectedUnit ?? ""}
             onChange={handleUnitChange}
             className="w-full appearance-none border border-brand-300 rounded-[var(--radius-button)] pl-3 pr-9 py-2.5 text-sm bg-white text-brand-900 min-h-[44px] cursor-pointer transition-colors duration-[var(--duration-fast)] hover:border-brand-400 focus-visible:shadow-[var(--ring-focus)]"
           >
             <option value="">Seleccionar unidad...</option>
-            {UNITS.map((unit) => (
-              <option key={unit} value={unit}>
-                Unidad {unit}
-              </option>
-            ))}
+            {UNITS.map((unit) => {
+              const { available } = getUnitAvailability(unit, skillsByUnit);
+              return (
+                <option
+                  key={unit}
+                  value={unit}
+                  disabled={!available}
+                  aria-disabled={!available}
+                  className={available ? undefined : "text-brand-400 cursor-not-allowed"}
+                >
+                  {available ? `Unidad ${unit}` : `Unidad ${unit} — Próximamente`}
+                </option>
+              );
+            })}
           </select>
           <span
             aria-hidden="true"
@@ -192,7 +217,7 @@ export function FocusSelector({
         </div>
       </div>
 
-      {selectedUnit !== null && (
+      {effectiveSelectedUnit !== null && (
         <div>
           <label className="block text-sm font-semibold text-brand-700 mb-2">
             Habilidad

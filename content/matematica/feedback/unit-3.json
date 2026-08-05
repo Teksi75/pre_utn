@@ -64,5 +64,11 @@
     "type": "conceptual",
     "message": "Las propiedades de logaritmos son sistemáticamente mal aplicadas. Tres errores clásicos que tenés que evitar: (1) $\\log(a + b) \\neq \\log a + \\log b$ — el logaritmo NO distribuye sobre la suma. (2) $\\log(a \\cdot b) = \\log a + \\log b$ (SÍ), pero $\\log(a \\cdot b) \\neq \\log a \\cdot \\log b$. (3) $\\log(a^n) = n \\cdot \\log a$ (el exponente BAJA como factor), pero $\\log(a^n) \\neq (\\log a)^n$. Si dudás entre producto, suma, factor o potencia, escribí la propiedad literalmente y compará con lo que estás por hacer.",
     "recoveryTarget": "example-logaritmicas-1"
+  },
+  {
+    "errorTag": "u3_racionalizacion_irracional",
+    "type": "procedural",
+    "message": "Antes de aislar $x$ en una ecuación lineal con coeficiente irracional, RACIONALIZÁ ese coeficiente: multiplicá numerador y denominador por el conjugado del término con radical. Tres errores típicos: (1) dejás el radical en el denominador y dividís sin racionalizar — la respuesta queda con un √ que se puede eliminar. (2) Aplicás el conjugado con el signo equivocado en el √: si el coeficiente es $(a + \\sqrt{c})$, el conjugado es $(a - \\sqrt{c})$; invertir el signo del conjugado cambia el signo del término con √ en el resultado. (3) Resolvés solo el lado derecho sin dividir por el coeficiente irracional: cualquier coeficiente, racional o irracional, debe pasar al otro lado de la igualdad. Verificá siempre reemplazando el valor de $x$ en la ecuación original.",
+    "recoveryTarget": "example-ecuaciones-lineales-1"
   }
 ]

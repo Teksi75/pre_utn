@@ -1,5 +1,6 @@
 /**
- * Skill catalog — 45 mathematics skills from spec 06.
+ * Skill catalog — 39 mathematics skills (Unit 5 intentionally empty
+ * after U5-01 static retirement).
  * Each skill ID follows mat.u{1-6}.{slug} format.
  * This file is a constant-only module with no logic.
  */
@@ -56,15 +57,14 @@ export const UNIT_4_SKILLS: readonly SkillId[] = [
   "mat.u4.seno_coseno",
 ] as const;
 
-// ── Unit 5: Trigonometría ─────────────────────────────────────────────────
+// ── Unit 5: Medición de ángulos y arcos ─────────────────────────────────────
 
+// After U5-02 lands, the first live Unit 5 root skill is
+// mat.u5.medicion_angulos_y_arcos. The six retired provisional IDs from
+// U5-01 remain retired (no alias, no migration back to them); this entry
+// is purely additive.
 export const UNIT_5_SKILLS: readonly SkillId[] = [
-  "mat.u5.angulos",
-  "mat.u5.radianes",
-  "mat.u5.circunferencia_trigonometrica",
-  "mat.u5.identidades",
-  "mat.u5.ecuaciones_trigonometricas",
-  "mat.u5.complejos_forma_polar",
+  "mat.u5.medicion_angulos_y_arcos",
 ] as const;
 
 // ── Unit 6: Funciones ─────────────────────────────────────────────────────
@@ -126,9 +126,6 @@ export const SKILL_DEPENDENCIES: readonly SkillDependency[] = [
 
   { skillId: "mat.u4.pitagoras", prerequisites: ["mat.u1.potencias_raices"] },
   { skillId: "mat.u4.razones_trigonometricas", prerequisites: ["mat.u4.pitagoras"] },
-
-  { skillId: "mat.u5.ecuaciones_trigonometricas", prerequisites: ["mat.u5.identidades"] },
-  { skillId: "mat.u5.complejos_forma_polar", prerequisites: ["mat.u1.complejos", "mat.u5.radianes"] },
 
   { skillId: "mat.u6.dominio_imagen", prerequisites: ["mat.u1.intervalos"] },
   { skillId: "mat.u6.funcion_afin", prerequisites: ["mat.u3.recta"] },

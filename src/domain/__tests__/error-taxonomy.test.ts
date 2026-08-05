@@ -4,15 +4,26 @@ import type { ErrorTag } from "../models/error-tag";
 
 describe("Error Taxonomy", () => {
   describe("loadTaxonomy", () => {
-    test("loads a taxonomy with at least 2 tags per unit", () => {
+    test("loads a taxonomy with at least 2 tags per active unit", () => {
       const taxonomy = loadTaxonomy();
       expect(taxonomy).toBeInstanceOf(Array);
-      expect(taxonomy.length).toBeGreaterThanOrEqual(16); // 2 per unit × 6 units + extras
-      // Verify each unit has at least 2 tags
+      // After U5-02, every unit has ≥ 2 tags (including U5 with its 3
+      // new misconception detectors).
       for (let unit = 1; unit <= 6; unit++) {
         const unitTags = taxonomy.filter((t) => t.unit === unit);
         expect(unitTags.length).toBeGreaterThanOrEqual(2);
       }
+    });
+
+    test("Unit 5 has three declared tags (u5_degree_radian_factor, u5_dms_conversion, u5_arc_time_fraction)", () => {
+      const taxonomy = loadTaxonomy();
+      const u5Tags = taxonomy.filter((t) => t.unit === 5);
+      const ids = u5Tags.map((t) => t.id).sort();
+      expect(ids).toEqual([
+        "u5_arc_time_fraction",
+        "u5_degree_radian_factor",
+        "u5_dms_conversion",
+      ]);
     });
 
     test("taxonomy contains unique tag IDs", () => {
@@ -138,8 +149,9 @@ describe("Error Taxonomy", () => {
         "u4_suma_angulos",
       ]);
       expect(tagsByUnit.get(5)?.map((tag) => tag.id)).toEqual([
-        "u5_cuadrante_angulo",
-        "u5_identidad_pitagorica",
+        "u5_degree_radian_factor",
+        "u5_dms_conversion",
+        "u5_arc_time_fraction",
       ]);
       expect(tagsByUnit.get(6)?.map((tag) => tag.id)).toEqual([
         "u6_dominio_funcion",

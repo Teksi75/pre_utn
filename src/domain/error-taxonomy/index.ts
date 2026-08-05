@@ -961,6 +961,19 @@ const TAXONOMY: readonly ErrorTag[] = [
     ],
   },
 
+  // PR2 (recuperar-u3-ecuaciones-lineales): 13th U3 tag, additive to 12-tag baseline.
+  {
+    id: "u3_racionalizacion_irracional",
+    unit: 3,
+    description: "No racionalizar el coeficiente irracional de una ecuación lineal antes de aislar la variable.",
+    examples: [
+      // Wrong example: student skipped rationalization (retained irrational denominator).
+      "(3 + √5)·x = 14 + 6√5 → x = (14 + 6√5) / (3 + √5) sin racionalizar primero",
+      // Correct example: rationalized result of (2 + √3) / (2 − √3) by the conjugate (2 + √3).
+      "x = (2 + √3) / (2 − √3) → 7 + 4√3 después de multiplicar numerador y denominador por el conjugado (2 + √3)",
+    ],
+  },
+
   // Unit 4: Geometry and measures
   {
     id: "u4_formula_area",
@@ -983,25 +996,38 @@ const TAXONOMY: readonly ErrorTag[] = [
     ],
   },
 
-  // Unit 5: Trigonometry
+  // Unit 5: Medición de ángulos y arcos — first live U5 packet (U5-02).
+  // Three misconception tags backed by the U5-02 spec and the dedicated
+  // detectors in src/domain/evaluator/error-tagging.ts. None reveals
+  // the final answer; recovery targets point at the matching concept.
   {
-    id: "u5_cuadrante_angulo",
+    id: "u5_degree_radian_factor",
     unit: 5,
     description:
-      "Error al ubicar un ángulo en la circunferencia trigonométrica: confunde cuadrantes o sentido de giro.",
+      "Error al convertir entre grados y radianes: invierte el factor $180^{\\circ} = \\pi$ rad. La conversión grados → radianes usa $\\dfrac{\\pi}{180}$ y radianes → grados usa $\\dfrac{180}{\\pi}$. Aplica a los ítems 1.a y 1.b.",
     examples: [
-      "Ubicar 300° en el primer cuadrante en vez del cuarto",
-      "Leer 210° como si estuviera entre 0° y 90°",
+      "Convertir $36^{\\circ}$ como $36 \\cdot \\dfrac{180}{\\pi}$ radianes en vez de $36 \\cdot \\dfrac{\\pi}{180}$",
+      "Convertir $225^{\\circ}$ como $\\dfrac{225}{180}\\pi$ invertido en signo o numerador",
     ],
   },
   {
-    id: "u5_identidad_pitagorica",
+    id: "u5_dms_conversion",
     unit: 5,
     description:
-      "Error al aplicar identidades trigonométricas básicas: reemplaza sen²(θ)+cos²(θ) por una expresión no equivalente.",
+      "Error en la conversión DMS: acarreo mal hecho (segundos o minutos ≥ 60), redondeo al segundo mal aplicado, o tolerancia excedida. Aplica al ítem 2.d.",
     examples: [
-      "Escribir sen²(θ)+cos²(θ)=2 en vez de 1",
-      "Tratar sen²(θ)+cos²(θ) como (sen(θ)+cos(θ))²",
+      "Reportar $11^{\\circ}\\, 27'\\, 32''$ sin verificar que la tolerancia $0{,}5''$ lo acepte",
+      "Olvidar el acarreo y reportar minutos $\\geq 60$ o segundos $\\geq 60$",
+    ],
+  },
+  {
+    id: "u5_arc_time_fraction",
+    unit: 5,
+    description:
+      "Error en la fracción de revolución al calcular el arco: usa la mitad del intervalo de tiempo (o invierte numerador y denominador) y produce la mitad del valor esperado. Aplica al ítem 3.",
+    examples: [
+      "Reportar $4\\pi$ cm cuando el minutero recorrió 20 min en lugar de $8\\pi$ cm (mitad del tiempo)",
+      "Usar $\\dfrac{T}{\\Delta t}$ en vez de $\\dfrac{\\Delta t}{T}$ en la fórmula del arco",
     ],
   },
 
@@ -1043,8 +1069,11 @@ export function loadTaxonomy(): ErrorTag[] {
     throw new Error(`Duplicate error tag IDs: ${[...new Set(duplicates)].join(", ")}`);
   }
 
-  // Validate coverage per unit
+  // Validate coverage per unit. Unit 5 is intentionally empty after the
+  // U5-01 static retirement of the provisional Unit 5 catalog; its tag
+  // coverage check is skipped.
   for (let unit = 1; unit <= 6; unit++) {
+    if (unit === 5) continue;
     const unitTags = TAXONOMY.filter((t) => t.unit === unit);
     if (unitTags.length < 2) {
       throw new Error(`Unit ${unit} has only ${unitTags.length} error tags; requires at least 2`);

@@ -98,6 +98,9 @@ function extractUnit(skillId: string): number {
  * Reliability rules:
  * - `numerical` exercises must have a parseable finite numeric expected answer
  * - `multiple-choice` exercises must have ≥3 options containing the expected answer
+ * - `structured` exercises are excluded from placement (placement is a
+ *   placement-only flow; structured controls require per-item multi-field
+ *   input that placement does not exercise)
  * - All other types are considered reliable by default
  */
 export function isExerciseReliable(exercise: Exercise): boolean {
@@ -112,6 +115,10 @@ export function isExerciseReliable(exercise: Exercise): boolean {
     if (!exercise.options.map(getExerciseOptionValue).includes(exercise.expectedAnswer)) {
       return false;
     }
+  }
+
+  if (exercise.type === "structured") {
+    return false;
   }
 
   return true;

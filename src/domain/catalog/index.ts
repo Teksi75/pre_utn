@@ -29,6 +29,7 @@ import _exercisesJson from "../../../content/matematica/exercises.json";
 import _unit1Exercises from "../../../content/matematica/exercises/unit-1.json";
 import _unit2Exercises from "../../../content/matematica/exercises/unit-2.json";
 import _unit3Exercises from "../../../content/matematica/exercises/unit-3.json";
+import _unit5Exercises from "../../../content/matematica/exercises/unit-5.json";
 import _conjuntosNumericosExercises from "../../../content/matematica/exercises/conjuntos-numericos.json";
 
 /** Skill IDs that have dedicated per-skill exercise files. */
@@ -72,6 +73,7 @@ function getComposedExercises(): readonly Exercise[] {
   addExercises(_unit1Exercises, "unit-1", PER_SKILL_SKILL_IDS);
   addExercises(_unit2Exercises, "unit-2", PER_SKILL_SKILL_IDS);
   addExercises(_unit3Exercises, "unit-3", PER_SKILL_SKILL_IDS);
+  addExercises(_unit5Exercises, "unit-5", PER_SKILL_SKILL_IDS);
 
   // Main catalog (u3-u6, plus any u1/u2 not in unit files).
   // Exclude exercises whose skillId has a dedicated per-skill file.

@@ -1,0 +1,20 @@
+[
+  {
+    "errorTag": "u5_degree_radian_factor",
+    "type": "corrective",
+    "message": "El factor de conversión entre grados y radianes es $180^{\\circ} = \\pi$ rad. Para pasar de grados a radianes se multiplica por $\\dfrac{\\pi}{180}$ y para pasar de radianes a grados se multiplica por $\\dfrac{180}{\\pi}$. Si el resultado de tu conversión \"se agrandó\" cuando pasaste de grados a radianes (o al revés cuando pasaste a grados), el factor está invertido. Vuelve a la equivalencia $180^{\\circ} = \\pi$ rad y reescribí la conversión con el factor correcto antes de continuar.",
+    "recoveryTarget": "theory-medicion-angulos-y-arcos"
+  },
+  {
+    "errorTag": "u5_dms_conversion",
+    "type": "procedural",
+    "message": "La conversión DMS requiere tres pasos en orden: (1) los grados enteros vienen de la parte entera del decimal; (2) los minutos salen de multiplicar la parte fraccionaria residual por 60; (3) los segundos salen de multiplicar la parte fraccionaria residual de los minutos por 60 y REDONDEAR al entero más cercano. Si tu respuesta quedó fuera de la tolerancia, revisá el acarreo (segundos $\\geq 60$ se llevan a minutos) y la política de redondeo antes de reintentar.",
+    "recoveryTarget": "theory-medicion-angulos-y-arcos"
+  },
+  {
+    "errorTag": "u5_arc_time_fraction",
+    "type": "procedural",
+    "message": "Para problemas de arco a partir del tiempo (manecillas, poleas, ruedas), la cadena correcta es: (1) calcular la fracción de revolución $\\dfrac{\\Delta t}{T}$; (2) multiplicarla por $2\\pi$ para obtener el ángulo en radianes; (3) multiplicar el ángulo por el radio $r$ para obtener el arco. Si te quedó la mitad del valor esperado, probablemente usaste la mitad del tiempo (o invertiste numerador y denominador de la fracción). Volvé a leer el enunciado y verificá qué intervalo de tiempo se está usando.",
+    "recoveryTarget": "theory-medicion-angulos-y-arcos"
+  }
+]

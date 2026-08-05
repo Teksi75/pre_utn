@@ -1,0 +1,55 @@
+[
+  {
+    "logicalSourceId": "mat.u5.theory",
+    "observedFilename": "UNIDAD5_matem\u00e1tica.pdf",
+    "pageCount": 20,
+    "sha256": "75255244e1c6fbd99813b4a34d7910df8fea30713d07852c928f3940064e3cd6",
+    "materialEvidence": [
+      "openspec/changes/u5-00-unit-5-foundation/exploration.md#canonical-evidence-receipt"
+    ],
+    "use": "Canonical U5 concepts and terminology"
+  },
+  {
+    "logicalSourceId": "mat.u5.practice",
+    "observedFilename": "05_ej_utn.pdf",
+    "pageCount": 7,
+    "sha256": "49b8dd5c671cec28398bc58d3a6132368cb11476a6a619e384d9fe1f50628575",
+    "materialEvidence": [
+      "openspec/changes/u5-00-unit-5-foundation/exploration.md#canonical-evidence-receipt",
+      "openspec/changes/u5-00-unit-5-foundation/specs/math-exercise-catalog/spec.md"
+    ],
+    "use": "Canonical breadth, progression, and exercise structure"
+  },
+  {
+    "logicalSourceId": "mat.u5.practice",
+    "observedFilename": "05_ej_utn.pdf",
+    "pageCount": 7,
+    "sha256": "49b8dd5c671cec28398bc58d3a6132368cb11476a6a619e384d9fe1f50628575",
+    "materialEvidence": [
+      "openspec/changes/u5-00-unit-5-foundation/exploration.md#canonical-evidence-receipt"
+    ],
+    "use": "Duplicate verification only"
+  },
+  {
+    "logicalSourceId": "mat.exam.theme1",
+    "observedFilename": "TEMA I RESOLUCI\u00d3N.pdf",
+    "pageCount": 6,
+    "sha256": "7395cc96f55c39820a29f51c3021f3c09321756cae3b1312eec0d77365a51c3e",
+    "materialEvidence": [
+      "openspec/changes/u5-00-unit-5-foundation/exploration.md#canonical-evidence-receipt",
+      "openspec/changes/u5-00-unit-5-foundation/specs/math-exercise-catalog/spec.md"
+    ],
+    "use": "Mathematics Theme I, 25/10/23: examinable prompts plus handwritten reasoning"
+  },
+  {
+    "logicalSourceId": "mat.exam.theme2",
+    "observedFilename": "TEMA II RESOLUCI\u00d3N.pdf",
+    "pageCount": 7,
+    "sha256": "94c0531e1c6cc7f5b03c7c0cccb5420b92b462ce6f655154adda984257661be9",
+    "materialEvidence": [
+      "openspec/changes/u5-00-unit-5-foundation/exploration.md#canonical-evidence-receipt",
+      "openspec/changes/u5-00-unit-5-foundation/specs/math-exercise-catalog/spec.md"
+    ],
+    "use": "Mathematics Theme II, 25/10/23: examinable prompts plus handwritten reasoning"
+  }
+]

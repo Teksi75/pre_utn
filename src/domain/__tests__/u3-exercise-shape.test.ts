@@ -210,6 +210,7 @@ describe("U3 exercise shape — commonErrorTags only for declared u3_* tags", ()
       "u3_interpretacion_contextual_incorrecta",
       "u3_pendiente_o_ordenada",
       "u3_propiedad_logaritmo",
+      "u3_racionalizacion_irracional",
       "u3_signo_desigualdad",
       "u3_sustitucion_o_eliminacion",
       "u3_traduccion_incorrecta",
@@ -223,6 +224,38 @@ describe("U3 exercise shape — commonErrorTags only for declared u3_* tags", ()
           declared.has(tag),
           `exercise ${entry.id} uses unmapped tag "${tag}" — either add it to the declared u3_* catalog or leave commonErrorTags empty`
         ).toBe(true);
+      }
+    }
+  });
+});
+
+describe("U3 exercise shape — isolation detector reachability (PR1)", () => {
+  // The existing isU3AislamientoIncorrectoError is MC-only; before PR1 every
+  // ecuaciones_lineales exercise was numerical, so u3_aislamiento_incorrecto
+  // was unreachable. PR1 adds MC isolation items so the detector is honest.
+  test("mat.u3.ecuaciones_lineales catalog contains an MC exercise that declares u3_aislamiento_incorrecto", () => {
+    const exercises = loadExercisesForSkill("mat.u3.ecuaciones_lineales");
+    const isoMc = exercises.filter(
+      (e) =>
+        e.type === "multiple-choice" &&
+        (e.commonErrorTags ?? []).includes("u3_aislamiento_incorrecto"),
+    );
+    expect(
+      isoMc.length,
+      `mat.u3.ecuaciones_lineales must have ≥1 MC exercise with commonErrorTags containing u3_aislamiento_incorrecto (got ${isoMc.length})`,
+    ).toBeGreaterThanOrEqual(1);
+  });
+
+  test("u3_aislamiento_incorrecto is declared only on MC items (numerical items stay untagged so the MC-only detector fires cleanly)", () => {
+    // Regression guard: a numerical exercise that declares the tag would
+    // never trigger (detector is MC-only), defeating the reachability goal.
+    const exercises = loadExercisesForSkill("mat.u3.ecuaciones_lineales");
+    for (const ex of exercises) {
+      if ((ex.commonErrorTags ?? []).includes("u3_aislamiento_incorrecto")) {
+        expect(
+          ex.type,
+          `${ex.id} declares u3_aislamiento_incorrecto but is ${ex.type} (must be multiple-choice so the detector can fire)`,
+        ).toBe("multiple-choice");
       }
     }
   });

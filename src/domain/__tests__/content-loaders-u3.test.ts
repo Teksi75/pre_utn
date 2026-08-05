@@ -80,33 +80,17 @@ describe("Unit-3 content loader — RAW_REGISTRY wiring", () => {
     }
   });
 
-  test("loadFeedbackContent('unit-3') returns 11 mappings (including PR 1 modeling tags)", () => {
-    const feedback = loadFeedbackContent("unit-3");
-    expect(Array.isArray(feedback)).toBe(true);
-    expect(feedback.length).toBe(11);
+  test("loadFeedbackContent('unit-3') returns 12 mappings (PR 1 modeling 11 + PR 2 rationalization 1)", () => {
+    expect(loadFeedbackContent("unit-3").length).toBe(12);
   });
 
-  test("loadFeedbackContent('unit-3') covers declared u3_* tags plus PR 1 modeling feedback", () => {
-    const feedback = loadFeedbackContent("unit-3");
-    const tags = feedback.map((f) => f.errorTag).sort();
-    // PR 1 of fortalecer-u3-lenguaje-modelizacion-transferencia adds
-    // modeling feedback beyond setup/translation: omitted verification and
-    // contextual interpretation mismatch. The
-    // legacy `u3_direccion_desigualdad` exists in the error-taxonomy but has
-    // no feedback mapping (the legacy inequality-direction case is covered
-    // by `u3_signo_desigualdad`).
-    expect(tags).toEqual([
-      "u3_aislamiento_incorrecto",
-      "u3_dos_valores_absoluto",
-      "u3_factorizacion_cuadratica",
-      "u3_igualdad_exponenciales",
-      "u3_interpretacion_contextual_incorrecta",
-      "u3_pendiente_o_ordenada",
-      "u3_propiedad_logaritmo",
-      "u3_signo_desigualdad",
-      "u3_sustitucion_o_eliminacion",
-      "u3_traduccion_incorrecta",
-      "u3_verificacion_omitida",
+  test("loadFeedbackContent('unit-3') covers declared u3_* tags + PR 1 modeling + PR 2 rationalization", () => {
+    // Legacy u3_direccion_desigualdad has no feedback mapping; covered by u3_signo_desigualdad.
+    expect(loadFeedbackContent("unit-3").map((f) => f.errorTag).sort()).toEqual([
+      "u3_aislamiento_incorrecto", "u3_dos_valores_absoluto", "u3_factorizacion_cuadratica",
+      "u3_igualdad_exponenciales", "u3_interpretacion_contextual_incorrecta", "u3_pendiente_o_ordenada",
+      "u3_propiedad_logaritmo", "u3_racionalizacion_irracional", "u3_signo_desigualdad",
+      "u3_sustitucion_o_eliminacion", "u3_traduccion_incorrecta", "u3_verificacion_omitida",
     ]);
   });
 
@@ -1486,5 +1470,69 @@ test("1.8b each of .2/.3/.4 covers the FULL modeling chain (not only collectivel
         `practicePrompt uses an impossible triangle relation (one side triple the equal sides forces a degenerate triangle): ${prompt}`
       ).toBe(false);
     }
+  });
+});
+
+describe("U3LIN-CAT-001 — u3_aislamiento_incorrecto reachability (PR1)", () => {
+  // Spec anchor: recuperar-u3-ecuaciones-lineales/specs/math-exercise-catalog/spec.md
+  // PR1 makes the existing MC-only isU3AislamientoIncorrectoError detector
+  // reachable by adding MC isolation items to mat.u3.ecuaciones_lineales.
+  // This test reads the live catalog and proves the wiring.
+  test("U3LIN-CAT-001: mat.u3.ecuaciones_lineales loads at least one MC exercise that declares u3_aislamiento_incorrecto", () => {
+    const exercises = loadExercisesForSkill("mat.u3.ecuaciones_lineales");
+    const isoMc = exercises.filter(
+      (e) =>
+        e.type === "multiple-choice" &&
+        (e.commonErrorTags ?? []).includes("u3_aislamiento_incorrecto"),
+    );
+    expect(
+      isoMc.length,
+      `expected ≥1 MC isolation exercise in mat.u3.ecuaciones_lineales, got ${isoMc.length}`,
+    ).toBeGreaterThanOrEqual(1);
+    // The new MC items must carry 4 options so the post-subtraction distractor
+    // is one of four choices (not 2-3 ambiguous options).
+    for (const ex of isoMc) {
+      expect(ex.options, `${ex.id} must carry options`).toBeDefined();
+      expect(
+        ex.options!.length,
+        `${ex.id} needs ≥4 options for the isolation distractor to be unambiguous`,
+      ).toBeGreaterThanOrEqual(4);
+      expect(
+        ex.options!.map((opt) => (typeof opt === "string" ? opt : opt.value)),
+        `${ex.id} expectedAnswer must be in options`,
+      ).toContain(ex.expectedAnswer);
+    }
+  });
+
+  test("U3LIN-CAT-001: unit-3.json source declares u3_aislamiento_incorrecto on at least one MC item (no alias on numerical items)", () => {
+    const source = UNIT_EXERCISE_FILES[3] as readonly Record<string, unknown>[];
+    const isoMc = source.filter(
+      (e) =>
+        e.skillId === "mat.u3.ecuaciones_lineales" &&
+        e.type === "multiple-choice" &&
+        Array.isArray(e.commonErrorTags) &&
+        (e.commonErrorTags as unknown[]).includes("u3_aislamiento_incorrecto"),
+    );
+    expect(
+      isoMc.length,
+      "unit-3.json must carry an MC isolation item for mat.u3.ecuaciones_lineales",
+    ).toBeGreaterThanOrEqual(1);
+    // .6 is reserved for PR2 (P1l canonical exercise) — PR1 must NOT occupy it.
+    const ids = isoMc.map((e) => e.id as string);
+    for (const id of ids) {
+      expect(
+        id,
+        `PR1 must reserve ex.u3.ecuaciones_lineales.6 for PR2 (P1l)`,
+      ).not.toBe("ex.u3.ecuaciones_lineales.6");
+    }
+  });
+});
+describe("U3LIN-CAT-002 — P1l canonical exercise (PR2)", () => {
+  test("P1l loads as 4-option MC with adapted canonicalTrace (no verbatim, no alignment)", () => {
+    const p1l = loadExercisesForSkill("mat.u3.ecuaciones_lineales").find((e) => e.id === "ex.u3.ecuaciones_lineales.6")!;
+    expect([p1l!.type, p1l!.options!.length, p1l!.canonicalTrace![0].sourceUse]).toEqual(["multiple-choice", 4, "adapted"]);
+    expect(p1l!.options!.map((o) => (typeof o === "string" ? o : o.value))).toContain(p1l!.expectedAnswer);
+    expect(p1l!.commonErrorTags).toContain("u3_racionalizacion_irracional");
+    expect(p1l!.canonicalTrace![0].path).toMatch(/03_ej_utn\.pdf$/);
   });
 });

@@ -16,7 +16,9 @@ import {
   validateChallengeEntry,
   loadChallengesForSkill,
   loadChallengesForUnit,
+  isSpanishPedagogicalText,
 } from "../loader";
+import { loadTaxonomy } from "@/domain/error-taxonomy";
 
 // loadChallengesForSkill/Unit are thin wrappers in the domain index;
 // test loadChallengesForSkill/Unit directly (same implementation).
@@ -382,9 +384,10 @@ describe("loadChallengesForUnit", () => {
     }
   });
 
-  test("returns unit 3 modeling-transfer challenges (PR 2)", () => {
+  test("returns unit 3 modeling-transfer challenges (PR 2) + canonical-max P1l (PR 2 recuperar-u3-ecuaciones-lineales)", () => {
     const challenges = loadChallengesForUnit(3);
-    expect(challenges.length).toBe(2);
+    // 2 modeling-transfer (fortalecer-u3) + 1 P1l (recuperar-u3-ecuaciones-lineales) = 3.
+    expect(challenges.length).toBe(3);
     for (const c of challenges) {
       expect(c.skillId).toMatch(/^mat\.u3\./);
       expect(c.challengeSection).toBe(true);
@@ -451,8 +454,8 @@ describe("loadChallengesForSkill — mat.u3.traduccion_lenguaje_verbal", () => {
       .find((c) => c.id === "ex.u3.traduccion_lenguaje_verbal.desafio-02");
     expect(desafio).toBeDefined();
     const prompt = desafio!.prompt;
-    expect(prompt).toMatch(/per[ií]metro/i);
-    expect(prompt).toMatch(/triple|doble|raz[oó]n|proporci[oó]n/i);
+    expect(prompt).toMatch(/per[í]metro/i);
+    expect(prompt).toMatch(/triple|doble|raz[ó]n|proporci[ó]n/i);
     const correct = desafio!.options!.find(
       (o) => (typeof o === "string" ? o : o.value) === desafio!.expectedAnswer,
     )!;
@@ -460,5 +463,169 @@ describe("loadChallengesForSkill — mat.u3.traduccion_lenguaje_verbal", () => {
     expect(correctText).toMatch(/verifico/i);
     expect(correctText).toMatch(/4 cm/);
     expect(correctText).toMatch(/12 cm/);
+  });
+});
+
+describe("loadChallengesForSkill — mat.u3.ecuaciones_lineales (PR2 P1l challenge)", () => {
+  test("U3LIN-CHAL-001..003: challenge at d=5, 4 options, adapted sourceUse, new tag, profe-digital-free", () => {
+    const d = loadChallengesForSkill("mat.u3.ecuaciones_lineales")[0];
+    expect([d?.difficulty, d?.options!.length, d?.challengeSection, d?.category, d?.canonicalTrace.length > 0, d?.canonicalTrace.some((t) => t.sourceUse === "adapted"), d?.commonErrorTags.includes("u3_racionalizacion_irracional")]).toEqual([5, 4, true, "desafio", true, true, true]);
+    expect(d?.canonicalTrace[0].pedagogicalIntent.toLowerCase()).not.toMatch(/profe digital|tu profe|soy tu/i);
+    expect(d?.tags).toEqual(expect.arrayContaining(["desafio", "integrador"]));
+  });
+
+  test("U3LIN-CHAL-005: mat.u3.traduccion_lenguaje_verbal keeps its 2 challenges", () => {
+    expect(loadChallengesForSkill("mat.u3.traduccion_lenguaje_verbal").map((c) => c.id).sort()).toEqual([
+      "ex.u3.traduccion_lenguaje_verbal.desafio-01",
+      "ex.u3.traduccion_lenguaje_verbal.desafio-02",
+    ]);
+  });
+
+  test("U3LIN-CHAL-006: Unit 3 challenge total grows from 2 to 3 (additive)", () => {
+    const counts = Object.fromEntries(["mat.u3.ecuaciones_lineales", "mat.u3.traduccion_lenguaje_verbal"].map((s) => [s, loadChallengesForUnit(3).filter((c) => c.skillId === s).length]));
+    expect(counts).toEqual({ "mat.u3.ecuaciones_lineales": 1, "mat.u3.traduccion_lenguaje_verbal": 2 });
+  });
+});
+describe("U3 LIN-CHAL spec scenario coverage (PR2)", () => {
+  test("U3LIN-CHAL-002 (positive): P1l challenge sourceUse is NOT 'canonical-source'", () => {
+    expect(loadChallengesForSkill("mat.u3.ecuaciones_lineales")[0].canonicalTrace.map((t) => t.sourceUse)).toEqual(["adapted"]);
+  });
+
+  test("Free-text root (positive): every loaded U3 challenge is MC", () => {
+    expect(loadChallengesForUnit(3).every((c) => c.type === "multiple-choice")).toBe(true);
+  });
+
+  test("Unknown tag (positive): every loaded U3 challenge's commonErrorTags resolves in taxonomy", () => {
+    const taxonomyIds = new Set((loadTaxonomy() as unknown as Array<{ id: string }>).map((t) => t.id));
+    expect(loadChallengesForUnit(3).flatMap((c) => c.commonErrorTags ?? []).every((tag) => taxonomyIds.has(tag))).toBe(true);
+  });
+
+  test("Non-Spanish fragment (positive): P1l pedagogical fields carry Spanish markers", () => {
+    const d = loadChallengesForSkill("mat.u3.ecuaciones_lineales")[0];
+    const SPANISH = /[áéíóúñü¿¡]|racionaliz|resuelv|verific|aislad|distractor|correcto/i;
+    expect(SPANISH.test(d.pedagogicalNote) && SPANISH.test(d.canonicalTrace[0].pedagogicalIntent)).toBe(true);
+  });
+});
+
+describe("validateChallengeEntry — strict loader rejection on invalid fixtures (PR2 remediation)", () => {
+  test("U3LIN-CHAL-002: canonical-source on canonical P1l PDF path is REJECTED", () => {
+    // CANONICAL_P1L_PROMPT is the literal/verbatim P1l prompt from PDF 03_ej_utn.pdf (bare equation form); Autonomous P1l Decision: verbatim reproduction forbidden.
+    const CANONICAL_P1L_PROMPT = "Resolver (3+√5)·x = 14 + 6√5, hallar x.";
+    const verbatim = { ...VALID_BASE, id: "ex.u3.ecuaciones_lineales.desafio-01", skillId: "mat.u3.ecuaciones_lineales", prompt: CANONICAL_P1L_PROMPT,
+      canonicalTrace: [{ ...VALID_CAHNNEL_TRACE_ENTRY, path: "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf", sourceUse: "canonical-source" as const, pedagogicalIntent: "Adaptar ítem canónico P1l a la app." }] };
+    expect(() => validateChallengeEntry(verbatim)).toThrow(/canonical-source|verbatim|adapt/i);
+  });
+  test("free-text root rejected: type='numerical' is REJECTED (AGENTS.md)", () => {
+    expect(() => validateChallengeEntry({ ...VALID_BASE, type: "numerical" as any })).toThrow(/multiple-choice|type/i);
+  });
+  test("unknown error tag rejected: undeclared commonErrorTag for U3 is REJECTED by taxonomy", () => {
+    expect(() => validateChallengeEntry({ ...VALID_BASE, id: "ex.u3.ecuaciones_lineales.desafio-01", skillId: "mat.u3.ecuaciones_lineales", commonErrorTags: ["u3_esta_tag_no_existe_en_taxonomy"] })).toThrow(/taxonomy|undeclared|commonErrorTag/i);
+  });
+  test("non-Spanish fragment rejected: pedagogical fields without Spanish markers are REJECTED", () => {
+    expect(() => validateChallengeEntry({ ...VALID_BASE, pedagogicalNote: "Rationalize the coefficient.",
+      canonicalTrace: [{ ...VALID_CAHNNEL_TRACE_ENTRY, pedagogicalIntent: "Adapt P1l PDF item for app." }] })).toThrow(/spanish|non-spanish|marker/i);
+  });
+});
+
+/**
+ * fix/u3-release-contract-alignment — Finding 3: the brittle SPANISH_MARKER regex
+ *  - failed to accept valid unaccented Spanish (e.g. "La suma de dos lados es igual al tercero")
+ *  - falsely accepted English sentences that happened to share a token ("This distractor is wrong.")
+ *
+ * Replacement: `isSpanishPedagogicalText` is a narrowly scoped deterministic
+ * helper that (a) accepts text with accented Spanish characters OR at least one
+ * high-confidence Spanish content word, AND (b) rejects text containing
+ * English-only whole-word markers (the, this, that, wrong, coefficient, ...).
+ *
+ * Scoped to pedagogicalNote / pedagogicalIntent boundaries exactly as the
+ * previous SPANISH_MARKER was — no widening to other fields or modules.
+ */
+describe("fix-u3-release-contract-alignment: isSpanishPedagogicalText — narrowly scoped deterministic validation", () => {
+  describe("(a) accepts valid Spanish", () => {
+    test("(a1) unaccented Spanish sentence from the integrated release finding", () => {
+      expect(isSpanishPedagogicalText("La suma de dos lados es igual al tercero")).toBe(true);
+    });
+
+    test("(a2) accented Spanish (paradigm case the old marker handled)", () => {
+      expect(isSpanishPedagogicalText("Módulo de complejo")).toBe(true);
+    });
+
+    test("(a3) accented Spanish with 'distractor' (paradigm case)", () => {
+      expect(isSpanishPedagogicalText("La distractor típica es olvidar el conjugado del denominador")).toBe(true);
+    });
+
+    test("(a4) existing U3 desafio-01 pedagogicalIntent still passes", () => {
+      expect(isSpanishPedagogicalText(
+        "Adaptar el ítem canónico P1l del PDF 03_ej_utn.pdf al nivel difficulty 5 de la app: coeficientes más grandes (5 + √7 en lugar del original del PDF), cuatro distractores que conservan el √7 del planteo para que el detector u3_racionalizacion_irracional los agrupe como una sola familia de error, y verificación algebraica explícita en la opción correcta. La adaptación preserva la estructura matemática (resolver + racionalizar + verificar) y la intención pedagógica (mostrar que racionalizar es un paso previo al aislamiento), pero NO copia literalmente el ítem canónico.",
+      )).toBe(true);
+    });
+  });
+
+  describe("(b) rejects English", () => {
+    test("(b1) English containing the previously-accepted 'distractor' token", () => {
+      expect(isSpanishPedagogicalText("This distractor is wrong.")).toBe(false);
+    });
+
+    test("(b2) English pedagogical rationale that the old marker rejected", () => {
+      expect(isSpanishPedagogicalText("Rationalize the coefficient.")).toBe(false);
+    });
+
+    test("(b3) English with 'app' abbreviation that the old marker rejected", () => {
+      expect(isSpanishPedagogicalText("Adapt P1l PDF item for app.")).toBe(false);
+    });
+
+    test("(b4) pure English with no Spanish markers at all", () => {
+      expect(isSpanishPedagogicalText("Sum of two sides equals the third.")).toBe(false);
+    });
+  });
+
+  describe("(c) loader integration — same pedagogicalNote/pedagogicalIntent boundaries", () => {
+    test("(c1) pedagogicalNote = unaccented valid Spanish now passes loader", () => {
+      const entry = { ...VALID_BASE, pedagogicalNote: "La suma de dos lados es igual al tercero" };
+      expect(() => validateChallengeEntry(entry)).not.toThrow();
+    });
+
+    test("(c2) pedagogicalNote = English-with-shared-token now throws", () => {
+      const entry = { ...VALID_BASE, pedagogicalNote: "This distractor is wrong." };
+      expect(() => validateChallengeEntry(entry)).toThrow(/spanish|non-spanish|marker/i);
+    });
+
+    test("(c3) canonicalTrace[0].pedagogicalIntent = English-now-throws", () => {
+      const entry = {
+        ...VALID_BASE,
+        canonicalTrace: [{ ...VALID_CAHNNEL_TRACE_ENTRY, pedagogicalIntent: "This distractor is wrong." }],
+      };
+      expect(() => validateChallengeEntry(entry)).toThrow(/spanish|non-spanish|marker/i);
+    });
+  });
+});
+
+/**
+ * fix/u3-release-contract-alignment — focused remediation of two confirmed
+ * validator defects after native review re-checked the previous batch.
+ *
+ * (A) Mixed-language boundary: "Denominator remains irrational after
+ *     división." pairs English math vocabulary ("Denominator", "irrational")
+ *     with one accented Spanish token ("división"). The accent alone wrongly
+ *     trips Tier 1 (Spanish presence). Fix: extend the English-only reject
+ *     list with `remains` and `after` so the English gate fires BEFORE the
+ *     accent gate. Test below locks the requirement in.
+ *
+ * (B) Spanish-specific stem acceptance: the unaccented Spanish sentence
+ *     "Racionalizar el radical evita errores" carries the stem `racionaliz`.
+ *     The previous helper dropped this stem from the curated list, falling
+ *     to Tier-3 with only "el" (count=1) → false. Test locks that the
+ *     stem proves Spanish (Tier 2a).
+ *
+ * Rule: shared English/math tokens must NOT independently prove Spanish;
+ *       Spanish-specific stems (racionaliz) MAY prove Spanish.
+ */
+describe("fix-u3-release-contract-alignment (R1/R2 re-check): isSpanishPedagogicalText — shared-vocab reject + racionaliz stem accept", () => {
+  test("(A) English math vocab + accented shared term must NOT prove Spanish — 'Denominator remains irrational after división.' is REJECTED", () => {
+    expect(isSpanishPedagogicalText("Denominator remains irrational after división.")).toBe(false);
+  });
+
+  test("(B) Spanish-specific stem 'racionaliz' MUST prove Spanish — 'Racionalizar el radical evita errores' is ACCEPTED", () => {
+    expect(isSpanishPedagogicalText("Racionalizar el radical evita errores")).toBe(true);
   });
 });

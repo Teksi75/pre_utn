@@ -1,7 +1,8 @@
 /**
  * Evaluator dispatcher — routes exercise answers to the correct comparison module.
  * No external dependencies. Pure TypeScript.
- * TDD coverage: src/domain/__tests__/evaluator-index.test.ts.
+ * TDD coverage: src/domain/__tests__/evaluator-index.test.ts and
+ * src/domain/__tests__/structured-evaluator.test.ts.
  */
 
 import type { EvaluableExercise } from "../models/exercise";
@@ -10,6 +11,10 @@ import { evaluateExact } from "./exact";
 import { evaluateBoolean } from "./boolean";
 import { tagError } from "./error-tagging";
 import { isFiniteNumericAnswer } from "../utils/numeric";
+import {
+  parseStructuredSubmissionV1,
+  evaluateStructuredAnswer,
+} from "./structured";
 
 /** The result of evaluating a student's answer. */
 export interface EvaluationResult {
@@ -62,6 +67,45 @@ export function evaluateAnswer(
   let result: EvaluationResult;
 
   switch (exercise.type) {
+    case "structured": {
+      // Structured branch runs FIRST (before numerical/true-false/etc.).
+      // The expected spec is validated at load time; if it is missing
+      // here we treat it as a configuration error (the student cannot
+      // recover from a malformed expected spec).
+      if (!exercise.answerSpec) {
+        return CONFIGURATION_ERROR_RESULT;
+      }
+      let parsed: ReturnType<typeof parseStructuredSubmissionV1>;
+      try {
+        parsed = parseStructuredSubmissionV1(userAnswer);
+      } catch {
+        // Malformed submission → incorrect, never a runtime error.
+        result = { correct: false, feedback: "submission-malformed" };
+        if (!result.correct) {
+          const errorTag = tagError(exercise, userAnswer);
+          if (errorTag) {
+            return { ...result, errorTag };
+          }
+        }
+        return result;
+      }
+      // Re-shape the parsed envelope into the dispatcher input shape.
+      if (parsed.kind === "pi-rational") {
+        result = evaluateStructuredAnswer(exercise.answerSpec, {
+          numerator: parsed.numerator,
+          denominator: parsed.denominator,
+          decimal: parsed.decimal,
+        });
+      } else {
+        result = evaluateStructuredAnswer(exercise.answerSpec, {
+          degrees: parsed.degrees,
+          minutes: parsed.minutes,
+          seconds: parsed.seconds,
+        });
+      }
+      break;
+    }
+
     case "numerical":
       // Config guard: non-numeric expected answer is a content error, not a student error
       if (!isFiniteNumericAnswer(exercise.expectedAnswer)) {

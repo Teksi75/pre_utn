@@ -868,6 +868,112 @@
         "summary": "Optional parser/defaulting and isolated U3 audit implemented under strict TDD; final delegated gates and review remain pending."
       },
       "summary": "PR1 merged (#97, d03010e). PR2 implementation candidate is on feat/u3-traza-canonica-parser targeting main. General optional Exercise.canonicalTrace compatibility uses ExerciseBaseShape plus ExerciseCanonicalTrace/ExerciseSourceUse (adapted|reinforcement|reference|alignment), preserving U2. ChallengeExercise remains independent: it extends ExerciseBaseShape and retains ChallengeCanonicalTrace/ChallengeSourceUse. The general parser accepts alignment and rejects challenge-only/unknown literals; a separate U3-only audit rejects alignment only for Unit 3 inputs and never inspects or migrates U2. Consumer prop widening has no UI behavior change. PR1/PR2 each include behavior, tests, and artifacts within the hard 400-line budget. Out: validateTracePath (merged 0cf2c51), theory/worked-example schema, topic content, U2 migration, persistence, loaders wholesale, useChallengeFlow, challenge loader/store/flow/readiness, and runtime provenance."
+    },
+    "recuperar-u3-ecuaciones-lineales": {
+      "status": "in-progress",
+      "branch": "feat/u3-ecuaciones-lineales-pr2",
+      "startedAt": "2026-07-17",
+      "parentRoadmap": "recuperar-u3-practica-canonica",
+      "delivery": "chained-prs-stacked-to-main (PR1 implementation slice followed by PR2)",
+      "planning": {
+        "status": "approved",
+        "checkpoint": "5bc5df7285289062a4c3b0231eecb0237f861be8",
+        "reviewLineage": "review-465197662e993db6",
+        "ref": "origin/sdd/u3-linear-equations-planning-checkpoint"
+      },
+      "pr1": {
+        "branch": "feat/u3-ecuaciones-lineales-pr1",
+        "status": "merged",
+        "target": "main",
+        "mergedTo": "main",
+        "mergeCommit": "f5b800d214593b1500801f041efaa68d4ba76352",
+        "summary": "Two MC isolation items (ex.u3.ecuaciones_lineales.7 + .8) declaring u3_aislamiento_incorrecto, plus shape/content-loader/evaluator/integration tests, baseline bump (225→227 unit-3 catalog split equivalence), 195 lines diff. Verified green on main at f5b800d2; PR1 isolated from PR2 work."
+      },
+      "pr2": {
+        "status": "in-progress",
+        "branch": "feat/u3-ecuaciones-lineales-pr2",
+        "base": "f5b800d214593b1500801f041efaa68d4ba76352",
+        "review": "not-started",
+        "publication": "not-started",
+        "summary": "PR2 in-progress in worktree C:\\dev\\pre_utn-worktrees\\u3-ecuaciones-lineales-pr2 (uncommitted, unpublished; remediation 2026-07-18 added 4 REAL loader-level rejections in src/lib/challenges/loader.ts + 4 RED-first negative tests, supplementing the prior catalog-compliance assertions the verifier rejected as insufficient). BASE GATE 2.0 verified: e553648 ancestor of base f5b800d2. P1l .6 (MC d=4 adapted canonicalTrace), .desafio-01 (MC d=5 desafio adapted sourceUse), additive u3_racionalizacion_irracional taxonomy+detector+dispatch, feedback example-ecuaciones-lineales-1, declared U3 12 to 13, feedback 11 to 12, baseline 225 to 226, unit-3 challenges 2 to 3, traducion_lenguaje_verbal keeps 2, 12 baseline U3 tags preserved. Final diff per git diff --shortstat origin/main (≤400 reviewable lines after safe compaction; no size:exception). PR2 has not been independently reviewed/committed/pushed/merged."
+      },
+      "summary": "Approved planning checkpoint is frozen at 5bc5df7 under review lineage review-465197662e993db6. PR1 implementation is complete but not reviewed or published. PR2 remains pending."
+    },
+    "u5-00-unit-5-foundation": {
+      "status": "done",
+      "branch": null,
+      "startedAt": "2026-07-13",
+      "completedAt": "2026-07-14",
+      "mergedTo": "main",
+      "mergeCommit": "d175589a6a88bfc45be835194b7ad12a83d490f9",
+      "delivery": "force-chained; stacked-to-main; review budget 800 lines",
+      "issue": 99,
+      "pr": 100,
+      "sizeException": {
+        "approved": true,
+        "approvedBy": "maintainer",
+        "approvedAt": "2026-07-13",
+        "scope": "THIS U5-00 docs-only foundation packet only (~1100-1200 lines); does NOT carry to U5-01+. Each U5-01..U5-11 slice must independently stay within the 800 authored line review budget or request a separate size:exception.",
+        "reason": "U5-00 is a planning and documentation-only foundation packet: 5 OpenSpec delta specs (unit-5-foundation, math-skill-model, math-exercise-model, math-answer-evaluator, math-exercise-catalog), 2 design artifacts (source-receipts.json + traceability.md), U5-00 proposal/design/exploration/tasks bundle, and the U5-00 STATUS entry. The packet is bound to source governance, exact provisional retirement inventory, versioned migration contract, slice roadmap U5-01..U5-11, and structured-answer architecture; further compression would split cross-referenced invariants across PRs and break the foundation acceptance gate defined in specs/unit-5-foundation/spec.md. Future implementation slices remain individually reviewable and strictly bounded to their own authored review budget."
+      },
+      "archive": "openspec/changes/archive/2026-07-14-u5-00-unit-5-foundation/",
+      "followUps": [
+        "Define canonical π-rational encoding in U5-02 / first consuming structured-answer slice.",
+        "Strengthen the external material locator for source receipts without committing PDFs or absolute machine paths.",
+        "Add per-subitem canonical trace keys in later content implementation specs/catalog work."
+      ],
+      "summary": "U5-00 exploration only: canonical source receipts, exact provisional retirement inventory, full Unit 5 practice traceability, migration and structured-answer architecture, and ordered U5-00 through U5-11 vertical slices. No application/content/test/migration implementation and no U3 changes."
+    },
+    "u5-01-provisional-retirement": {
+      "status": "done",
+      "branch": null,
+      "startedAt": "2026-07-14",
+      "completedAt": "2026-07-16",
+      "issue": 108,
+      "pr": 104,
+      "archiveIssue": 105,
+      "mergedTo": "main",
+      "mergeCommit": "19112e89466223df9db73e9003797db108c1ff7f",
+      "delivery": "static retirement completed in PR #104; selector availability behavior merged via PR #107; independent verification and reconciliation in PR #109; archive PR opens issue #105",
+      "archive": "openspec/changes/archive/2026-07-16-u5-01-provisional-retirement/",
+      "verify": "PASS WITH WARNINGS — 0 CRITICAL, 1 WARNING (test count delta −3 vs orchestrator expectation, below tolerance, no regression), 11/11 requirements, 9/9 scenarios, typecheck+build+3176/3176 tests",
+      "summary": "Provisional U5 was never exposed as practicable content. The exact retirement leaves an intentionally empty catalog; FocusSelector now derives live availability, retains empty U5 as disabled Próximamente, prevents an empty listbox, and re-enables a repopulated unit. No persistence, URL, banner, U3/U4, U5-02, or archived U5-00 work is included. Canonical specs synced: unit-5-foundation (post-retirement already reflected), math-skill-model (+Provisional U5 Skill and Edge Retirement), math-exercise-catalog (Catalog Coverage extended with exact placeholder IDs), complex-numbers-skill (+delta scenario). Delta specs for unit-5-foundation are canonical (already reflected in source). Archive issue #105 left open for archive PR."
+    },
+    "u5-02-medicion-angulos-y-arcos": {
+      "status": "done",
+      "branch": null,
+      "startedAt": "2026-07-16",
+      "completedAt": "2026-07-16",
+      "archivedAt": "2026-07-17",
+      "issue": 111,
+      "pr": 112,
+      "archiveIssue": 113,
+      "mergedTo": "main",
+      "mergeCommit": "c60fc8e",
+      "cleanBase": "47258aba4d7f8b2f72a47025fb5596d65c2906b0",
+      "delivery": "single-pr; maintainer-approved size:exception; native bounded review (4R) + bounded correction + SDD verify",
+      "review": "lineage review-9de3ba0190e11fec approved; 4R lenses; 1 CRITICAL (raw-pair tagger reachability — resolved by integration-proof tests) + 3 WARNING (student tolerance input removed, angle-dms degrees load validation added) corrected in af80afc; pre-commit/pre-push/pre-pr gates validated",
+      "verify": "PASS WITH WARNINGS — 0 blocking CRITICAL, 30/30 requirements, 65/65 scenarios, 3341/3341 tests, typecheck+build green",
+      "sizeException": {
+        "approved": true,
+        "approvedBy": "user",
+        "approvedAt": "2026-07-16",
+        "scope": "U5-02 only; does NOT carry to U5-03+",
+        "reason": "Tasks forecast (~750-800 lines) underestimated strict-TDD real cost ~4x. Actual diff ~3984 insertions: production code ~1518 (structured.ts 378, error-tagging 203, exercise.ts 143, controls 346, loaders/wiring ~300), content JSON 394 (4 unit-5 files), vitest ~2068 (160 new tests), e2e 87, SDD docs 102. The minimum complete canonical journey (items 1.a-1.d, 2r, 2d, 3 + two structured answer kinds + visible-flow behavior tests) cannot fit in 800 lines without violating explicit maintainer constraints (all canonical items 1-3, structured answers instead of multiple-choice, strict TDD, real behavior tests). Maintainer approved keeping full functionality and coverage."
+      },
+      "archive": "openspec/changes/archive/2026-07-17-u5-02-medicion-angulos-y-arcos/",
+      "archiveReconciliations": {
+        "taskCheckboxes": "Mechanical repair: 48/48 tasks reconciled with [x] markers in archived tasks.md. Completion evidenced by apply-progress.md (5/5 WU Done, commits 950e3f2/7dba8f5/9d88a84/48649f0/c8a0eb6 + af80afc), verify-report.md (3341/3341 tests), git log. Authority: maintainer explicit instruction.",
+        "item1dTolerance": "Spec-text-only reconciliation: item 1.d tolerance amended from 0.0001 to 0.01 in canonical angle-arc-measurement/spec.md, canonical math-answer-evaluator/spec.md, and delta/archive copies. Matches platform-fixed numeric.ts TOLERANCE=0.01. No src/, content JSON, product tests, or numerical evaluator changed. Authority: maintainer explicit instruction.",
+        "e2eHelperFollowUp": "practice-flow.ts needs pi-rational + angle-dms structured-control drivers before medicion_angulos_y_arcos.spec.ts can run automatically. Currently covered by vitest behavior tests (structured-evaluator.test.ts). Recorded for future SDD work. Not implemented in this archive operation."
+      },
+      "followUps": [
+        "Archive-time spec amendment: item 1.d graded with platform-fixed 0.01 numeric tolerance (spec text said 0.0001); pedagogically equivalent at entry level, avoids evaluator redesign. Amend angle-arc-measurement + math-answer-evaluator spec text when archiving U5-02.",
+        "e2e helper practice-flow.ts needs pi-rational + angle-dms structured-control drivers; new Playwright spec fails when run manually until then (visible flow covered by rendered vitest behavior tests).",
+        "tasks.md checkbox housekeeping at archive (completion authoritative in apply-progress.md + git log).",
+        "U5-02 archive is a separate operation per maintainer instruction; do not archive in the implementation delivery."
+      ],
+      "summary": "First canonical visible Unit 5 slice: mat.u5.medicion_angulos_y_arcos. Student finds Unit 5 content, studies 1 theory node (5 concepts) + 3 worked examples, practices 7 traced interactions from canonical items 1-3 (1.a-1.d, 2r, 2d, 3) with per-subitem canonicalTrace to mat.u5.practice/mat.u5.theory receipts, submits pi-rational (canonical JSON v1, normalized reduced coefficient + decimal + tolerance) and angle-dms (bounded D/M/S, total arc-seconds ±0.5) structured answers plus scalar numerical items, receives grading + feedback via 3 u5_* misconception tags through the existing practice flow. Unit 5 auto-enables from live skills + readiness (no flags). Item 2 corrected from U5-00 wording: exact 1/5 rad, not a π multiple. Merged via PR #112."
     }
   },
   "activeBranches": [],

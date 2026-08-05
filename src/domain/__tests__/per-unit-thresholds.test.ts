@@ -23,17 +23,22 @@ describe("UnitValidationThresholds", () => {
 
   test("unit-3 has explicit threshold of 24 (PR 2 declaration)", () => {
     // PR 2: implement-unit-3-mathematics declares UNIT_THRESHOLDS["unit-3"] = 24
-    // when 24+ U3 exercises are loaded. Units 4-6 remain without explicit
-    // thresholds and fall back to the default minimum (5).
+    // when 24+ U3 exercises are loaded. Units 4 and 6 remain without
+    // explicit thresholds and fall back to the default minimum (5).
     expect(UNIT_THRESHOLDS["unit-3"]).toBe(24);
     expect(getUnitThreshold("unit-3")).toBe(24);
   });
 
-  test("units 4-6 remain without explicit thresholds (default 5)", () => {
+  test("unit-5 threshold is 7 after U5-02 (first live U5 packet)", () => {
+    // U5-02 adds mat.u5.medicion_angulos_y_arcos with 7 traced exercises.
+    // The threshold tracks the implemented exercise count exactly.
+    expect(UNIT_THRESHOLDS["unit-5"]).toBe(7);
+    expect(getUnitThreshold("unit-5")).toBe(7);
+  });
+
+  test("units 4 and 6 remain without explicit thresholds (default 5)", () => {
     expect(UNIT_THRESHOLDS["unit-4"]).toBeUndefined();
     expect(getUnitThreshold("unit-4")).toBe(5);
-    expect(UNIT_THRESHOLDS["unit-5"]).toBeUndefined();
-    expect(getUnitThreshold("unit-5")).toBe(5);
     expect(UNIT_THRESHOLDS["unit-6"]).toBeUndefined();
     expect(getUnitThreshold("unit-6")).toBe(5);
   });

@@ -127,6 +127,11 @@ export const PILOT_SKILLS: readonly PilotSkill[] = [
     unitKey: "unit-3",
     label: "Ecuaciones logarítmicas",
   },
+  {
+    skillId: "mat.u5.medicion_angulos_y_arcos",
+    unitKey: "unit-5",
+    label: "Medición de ángulos y arcos",
+  },
 ] as const;
 
 /**
