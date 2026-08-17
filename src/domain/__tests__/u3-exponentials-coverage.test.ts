@@ -172,9 +172,12 @@ export function validateQuadraticExponentEqualsOne(
   prompt: string,
   pedagogicalNote: string,
 ): QuadraticExponentValidation {
-  // (1) Prompt form: a^(quadratic in x) = 1
+  // (1) Prompt form: a^(quadratic in x) = 1. Accepts both the legacy
+  // plain-text shape (`2^(x^2 - 1)` / `2^{(x^2 - 1)}`) and the
+  // KaTeX-delimited shape (`$2^{x^2 - 1}$` / `$2^{(x^2 - 1)}$`) that
+  // fix-u3-math-rendering standardised across the U3 bank.
   const promptForm =
-    /^\s*Resuelve\s+\d+\^\(\s*x\s*\^?\s*2\s*-\s*\d+\s*\)\s*=\s*1\s*$/i;
+    /^\s*Resuelve\s+\$?\s*\d+\^\(?\{?\s*x\s*\^?\s*2\s*-\s*\d+\s*\}?\)?\s*=\s*1\s*\$?\s*$/i;
   if (!promptForm.test(prompt)) {
     return {
       valid: false,
@@ -298,7 +301,7 @@ describe("u3-exponentials-coverage (Work Unit 3 — FINAL 17-item cumulative sli
         skillId: "mat.u3.exponenciales",
         type: "multiple-choice",
         difficulty: 1,
-        prompt: "Resuelve 2^x = 8",
+        prompt: "Resuelve $2^x = 8$",
         expectedAnswer: "x = 3",
         options: ["x = 3", "x = 2", "x = 4", "x = 8"],
         commonErrorTags: [],
@@ -310,24 +313,24 @@ describe("u3-exponentials-coverage (Work Unit 3 — FINAL 17-item cumulative sli
         skillId: "mat.u3.exponenciales",
         type: "multiple-choice",
         difficulty: 3,
-        prompt: "Resuelve 3^(2x) = 27",
+        prompt: "Resuelve $3^{2x} = 27$",
         expectedAnswer: "x = 3/2",
         options: ["x = 3/2", "x = 3", "x = 2", "x = 9/2"],
         commonErrorTags: [],
         pedagogicalNote:
-          "27 = 3³, por lo tanto 2x = 3 → x = 3/2. Error frecuente: asumir que 2x = 27 sin igualar primero las bases.",
+          "$27 = 3^3$, por lo tanto $2x = 3 \\to x = \\frac{3}{2}$. Error frecuente: asumir que $2x = 27$ sin igualar primero las bases.",
       },
       "ex.u3.exponenciales.5": {
         id: "ex.u3.exponenciales.5",
         skillId: "mat.u3.exponenciales",
         type: "multiple-choice",
         difficulty: 3,
-        prompt: "Resuelve 2^x = 1/8",
+        prompt: "Resuelve $2^x = \\frac{1}{8}$",
         expectedAnswer: "x = -3",
         options: ["x = -3", "x = 3", "x = -1/3", "x = 1/8"],
         commonErrorTags: [],
         pedagogicalNote:
-          "1/8 = 2^(-3), por lo tanto x = -3. Error frecuente: olvidar el exponente negativo cuando la base es menor que 1.",
+          "$\\frac{1}{8} = 2^{-3}$, por lo tanto $x = -3$. Error frecuente: olvidar el exponente negativo cuando la base es menor que $1$.",
       },
     };
 
@@ -355,7 +358,7 @@ describe("u3-exponentials-coverage (Work Unit 3 — FINAL 17-item cumulative sli
       skillId: "mat.u3.exponenciales",
       type: "numerical",
       difficulty: 1,
-      prompt: "Resuelve 5^x = 125",
+      prompt: "Resuelve $5^x = 125$",
       expectedAnswer: "3",
       commonErrorTags: [] as readonly string[],
       pedagogicalNote: "Como 125 = 5³, la solución es x = 3.",

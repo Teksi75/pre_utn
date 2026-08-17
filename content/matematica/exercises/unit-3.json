@@ -156,16 +156,28 @@
     "skillId": "mat.u3.ecuaciones_lineales",
     "type": "multiple-choice",
     "difficulty": 4,
-    "prompt": "Resuelve para x: (3 + √5)·x = 14 + 6√5",
+    "prompt": "Resuelve para x: $$(3+\\sqrt{5})\\cdot x=14+6\\sqrt{5}$$",
     "expectedAnswer": "x = 3 + √5",
     "options": [
-      "x = (14 + 6√5) / (3 − √5)",
-      "x = 3 + √5",
-      "x = 3 − √5",
-      "x = 14 + 6√5"
+      {
+        "value": "x = (14 + 6√5) / (3 − √5)",
+        "label": "$x=\\frac{14+6\\sqrt{5}}{3-\\sqrt{5}}$"
+      },
+      {
+        "value": "x = 3 + √5",
+        "label": "$x=3+\\sqrt{5}$"
+      },
+      {
+        "value": "x = 3 − √5",
+        "label": "$x=3-\\sqrt{5}$"
+      },
+      {
+        "value": "x = 14 + 6√5",
+        "label": "$x=14+6\\sqrt{5}$"
+      }
     ],
     "commonErrorTags": ["u3_racionalizacion_irracional"],
-    "pedagogicalNote": "Antes de aislar x, racionalizá el coeficiente irracional (3 + √5). Multiplicá numerador y denominador por el conjugado (3 − √5): x = (14 + 6√5)(3 − √5) / ((3 + √5)(3 − √5)) = (42 − 14√5 + 18√5 − 30) / (9 − 5) = (12 + 4√5) / 4 = 3 + √5. Distractor A: reemplazás el divisor original (3 + √5) por su conjugado (3 − √5) en vez de multiplicar numerador y denominador por ese conjugado — el denominador sigue teniendo √5 y la respuesta queda con un radical que se puede eliminar. Distractor C: conjugado con el signo equivocado en el √ final (invertiste solo el signo del √5). Distractor D: resolviste solo el lado derecho y nunca dividiste por (3 + √5). Los tres son variantes de 'racionalización mal cerrada', que el detector u3_racionalizacion_irracional agrupa como una sola familia de error.",
+    "pedagogicalNote": "Antes de aislar $x$, racionalizá el coeficiente irracional $(3 + \\sqrt{5})$. Multiplicá numerador y denominador por el conjugado $(3 - \\sqrt{5})$: $x = \\frac{(14 + 6\\sqrt{5})(3 - \\sqrt{5})}{(3 + \\sqrt{5})(3 - \\sqrt{5})} = \\frac{42 - 14\\sqrt{5} + 18\\sqrt{5} - 30}{9 - 5} = \\frac{12 + 4\\sqrt{5}}{4} = 3 + \\sqrt{5}$. Distractor A: reemplazás el divisor original $(3 + \\sqrt{5})$ por su conjugado $(3 - \\sqrt{5})$ en vez de multiplicar numerador y denominador por ese conjugado — el denominador sigue teniendo $\\sqrt{5}$ y la respuesta queda con un radical que se puede eliminar. Distractor C: conjugado con el signo equivocado en el $\\sqrt{5}$ final (invertiste solo el signo de $\\sqrt{5}$). Distractor D: resolviste solo el lado derecho y nunca dividiste por $(3 + \\sqrt{5})$. Los tres son variantes de 'racionalización mal cerrada', que el detector u3_racionalizacion_irracional agrupa como una sola familia de error.",
     "canonicalTrace": [
       {
         "path": "material_canonico/utn-frm/matematica/unidad-03/practica/03_ej_utn.pdf",
@@ -494,7 +506,7 @@
     "skillId": "mat.u3.exponenciales",
     "type": "multiple-choice",
     "difficulty": 1,
-    "prompt": "Resuelve 2^x = 8",
+    "prompt": "Resuelve $2^x = 8$",
     "expectedAnswer": "x = 3",
     "options": [
       "x = 3",
@@ -510,23 +522,29 @@
     "skillId": "mat.u3.exponenciales",
     "type": "multiple-choice",
     "difficulty": 3,
-    "prompt": "Resuelve 3^(2x) = 27",
+    "prompt": "Resuelve $3^{2x} = 27$",
     "expectedAnswer": "x = 3/2",
     "options": [
-      "x = 3/2",
+      {
+        "value": "x = 3/2",
+        "label": "$x = \\frac{3}{2}$"
+      },
       "x = 3",
       "x = 2",
-      "x = 9/2"
+      {
+        "value": "x = 9/2",
+        "label": "$x = \\frac{9}{2}$"
+      }
     ],
     "commonErrorTags": [],
-    "pedagogicalNote": "27 = 3³, por lo tanto 2x = 3 → x = 3/2. Error frecuente: asumir que 2x = 27 sin igualar primero las bases."
+    "pedagogicalNote": "$27 = 3^3$, por lo tanto $2x = 3 \\to x = \\frac{3}{2}$. Error frecuente: asumir que $2x = 27$ sin igualar primero las bases."
   },
   {
     "id": "ex.u3.exponenciales.4",
     "skillId": "mat.u3.exponenciales",
     "type": "numerical",
     "difficulty": 3,
-    "prompt": "Resuelve 5^x = 125",
+    "prompt": "Resuelve $5^x = 125$",
     "expectedAnswer": "3",
     "commonErrorTags": [],
     "pedagogicalNote": "Como 125 = 5³, la solución es x = 3."
@@ -536,75 +554,93 @@
     "skillId": "mat.u3.exponenciales",
     "type": "multiple-choice",
     "difficulty": 3,
-    "prompt": "Resuelve 2^x = 1/8",
+    "prompt": "Resuelve $2^x = \\frac{1}{8}$",
     "expectedAnswer": "x = -3",
     "options": [
       "x = -3",
       "x = 3",
-      "x = -1/3",
-      "x = 1/8"
+      {
+        "value": "x = -1/3",
+        "label": "$x = -\\frac{1}{3}$"
+      },
+      {
+        "value": "x = 1/8",
+        "label": "$x = \\frac{1}{8}$"
+      }
     ],
     "commonErrorTags": [],
-    "pedagogicalNote": "1/8 = 2^(-3), por lo tanto x = -3. Error frecuente: olvidar el exponente negativo cuando la base es menor que 1."
+    "pedagogicalNote": "$\\frac{1}{8} = 2^{-3}$, por lo tanto $x = -3$. Error frecuente: olvidar el exponente negativo cuando la base es menor que $1$."
   },
   {
     "id": "ex.u3.exponenciales.03",
     "skillId": "mat.u3.exponenciales",
     "type": "multiple-choice",
     "difficulty": 2,
-    "prompt": "Resuelve 2^x = √32",
+    "prompt": "Resuelve $2^x = \\sqrt{32}$",
     "expectedAnswer": "x = 5/2",
     "options": [
-      "x = 5/2",
+      {
+        "value": "x = 5/2",
+        "label": "$x = \\frac{5}{2}$"
+      },
       "x = 5",
       "x = 2",
-      "x = 5/4"
+      {
+        "value": "x = 5/4",
+        "label": "$x = \\frac{5}{4}$"
+      }
     ],
     "commonErrorTags": ["u3_igualdad_exponenciales"],
-    "pedagogicalNote": "√32 = 2^(5/2) (radical escrito como potencia fraccionaria: 32 = 2⁵, índice 2). Igualando bases 2^x = 2^(5/2) → x = 5/2. Error frecuente: tratar √32 como 2^5 y obtener x = 5."
+    "pedagogicalNote": "$\\sqrt{32} = 2^{5/2}$ (radical escrito como potencia fraccionaria: $32 = 2^5$, índice $2$). Igualando bases $2^x = 2^{5/2} \\to x = \\frac{5}{2}$. Error frecuente: tratar $\\sqrt{32}$ como $2^5$ y obtener $x = 5$."
   },
   {
     "id": "ex.u3.exponenciales.6",
     "skillId": "mat.u3.exponenciales",
     "type": "true-false",
     "difficulty": 3,
-    "prompt": "Si 3^x = 1, entonces x = 0.",
+    "prompt": "Si $3^x = 1$, entonces $x = 0$.",
     "expectedAnswer": "true",
     "commonErrorTags": ["u3_igualdad_exponenciales"],
-    "pedagogicalNote": "Cualquier base no nula elevada a 0 vale 1; la única solución es x = 0. Error frecuente: creer que a^0 = a o afirmar que no existe solución."
+    "pedagogicalNote": "Cualquier base no nula elevada a $0$ vale $1$; la única solución es $x = 0$. Error frecuente: creer que $a^0 = a$ o afirmar que no existe solución."
   },
   {
     "id": "ex.u3.exponenciales.7",
     "skillId": "mat.u3.exponenciales",
     "type": "fill-blank",
     "difficulty": 3,
-    "prompt": "Resuelve 2^(x+1) = 32",
+    "prompt": "Resuelve $2^{x+1} = 32$",
     "expectedAnswer": "4",
     "commonErrorTags": ["u3_igualdad_exponenciales"],
-    "pedagogicalNote": "Factorizá 2^(x+1) = 2^x · 2. Entonces 2^x · 2 = 32 → 2^x = 16 = 2⁴ → x = 4. Error frecuente: tratar x+1 como si fuera x y obtener 5."
+    "pedagogicalNote": "Factorizá $2^{x+1} = 2^x \\cdot 2$. Entonces $2^x \\cdot 2 = 32 \\to 2^x = 16 = 2^4 \\to x = 4$. Error frecuente: tratar $x+1$ como si fuera $x$ y obtener $5$."
   },
   {
     "id": "ex.u3.exponenciales.8",
     "skillId": "mat.u3.exponenciales",
     "type": "multiple-choice",
     "difficulty": 3,
-    "prompt": "Resuelve 2^(-x) = 1/32",
+    "prompt": "Resuelve $2^{-x} = \\frac{1}{32}$",
     "expectedAnswer": "x = 5",
     "options": [
       "x = 5",
       "x = -5",
-      "x = 1/5",
-      "x = -1/32"
+      {
+        "value": "x = 1/5",
+        "label": "$x = \\frac{1}{5}$"
+      },
+      {
+        "value": "x = -1/32",
+        "label": "$x = -\\frac{1}{32}$"
+      }
     ],
     "commonErrorTags": ["u3_igualdad_exponenciales"],
-    "pedagogicalNote": "1/32 = 2^(-5). Igualando: 2^(-x) = 2^(-5) → -x = -5 → x = 5. Error frecuente: perder el signo y dar x = -5 o leer 1/32 como 2^5 y obtener x = -1/5."
+    "pedagogicalNote": "$\\frac{1}{32} = 2^{-5}$. Igualando: $2^{-x} = 2^{-5} \\to -x = -5 \\to x = 5$. Error frecuente: perder el signo y dar $x = -5$ o leer $\\frac{1}{32}$ como $2^5$ y obtener $x = -\\frac{1}{5}$."
   },
   {
     "id": "ex.u3.exponenciales.9",
     "skillId": "mat.u3.exponenciales",
     "type": "multiple-choice",
     "difficulty": 4,
-    "prompt": "Resuelve 2^(2x) - 5·2^x + 4 = 0",
+    "prompt": "Resuelve $2^{2x} - 5\\cdot2^x + 4 = 0$",
     "expectedAnswer": "x = 0 o x = 2",
     "options": [
       "x = 0 o x = 2",
@@ -613,34 +649,34 @@
       "x = 0"
     ],
     "commonErrorTags": ["u3_igualdad_exponenciales"],
-    "pedagogicalNote": "Sustituyendo t = 2^x, queda t² - 5t + 4 = 0 (cuadrática en t). Factorizando: (t-1)(t-4) = 0 → t = 1 o t = 4. Como t = 2^x > 0, ambas raíces son válidas: 2^x = 1 → x = 0; 2^x = 4 → x = 2. Error frecuente: descartar una raíz sin verificar que t = a^x > 0, lo que en este caso siempre se cumple."
+    "pedagogicalNote": "Sustituyendo $t = 2^x$, queda $t^2 - 5t + 4 = 0$ (cuadrática en $t$). Factorizando: $(t-1)(t-4) = 0 \\to t = 1$ o $t = 4$. Como $t = 2^x > 0$, ambas raíces son válidas: $2^x = 1 \\to x = 0$; $2^x = 4 \\to x = 2$. Error frecuente: descartar una raíz sin verificar que $t = a^x > 0$, lo que en este caso siempre se cumple."
   },
   {
     "id": "ex.u3.exponenciales.10",
     "skillId": "mat.u3.exponenciales",
     "type": "numerical",
     "difficulty": 4,
-    "prompt": "Resuelve 4^x - 2^x - 2 = 0",
+    "prompt": "Resuelve $4^x - 2^x - 2 = 0$",
     "expectedAnswer": "1",
     "commonErrorTags": ["u3_igualdad_exponenciales"],
-    "pedagogicalNote": "Reescribiendo 4^x como 2^(2x), toda la ecuación queda en base 2. Sustituyendo t = 2^x se obtiene t² - t - 2 = 0. Factorizando: (t-2)(t+1) = 0 → t = 2 o t = -1. Como t = 2^x > 0, se descarta t = -1. Entonces 2^x = 2 → x = 1. Error frecuente: olvidar la restricción t > 0 al sustituir a^x y aceptar t = -1 como raíz."
+    "pedagogicalNote": "Reescribiendo $4^x$ como $2^{2x}$, toda la ecuación queda en base $2$. Sustituyendo $t = 2^x$ se obtiene $t^2 - t - 2 = 0$. Factorizando: $(t-2)(t+1) = 0 \\to t = 2$ o $t = -1$. Como $t = 2^x > 0$, se descarta $t = -1$. Entonces $2^x = 2 \\to x = 1$. Error frecuente: olvidar la restricción $t > 0$ al sustituir $a^x$ y aceptar $t = -1$ como raíz."
   },
   {
     "id": "ex.u3.exponenciales.11",
     "skillId": "mat.u3.exponenciales",
     "type": "true-false",
     "difficulty": 4,
-    "prompt": "La solución de 2^x + 2^(x+1) = 12 es x = 2.",
+    "prompt": "La solución de $2^x + 2^{x+1} = 12$ es $x = 2$.",
     "expectedAnswer": "true",
     "commonErrorTags": ["u3_igualdad_exponenciales"],
-    "pedagogicalNote": "Reconociendo 2^x + 2^(x+1) como suma de potencias de la misma base, se factoriza: 2^x(1 + 2) = 12 → 2^x · 3 = 12 → 2^x = 4 → x = 2. La igualdad se cumple. Error frecuente: no factorizar el término común 2^x y resolver como 2^x = 12, dando x = log₂(12) ≈ 3.58."
+    "pedagogicalNote": "Reconociendo $2^x + 2^{x+1}$ como suma de potencias de la misma base, se factoriza: $2^x(1 + 2) = 12 \\to 2^x \\cdot 3 = 12 \\to 2^x = 4 \\to x = 2$. La igualdad se cumple. Error frecuente: no factorizar el término común $2^x$ y resolver como $2^x = 12$, dando $x = \\log_2(12) \\approx 3.58$."
   },
   {
     "id": "ex.u3.exponenciales.12",
     "skillId": "mat.u3.exponenciales",
     "type": "multiple-choice",
     "difficulty": 4,
-    "prompt": "Resuelve 2^(x^2 - 1) = 1",
+    "prompt": "Resuelve $2^{x^2 - 1} = 1$",
     "expectedAnswer": "x = -1 o x = 1",
     "options": [
       "x = -1 o x = 1",
@@ -649,14 +685,14 @@
       "x = 0"
     ],
     "commonErrorTags": ["u3_igualdad_exponenciales"],
-    "pedagogicalNote": "Como 1 = 2^0, igualando bases 2^(x^2 - 1) = 2^0 → x^2 - 1 = 0 (exponente cuadrático igualado a cero). Factorizando el exponente cuadrático: (x - 1)(x + 1) = 0 → x = 1 o x = -1. Ambas soluciones son válidas porque el exponente puede tomar cualquier valor real. Error frecuente: olvidar que a^0 = 1 para cualquier base a > 0, a ≠ 1, y tratar de aplicar propiedades de logaritmos sobre una expresión sin logaritmo."
+    "pedagogicalNote": "Como $1 = 2^0$, igualando bases $2^{x^2 - 1} = 2^0 \\to x^2 - 1 = 0$ (exponente cuadrático igualado a cero). Factorizando el exponente cuadrático: $(x - 1)(x + 1) = 0 \\to x = 1$ o $x = -1$. Ambas soluciones son válidas porque el exponente puede tomar cualquier valor real. Error frecuente: olvidar que $a^0 = 1$ para cualquier base $a > 0$, $a \\neq 1$, y tratar de aplicar propiedades de logaritmos sobre una expresión sin logaritmo."
   },
   {
     "id": "ex.u3.exponenciales.13",
     "skillId": "mat.u3.exponenciales",
     "type": "multiple-choice",
     "difficulty": 5,
-    "prompt": "Resuelve 2^x + 2^(1-x) = 5/2",
+    "prompt": "Resuelve $2^x + 2^{1-x} = \\frac{5}{2}$",
     "expectedAnswer": "x = -1 o x = 1",
     "options": [
       "x = -1 o x = 1",
@@ -665,14 +701,14 @@
       "x = 0"
     ],
     "commonErrorTags": ["u3_igualdad_exponenciales"],
-    "pedagogicalNote": "Sustituyendo t = 2^x, la ecuación 2^x + 2^(1-x) = 5/2 se reescribe como t + 1/t = 5/2 (sustitución simétrica en t + k/t). Multiplicando ambos miembros por t: t² - (5/2)t + 1 = 0 → 2t² - 5t + 2 = 0. Factorizando: (2t - 1)(t - 2) = 0 → t = 2 o t = 1/2. Como t = 2^x > 0, ambas raíces son válidas: 2^x = 2 → x = 1; 2^x = 1/2 → x = -1. Error frecuente: olvidar que t > 0 y descartar la raíz t = 1/2, o no multiplicar por t para eliminar el denominador antes de factorizar."
+    "pedagogicalNote": "Sustituyendo $t = 2^x$, la ecuación $2^x + 2^{1-x} = \\frac{5}{2}$ se reescribe como $t + \\frac{1}{t} = \\frac{5}{2}$ (sustitución simétrica en $t + \\frac{k}{t}$). Multiplicando ambos miembros por $t$: $t^2 - \\frac{5}{2}t + 1 = 0 \\to 2t^2 - 5t + 2 = 0$. Factorizando: $(2t - 1)(t - 2) = 0 \\to t = 2$ o $t = \\frac{1}{2}$. Como $t = 2^x > 0$, ambas raíces son válidas: $2^x = 2 \\to x = 1$; $2^x = \\frac{1}{2} \\to x = -1$. Error frecuente: olvidar que $t > 0$ y descartar la raíz $t = \\frac{1}{2}$, o no multiplicar por $t$ para eliminar el denominador antes de factorizar."
   },
   {
     "id": "ex.u3.exponenciales.14",
     "skillId": "mat.u3.exponenciales",
     "type": "multiple-choice",
     "difficulty": 5,
-    "prompt": "Resuelve 3^(2x) - 4·3^x + 3 = 0",
+    "prompt": "Resuelve $3^{2x} - 4\\cdot3^x + 3 = 0$",
     "expectedAnswer": "x = 0 o x = 1",
     "options": [
       "x = 0 o x = 1",
@@ -681,14 +717,14 @@
       "x = -1"
     ],
     "commonErrorTags": ["u3_igualdad_exponenciales"],
-    "pedagogicalNote": "Sustituyendo t = 3^x (con t > 0), queda t² - 4t + 3 = 0 (polinomio en t). Factorizando: (t-1)(t-3) = 0 → t = 1 o t = 3. Como t = 3^x > 0, ambas raíces son válidas: 3^x = 1 → x = 0; 3^x = 3 → x = 1. Error frecuente: olvidar la restricción t > 0 al sustituir a^x y descartar una raíz sin justificación matemática, o no reconocer que el cambio de variable reduce la ecuación a un polinomio en t."
+    "pedagogicalNote": "Sustituyendo $t = 3^x$ (con $t > 0$), queda $t^2 - 4t + 3 = 0$ (polinomio en $t$). Factorizando: $(t-1)(t-3) = 0 \\to t = 1$ o $t = 3$. Como $t = 3^x > 0$, ambas raíces son válidas: $3^x = 1 \\to x = 0$; $3^x = 3 \\to x = 1$. Error frecuente: olvidar la restricción $t > 0$ al sustituir $a^x$ y descartar una raíz sin justificación matemática, o no reconocer que el cambio de variable reduce la ecuación a un polinomio en $t$."
   },
   {
     "id": "ex.u3.exponenciales.15",
     "skillId": "mat.u3.exponenciales",
     "type": "multiple-choice",
     "difficulty": 5,
-    "prompt": "Resuelve 3^x = 20",
+    "prompt": "Resuelve $3^x = 20$",
     "expectedAnswer": "x ≈ 2.73",
     "options": [
       "x ≈ 2.73",
@@ -697,14 +733,14 @@
       "x ≈ 2.00"
     ],
     "commonErrorTags": ["u3_igualdad_exponenciales"],
-    "pedagogicalNote": "Aplicando logaritmo en ambos lados (cambio de base con bases diferentes): ln(3^x) = ln 20 → x · ln 3 = ln 20 → x = ln 20 / ln 3 ≈ 2.7265 ≈ 2.73. Error frecuente: olvidar dividir el logaritmo del lado derecho por ln 3 y dar x = ln 20 ≈ 3.00, o redondear incorrectamente el cociente de logaritmos."
+    "pedagogicalNote": "Aplicando logaritmo en ambos lados (cambio de base con bases diferentes): $\\ln(3^x) = \\ln 20 \\to x \\cdot \\ln 3 = \\ln 20 \\to x = \\frac{\\ln 20}{\\ln 3} \\approx 2.7265 \\approx 2.73$. Error frecuente: olvidar dividir el logaritmo del lado derecho por $\\ln 3$ y dar $x = \\ln 20 \\approx 3.00$, o redondear incorrectamente el cociente de logaritmos."
   },
   {
     "id": "ex.u3.exponenciales.16",
     "skillId": "mat.u3.exponenciales",
     "type": "multiple-choice",
     "difficulty": 5,
-    "prompt": "Resuelve 2^(x/2) = 8",
+    "prompt": "Resuelve $2^{x/2} = 8$",
     "expectedAnswer": "x = 6",
     "options": [
       "x = 6",
@@ -713,17 +749,17 @@
       "x = 2"
     ],
     "commonErrorTags": ["u3_igualdad_exponenciales"],
-    "pedagogicalNote": "Reescribiendo el exponente fraccionario: 2^(x/2) = 2^3 (exponente fraccionario igualado a potencia entera). Igualando bases: x/2 = 3 → x = 6. Error frecuente: multiplicar en vez de igualar (dando x = 2·3 = 6 por casualidad pero sin entender el procedimiento), o dividir incorrectamente y obtener x = 3/2."
+    "pedagogicalNote": "Reescribiendo el exponente fraccionario: $2^{x/2} = 2^3$ (exponente fraccionario igualado a potencia entera). Igualando bases: $\\frac{x}{2} = 3 \\to x = 6$. Error frecuente: multiplicar en vez de igualar (dando $x = 2 \\cdot 3 = 6$ por casualidad pero sin entender el procedimiento), o dividir incorrectamente y obtener $x = \\frac{3}{2}$."
   },
   {
     "id": "ex.u3.exponenciales.17",
     "skillId": "mat.u3.exponenciales",
     "type": "fill-blank",
     "difficulty": 5,
-    "prompt": "Resuelve 2^x + 2^(x+2) = 20",
+    "prompt": "Resuelve $2^x + 2^{x+2} = 20$",
     "expectedAnswer": "2",
     "commonErrorTags": ["u3_igualdad_exponenciales"],
-    "pedagogicalNote": "Combinando bases: 2^(x+2) = 2^x · 2^2 = 4·2^x. Entonces 2^x + 4·2^x = 5·2^x = 20 → 2^x = 4 → x = 2. Error frecuente: no reescribir 2^(x+2) como 4·2^x y tratar de despejar x directamente, o confundir 2^(x+2) con 2^x + 2 y obtener 2·2^x = 20."
+    "pedagogicalNote": "Combinando bases: $2^{x+2} = 2^x \\cdot 2^2 = 4 \\cdot 2^x$. Entonces $2^x + 4 \\cdot 2^x = 5 \\cdot 2^x = 20 \\to 2^x = 4 \\to x = 2$. Error frecuente: no reescribir $2^{x+2}$ como $4 \\cdot 2^x$ y tratar de despejar $x$ directamente, o confundir $2^{x+2}$ con $2^x + 2$ y obtener $2 \\cdot 2^x = 20$."
   },
   {
     "id": "ex.u3.logaritmicas.2",

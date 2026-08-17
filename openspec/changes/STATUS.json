@@ -58,6 +58,12 @@
       "companionIssues": [82, 83],
       "summary": "Align Unit 3 symbolic/core practice with canonical exercises using explicit difficulty progression, structured inputs, and optional challenges at or above canonical maximum."
     },
+    "fix-u3-math-rendering": {
+      "status": "in-progress",
+      "branch": "sdd/fix-u3-math-rendering",
+      "startedAt": "2026-08-05",
+      "summary": "Content-only U3 math-rendering repair: delimit all math-bearing fields in 17 mat.u3.exponenciales exercises plus ex.u3.ecuaciones_lineales.6, with parser-backed render-safety coverage; no implicit detection or renderer changes."
+    },
 "expand-u3-exponentials": {
       "status": "in-progress",
       "branch": "sdd/expand-u3-exponentials",
