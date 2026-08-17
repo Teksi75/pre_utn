@@ -2,6 +2,39 @@
   "$schema": "SDD Change Registry — single source of truth for active changes",
   "$note": "This file is the portable state that syncs across machines. Update it when a change transitions phases. The audit script reads this to detect zombie branches.",
   "changes": {
+    "u1-rotonda-resolucion-problemas": {
+      "status": "in-progress",
+      "branch": null,
+      "issue": 132,
+      "backlogName": "Ejercicio 1 de razonamiento",
+      "implementationStatus": "deferred",
+      "startedAt": "2026-08-06",
+      "delivery": "auto-chain; stacked-to-main; review budget <=400 authored changed lines per PR",
+      "planning": {
+        "status": "complete",
+        "artifact": "openspec/changes/u1-rotonda-resolucion-problemas/specs/unit-1-end-of-unit-capstone/spec.md",
+        "proposal": "openspec/changes/u1-rotonda-resolucion-problemas/proposal.md",
+        "design": "openspec/changes/u1-rotonda-resolucion-problemas/design.md",
+        "tasks": "openspec/changes/u1-rotonda-resolucion-problemas/tasks.md",
+        "completedAt": "2026-08-07"
+      },
+      "applyPrerequisite": "Create a dedicated feature branch and worktree from main before sdd-apply; this proposal was produced on main.",
+      "chainPlan": {
+        "strategy": "stacked-to-main",
+        "slices": [
+          { "pr": 1, "branch": "feat/u1-rotonda-capstone-pr1", "scope": "domain predicate + capstone rules + comma adapter" },
+          { "pr": 2, "branch": "feat/u1-rotonda-capstone-pr2", "scope": "capstone JSON + loader + brand/voice/stage-order/math-contract scans" },
+          { "pr": 3, "branch": "feat/u1-rotonda-capstone-pr3", "scope": "per-student storage v1 with fail-closed + isolation" },
+          { "pr": 4, "branch": "feat/u1-rotonda-capstone-pr4", "scope": "DORMANT UnitCapstoneCard + state helper (no wiring, no route, no public path)" },
+          { "pr": "5a", "branch": "feat/u1-rotonda-capstone-pr5a", "scope": "DORMANT client eligibility hook/gate + automated no-route/no-link/no-import source-scan contract; no page or public route" },
+          { "pr": "5b", "branch": "feat/u1-rotonda-capstone-pr5b", "scope": "atomic server page shell + complete runner behind client gate + a11y/responsive/invariance + direct-URL E2E" },
+          { "pr": 6, "branch": "feat/u1-rotonda-capstone-pr6", "scope": "atomic Home activation of card + full integration E2E + final regression sweep" }
+        ],
+        "stackedToMainSafetyContract": "State authority rule: the client owns active profile, practice progress, and capstone state (browser/localStorage); the server only loads static content. A 'server-side gate' over client-local state is impossible by design and is forbidden here. PR1–PR3 are pure code/JSON/storage changes with no production surface change. PR4 introduces isolated card source files that remain unimported with no route. PR5a is equally dormant: it adds/tests useCapstoneEligibility, CapstoneEligibilityGate, and an automated source scan proving there is no route file, public path, in-app link, or unauthorized import; it creates no page or server shell. PR5b atomically creates the server page shell and mounts the complete runner behind the client gate, so the first route-bearing state already provides the full eligible journey; ineligible direct URL is neutral/fail-closed and no answer flashes before eligibility resolves. PR6 atomically wires the card into Home. No intermediate merge may expose a placeholder route, dead CTA, 404-linked card, server-side assumption about client-local state, or partially interactive path.",
+        "splitRationale": "PR5a (~210 authored lines) remains fully dormant and contains only eligibility contracts plus the absence scan. PR5b (~390 authored lines) keeps route creation, page-shell tests, complete runner, and direct-URL E2E atomic; splitting that state would expose a public incomplete route. Both remain within the 400-line budget, so no further split is planned."
+      },
+      "summary": "New non-blocking, tracked end-of-Unit-1 Ingenium capstone for the rotonda problem: theory plus a five-stage guided sequence using existing interaction types. Diagram and multi-select are deferred; Unit 1 mastery and Unit 2 access remain unchanged. Final tasks plan: 7 stacked PRs, ~1510 authored lines total, each PR <=400, strict TDD. PR4 remains dormant. PR5a (~210) is also fully dormant: hook, client gate, and automated absence scan only, with no page, route, shell, public link, or runner. PR5b (~390) atomically creates the server page shell and mounts the complete runner behind the gate; the first route-bearing state gives eligible students the complete journey, keeps ineligible direct URLs neutral/fail-closed, and prevents answer flash before eligibility resolves. PR6 preserves atomic Home activation. Client authority over browser/localStorage state and all approved scope/spec contracts remain unchanged."
+    },
     "recuperar-u3-fundacion-minima": {
       "status": "done",
       "branch": null,
