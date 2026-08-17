@@ -835,7 +835,7 @@
     },
     "recuperar-u3-traza-canonica-ejercicios": {
       "status": "in-progress",
-      "branch": null,
+      "branch": "chore/u3-trace-closeout",
       "startedAt": "2026-07-12",
       "cleanBase": "08da4b2f23ad7aaa3bad6e35e260cbbb0c0b55d1",
       "readOnlySourceCommit": "0f79d634843651366eb0ee8b0cb1467fb77f73de",
@@ -855,12 +855,18 @@
       },
       "pr2": {
         "branch": "feat/u3-traza-canonica-parser",
-        "status": "implemented",
+        "status": "merged",
         "target": "main",
         "dependsOn": "pr1",
-        "summary": "Optional parser/defaulting and isolated U3 audit implemented under strict TDD; final delegated gates and review remain pending."
+        "mergedTo": "main",
+        "mergeCommit": "e553648079cd7b6f9864683d4ab4d694b4f6a8e7",
+        "pr": {
+          "number": 98,
+          "url": "https://github.com/Teksi75/pre_utn/pull/98"
+        },
+        "summary": "Optional parser/defaulting and isolated U3 audit implemented under strict TDD, reviewed, and merged through PR #98 (277 changed lines)."
       },
-      "summary": "PR1 merged (#97, d03010e). PR2 implementation candidate is on feat/u3-traza-canonica-parser targeting main. General optional Exercise.canonicalTrace compatibility uses ExerciseBaseShape plus ExerciseCanonicalTrace/ExerciseSourceUse (adapted|reinforcement|reference|alignment), preserving U2. ChallengeExercise remains independent: it extends ExerciseBaseShape and retains ChallengeCanonicalTrace/ChallengeSourceUse. The general parser accepts alignment and rejects challenge-only/unknown literals; a separate U3-only audit rejects alignment only for Unit 3 inputs and never inspects or migrates U2. Consumer prop widening has no UI behavior change. PR1/PR2 each include behavior, tests, and artifacts within the hard 400-line budget. Out: validateTracePath (merged 0cf2c51), theory/worked-example schema, topic content, U2 migration, persistence, loaders wholesale, useChallengeFlow, challenge loader/store/flow/readiness, and runtime provenance."
+      "summary": "PR1 merged (#97, d03010e) and PR2 merged (#98, e553648); the change remains in-progress until native review-path reconciliation, verify, and archive publication. General optional Exercise.canonicalTrace compatibility uses ExerciseBaseShape plus ExerciseCanonicalTrace/ExerciseSourceUse (adapted|reinforcement|reference|alignment), preserving U2. ChallengeExercise remains independent: it extends ExerciseBaseShape and retains ChallengeCanonicalTrace/ChallengeSourceUse. The general parser accepts alignment and rejects challenge-only/unknown literals; a separate U3-only audit rejects alignment only for Unit 3 inputs and never inspects or migrates U2. Consumer prop widening has no UI behavior change. PR1/PR2 each include behavior, tests, and artifacts within the hard 400-line budget. Out: validateTracePath (merged 0cf2c51), theory/worked-example schema, topic content, U2 migration, persistence, loaders wholesale, useChallengeFlow, challenge loader/store/flow/readiness, and runtime provenance."
     }
   },
   "activeBranches": [],

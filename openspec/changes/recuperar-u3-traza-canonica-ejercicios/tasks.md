@@ -6,7 +6,7 @@ Source 0f79d63; base 08da4b2f; gate PASS. U2 not migrated; ChallengeExercise ind
 
 | Field | PR1 contracts | PR2 parser + U3 audit |
 |---|---|---|
-| Estimated changed lines | ≤400 | ≤246 |
+| Estimated / final changed lines | ≤400 / 400 | ≤246 / 277 |
 | 400-line budget risk | Low | Low |
 | Delivery strategy | chained, no size exception | chained, no size exception |
 | Chain strategy | stacked-to-main | stacked-to-main |
@@ -30,10 +30,10 @@ Branch: feat/u3-traza-canonica-contracts ← main (08da4b2f).
 - [x] 1.7 GREEN: widen ExerciseCardProps.exercise and ExerciseAnswerInputProps.exercise to ExerciseBaseShape; no JSX change
 - [x] 1.8 GREEN: add `EvaluableExercise` structural contract + re-export; retype `evaluateAnswer`/`tagError` to it; remove `as unknown as Exercise` cast in `ChallengeFlow.tsx`
 - [x] 1.9 REFACTOR: pnpm run typecheck + test:run + build; ChallengeExerciseCard compiles unchanged
-- [ ] 1.10 Commit proposal + model/challenge specs + design + STATUS delta (pr1.status=ready)
-- [ ] 1.11 Mark PR1 reviewed; post-apply lifecycle (merge to main) is outside the apply phase
+- [x] 1.10 Commit proposal + model/challenge specs + design + STATUS delta (published in planning commit `c9712cf` and PR1 commit `d12f61f`)
+- [x] 1.11 Complete PR1 review/publication lifecycle: PR #97 merged to `main` as `d03010ef8f1b5a27d72e3c4c74cef894682085ff`
 
-PR1 line accounting: actual `git diff --shortstat` additions+deletions ≤400 (no size exception).
+PR1 line accounting: final PR #97 diff is 331 additions + 69 deletions = **400 changed lines** (no size exception).
 
 ## Phase 2 — PR2 Parser + U3 Audit
 
@@ -48,10 +48,10 @@ Branch: feat/u3-traza-canonica-parser ← main (post-PR1).
 - [x] 2.7 GREEN: auditU3TraceSourceUse(exercises): readonly U3TraceAuditViolation[] in new src/domain/catalog/u3-trace-audit.ts; filter unit-3 skillId; flag alignment; U2 returns [] without inspection
 - [x] 2.8 RED: U3 alignment produces violation; U2 alignment produces zero violations and is not inspected; U3 adapted/reinforcement/reference produce zero
 - [x] 2.9 REFACTOR: typecheck + build; verify U1/U2 legacy entries load with no trace attached
-- [ ] 2.10 Commit catalog spec + STATUS delta (pr2.status=ready; change remains in-progress)
-- [ ] 2.11 Mark PR2 reviewed; post-apply lifecycle (merge to main) is outside the apply phase
+- [x] 2.10 Publish PR2 commit `d4c77a5` with the catalog spec already tracked by planning commit `c9712cf` and the STATUS delta
+- [x] 2.11 Complete fresh review lineage `review-bee22a9f19c068c4` and publication lifecycle: PR #98 merged to `main` as `e553648079cd7b6f9864683d4ab4d694b4f6a8e7`
 
-PR2 line accounting: parser+audit 78-96 + tests 72-88 + artifacts 62 = ≤246.
+PR2 line accounting: final PR #98 diff is 262 additions + 15 deletions = **277 changed lines**, within the 400-line budget without a size exception.
 
 ## Exclusions / Rollback
 
