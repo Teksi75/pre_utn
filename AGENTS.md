@@ -192,6 +192,8 @@ Usar en su lugar, según corresponda:
 
 Este proyecto se desarrolla desde **múltiples máquinas**. Engram no es portable entre PCs, por lo que el estado de los cambios SDD debe vivir **en el repositorio**.
 
+**Cada máquina usa un solo clon canónico** del repo (Windows: `C:\dev\pre_utn`). No crear clones paralelos del mismo repo en una máquina: generan estados divergentes y trabajo local que solo existe en uno de los clones (lección de la reinstalación 2026-08: dos clones + ocho worktrees dejaron trabajo valioso sin pushear).
+
 ### Fuente de verdad: `openspec/changes/STATUS.json`
 
 Este archivo es el **registro portable** del estado de todos los cambios SDD. Debe actualizarse cuando:

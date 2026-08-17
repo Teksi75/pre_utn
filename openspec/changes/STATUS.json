@@ -35,6 +35,19 @@
       },
       "summary": "New non-blocking, tracked end-of-Unit-1 Ingenium capstone for the rotonda problem: theory plus a five-stage guided sequence using existing interaction types. Diagram and multi-select are deferred; Unit 1 mastery and Unit 2 access remain unchanged. Final tasks plan: 7 stacked PRs, ~1510 authored lines total, each PR <=400, strict TDD. PR4 remains dormant. PR5a (~210) is also fully dormant: hook, client gate, and automated absence scan only, with no page, route, shell, public link, or runner. PR5b (~390) atomically creates the server page shell and mounts the complete runner behind the gate; the first route-bearing state gives eligible students the complete journey, keeps ineligible direct URLs neutral/fail-closed, and prevents answer flash before eligibility resolves. PR6 preserves atomic Home activation. Client authority over browser/localStorage state and all approved scope/spec contracts remain unchanged."
     },
+    "fix-u3-challenge-feedback-coherence": {
+      "status": "in-progress",
+      "branch": "fix/u3-challenge-feedback-coherence",
+      "startedAt": "2026-08-17",
+      "relatedChange": "recuperar-u3-ecuaciones-lineales",
+      "summary": "Post-merge correction of the P1l rationalization items shipped with the U3 linear-equations release: the pedagogical notes of ex.u3.ecuaciones_lineales.6 and ex.u3.ecuaciones_lineales.desafio-01 now describe distractor families honestly (distractor D is an isolation error, not a rationalization error; the challenge distractor 3 derivation uses the correct conjugate with a flipped radical sign, not a same-sign conjugate). Adds src/domain/__tests__/u3-p1l-challenge-coherence.test.ts locking the notes against the approved isU3RacionalizacionIrracionalError detector specificity. Rescued from a local worktree and pushed to GitHub on 2026-08-17 before a Windows reinstall."
+    },
+    "fix-catalog-parse-exercise-id": {
+      "status": "in-progress",
+      "branch": "fix/catalog-parse-exercise-id",
+      "startedAt": "2026-08-17",
+      "summary": "Test-only characterization of exercise id parsing (commit d8819ee, test(catalog): characterize exercise id parsing). Rescued from a local branch with no remote and pushed to GitHub on 2026-08-17 before a Windows reinstall."
+    },
     "recuperar-u3-fundacion-minima": {
       "status": "done",
       "branch": null,
@@ -881,7 +894,7 @@
     },
     "recuperar-u3-traza-canonica-ejercicios": {
       "status": "in-progress",
-      "branch": null,
+      "branch": "chore/u3-trace-closeout",
       "startedAt": "2026-07-12",
       "cleanBase": "08da4b2f23ad7aaa3bad6e35e260cbbb0c0b55d1",
       "readOnlySourceCommit": "0f79d634843651366eb0ee8b0cb1467fb77f73de",
@@ -901,12 +914,18 @@
       },
       "pr2": {
         "branch": "feat/u3-traza-canonica-parser",
-        "status": "implemented",
+        "status": "merged",
         "target": "main",
         "dependsOn": "pr1",
-        "summary": "Optional parser/defaulting and isolated U3 audit implemented under strict TDD; final delegated gates and review remain pending."
+        "mergedTo": "main",
+        "mergeCommit": "e553648079cd7b6f9864683d4ab4d694b4f6a8e7",
+        "pr": {
+          "number": 98,
+          "url": "https://github.com/Teksi75/pre_utn/pull/98"
+        },
+        "summary": "Optional parser/defaulting and isolated U3 audit implemented under strict TDD, reviewed, and merged through PR #98 (277 changed lines)."
       },
-      "summary": "PR1 merged (#97, d03010e). PR2 implementation candidate is on feat/u3-traza-canonica-parser targeting main. General optional Exercise.canonicalTrace compatibility uses ExerciseBaseShape plus ExerciseCanonicalTrace/ExerciseSourceUse (adapted|reinforcement|reference|alignment), preserving U2. ChallengeExercise remains independent: it extends ExerciseBaseShape and retains ChallengeCanonicalTrace/ChallengeSourceUse. The general parser accepts alignment and rejects challenge-only/unknown literals; a separate U3-only audit rejects alignment only for Unit 3 inputs and never inspects or migrates U2. Consumer prop widening has no UI behavior change. PR1/PR2 each include behavior, tests, and artifacts within the hard 400-line budget. Out: validateTracePath (merged 0cf2c51), theory/worked-example schema, topic content, U2 migration, persistence, loaders wholesale, useChallengeFlow, challenge loader/store/flow/readiness, and runtime provenance."
+      "summary": "PR1 merged (#97, d03010e) and PR2 merged (#98, e553648); the change remains in-progress until native review-path reconciliation, verify, and archive publication. General optional Exercise.canonicalTrace compatibility uses ExerciseBaseShape plus ExerciseCanonicalTrace/ExerciseSourceUse (adapted|reinforcement|reference|alignment), preserving U2. ChallengeExercise remains independent: it extends ExerciseBaseShape and retains ChallengeCanonicalTrace/ChallengeSourceUse. The general parser accepts alignment and rejects challenge-only/unknown literals; a separate U3-only audit rejects alignment only for Unit 3 inputs and never inspects or migrates U2. Consumer prop widening has no UI behavior change. PR1/PR2 each include behavior, tests, and artifacts within the hard 400-line budget. Out: validateTracePath (merged 0cf2c51), theory/worked-example schema, topic content, U2 migration, persistence, loaders wholesale, useChallengeFlow, challenge loader/store/flow/readiness, and runtime provenance."
     },
     "recuperar-u3-ecuaciones-lineales": {
       "status": "in-progress",
